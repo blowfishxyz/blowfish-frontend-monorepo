@@ -3,8 +3,9 @@
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
+
 import { Identifier, RequestType } from "../utils/constants";
-import { sendAndAwaitResponseFromStream } from "../utils/streams";
+import { sendAndAwaitResponseFromStream } from "../utils/messages";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
