@@ -7,8 +7,8 @@ export enum Identifier {
   Confirm = "BLOWFISH_CONFIRM",
 }
 
-export const RequestType = {
-  Transaction: "TRANSACTION",
-  SignTypedData: "SIGN_TYPED_DATA",
-  SignMessage: "SIGN_MESSAGE",
-};
+export enum RequestType {
+  Transaction = "TRANSACTION",
+  SignTypedData = "SIGN_TYPED_DATA",
+  SignMessage = "SIGN_MESSAGE",
+}

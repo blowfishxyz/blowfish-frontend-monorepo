@@ -5,7 +5,10 @@ import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
 import { Identifier, RequestType } from "../utils/constants";
-import { sendAndAwaitResponseFromStream } from "../utils/messages";
+import {
+  sendAndAwaitResponseFromStream,
+  createMessage,
+} from "../utils/messages";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,9 +67,14 @@ const overrideWindowEthereum = () => {
         provider
           .getNetwork()
           .then(({ chainId }) =>
-            sendAndAwaitResponseFromStream(stream, { transaction, chainId })
+            sendAndAwaitResponseFromStream(
+              stream,
+              createMessage(RequestType.Transaction, { transaction, chainId })
+            )
           )
-          .then((isOk) => {
+          .then((response) => {
+            console.log(response);
+            const { isOk } = response.data;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
             } else {
@@ -90,15 +98,19 @@ const overrideWindowEthereum = () => {
           return Reflect.apply(target, thisArg, argumentsList);
 
         const typedData = JSON.parse(typedDataStr);
-        const type = RequestType.SignTypedData;
 
         const provider = new providers.Web3Provider(window.ethereum);
         provider
           .getNetwork()
           .then(({ chainId }) =>
-            sendAndAwaitResponseFromStream(stream, { type, typedData, chainId })
+            sendAndAwaitResponseFromStream(
+              stream,
+              createMessage(RequestType.SignTypedData, { typedData, chainId })
+            )
           )
-          .then((isOk) => {
+          .then((response) => {
+            console.log(response);
+            const isOk = response.data.isOk;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
             } else {
@@ -124,15 +136,24 @@ const overrideWindowEthereum = () => {
         // if the first parameter is the address, the second is the message, otherwise the first is the message
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
-        const type = RequestType.SignMessage;
 
-        sendAndAwaitResponseFromStream(stream, { type, message }).then(
-          (isOk) => {
+        const provider = new providers.Web3Provider(window.ethereum);
+        provider
+          .getNetwork()
+          .then(({ chainId }) =>
+            sendAndAwaitResponseFromStream(
+              stream,
+              createMessage(RequestType.SignMessage, { message, chainId })
+            )
+          )
+          .then((response) => {
+            console.log(response);
+            const { isOk } = response.data;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
             } else {
               const error = ethErrors.provider.userRejectedRequest(
-                " Confirmation: User denied message signature."
+                "Blowfish Confirmation: User denied message signature."
               );
               const response = {
                 id: request?.id,
@@ -141,8 +162,7 @@ const overrideWindowEthereum = () => {
               };
               callback(error, response);
             }
-          }
-        );
+          });
       } else {
         return Reflect.apply(target, thisArg, argumentsList);
       }
@@ -161,10 +181,13 @@ const overrideWindowEthereum = () => {
         const provider = new providers.Web3Provider(window.ethereum);
         const { chainId } = await provider.getNetwork();
 
-        const isOk = await sendAndAwaitResponseFromStream(stream, {
-          transaction,
-          chainId,
-        });
+        const response = await sendAndAwaitResponseFromStream(
+          stream,
+          createMessage(RequestType.Transaction, { transaction, chainId })
+        );
+
+        console.log(response);
+        const { isOk } = response.data;
 
         if (!isOk) {
           throw ethErrors.provider.userRejectedRequest(
@@ -184,12 +207,12 @@ const overrideWindowEthereum = () => {
         const provider = new providers.Web3Provider(window.ethereum);
         const { chainId } = await provider.getNetwork();
 
-        const type = RequestType.SignTypedData;
-        const isOk = await sendAndAwaitResponseFromStream(stream, {
-          type,
-          typedData,
-          chainId,
-        });
+        const response = await sendAndAwaitResponseFromStream(
+          stream,
+          createMessage(RequestType.SignTypedData, { typedData, chainId })
+        );
+        console.log(response);
+        const { isOk } = response.data;
 
         if (!isOk) {
           throw ethErrors.provider.userRejectedRequest(
@@ -208,12 +231,15 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        const type = RequestType.SignMessage;
+        const provider = new providers.Web3Provider(window.ethereum);
+        const { chainId } = await provider.getNetwork();
+        const response = await sendAndAwaitResponseFromStream(
+          stream,
+          createMessage(RequestType.SignMessage, { message, chainId })
+        );
 
-        const isOk = await sendAndAwaitResponseFromStream(stream, {
-          type,
-          message,
-        });
+        console.log(response);
+        const { isOk } = response.data;
 
         if (!isOk) {
           throw ethErrors.provider.userRejectedRequest(

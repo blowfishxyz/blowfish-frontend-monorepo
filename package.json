@@ -7,7 +7,7 @@
     "watch": "webpack --config webpack/webpack.dev.js --watch",
     "build": "webpack --config webpack/webpack.prod.js",
     "clean": "rimraf dist",
-    "test": "npx jest",
+    "test": "yarn jest --passWithNoTests",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
     "lint:prettier:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
@@ -28,6 +28,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "readable-stream": "^4.2.0",
+    "styled-components": "^5.3.6",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
@@ -37,6 +38,7 @@
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
     "@types/readable-stream": "^2.3.14",
+    "@types/styled-components": "^5.1.26",
     "@types/webextension-polyfill": "^0.9.1",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",

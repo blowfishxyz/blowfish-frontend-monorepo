@@ -2,23 +2,55 @@ import objectHash from "object-hash";
 import { Duplex } from "readable-stream";
 import Browser from "webextension-polyfill";
 
+import { RequestType } from "./constants";
+
+interface MessageData {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+}
+// TODO(kimpers): Type message
+export interface Message {
+  id: string;
+  data: MessageData;
+  type: RequestType;
+  hostname?: string;
+}
+
+export const createMessage = (
+  type: RequestType,
+  data: MessageData,
+  hostname?: string
+): Message => {
+  const id = objectHash(data);
+  return { id, data, type, hostname };
+};
+
+export const postResponseToPort = (
+  remotePort: Browser.Runtime.Port,
+  originalMessage: Message,
+  responseData: MessageData
+): Message => {
+  const response: Message = {
+    ...originalMessage,
+    data: responseData,
+  };
+
+  remotePort.postMessage(response);
+  return response;
+};
+
 export const sendAndAwaitResponseFromStream = (
   stream: Duplex,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any // TODO(kimpers): type this
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> => {
-  return new Promise((resolve) => {
-    const id = objectHash(
-      data.transaction ?? data.typedData ?? data.message ?? data
-    );
-    stream.write({ id, data });
+  request: Message
+): Promise<Message> => {
+  stream.write(request);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const callback = (response: any) => {
-      if (response.id === id) {
+  return new Promise((resolve) => {
+    const callback = (response: Message): void => {
+      console.log(response);
+      if (response.id === request.id) {
         stream.off("data", callback);
-        resolve(response.data);
+        resolve(response);
       }
     };
 
@@ -28,21 +60,15 @@ export const sendAndAwaitResponseFromStream = (
 
 export const sendAndAwaitResponseFromPort = (
   stream: Browser.Runtime.Port,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> => {
-  return new Promise((resolve) => {
-    const id = objectHash(
-      data.transaction ?? data.typedData ?? data.message ?? data
-    );
-    stream.postMessage({ id, data });
+  request: Message
+): Promise<Message> => {
+  stream.postMessage(request);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const callback = (response: any) => {
-      if (response.id === id) {
+  return new Promise((resolve) => {
+    const callback = (response: Message): void => {
+      if (response.id === request.id) {
         stream.onMessage.removeListener(callback);
-        resolve(response.data);
+        resolve(response);
       }
     };
 
