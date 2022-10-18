@@ -9,6 +9,7 @@ import {
   DappRequest,
   parseRequestFromMessage,
   isTransactionRequest,
+  UntypedMessageData,
 } from "../types";
 import {
   BlowfishApiClient,
@@ -22,7 +23,9 @@ const BLOWFISH_API_KEY = process.env.BLOWFISH_API_KEY as string;
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
 const ScanResult: React.FC = () => {
-  const [message, setMessage] = useState<Message | undefined>(undefined);
+  const [message, setMessage] = useState<
+    Message<UntypedMessageData> | undefined
+  >(undefined);
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
   const [scanResults, setScanResults] = useState<
     TransactionScanResponse | undefined
@@ -32,7 +35,7 @@ const ScanResult: React.FC = () => {
     const windowQs = window.location.search;
     const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
     // NOTE: We only pass Message through the query params
-    const _message = qs.parse(cleanedQs) as unknown as Message;
+    const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
     const _request = parseRequestFromMessage(_message);
     setMessage(_message);
     setRequest(_request);

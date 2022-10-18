@@ -10,11 +10,14 @@ import {
   SignTypedDataRequest,
   SignMessagePayload,
   SignMessageRequest,
-  MessageData,
+  UntypedMessageData,
   Message,
 } from "../types";
 
-const createRawMessage = (type: RequestType, data: MessageData): Message => {
+const createRawMessage = <T extends object>(
+  type: RequestType,
+  data: T
+): Message<T> => {
   const id = objectHash(data);
   return { id, data, type };
 };
@@ -22,7 +25,7 @@ const createRawMessage = (type: RequestType, data: MessageData): Message => {
 export const createTransactionRequestMessage = (
   payload: TransactionPayload,
   chainId: number
-): Message => {
+): Message<TransactionRequest> => {
   const type = RequestType.Transaction;
   const transactionRequest: TransactionRequest = {
     type,
@@ -35,7 +38,7 @@ export const createTransactionRequestMessage = (
 export const createSignTypedDataRequestMessage = (
   payload: SignTypedDataPayload,
   chainId: number
-): Message => {
+): Message<SignTypedDataRequest> => {
   const type = RequestType.SignTypedData;
   const transactionRequest: SignTypedDataRequest = {
     type,
@@ -48,7 +51,7 @@ export const createSignTypedDataRequestMessage = (
 export const createSignMessageRequestMessage = (
   payload: SignMessagePayload,
   chainId: number
-): Message => {
+): Message<SignMessageRequest> => {
   const type = RequestType.SignMessage;
   const transactionRequest: SignMessageRequest = {
     type,
@@ -60,10 +63,10 @@ export const createSignMessageRequestMessage = (
 
 export const postResponseToPort = (
   remotePort: Browser.Runtime.Port,
-  originalMessage: Message,
-  responseData: MessageData
-): Message => {
-  const response: Message = {
+  originalMessage: Message<UntypedMessageData>,
+  responseData: UntypedMessageData
+): Message<UntypedMessageData> => {
+  const response: Message<UntypedMessageData> = {
     ...originalMessage,
     data: responseData,
   };
@@ -72,14 +75,14 @@ export const postResponseToPort = (
   return response;
 };
 
-export const sendAndAwaitResponseFromStream = (
+export const sendAndAwaitResponseFromStream = <T extends object>(
   stream: Duplex,
-  request: Message
-): Promise<Message> => {
+  request: Message<T>
+): Promise<Message<UntypedMessageData>> => {
   stream.write(request);
 
   return new Promise((resolve) => {
-    const callback = (response: Message): void => {
+    const callback = (response: Message<UntypedMessageData>): void => {
       console.log(response);
       if (response.id === request.id) {
         stream.off("data", callback);
@@ -93,12 +96,12 @@ export const sendAndAwaitResponseFromStream = (
 
 export const sendAndAwaitResponseFromPort = (
   stream: Browser.Runtime.Port,
-  request: Message
-): Promise<Message> => {
+  request: Message<UntypedMessageData>
+): Promise<Message<UntypedMessageData>> => {
   stream.postMessage(request);
 
   return new Promise((resolve) => {
-    const callback = (response: Message): void => {
+    const callback = (response: Message<UntypedMessageData>): void => {
       if (response.id === request.id) {
         stream.onMessage.removeListener(callback);
         resolve(response);

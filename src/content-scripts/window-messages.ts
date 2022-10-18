@@ -1,6 +1,6 @@
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import Browser from "webextension-polyfill";
-import { Identifier, Message } from "../types";
+import { Identifier, Message, UntypedMessageData } from "../types";
 import { sendAndAwaitResponseFromPort } from "../utils/messages";
 
 // Connect to page
@@ -9,7 +9,7 @@ const stream = new WindowPostMessageStream({
   target: Identifier.Inpage,
 });
 
-stream.on("data", (message: Message) => {
+stream.on("data", (message: Message<UntypedMessageData>) => {
   // Connect to background script
   const extensionPort = Browser.runtime.connect({
     name: Identifier.ContentScript,
@@ -17,7 +17,7 @@ stream.on("data", (message: Message) => {
 
   // Forward received messages to background.js with origin
   const { origin } = location;
-  const messageWithOrigin: Message = { ...message, origin };
+  const messageWithOrigin: Message<UntypedMessageData> = { ...message, origin };
 
   // Send message to background.js and pipe response back to stream
   sendAndAwaitResponseFromPort(extensionPort, messageWithOrigin).then(

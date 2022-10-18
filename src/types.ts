@@ -14,13 +14,13 @@ export enum RequestType {
 }
 
 // TODO(kimpers): Type message
-export interface MessageData {
+export interface UntypedMessageData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
-export interface Message {
+export interface Message<T extends object> {
   id: string;
-  data: MessageData;
+  data: T;
   type: RequestType;
   origin?: string;
 }
@@ -30,7 +30,9 @@ export type DappRequest =
   | SignTypedDataRequest
   | SignMessageRequest;
 
-export const parseRequestFromMessage = (message: Message): DappRequest => {
+export const parseRequestFromMessage = (
+  message: Message<DappRequest>
+): DappRequest => {
   switch (message.type) {
     case RequestType.Transaction:
       return message.data as TransactionRequest;
