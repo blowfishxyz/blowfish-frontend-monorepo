@@ -14,6 +14,7 @@ import {
   BlowfishApiClient,
   TransactionScanResponse,
 } from "../utils/BlowfishApiClient";
+import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 
 const ResultContainer = styled.div``;
 
@@ -66,14 +67,20 @@ const ScanResult: React.FC = () => {
   console.log(request);
   return (
     <ResultContainer>
-      <h1>Scan Result</h1>
-      <JsonViewer
-        value={scanResults}
-        collapseStringsAfterLength={false}
-        rootName={false}
-        indentWidth={2}
-        defaultInspectDepth={4}
-      />
+      {scanResults && (
+        <div>
+          <h1>Scan Result</h1>
+          <JsonViewer
+            value={scanResults}
+            collapseStringsAfterLength={false}
+            rootName={false}
+            indentWidth={2}
+            defaultInspectDepth={4}
+          />
+          <PrimaryButton>Proceed</PrimaryButton>
+          <SecondaryButton>Cancel</SecondaryButton>
+        </div>
+      )}
     </ResultContainer>
   );
 };
