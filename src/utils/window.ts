@@ -1,9 +1,13 @@
 import Browser from "webextension-polyfill";
+import qs from "qs";
+
+import { RequestType } from "../types";
 import { sleep } from "../utils/utils";
 
-export interface PopupParams extends Record<string, string> {
-  id: string;
-  hostname: string;
+export interface PopupParams {
+  type: RequestType;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 export const createPopupWithFile = async (
   filename: string,
@@ -13,7 +17,7 @@ export const createPopupWithFile = async (
     Browser.windows.getCurrent(),
     sleep(100), // HACK: Add a slight delay to prevent weird window positioning
   ]);
-  const queryString = new URLSearchParams(params).toString();
+  const queryString = qs.stringify(params);
 
   const positions = getPopupPositions(window, 0);
 

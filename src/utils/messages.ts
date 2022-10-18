@@ -2,27 +2,60 @@ import objectHash from "object-hash";
 import { Duplex } from "readable-stream";
 import Browser from "webextension-polyfill";
 
-import { RequestType } from "./constants";
+import {
+  RequestType,
+  TransactionPayload,
+  TransactionRequest,
+  SignTypedDataPayload,
+  SignTypedDataRequest,
+  SignMessagePayload,
+  SignMessageRequest,
+  MessageData,
+  Message,
+} from "../types";
 
-interface MessageData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-}
-// TODO(kimpers): Type message
-export interface Message {
-  id: string;
-  data: MessageData;
-  type: RequestType;
-  hostname?: string;
-}
-
-export const createMessage = (
-  type: RequestType,
-  data: MessageData,
-  hostname?: string
-): Message => {
+const createRawMessage = (type: RequestType, data: MessageData): Message => {
   const id = objectHash(data);
-  return { id, data, type, hostname };
+  return { id, data, type };
+};
+
+export const createTransactionRequestMessage = (
+  payload: TransactionPayload,
+  chainId: number
+): Message => {
+  const type = RequestType.Transaction;
+  const transactionRequest: TransactionRequest = {
+    type,
+    payload,
+    chainId: chainId.toString(),
+  };
+  return createRawMessage(type, transactionRequest);
+};
+
+export const createSignTypedDataRequestMessage = (
+  payload: SignTypedDataPayload,
+  chainId: number
+): Message => {
+  const type = RequestType.SignTypedData;
+  const transactionRequest: SignTypedDataRequest = {
+    type,
+    payload,
+    chainId: chainId.toString(),
+  };
+  return createRawMessage(type, transactionRequest);
+};
+
+export const createSignMessageRequestMessage = (
+  payload: SignMessagePayload,
+  chainId: number
+): Message => {
+  const type = RequestType.SignMessage;
+  const transactionRequest: SignMessageRequest = {
+    type,
+    payload,
+    chainId: chainId.toString(),
+  };
+  return createRawMessage(type, transactionRequest);
 };
 
 export const postResponseToPort = (

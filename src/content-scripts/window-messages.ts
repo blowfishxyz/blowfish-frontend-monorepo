@@ -1,11 +1,7 @@
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import Browser from "webextension-polyfill";
-import { Identifier } from "../utils/constants";
-import {
-  sendAndAwaitResponseFromPort,
-  createMessage,
-  Message,
-} from "../utils/messages";
+import { Identifier, Message } from "../types";
+import { sendAndAwaitResponseFromPort } from "../utils/messages";
 
 // Connect to page
 const stream = new WindowPostMessageStream({
@@ -20,9 +16,8 @@ stream.on("data", (message: Message) => {
   });
 
   // Forward received messages to background.js with hostname
-  const { type, data } = message;
   const { hostname } = location;
-  const messageWithHostname = createMessage(type, data, hostname);
+  const messageWithHostname: Message = { ...message, hostname };
 
   // Send message to background.js and pipe response back to stream
   sendAndAwaitResponseFromPort(extensionPort, messageWithHostname).then(

@@ -4,10 +4,12 @@ import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
-import { Identifier, RequestType } from "../utils/constants";
+import { Identifier } from "../types";
 import {
   sendAndAwaitResponseFromStream,
-  createMessage,
+  createTransactionRequestMessage,
+  createSignTypedDataRequestMessage,
+  createSignMessageRequestMessage,
 } from "../utils/messages";
 
 declare let window: Window & {
@@ -69,7 +71,7 @@ const overrideWindowEthereum = () => {
           .then(({ chainId }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createMessage(RequestType.Transaction, { transaction, chainId })
+              createTransactionRequestMessage(transaction, chainId)
             )
           )
           .then((response) => {
@@ -105,7 +107,7 @@ const overrideWindowEthereum = () => {
           .then(({ chainId }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createMessage(RequestType.SignTypedData, { typedData, chainId })
+              createSignTypedDataRequestMessage(typedData, chainId)
             )
           )
           .then((response) => {
@@ -143,7 +145,7 @@ const overrideWindowEthereum = () => {
           .then(({ chainId }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createMessage(RequestType.SignMessage, { message, chainId })
+              createSignMessageRequestMessage({ message }, chainId)
             )
           )
           .then((response) => {
@@ -183,7 +185,7 @@ const overrideWindowEthereum = () => {
 
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createMessage(RequestType.Transaction, { transaction, chainId })
+          createTransactionRequestMessage(transaction, chainId)
         );
 
         console.log(response);
@@ -209,7 +211,7 @@ const overrideWindowEthereum = () => {
 
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createMessage(RequestType.SignTypedData, { typedData, chainId })
+          createSignTypedDataRequestMessage(typedData, chainId)
         );
         console.log(response);
         const { isOk } = response.data;
@@ -235,7 +237,7 @@ const overrideWindowEthereum = () => {
         const { chainId } = await provider.getNetwork();
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createMessage(RequestType.SignMessage, { message, chainId })
+          createSignMessageRequestMessage({ message }, chainId)
         );
 
         console.log(response);

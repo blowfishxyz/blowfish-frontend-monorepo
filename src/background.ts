@@ -1,8 +1,8 @@
 import Browser from "webextension-polyfill";
 
-import { RequestType } from "./utils/constants";
+import { RequestType, Message } from "./types";
 import { createPopupWithFile } from "./utils/window";
-import { Message, postResponseToPort } from "./utils/messages";
+import { postResponseToPort } from "./utils/messages";
 
 console.log("BACKGROUND RUNNING");
 
@@ -26,10 +26,7 @@ const processTransactionRequest = async (
   remotePort: Browser.Runtime.Port
 ) => {
   console.log(message);
-  createPopupWithFile("scan-result.html", {
-    id: message.id,
-    hostname: message.hostname ?? "",
-  });
+  createPopupWithFile("scan-result.html", message);
 
   // TODO(kimpers): Grab the actual result
   const isOk = true;
