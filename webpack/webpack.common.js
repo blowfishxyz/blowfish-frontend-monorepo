@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const DotenvPlugin = require("dotenv-webpack");
 const srcDir = path.join(__dirname, "..", "src");
 
 module.exports = {
@@ -55,5 +56,6 @@ module.exports = {
     new webpack.ProvidePlugin({
       process: "process/browser",
     }),
+    new DotenvPlugin(),
   ],
 };

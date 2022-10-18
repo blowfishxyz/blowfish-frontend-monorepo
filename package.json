@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@metamask/post-message-stream": "^6.0.0",
+    "@textea/json-viewer": "^2.10.0",
     "eth-rpc-errors": "^4.0.3",
     "ethers": "^5.7.1",
     "object-hash": "^3.0.0",
@@ -45,6 +46,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "copy-webpack-plugin": "^11.0.0",
+    "dotenv-webpack": "^8.0.1",
     "eslint": "^8.0.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",

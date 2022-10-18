@@ -15,12 +15,12 @@ stream.on("data", (message: Message) => {
     name: Identifier.ContentScript,
   });
 
-  // Forward received messages to background.js with hostname
-  const { hostname } = location;
-  const messageWithHostname: Message = { ...message, hostname };
+  // Forward received messages to background.js with origin
+  const { origin } = location;
+  const messageWithOrigin: Message = { ...message, origin };
 
   // Send message to background.js and pipe response back to stream
-  sendAndAwaitResponseFromPort(extensionPort, messageWithHostname).then(
+  sendAndAwaitResponseFromPort(extensionPort, messageWithOrigin).then(
     (response) => {
       stream.write(response);
     }

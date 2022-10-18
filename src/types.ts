@@ -22,7 +22,7 @@ export interface Message {
   id: string;
   data: MessageData;
   type: RequestType;
-  hostname?: string;
+  origin?: string;
 }
 
 export type DappRequest =
@@ -58,6 +58,10 @@ export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;
 }
+
+export const isTransactionRequest = (
+  req: DappRequest
+): req is TransactionRequest => req.type === RequestType.Transaction;
 
 export interface SignTypedDataPayload {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
