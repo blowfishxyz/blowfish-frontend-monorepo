@@ -61,20 +61,6 @@ export const createSignMessageRequestMessage = (
   return createRawMessage(type, transactionRequest);
 };
 
-export const postResponseToPort = (
-  remotePort: Browser.Runtime.Port,
-  originalMessage: Message<UntypedMessageData>,
-  responseData: UntypedMessageData
-): Message<UntypedMessageData> => {
-  const response: Message<UntypedMessageData> = {
-    ...originalMessage,
-    data: responseData,
-  };
-
-  remotePort.postMessage(response);
-  return response;
-};
-
 export const sendAndAwaitResponseFromStream = <T extends object>(
   stream: Duplex,
   request: Message<T>
@@ -83,7 +69,6 @@ export const sendAndAwaitResponseFromStream = <T extends object>(
 
   return new Promise((resolve) => {
     const callback = (response: Message<UntypedMessageData>): void => {
-      console.log(response);
       if (response.id === request.id) {
         stream.off("data", callback);
         resolve(response);
@@ -111,3 +96,7 @@ export const sendAndAwaitResponseFromPort = (
     stream.onMessage.addListener(callback);
   });
 };
+
+export interface UserDecisionData {
+  isOk: boolean;
+}

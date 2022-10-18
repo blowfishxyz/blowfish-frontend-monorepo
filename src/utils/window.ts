@@ -36,8 +36,9 @@ const getPopupPositions = (
   window: Browser.Windows.Window,
   contentLines: number
 ) => {
-  const width = 480;
-  const height = 320 + contentLines * 24;
+  // TODO(kimpers): actual dimensions
+  const width = 640;
+  const height = 520 + contentLines * 24;
 
   const left = window.left! + Math.round((window.width! - width) * 0.5);
   const top = window.top! + Math.round((window.height! - height) * 0.2);

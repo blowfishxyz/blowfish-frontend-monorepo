@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 import { JsonViewer } from "@textea/json-viewer";
@@ -16,6 +16,7 @@ import {
   TransactionScanResponse,
 } from "../utils/BlowfishApiClient";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
+import { respondWithUserDecision } from "./page-utils";
 
 const ResultContainer = styled.div``;
 
@@ -66,10 +67,23 @@ const ScanResult: React.FC = () => {
     scanRequest().catch((err) => console.error(err));
   }, [client, message, request]);
 
+  const handleUserDecision = useCallback(
+    async (shouldProceed: boolean) => {
+      if (!scanResults || !message) {
+        return;
+      }
+      await respondWithUserDecision(message.id, shouldProceed);
+      window.close();
+    },
+
+    [scanResults, message]
+  );
+
   console.log(message);
   console.log(request);
   return (
     <ResultContainer>
+      {!scanResults && <p>Scanning transaction...</p>}
       {scanResults && (
         <div>
           <h1>Scan Result</h1>
@@ -80,8 +94,12 @@ const ScanResult: React.FC = () => {
             indentWidth={2}
             defaultInspectDepth={4}
           />
-          <PrimaryButton>Proceed</PrimaryButton>
-          <SecondaryButton>Cancel</SecondaryButton>
+          <PrimaryButton onClick={() => handleUserDecision(true)}>
+            Proceed
+          </PrimaryButton>
+          <SecondaryButton onClick={() => handleUserDecision(false)}>
+            Cancel
+          </SecondaryButton>
         </div>
       )}
     </ResultContainer>

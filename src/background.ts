@@ -9,13 +9,14 @@ import {
   SignMessageRequest,
 } from "./types";
 import { createPopupWithFile } from "./utils/window";
-import { postResponseToPort } from "./utils/messages";
 
 console.log("BACKGROUND RUNNING");
+const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
 
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   remotePort.onMessage.addListener((message: Message<UntypedMessageData>) => {
     console.log(message);
+
     if (message.type === RequestType.Transaction) {
       return processTransactionRequest(
         message as Message<TransactionRequest>,
@@ -36,6 +37,20 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
 };
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
+Browser.runtime.onMessage.addListener(
+  (message: Message<UntypedMessageData>) => {
+    const responseRemotePort = messageToPortMapping.get(message.id);
+
+    if (responseRemotePort) {
+      responseRemotePort.postMessage(message);
+      messageToPortMapping.delete(message.id);
+    } else {
+      console.error(
+        `Missing remote port for message ${message.id}: ${message.type}`
+      );
+    }
+  }
+);
 
 const processTransactionRequest = async (
   message: Message<TransactionRequest>,
@@ -44,9 +59,8 @@ const processTransactionRequest = async (
   console.log(message);
   createPopupWithFile("scan-result.html", message);
 
-  // TODO(kimpers): Grab the actual result
-  const isOk = true;
-  postResponseToPort(remotePort, message, { isOk });
+  // Store port to id mapping so we can respond to the message later on
+  messageToPortMapping.set(message.id, remotePort);
 };
 
 const processSignTypedDataRequest = async (
@@ -54,9 +68,9 @@ const processSignTypedDataRequest = async (
   remotePort: Browser.Runtime.Port
 ) => {
   console.log(message);
-  // TODO(kimpers): Grab the actual result
-  const isOk = true;
-  postResponseToPort(remotePort, message, { isOk });
+
+  // Store port to id mapping so we can respond to the message later on
+  messageToPortMapping.set(message.id, remotePort);
 };
 
 const processSignMessageRequest = async (
@@ -64,7 +78,7 @@ const processSignMessageRequest = async (
   remotePort: Browser.Runtime.Port
 ) => {
   console.log(message);
-  // TODO(kimpers): Grab the actual result
-  const isOk = true;
-  postResponseToPort(remotePort, message, { isOk });
+
+  // Store port to id mapping so we can respond to the message later on
+  messageToPortMapping.set(message.id, remotePort);
 };

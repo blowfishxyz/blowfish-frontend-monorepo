@@ -11,6 +11,7 @@ export enum RequestType {
   Transaction = "TRANSACTION",
   SignTypedData = "SIGN_TYPED_DATA",
   SignMessage = "SIGN_MESSAGE",
+  UserDecision = "USER_DECISION",
 }
 
 // TODO(kimpers): Type message
@@ -80,4 +81,8 @@ export interface SignMessagePayload {
 export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
+}
+
+export interface UserDecisionData {
+  isOk: boolean;
 }
