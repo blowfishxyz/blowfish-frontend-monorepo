@@ -22,6 +22,26 @@ const stream = new WindowPostMessageStream({
   target: Identifier.ContentScript,
 });
 
+const getChainIdAndUserAccount = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  target: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  thisArg: any
+): Promise<{
+  chainId: number;
+  userAccount: string;
+}> => {
+  const provider = new providers.Web3Provider(window.ethereum);
+  const [chainId, accounts] = await Promise.all([
+    provider.getNetwork().then(({ chainId }) => chainId),
+    Reflect.apply(target, thisArg, [{ method: "eth_requestAccounts" }]),
+  ]);
+  // NOTE: The connected account will always be the first account in the list
+  const userAccount = accounts[0];
+
+  return { chainId, userAccount };
+};
+
 const overrideWindowEthereum = () => {
   if (!window.ethereum) return;
 
@@ -64,17 +84,15 @@ const overrideWindowEthereum = () => {
         const [transaction] = request?.params ?? [];
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 
-        const provider = new providers.Web3Provider(window.ethereum);
-
-        provider
-          .getNetwork()
-          .then(({ chainId }) =>
+        getChainIdAndUserAccount(target, thisArg)
+          .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createTransactionRequestMessage(transaction, chainId)
+              createTransactionRequestMessage(transaction, chainId, userAccount)
             )
           )
           .then((response) => {
+            getChainIdAndUserAccount(target, thisArg);
             console.log(response);
             const { isOk } = response.data;
             if (isOk) {
@@ -101,13 +119,11 @@ const overrideWindowEthereum = () => {
 
         const typedData = JSON.parse(typedDataStr);
 
-        const provider = new providers.Web3Provider(window.ethereum);
-        provider
-          .getNetwork()
-          .then(({ chainId }) =>
+        getChainIdAndUserAccount(target, thisArg)
+          .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createSignTypedDataRequestMessage(typedData, chainId)
+              createSignTypedDataRequestMessage(typedData, chainId, userAccount)
             )
           )
           .then((response) => {
@@ -139,13 +155,11 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        const provider = new providers.Web3Provider(window.ethereum);
-        provider
-          .getNetwork()
-          .then(({ chainId }) =>
+        getChainIdAndUserAccount(target, thisArg)
+          .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createSignMessageRequestMessage({ message }, chainId)
+              createSignMessageRequestMessage({ message }, chainId, userAccount)
             )
           )
           .then((response) => {
@@ -180,12 +194,13 @@ const overrideWindowEthereum = () => {
         const [transaction] = request?.params ?? [];
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 
-        const provider = new providers.Web3Provider(window.ethereum);
-        const { chainId } = await provider.getNetwork();
-
+        const { chainId, userAccount } = await getChainIdAndUserAccount(
+          target,
+          thisArg
+        );
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createTransactionRequestMessage(transaction, chainId)
+          createTransactionRequestMessage(transaction, chainId, userAccount)
         );
 
         console.log(response);
@@ -206,12 +221,13 @@ const overrideWindowEthereum = () => {
 
         const typedData = JSON.parse(typedDataStr);
 
-        const provider = new providers.Web3Provider(window.ethereum);
-        const { chainId } = await provider.getNetwork();
-
+        const { chainId, userAccount } = await getChainIdAndUserAccount(
+          target,
+          thisArg
+        );
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createSignTypedDataRequestMessage(typedData, chainId)
+          createSignTypedDataRequestMessage(typedData, chainId, userAccount)
         );
         console.log(response);
         const { isOk } = response.data;
@@ -233,11 +249,13 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        const provider = new providers.Web3Provider(window.ethereum);
-        const { chainId } = await provider.getNetwork();
+        const { chainId, userAccount } = await getChainIdAndUserAccount(
+          target,
+          thisArg
+        );
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createSignMessageRequestMessage({ message }, chainId)
+          createSignMessageRequestMessage({ message }, chainId, userAccount)
         );
 
         console.log(response);

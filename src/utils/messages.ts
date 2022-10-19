@@ -24,39 +24,45 @@ const createRawMessage = <T extends object>(
 
 export const createTransactionRequestMessage = (
   payload: TransactionPayload,
-  chainId: number
+  chainId: number,
+  userAccount: string
 ): Message<TransactionRequest> => {
   const type = RequestType.Transaction;
   const transactionRequest: TransactionRequest = {
     type,
     payload,
     chainId: chainId.toString(),
+    userAccount,
   };
   return createRawMessage(type, transactionRequest);
 };
 
 export const createSignTypedDataRequestMessage = (
   payload: SignTypedDataPayload,
-  chainId: number
+  chainId: number,
+  userAccount: string
 ): Message<SignTypedDataRequest> => {
   const type = RequestType.SignTypedData;
   const transactionRequest: SignTypedDataRequest = {
     type,
     payload,
     chainId: chainId.toString(),
+    userAccount,
   };
   return createRawMessage(type, transactionRequest);
 };
 
 export const createSignMessageRequestMessage = (
   payload: SignMessagePayload,
-  chainId: number
+  chainId: number,
+  userAccount: string
 ): Message<SignMessageRequest> => {
   const type = RequestType.SignMessage;
   const transactionRequest: SignMessageRequest = {
     type,
     payload,
     chainId: chainId.toString(),
+    userAccount,
   };
   return createRawMessage(type, transactionRequest);
 };

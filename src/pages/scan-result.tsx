@@ -9,12 +9,11 @@ import {
   DappRequest,
   parseRequestFromMessage,
   isTransactionRequest,
+  isSignTypedDataRequest,
+  isSignMessageRequest,
   UntypedMessageData,
 } from "../types";
-import {
-  BlowfishApiClient,
-  TransactionScanResponse,
-} from "../utils/BlowfishApiClient";
+import { BlowfishApiClient, ScanResponse } from "../utils/BlowfishApiClient";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 import { respondWithUserDecision } from "./page-utils";
 
@@ -28,9 +27,9 @@ const ScanResult: React.FC = () => {
     Message<UntypedMessageData> | undefined
   >(undefined);
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
-  const [scanResults, setScanResults] = useState<
-    TransactionScanResponse | undefined
-  >(undefined);
+  const [scanResults, setScanResults] = useState<ScanResponse | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -55,8 +54,23 @@ const ScanResult: React.FC = () => {
       if (isTransactionRequest(request)) {
         const _scanResults = await client.scanTransaction(
           request.payload,
-          // TODO(kimpers): pass user current account separately
-          request.payload.from,
+          request.userAccount,
+          { origin: message.origin! }
+        );
+
+        setScanResults(_scanResults);
+      } else if (isSignTypedDataRequest(request)) {
+        const _scanResults = await client.scanSignTypedData(
+          request.payload,
+          request.userAccount,
+          { origin: message.origin! }
+        );
+
+        setScanResults(_scanResults);
+      } else if (isSignMessageRequest(request)) {
+        const _scanResults = await client.scanSignTypedData(
+          request.payload,
+          request.userAccount,
           { origin: message.origin! }
         );
 
@@ -83,7 +97,7 @@ const ScanResult: React.FC = () => {
   console.log(request);
   return (
     <ResultContainer>
-      {!scanResults && <p>Scanning transaction...</p>}
+      {!scanResults && <p>Scanning dApp interaction...</p>}
       {scanResults && (
         <div>
           <h1>Scan Result</h1>

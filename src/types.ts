@@ -49,6 +49,7 @@ export const parseRequestFromMessage = (
 interface BaseRequest {
   type: RequestType;
   chainId: string;
+  userAccount: string;
 }
 export interface TransactionPayload {
   from: string;
@@ -74,6 +75,9 @@ export interface SignTypedDataRequest extends BaseRequest {
   type: RequestType.SignTypedData;
   payload: SignTypedDataPayload;
 }
+export const isSignTypedDataRequest = (
+  req: DappRequest
+): req is SignTypedDataRequest => req.type === RequestType.SignTypedData;
 
 export interface SignMessagePayload {
   message: string;
@@ -82,6 +86,9 @@ export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
 }
+export const isSignMessageRequest = (
+  req: DappRequest
+): req is SignMessageRequest => req.type === RequestType.SignMessage;
 
 export interface UserDecisionData {
   isOk: boolean;

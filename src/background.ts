@@ -68,6 +68,7 @@ const processSignTypedDataRequest = async (
   remotePort: Browser.Runtime.Port
 ) => {
   console.log(message);
+  createPopupWithFile("scan-result.html", message);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
@@ -78,6 +79,7 @@ const processSignMessageRequest = async (
   remotePort: Browser.Runtime.Port
 ) => {
   console.log(message);
+  createPopupWithFile("scan-result.html", message);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);

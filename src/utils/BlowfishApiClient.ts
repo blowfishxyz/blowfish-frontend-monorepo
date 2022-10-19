@@ -17,6 +17,22 @@ interface TransactionRequestBody {
   metadata: Metadata;
 }
 
+interface SignTypedDataRequest {
+  kind: "SIGN_TYPED_DATA";
+  data: object;
+}
+
+interface SignMessageRequest {
+  kind: "SIGN_MESSAGE";
+  rawMessage: string;
+}
+
+export interface MessageRequestBody {
+  message: SignTypedDataRequest | SignMessageRequest;
+  metadata: Metadata;
+  userAccount: string;
+}
+
 export enum WarningSeverity {
   Critical = "CRITICAL",
   Warning = "WARNING",
@@ -27,7 +43,7 @@ export interface Warning {
   message: string;
 }
 
-export interface TransactionScanResponse {
+export interface ScanResponse {
   action: string;
   warnings: Warning[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,19 +70,64 @@ export class BlowfishApiClient {
     txObject: TransactionObject,
     userAccount: string,
     metadata: Metadata
-  ): Promise<TransactionScanResponse> {
-    // TODO(kimpers): handle multichain
-    const url = `${this.baseUrl}/ethereum/v0/mainnet/scan/transaction`;
-    const headers = new Headers({ "Content-Type": "application/json" });
-    if (this.apiKey) {
-      headers.set("X-Api-Key", this.apiKey);
-    }
-
+  ): Promise<ScanResponse> {
     const requestBody: TransactionRequestBody = {
       txObject,
       userAccount,
       metadata,
     };
+
+    return this._fetchAndValidateStatus<ScanResponse>(
+      "transaction",
+      requestBody
+    );
+  }
+
+  public async scanSignTypedData(
+    typedData: object,
+    userAccount: string,
+    metadata: Metadata
+  ): Promise<ScanResponse> {
+    const requestBody: MessageRequestBody = {
+      message: {
+        kind: "SIGN_TYPED_DATA",
+        data: typedData,
+      },
+      userAccount,
+      metadata,
+    };
+
+    return this._fetchAndValidateStatus<ScanResponse>("message", requestBody);
+  }
+
+  public async scanSignMessage(
+    rawMessage: string,
+    userAccount: string,
+    metadata: Metadata
+  ): Promise<ScanResponse> {
+    const requestBody: MessageRequestBody = {
+      message: {
+        kind: "SIGN_MESSAGE",
+        rawMessage,
+      },
+      userAccount,
+      metadata,
+    };
+
+    return this._fetchAndValidateStatus<ScanResponse>("message", requestBody);
+  }
+
+  async _fetchAndValidateStatus<T>(
+    endpoint: "transaction" | "message",
+    requestBody: object
+  ): Promise<T> {
+    // TODO(kimpers): handle multichain
+    const url = `${this.baseUrl}/ethereum/v0/mainnet/scan/${endpoint}`;
+
+    const headers = new Headers({ "Content-Type": "application/json" });
+    if (this.apiKey) {
+      headers.set("X-Api-Key", this.apiKey);
+    }
 
     const response = await fetch(url, {
       method: "POST",
@@ -79,6 +140,6 @@ export class BlowfishApiClient {
       throw new Error(responseBody.error);
     }
 
-    return responseBody as TransactionScanResponse;
+    return responseBody as T;
   }
 }
