@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 import { JsonViewer } from "@textea/json-viewer";
@@ -14,6 +14,7 @@ import {
   UntypedMessageData,
 } from "../types";
 import { BlowfishApiClient, ScanResponse } from "../utils/BlowfishApiClient";
+import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 import { respondWithUserDecision } from "./page-utils";
 
@@ -26,6 +27,9 @@ const ScanResult: React.FC = () => {
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
+  const [client, setClient] = useState<BlowfishApiClient | undefined>(
+    undefined
+  );
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
   const [scanResults, setScanResults] = useState<ScanResponse | undefined>(
     undefined
@@ -37,17 +41,31 @@ const ScanResult: React.FC = () => {
     // NOTE: We only pass Message through the query params
     const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
     const _request = parseRequestFromMessage(_message);
+    const chainId = _message.data.chainId.toString();
+
+    // NOTE: This should never happen since we verify
+    // that the chain is supported before we create this page
+    if (!chainIdToSupportedChainMapping[chainId]) {
+      console.error(`Blowfish unsupported chainId ${chainId}`);
+      return;
+    }
+
+    const { chainFamily, chainNetwork } =
+      chainIdToSupportedChainMapping[chainId];
+
+    const _client = new BlowfishApiClient(
+      chainFamily,
+      chainNetwork,
+      BLOWFISH_API_KEY,
+      BLOWFISH_API_BASE_URL
+    );
     setMessage(_message);
     setRequest(_request);
+    setClient(_client);
   }, []);
 
-  const client = useMemo(
-    () => new BlowfishApiClient(BLOWFISH_API_KEY, BLOWFISH_API_BASE_URL),
-    []
-  );
-
   useEffect(() => {
-    if (!request || !message) {
+    if (!request || !message || !client) {
       return;
     }
     const scanRequest = async () => {

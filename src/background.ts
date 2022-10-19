@@ -7,8 +7,11 @@ import {
   TransactionRequest,
   SignTypedDataRequest,
   SignMessageRequest,
+  UserDecisionData,
 } from "./types";
 import { createPopupWithFile } from "./utils/window";
+import { chainIdToSupportedChainMapping } from "./utils/constants";
+import { postResponseToPort } from "./utils/messages";
 
 console.log("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
@@ -56,6 +59,15 @@ const processTransactionRequest = async (
   message: Message<TransactionRequest>,
   remotePort: Browser.Runtime.Port
 ) => {
+  const { chainId } = message.data;
+  // Just proxy the request if we don't support the current chain
+  if (!chainIdToSupportedChainMapping[chainId]) {
+    console.log(`Unsupported chain id ${chainId}`);
+    const responseData: UserDecisionData = { isOk: true };
+    postResponseToPort(remotePort, message, responseData);
+    return;
+  }
+
   console.log(message);
   createPopupWithFile("scan-result.html", message);
 
@@ -67,6 +79,15 @@ const processSignTypedDataRequest = async (
   message: Message<SignTypedDataRequest>,
   remotePort: Browser.Runtime.Port
 ) => {
+  const { chainId } = message.data;
+  // Just proxy the request if we don't support the current chain
+  if (!chainIdToSupportedChainMapping[chainId]) {
+    console.log(`Unsupported chain id ${chainId}`);
+    const responseData: UserDecisionData = { isOk: true };
+    postResponseToPort(remotePort, message, responseData);
+    return;
+  }
+
   console.log(message);
   createPopupWithFile("scan-result.html", message);
 
@@ -78,6 +99,15 @@ const processSignMessageRequest = async (
   message: Message<SignMessageRequest>,
   remotePort: Browser.Runtime.Port
 ) => {
+  const { chainId } = message.data;
+  // Just proxy the request if we don't support the current chain
+  if (!chainIdToSupportedChainMapping[chainId]) {
+    console.log(`Unsupported chain id ${chainId}`);
+    const responseData: UserDecisionData = { isOk: true };
+    postResponseToPort(remotePort, message, responseData);
+    return;
+  }
+
   console.log(message);
   createPopupWithFile("scan-result.html", message);
 

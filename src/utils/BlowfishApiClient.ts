@@ -57,11 +57,23 @@ export enum Action {
   HardBlock = "HARD_BLOCK",
 }
 
+export type ChainFamily = "ethereum" | "polygon";
+export type ChainNetwork = "mainnet" | "goerli";
+
 export class BlowfishApiClient {
+  private readonly chainFamily: ChainFamily;
+  private readonly chainNetwork: ChainNetwork;
   private readonly baseUrl: string;
   private readonly apiKey: string | undefined;
 
-  constructor(apiKey?: string, baseUrl?: string) {
+  constructor(
+    chainFamily: ChainFamily,
+    chainNetwork: ChainNetwork,
+    apiKey?: string,
+    baseUrl?: string
+  ) {
+    this.chainFamily = chainFamily;
+    this.chainNetwork = chainNetwork;
     this.baseUrl = baseUrl ?? DEFAULT_BLOWFISH_BASE_URL;
     this.apiKey = apiKey;
   }
@@ -122,7 +134,7 @@ export class BlowfishApiClient {
     requestBody: object
   ): Promise<T> {
     // TODO(kimpers): handle multichain
-    const url = `${this.baseUrl}/ethereum/v0/mainnet/scan/${endpoint}`;
+    const url = `${this.baseUrl}/${this.chainFamily}/v0/${this.chainNetwork}/scan/${endpoint}`;
 
     const headers = new Headers({ "Content-Type": "application/json" });
     if (this.apiKey) {

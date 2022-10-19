@@ -106,3 +106,17 @@ export const sendAndAwaitResponseFromPort = (
 export interface UserDecisionData {
   isOk: boolean;
 }
+
+export const postResponseToPort = (
+  remotePort: Browser.Runtime.Port,
+  originalMessage: Message<UntypedMessageData>,
+  responseData: UntypedMessageData
+): Message<UntypedMessageData> => {
+  const response: Message<UntypedMessageData> = {
+    ...originalMessage,
+    data: responseData,
+  };
+
+  remotePort.postMessage(response);
+  return response;
+};
