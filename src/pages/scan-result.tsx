@@ -23,6 +23,11 @@ const ResultContainer = styled.div``;
 const BLOWFISH_API_KEY = process.env.BLOWFISH_API_KEY as string;
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
+const ErrorMessage = styled.p`
+  color: red;
+  font-weight: bold;
+`;
+
 const ScanResult: React.FC = () => {
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
@@ -34,6 +39,7 @@ const ScanResult: React.FC = () => {
   const [scanResults, setScanResults] = useState<ScanResponse | undefined>(
     undefined
   );
+  const [scanError, setScanError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -96,26 +102,33 @@ const ScanResult: React.FC = () => {
       }
     };
 
-    scanRequest().catch((err) => console.error(err));
+    scanRequest().catch((err) => {
+      setScanError(err);
+      console.error(err);
+    });
   }, [client, message, request]);
 
   const handleUserDecision = useCallback(
     async (shouldProceed: boolean) => {
-      if (!scanResults || !message) {
+      if (!message) {
+        console.error("Error: Cannot proceed, no message to respond to ");
         return;
       }
       await respondWithUserDecision(message.id, shouldProceed);
       window.close();
     },
 
-    [scanResults, message]
+    [message]
   );
 
   console.log(message);
   console.log(request);
   return (
     <ResultContainer>
-      {!scanResults && <p>Scanning dApp interaction...</p>}
+      {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
+      {scanError && (
+        <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>
+      )}
       {scanResults && (
         <div>
           <h1>Scan Result</h1>
@@ -126,13 +139,17 @@ const ScanResult: React.FC = () => {
             indentWidth={2}
             defaultInspectDepth={4}
           />
+        </div>
+      )}
+      {(scanResults || scanError) && (
+        <>
           <PrimaryButton onClick={() => handleUserDecision(true)}>
             Proceed
           </PrimaryButton>
           <SecondaryButton onClick={() => handleUserDecision(false)}>
             Cancel
           </SecondaryButton>
-        </div>
+        </>
       )}
     </ResultContainer>
   );

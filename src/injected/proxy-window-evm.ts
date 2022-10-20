@@ -22,19 +22,14 @@ const stream = new WindowPostMessageStream({
   target: Identifier.ContentScript,
 });
 
-const getChainIdAndUserAccount = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  target: any,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  thisArg: any
-): Promise<{
+const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
   userAccount: string;
 }> => {
   const provider = new providers.Web3Provider(window.ethereum);
   const [chainId, accounts] = await Promise.all([
     provider.getNetwork().then(({ chainId }) => chainId),
-    Reflect.apply(target, thisArg, [{ method: "eth_requestAccounts" }]),
+    provider.listAccounts(),
   ]);
   // NOTE: The connected account will always be the first account in the list
   const userAccount = accounts[0];
@@ -84,7 +79,7 @@ const overrideWindowEthereum = () => {
         const [transaction] = request?.params ?? [];
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 
-        getChainIdAndUserAccount(target, thisArg)
+        getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
@@ -92,14 +87,14 @@ const overrideWindowEthereum = () => {
             )
           )
           .then((response) => {
-            getChainIdAndUserAccount(target, thisArg);
+            getChainIdAndUserAccount();
             console.log(response);
             const { isOk } = response.data;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
             } else {
               const error = ethErrors.provider.userRejectedRequest(
-                "Blowfish Confirmation: User denied transaction signature."
+                "User denied transaction signature."
               );
               const response = {
                 id: request?.id,
@@ -119,7 +114,7 @@ const overrideWindowEthereum = () => {
 
         const typedData = JSON.parse(typedDataStr);
 
-        getChainIdAndUserAccount(target, thisArg)
+        getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
@@ -133,7 +128,7 @@ const overrideWindowEthereum = () => {
               return Reflect.apply(target, thisArg, argumentsList);
             } else {
               const error = ethErrors.provider.userRejectedRequest(
-                "Blowfish Confirmation: User denied message signature."
+                "User denied message signature."
               );
               const response = {
                 id: request?.id,
@@ -155,7 +150,7 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        getChainIdAndUserAccount(target, thisArg)
+        getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
@@ -169,7 +164,7 @@ const overrideWindowEthereum = () => {
               return Reflect.apply(target, thisArg, argumentsList);
             } else {
               const error = ethErrors.provider.userRejectedRequest(
-                "Blowfish Confirmation: User denied message signature."
+                "User denied message signature."
               );
               const response = {
                 id: request?.id,
@@ -194,10 +189,7 @@ const overrideWindowEthereum = () => {
         const [transaction] = request?.params ?? [];
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 
-        const { chainId, userAccount } = await getChainIdAndUserAccount(
-          target,
-          thisArg
-        );
+        const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream(
           stream,
           createTransactionRequestMessage(transaction, chainId, userAccount)
@@ -208,7 +200,7 @@ const overrideWindowEthereum = () => {
 
         if (!isOk) {
           throw ethErrors.provider.userRejectedRequest(
-            "Blowfish Confirmation: User denied transaction signature."
+            "User denied transaction signature."
           );
         }
       } else if (
@@ -221,10 +213,7 @@ const overrideWindowEthereum = () => {
 
         const typedData = JSON.parse(typedDataStr);
 
-        const { chainId, userAccount } = await getChainIdAndUserAccount(
-          target,
-          thisArg
-        );
+        const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream(
           stream,
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
@@ -234,7 +223,7 @@ const overrideWindowEthereum = () => {
 
         if (!isOk) {
           throw ethErrors.provider.userRejectedRequest(
-            "Blowfish Confirmation: User denied message signature."
+            "User denied message signature."
           );
         }
       } else if (
@@ -249,10 +238,7 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        const { chainId, userAccount } = await getChainIdAndUserAccount(
-          target,
-          thisArg
-        );
+        const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream(
           stream,
           createSignMessageRequestMessage({ message }, chainId, userAccount)
@@ -263,7 +249,7 @@ const overrideWindowEthereum = () => {
 
         if (!isOk) {
           throw ethErrors.provider.userRejectedRequest(
-            "Blowfish Confirmation: User denied message signature."
+            "User denied message signature."
           );
         }
       }
