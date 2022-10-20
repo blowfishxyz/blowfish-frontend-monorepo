@@ -133,7 +133,6 @@ export class BlowfishApiClient {
     endpoint: "transaction" | "message",
     requestBody: object
   ): Promise<T> {
-    // TODO(kimpers): handle multichain
     const url = `${this.baseUrl}/${this.chainFamily}/v0/${this.chainNetwork}/scan/${endpoint}`;
 
     const headers = new Headers({ "Content-Type": "application/json" });

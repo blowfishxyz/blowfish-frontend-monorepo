@@ -22,6 +22,7 @@ import { logger } from "../utils/logger";
 const ResultContainer = styled.div``;
 
 const BLOWFISH_API_KEY = process.env.BLOWFISH_API_KEY as string;
+// TODO(kimpers): Set up a rate limited proxy so we don't need to embed the API key
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
 const ErrorMessage = styled.p`

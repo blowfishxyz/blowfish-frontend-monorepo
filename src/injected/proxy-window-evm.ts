@@ -1,5 +1,6 @@
-// NOTE: This logic has been borrowed and modified from RevokeCash/browser-extension
-// See https://raw.githubusercontent.com/RevokeCash/browser-extension/master/src/injected/proxy-window-ethereum.tsx
+// NOTE: This logic has been borrowed from RevokeCash/browser-extension and modified
+// See https://github.com/RevokeCash/browser-extension/blob/d49f1de92003681b9e768782f54e734a52a5d975/src/injected/proxy-window-ethereum.tsx
+// The RevokeCash/browser-extension code is MIT licensed
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
