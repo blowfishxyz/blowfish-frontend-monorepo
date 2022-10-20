@@ -70,7 +70,9 @@ const processTransactionRequest = async (
   }
 
   logger.debug(message);
-  createPopupWithFile("scan-result.html", message);
+  // TODO(kimpers): We could consider kicking off the scan before we even open the popup
+  // and send the scan results via a message to the window for a snappier user experience
+  createPopupWithFile("scan.html", message);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
@@ -90,7 +92,7 @@ const processSignTypedDataRequest = async (
   }
 
   logger.debug(message);
-  createPopupWithFile("scan-result.html", message);
+  createPopupWithFile("scan.html", message);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
@@ -110,7 +112,7 @@ const processSignMessageRequest = async (
   }
 
   logger.debug(message);
-  createPopupWithFile("scan-result.html", message);
+  createPopupWithFile("scan.html", message);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
