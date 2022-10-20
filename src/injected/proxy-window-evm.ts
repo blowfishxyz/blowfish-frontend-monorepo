@@ -11,6 +11,7 @@ import {
   createSignTypedDataRequestMessage,
   createSignMessageRequestMessage,
 } from "../utils/messages";
+import { logger } from "../utils/logger";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,6 +22,10 @@ const stream = new WindowPostMessageStream({
   name: Identifier.Inpage,
   target: Identifier.ContentScript,
 });
+
+let requestProxy: undefined | typeof Proxy;
+let sendProxy: undefined | typeof Proxy;
+let sendAsyncProxy: undefined | typeof Proxy;
 
 const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
@@ -37,10 +42,24 @@ const getChainIdAndUserAccount = async (): Promise<{
   return { chainId, userAccount };
 };
 
+const overrideIfNotProxied = () => {
+  if (
+    window.ethereum &&
+    (window.ethereum.request !== requestProxy ||
+      window.ethereum.send !== sendProxy ||
+      window.ethereum.sendAsync !== sendAsyncProxy)
+  ) {
+    logger.debug("Reproxying window.ethereum");
+    overrideWindowEthereum();
+  }
+};
+
 const overrideWindowEthereum = () => {
   if (!window.ethereum) return;
 
   clearInterval(overrideInterval);
+  // Recheck that we are still proxying window.ethereum every 10 seconds
+  setInterval(overrideIfNotProxied, 10_000);
 
   const sendHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,7 +107,7 @@ const overrideWindowEthereum = () => {
           )
           .then((response) => {
             getChainIdAndUserAccount();
-            console.log(response);
+            logger.debug(response);
             const { isOk } = response.data;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
@@ -122,7 +141,7 @@ const overrideWindowEthereum = () => {
             )
           )
           .then((response) => {
-            console.log(response);
+            logger.debug(response);
             const isOk = response.data.isOk;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
@@ -158,7 +177,7 @@ const overrideWindowEthereum = () => {
             )
           )
           .then((response) => {
-            console.log(response);
+            logger.debug(response);
             const { isOk } = response.data;
             if (isOk) {
               return Reflect.apply(target, thisArg, argumentsList);
@@ -195,7 +214,7 @@ const overrideWindowEthereum = () => {
           createTransactionRequestMessage(transaction, chainId, userAccount)
         );
 
-        console.log(response);
+        logger.debug(response);
         const { isOk } = response.data;
 
         if (!isOk) {
@@ -218,7 +237,7 @@ const overrideWindowEthereum = () => {
           stream,
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
         );
-        console.log(response);
+        logger.debug(response);
         const { isOk } = response.data;
 
         if (!isOk) {
@@ -244,7 +263,7 @@ const overrideWindowEthereum = () => {
           createSignMessageRequestMessage({ message }, chainId, userAccount)
         );
 
-        console.log(response);
+        logger.debug(response);
         const { isOk } = response.data;
 
         if (!isOk) {
@@ -258,9 +277,9 @@ const overrideWindowEthereum = () => {
     },
   };
 
-  const requestProxy = new Proxy(window.ethereum.request, requestHandler);
-  const sendProxy = new Proxy(window.ethereum.send, sendHandler);
-  const sendAsyncProxy = new Proxy(window.ethereum.sendAsync, sendAsyncHandler);
+  requestProxy = new Proxy(window.ethereum.request, requestHandler);
+  sendProxy = new Proxy(window.ethereum.send, sendHandler);
+  sendAsyncProxy = new Proxy(window.ethereum.sendAsync, sendAsyncHandler);
 
   window.ethereum.request = requestProxy;
   window.ethereum.send = sendProxy;

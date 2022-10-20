@@ -17,6 +17,7 @@ import { BlowfishApiClient, ScanResponse } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 import { respondWithUserDecision } from "./page-utils";
+import { logger } from "../utils/logger";
 
 const ResultContainer = styled.div``;
 
@@ -52,7 +53,7 @@ const ScanResult: React.FC = () => {
     // NOTE: This should never happen since we verify
     // that the chain is supported before we create this page
     if (!chainIdToSupportedChainMapping[chainId]) {
-      console.error(`Blowfish unsupported chainId ${chainId}`);
+      logger.error(`Blowfish unsupported chainId ${chainId}`);
       return;
     }
 
@@ -104,14 +105,14 @@ const ScanResult: React.FC = () => {
 
     scanRequest().catch((err) => {
       setScanError(err);
-      console.error(err);
+      logger.error(err);
     });
   }, [client, message, request]);
 
   const handleUserDecision = useCallback(
     async (shouldProceed: boolean) => {
       if (!message) {
-        console.error("Error: Cannot proceed, no message to respond to ");
+        logger.error("Error: Cannot proceed, no message to respond to ");
         return;
       }
       await respondWithUserDecision(message.id, shouldProceed);
@@ -121,8 +122,8 @@ const ScanResult: React.FC = () => {
     [message]
   );
 
-  console.log(message);
-  console.log(request);
+  logger.debug(message);
+  logger.debug(request);
   return (
     <ResultContainer>
       {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}

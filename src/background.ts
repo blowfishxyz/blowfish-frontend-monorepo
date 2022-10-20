@@ -12,13 +12,14 @@ import {
 import { createPopupWithFile } from "./utils/window";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { postResponseToPort } from "./utils/messages";
+import { logger } from "./utils/logger";
 
-console.log("BACKGROUND RUNNING");
+logger.debug("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
 
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   remotePort.onMessage.addListener((message: Message<UntypedMessageData>) => {
-    console.log(message);
+    logger.debug(message);
 
     if (message.type === RequestType.Transaction) {
       return processTransactionRequest(
@@ -48,7 +49,7 @@ Browser.runtime.onMessage.addListener(
       responseRemotePort.postMessage(message);
       messageToPortMapping.delete(message.id);
     } else {
-      console.error(
+      logger.error(
         `Missing remote port for message ${message.id}: ${message.type}`
       );
     }
@@ -62,13 +63,13 @@ const processTransactionRequest = async (
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   if (!chainIdToSupportedChainMapping[chainId]) {
-    console.log(`Unsupported chain id ${chainId}`);
+    logger.info(`Unsupported chain id ${chainId}`);
     const responseData: UserDecisionData = { isOk: true };
     postResponseToPort(remotePort, message, responseData);
     return;
   }
 
-  console.log(message);
+  logger.debug(message);
   createPopupWithFile("scan-result.html", message);
 
   // Store port to id mapping so we can respond to the message later on
@@ -82,13 +83,13 @@ const processSignTypedDataRequest = async (
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   if (!chainIdToSupportedChainMapping[chainId]) {
-    console.log(`Unsupported chain id ${chainId}`);
+    logger.info(`Unsupported chain id ${chainId}`);
     const responseData: UserDecisionData = { isOk: true };
     postResponseToPort(remotePort, message, responseData);
     return;
   }
 
-  console.log(message);
+  logger.debug(message);
   createPopupWithFile("scan-result.html", message);
 
   // Store port to id mapping so we can respond to the message later on
@@ -102,13 +103,13 @@ const processSignMessageRequest = async (
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   if (!chainIdToSupportedChainMapping[chainId]) {
-    console.log(`Unsupported chain id ${chainId}`);
+    logger.info(`Unsupported chain id ${chainId}`);
     const responseData: UserDecisionData = { isOk: true };
     postResponseToPort(remotePort, message, responseData);
     return;
   }
 
-  console.log(message);
+  logger.debug(message);
   createPopupWithFile("scan-result.html", message);
 
   // Store port to id mapping so we can respond to the message later on
