@@ -21,6 +21,7 @@ const ResultContainer = styled.div`
 
 const CenterContainer = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex: 1;
@@ -31,6 +32,15 @@ const Popup: React.FC = () => {
       <H1>🐡 Blowfish 🐡</H1>
       <CenterContainer>
         <P>Blowfish protection enabled</P>
+        <a
+          href="https://www.notion.so/blowfish-xyz/Dogfood-feedback-and-ideas-cdb412d4e98a4dfc84a60324ed9095f6"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <P style={{ fontSize: "14px" }}>
+            Report bugs & ideas to the dogfood document 🐶
+          </P>
+        </a>
       </CenterContainer>
     </ResultContainer>
   );
