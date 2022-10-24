@@ -12,7 +12,10 @@
     "lint:prettier:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint": "yarn lint:eslint && yarn lint:prettier:check",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "types:clean": "(cd ./src/utils/BlowfishApiClient/types && find . ! -name 'index.ts' -type f -exec rm -f {} + )",
+    "types:copy": "cp ../blowfish-monorepo/components/types/bindings/* ./src/utils/BlowfishApiClient/types",
+    "types:update": "yarn types:clean && yarn types:copy && yarn lint:prettier && yarn typecheck"
   },
   "author": "Kim Persson",
   "license": "MIT",

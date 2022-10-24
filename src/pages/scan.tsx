@@ -13,7 +13,11 @@ import {
   isSignMessageRequest,
   UntypedMessageData,
 } from "../types";
-import { BlowfishApiClient, ScanResponse } from "../utils/BlowfishApiClient";
+import {
+  BlowfishApiClient,
+  EvmTransactionScanResult,
+  EvmMessageScanResult,
+} from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 import { respondWithUserDecision } from "./page-utils";
@@ -38,9 +42,9 @@ const ScanResult: React.FC = () => {
     undefined
   );
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
-  const [scanResults, setScanResults] = useState<ScanResponse | undefined>(
-    undefined
-  );
+  const [scanResults, setScanResults] = useState<
+    EvmMessageScanResult | EvmTransactionScanResult | undefined
+  >(undefined);
   const [scanError, setScanError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {

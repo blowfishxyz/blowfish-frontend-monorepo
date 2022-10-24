@@ -1,3 +1,7 @@
+import { EvmTransactionObject as TransactionPayload } from "./utils/BlowfishApiClient";
+
+export { TransactionPayload };
+
 export enum Identifier {
   MetamaskInpage = "METAMASK_INPAGE",
   MetamaskContentScript = "METAMASK_CONTENT_SCRIPT",
@@ -51,13 +55,7 @@ interface BaseRequest {
   chainId: string;
   userAccount: string;
 }
-export interface TransactionPayload {
-  from: string;
-  to: string;
-  data: string;
-  gas?: string;
-  value?: string;
-}
+
 export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;

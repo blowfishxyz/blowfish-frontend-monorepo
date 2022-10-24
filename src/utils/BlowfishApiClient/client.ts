@@ -1,21 +1,14 @@
 const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
+import {
+  EvmTransactionScanResult,
+  EvmTransactionObject,
+  EvmTransactionRequest,
+  RequestMetadata,
+  EvmMessageScanResult,
+} from "./types/index";
 
-export interface TransactionObject {
-  from?: string;
-  to?: string;
-  value?: string;
-  data?: string;
-}
-
-export interface Metadata {
-  origin: string;
-}
-
-interface TransactionRequestBody {
-  txObject: TransactionObject;
-  userAccount: string;
-  metadata: Metadata;
-}
+export type ChainFamily = "ethereum" | "polygon";
+export type ChainNetwork = "mainnet" | "goerli";
 
 interface SignTypedDataRequest {
   kind: "SIGN_TYPED_DATA";
@@ -27,38 +20,13 @@ interface SignMessageRequest {
   rawMessage: string;
 }
 
+// TODO(kimpers): Figure out how to properly generate this from
+// the Rust structs
 export interface MessageRequestBody {
   message: SignTypedDataRequest | SignMessageRequest;
-  metadata: Metadata;
+  metadata: RequestMetadata;
   userAccount: string;
 }
-
-export enum WarningSeverity {
-  Critical = "CRITICAL",
-  Warning = "WARNING",
-}
-
-export interface Warning {
-  severity: WarningSeverity;
-  message: string;
-}
-
-export interface ScanResponse {
-  action: string;
-  warnings: Warning[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  simulationResults: any;
-}
-
-export enum Action {
-  None = "NONE",
-  Warn = "WARN",
-  Block = "BLOCK",
-  HardBlock = "HARD_BLOCK",
-}
-
-export type ChainFamily = "ethereum" | "polygon";
-export type ChainNetwork = "mainnet" | "goerli";
 
 export class BlowfishApiClient {
   private readonly chainFamily: ChainFamily;
@@ -79,17 +47,17 @@ export class BlowfishApiClient {
   }
 
   public async scanTransaction(
-    txObject: TransactionObject,
+    txObject: EvmTransactionObject,
     userAccount: string,
-    metadata: Metadata
-  ): Promise<ScanResponse> {
-    const requestBody: TransactionRequestBody = {
+    metadata: RequestMetadata
+  ): Promise<EvmTransactionScanResult> {
+    const requestBody: EvmTransactionRequest = {
       txObject,
       userAccount,
       metadata,
     };
 
-    return this._fetchAndValidateStatus<ScanResponse>(
+    return this._fetchAndValidateStatus<EvmTransactionScanResult>(
       "transaction",
       requestBody
     );
@@ -98,8 +66,8 @@ export class BlowfishApiClient {
   public async scanSignTypedData(
     typedData: object,
     userAccount: string,
-    metadata: Metadata
-  ): Promise<ScanResponse> {
+    metadata: RequestMetadata
+  ): Promise<EvmMessageScanResult> {
     const requestBody: MessageRequestBody = {
       message: {
         kind: "SIGN_TYPED_DATA",
@@ -109,14 +77,17 @@ export class BlowfishApiClient {
       metadata,
     };
 
-    return this._fetchAndValidateStatus<ScanResponse>("message", requestBody);
+    return this._fetchAndValidateStatus<EvmMessageScanResult>(
+      "message",
+      requestBody
+    );
   }
 
   public async scanSignMessage(
     rawMessage: string,
     userAccount: string,
-    metadata: Metadata
-  ): Promise<ScanResponse> {
+    metadata: RequestMetadata
+  ): Promise<EvmMessageScanResult> {
     const requestBody: MessageRequestBody = {
       message: {
         kind: "SIGN_MESSAGE",
@@ -126,7 +97,10 @@ export class BlowfishApiClient {
       metadata,
     };
 
-    return this._fetchAndValidateStatus<ScanResponse>("message", requestBody);
+    return this._fetchAndValidateStatus<EvmMessageScanResult>(
+      "message",
+      requestBody
+    );
   }
 
   async _fetchAndValidateStatus<T>(
