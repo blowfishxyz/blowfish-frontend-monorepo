@@ -17,7 +17,20 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/vendor.js", "js/content_script.js"]
+      "js": [
+        "js/vendor.js",
+        "js/content-scripts/inject-scripts.js",
+        "js/content-scripts/window-messages.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["js/injected/proxy-window-evm.js", "js/vendor.js"]
     }
   ],
 
