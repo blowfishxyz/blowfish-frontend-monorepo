@@ -13,7 +13,6 @@ export const blowfishProxyHandler = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Missing BLOWFISH_API_BASE_URL" });
     return;
   }
-  debugger;
 
   const { body, query, params } = req;
   const requestedPath = params[0];

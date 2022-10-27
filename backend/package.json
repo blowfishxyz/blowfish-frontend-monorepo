@@ -8,7 +8,10 @@
   "scripts": {
     "dev": "nodemon --inspect src/app.ts",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
-    "lint:prettier:check": "prettier --check \"src/**/*.{ts,tsx}\""
+    "lint:prettier:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint": "yarn lint:eslint && yarn lint:prettier:check",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.3",
@@ -17,6 +20,9 @@
     "@types/express": "^4.17.14",
     "@types/node-fetch": "2",
     "@types/qs": "^6.9.7",
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint": "^8.26.0",
     "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "ts-node": "^10.9.1",
