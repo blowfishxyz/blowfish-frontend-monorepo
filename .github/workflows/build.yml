@@ -20,14 +20,19 @@ jobs:
       with:
         node-version: '16.x'
     - run: yarn install
+      working-directory: ./extension
     - run: yarn typecheck
+      working-directory: ./extension
     - run: yarn lint
+      working-directory: ./extension
     - run: yarn test
+      working-directory: ./extension
     - run: yarn run build --json webpack-stats.json
+      working-directory: ./extension
     # Send webpack stats and build information to RelativeCI
     - name: Send webpack stats to RelativeCI
       uses: relative-ci/agent-action@v2
       with:
-        webpackStatsFile: ./webpack-stats.json
+        webpackStatsFile: ./extension/webpack-stats.json
         key: ${{ secrets.RELATIVE_CI_KEY }}
         token: ${{ secrets.GITHUB_TOKEN }}
