@@ -32,8 +32,8 @@ export const blowfishProxyHandler = async (req: Request, res: Response) => {
       body: JSON.stringify(body),
     });
 
-    const response = await proxyResponse.json();
-    res.status(proxyResponse.status).json(response);
+    const responseBody = await proxyResponse.json();
+    res.status(proxyResponse.status).json(responseBody);
   } catch (err) {
     req.log.error({ err }, "Error proxying request to Blowfish API");
     res.status(500).json({ error: "Internal Server Error" });
