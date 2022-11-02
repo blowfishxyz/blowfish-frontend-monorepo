@@ -98,8 +98,8 @@ const ScanResult: React.FC = () => {
 
         setScanResults(_scanResults);
       } else if (isSignMessageRequest(request)) {
-        const _scanResults = await client.scanSignTypedData(
-          request.payload,
+        const _scanResults = await client.scanSignMessage(
+          request.payload.message,
           request.userAccount,
           { origin: message.origin! }
         );
