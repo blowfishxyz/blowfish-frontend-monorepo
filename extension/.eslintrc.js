@@ -8,6 +8,7 @@ module.exports = {
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
+    "plugin:storybook/recommended",
   ],
   overrides: [],
   parser: "@typescript-eslint/parser",
@@ -20,6 +21,9 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": 0,
   },
   settings: {
-    react: { version: "detect" },
+    react: {
+      version: "detect",
+    },
   },
 };
+
