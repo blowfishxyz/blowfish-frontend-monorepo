@@ -26,6 +26,7 @@
     "url": "https://github.com/blowfishxyz/extension.git"
   },
   "dependencies": {
+    "@ethersproject/address": "^5.7.0",
     "@metamask/post-message-stream": "^6.0.0",
     "@textea/json-viewer": "^2.10.0",
     "eth-rpc-errors": "^4.0.3",
