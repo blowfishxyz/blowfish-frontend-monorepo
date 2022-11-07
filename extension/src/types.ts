@@ -1,6 +1,9 @@
-import { EvmTransactionObject as TransactionPayload } from "./utils/BlowfishApiClient";
-
-export { TransactionPayload };
+export interface TransactionPayload {
+  to: string;
+  from: string;
+  value: string | null;
+  data: string | null;
+}
 
 export type InformationContext = "INFO" | "WARNING" | "CRITICAL";
 

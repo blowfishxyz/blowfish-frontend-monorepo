@@ -8,6 +8,7 @@ interface ChainLogoProps {
 const EthereumLogo: React.FC<ChainLogoProps> = ({ className, style }) => (
   <svg
     className={className}
+    style={style}
     xmlns="http://www.w3.org/2000/svg"
     width="256px"
     height="417px"

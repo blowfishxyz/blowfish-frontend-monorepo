@@ -5,6 +5,7 @@ import { BlowfishLogo } from "./logos/BlowfishLogo";
 import { WalletLogo } from "./logos/WalletLogo";
 import { EthereumLogo } from "./logos/ChainLogos";
 import { shortenAddress } from "../utils/hex";
+import { TextSmall } from "./Typography";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { InformationContext } from "../types";
 
@@ -39,21 +40,10 @@ const StyledEthereumLogo = styled(EthereumLogo)`
   }
 `;
 
-const HeaderUserAddress = styled.span`
-  font-family: "GT Planar";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 16px;
-  text-align: right;
-  color: rgba(0, 0, 0, 0.5);
-  margin-left: 9px;
-`;
-
 const HeaderLeft = styled.div`
   position: absolute;
   top: 16px;
-  width: 100%;
+  left: 16px;
   display: flex;
   align-items: center;
 `;
@@ -91,8 +81,8 @@ const Wrapper = styled.div<{ informationContext?: InformationContext }>`
   background-color: ${({ informationContext, theme }) =>
     theme.contextBackgroundColors[informationContext ?? "INFO"]};
   padding: 48px 12px 75px 12px;
-  height: min-content;
-  width: min-content;
+  height: 100%;
+  width: 100%;
 `;
 
 export const PopupContainer: React.FC<PopupContainerProps> = ({
@@ -113,7 +103,9 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       {userAddress && (
         <HeaderLeft>
           <StyledWalletLogo />
-          <HeaderUserAddress>{shortenAddress(userAddress)}</HeaderUserAddress>
+          <TextSmall style={{ marginLeft: "9px" }} secondary>
+            {shortenAddress(userAddress)}
+          </TextSmall>
         </HeaderLeft>
       )}
       {chainFamily && chainNetwork && (
