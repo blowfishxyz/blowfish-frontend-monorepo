@@ -2,6 +2,8 @@ import { EvmTransactionObject as TransactionPayload } from "./utils/BlowfishApiC
 
 export { TransactionPayload };
 
+export type InformationContext = "INFO" | "WARNING" | "CRITICAL";
+
 export enum Identifier {
   MetamaskInpage = "METAMASK_INPAGE",
   MetamaskContentScript = "METAMASK_CONTENT_SCRIPT",

@@ -2,6 +2,8 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 
+import { Providers } from "../components/Providers";
+
 const H1 = styled.h1`
   text-align: center;
 `;
@@ -49,4 +51,8 @@ const Popup: React.FC = () => {
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
-root.render(<Popup />);
+root.render(
+  <Providers>
+    <Popup />
+  </Providers>
+);

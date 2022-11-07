@@ -1,6 +1,7 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
+import { Providers } from "../components/Providers";
 import { PopupContainer } from "../components/PopupContainer";
 
 export default {
@@ -14,15 +15,17 @@ export default {
 } as ComponentMeta<typeof PopupContainer>;
 
 export const Container: ComponentStory<typeof PopupContainer> = (props) => (
-  <PopupContainer {...props}>
-    <div
-      style={{
-        backgroundColor: "white",
-        width: "368px",
-        height: "400px",
-      }}
-    >
-      <p style={{ textAlign: "center" }}>Hello World</p>
-    </div>
-  </PopupContainer>
+  <Providers>
+    <PopupContainer {...props}>
+      <div
+        style={{
+          backgroundColor: "white",
+          width: "368px",
+          height: "400px",
+        }}
+      >
+        <p style={{ textAlign: "center" }}>Hello World</p>
+      </div>
+    </PopupContainer>
+  </Providers>
 );

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
+import { Providers } from "../components/Providers";
 import { JsonViewer } from "@textea/json-viewer";
 import qs from "qs";
 
@@ -165,4 +166,8 @@ const ScanResult: React.FC = () => {
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
-root.render(<ScanResult />);
+root.render(
+  <Providers>
+    <ScanResult />
+  </Providers>
+);

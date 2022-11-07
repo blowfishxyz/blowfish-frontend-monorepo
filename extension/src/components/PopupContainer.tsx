@@ -6,6 +6,7 @@ import { WalletLogo } from "./logos/WalletLogo";
 import { EthereumLogo } from "./logos/ChainLogos";
 import { shortenAddress } from "../utils/hex";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
+import type { InformationContext } from "../types";
 
 const StyledBlowfishLogo = styled(BlowfishLogo)`
   width: 105px;
@@ -76,8 +77,6 @@ const HeaderRight = styled.div`
   }
 `;
 
-type InformationContext = "INFO" | "WARNING" | "CRITICAL";
-
 interface PopupContainerProps extends React.PropsWithChildren {
   style?: React.CSSProperties;
   className?: string;
@@ -89,16 +88,13 @@ interface PopupContainerProps extends React.PropsWithChildren {
 const Wrapper = styled.div<{ informationContext?: InformationContext }>`
   display: flex;
   position: relative;
-  background-color: ${({ informationContext }) =>
-    informationContext === "CRITICAL"
-      ? "#FFC1AD"
-      : informationContext === "WARNING"
-      ? " #FFD567"
-      : "#EFF2F0"};
+  background-color: ${({ informationContext, theme }) =>
+    theme.contextBackgroundColors[informationContext ?? "INFO"]};
   padding: 48px 12px 75px 12px;
   height: min-content;
   width: min-content;
 `;
+
 export const PopupContainer: React.FC<PopupContainerProps> = ({
   children,
   style,
