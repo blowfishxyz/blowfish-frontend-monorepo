@@ -15,6 +15,7 @@ const PrimaryButton = styled(BaseButton)`
     0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
     0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
   border-radius: 12px;
+  cursor: pointer;
 
   /* Button text */
   font-family: "GT Planar";
@@ -51,6 +52,7 @@ const SecondaryButton = styled(BaseButton)`
   align-items: center;
   padding: 22px 0px;
   gap: 8px;
+  cursor: pointer;
 
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(0, 0, 0, 0.3);
@@ -67,4 +69,11 @@ const SecondaryButton = styled(BaseButton)`
   color: #010101;
 `;
 
-export { PrimaryButton, SecondaryButton };
+const TextButton = styled(BaseButton)`
+  cursor: pointer;
+  /* Increase clickable area slightly for better UX */
+  padding: 3px;
+  margin: -3px;
+`;
+
+export { PrimaryButton, SecondaryButton, TextButton };

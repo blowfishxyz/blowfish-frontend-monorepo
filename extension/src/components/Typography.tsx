@@ -7,7 +7,7 @@ interface TypographyProps {
   secondary?: boolean;
 }
 
-export const H1 = styled.h1<TypographyProps>`
+export const TextLarge = styled.span<TypographyProps>`
   font-family: "GT Planar";
   font-style: normal;
   font-weight: 500;

@@ -25,6 +25,12 @@ export const Container: ComponentStory<typeof PopupContainer> = (props) => (
           transaction={exampleTransaction}
           scanResults={exampleScanResults}
           dappUrl={exampleDappUrl}
+          onContinue={() => {
+            console.log("CONTINUE");
+          }}
+          onCancel={() => {
+            console.log("CANCEL");
+          }}
         />
       </PopupContainer>
     </Providers>
