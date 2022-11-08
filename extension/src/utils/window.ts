@@ -11,7 +11,8 @@ export interface PopupParams {
 }
 export const createPopupWithFile = async (
   filename: string,
-  params: PopupParams
+  params: PopupParams,
+  { width, height }: { width: number; height: number }
 ) => {
   const [window] = await Promise.all([
     Browser.windows.getCurrent(),
@@ -19,7 +20,12 @@ export const createPopupWithFile = async (
   ]);
   const queryString = qs.stringify(params);
 
-  const positions = getPopupPositions(window, 0);
+  const windowPanelHeight = 28;
+  const positions = getPopupPositions(
+    window,
+    width,
+    height + windowPanelHeight
+  );
 
   const popupWindow = await Browser.windows.create({
     url: `${filename}?${queryString}`,
@@ -34,12 +40,9 @@ export const createPopupWithFile = async (
 
 const getPopupPositions = (
   window: Browser.Windows.Window,
-  contentLines: number
+  width: number,
+  height: number
 ) => {
-  // TODO(kimpers): actual dimensions
-  const width = 640;
-  const height = 520 + contentLines * 24;
-
   const left = window.left! + Math.round((window.width! - width) * 0.5);
   const top = window.top! + Math.round((window.height! - height) * 0.2);
 

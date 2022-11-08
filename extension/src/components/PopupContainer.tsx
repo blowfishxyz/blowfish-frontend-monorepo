@@ -81,8 +81,9 @@ const Wrapper = styled.div<{ informationContext?: InformationContext }>`
   background-color: ${({ informationContext, theme }) =>
     theme.contextBackgroundColors[informationContext ?? "INFO"]};
   padding: 48px 12px 75px 12px;
-  height: 100%;
+  height: 100vh;
   width: 100%;
+  box-sizing: border-box;
 `;
 
 export const PopupContainer: React.FC<PopupContainerProps> = ({

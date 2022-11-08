@@ -70,8 +70,8 @@ interface ScanResultsProps {
   transaction: TransactionPayload;
   scanResults: EvmTransactionScanResult;
   dappUrl: string;
-  onContinue: () => void;
-  onCancel: () => void;
+  onContinue: () => Promise<void>;
+  onCancel: () => Promise<void>;
 }
 export const ScanResults: React.FC<ScanResultsProps> = ({
   transaction,

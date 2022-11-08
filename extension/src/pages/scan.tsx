@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 import { Providers } from "../components/Providers";
-import { JsonViewer } from "@textea/json-viewer";
 import qs from "qs";
 
 import {
@@ -13,6 +12,7 @@ import {
   isSignTypedDataRequest,
   isSignMessageRequest,
   UntypedMessageData,
+  TransactionPayload,
 } from "../types";
 import {
   BlowfishApiClient,
@@ -20,16 +20,11 @@ import {
   EvmMessageScanResult,
 } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
-import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
+import { PopupContainer } from "../components/PopupContainer";
+import { ScanResults } from "../components/ScanResults";
 
-const ResultContainer = styled.div`
-  background: #eff2f0;
-`;
-
-const BLOWFISH_API_KEY = process.env.BLOWFISH_API_KEY as string;
-// TODO(kimpers): Set up a rate limited proxy so we don't need to embed the API key
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
 const ErrorMessage = styled.p`
@@ -71,7 +66,7 @@ const ScanResult: React.FC = () => {
     const _client = new BlowfishApiClient(
       chainFamily,
       chainNetwork,
-      BLOWFISH_API_KEY,
+      undefined,
       BLOWFISH_API_BASE_URL
     );
     setMessage(_message);
@@ -133,34 +128,22 @@ const ScanResult: React.FC = () => {
   logger.debug(message);
   logger.debug(request);
   return (
-    <ResultContainer>
+    <PopupContainer>
       {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
       {scanError && (
         <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>
       )}
-      {scanResults && (
-        <div>
-          <h1>Scan Result</h1>
-          <JsonViewer
-            value={scanResults}
-            collapseStringsAfterLength={false}
-            rootName={false}
-            indentWidth={2}
-            defaultInspectDepth={4}
-          />
-        </div>
+      {scanResults && request && message && (
+        // TODO(kimpers): support for messages and other interactions
+        <ScanResults
+          transaction={request.payload as TransactionPayload}
+          scanResults={scanResults as EvmTransactionScanResult}
+          dappUrl={message.origin!}
+          onContinue={() => handleUserDecision(true)}
+          onCancel={() => handleUserDecision(false)}
+        />
       )}
-      {(scanResults || scanError) && (
-        <>
-          <PrimaryButton onClick={() => handleUserDecision(true)}>
-            Proceed
-          </PrimaryButton>
-          <SecondaryButton onClick={() => handleUserDecision(false)}>
-            Cancel
-          </SecondaryButton>
-        </>
-      )}
-    </ResultContainer>
+    </PopupContainer>
   );
 };
 

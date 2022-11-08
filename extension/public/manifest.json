@@ -6,7 +6,7 @@
   "version": "0.0.1",
 
   "options_ui": {
-    "page": "options.html"
+    "page": "popup.html"
   },
 
   "action": {
