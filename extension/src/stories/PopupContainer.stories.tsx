@@ -5,6 +5,8 @@ import { Providers } from "../components/Providers";
 import { PopupContainer } from "../components/PopupContainer";
 import { ScanResults } from "../components/ScanResults";
 
+import { EvmTransactionScanResult } from "../utils/BlowfishApiClient";
+
 export default {
   title: "PopupContainer",
   component: PopupContainer,
@@ -15,6 +17,20 @@ export default {
   },
 } as ComponentMeta<typeof PopupContainer>;
 
+export const Container: ComponentStory<typeof PopupContainer> = (props) => (
+  <div style={{ width: "368px", height: "625px" }}>
+    <Providers>
+      <PopupContainer {...props}>
+        <ScanResults
+          transaction={exampleTransaction}
+          scanResults={exampleScanResults}
+          dappUrl={exampleDappUrl}
+        />
+      </PopupContainer>
+    </Providers>
+  </div>
+);
+
 // TODO(kimpers): move into story
 const exampleTransaction = {
   from: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -23,12 +39,56 @@ const exampleTransaction = {
   value: null,
 };
 
-export const Container: ComponentStory<typeof PopupContainer> = (props) => (
-  <div style={{ width: "368px", height: "625px" }}>
-    <Providers>
-      <PopupContainer {...props}>
-        <ScanResults transaction={exampleTransaction} />
-      </PopupContainer>
-    </Providers>
-  </div>
-);
+const exampleScanResults: EvmTransactionScanResult = {
+  action: "NONE",
+  simulationResults: {
+    error: null,
+    expectedStateChanges: [
+      {
+        humanReadableDiff: "Receive PudgyPenguins #7238",
+        rawInfo: {
+          data: {
+            amount: {
+              after: "1",
+              before: "0",
+            },
+            contract: {
+              address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8",
+              kind: "ACCOUNT",
+            },
+            metadata: {
+              rawImageUrl:
+                "https://ipfs.io/ipfs/QmNf1UsmdGaMbpatQ6toXSkzDpizaGmC9zfunCyoz1enD5/penguin/7238.png",
+            },
+            name: "PudgyPenguins",
+            symbol: "PPG",
+            tokenId: "7238",
+          },
+          kind: "ERC721_TRANSFER",
+        },
+      },
+      {
+        humanReadableDiff: "Send 3.181 ETH",
+        rawInfo: {
+          data: {
+            amount: {
+              after: "998426264937289938488",
+              before: "1001607264937289938488",
+            },
+            contract: {
+              address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              kind: "ACCOUNT",
+            },
+            decimals: 18,
+            name: "Ether",
+            symbol: "ETH",
+          },
+          kind: "NATIVE_ASSET_TRANSFER",
+        },
+      },
+    ],
+  },
+  warnings: [],
+};
+
+const exampleDappUrl = "https://app.uniswap.org/#/swap";

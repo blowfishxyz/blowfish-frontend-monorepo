@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 
-import { TransactionPayload } from "../types";
 import { H1, Text, TextSmall } from "./Typography";
 import { shortenAddress } from "../utils/hex";
+
+import type { EvmTransactionScanResult } from "../utils/BlowfishApiClient";
+import type { TransactionPayload } from "../types";
 
 const Wrapper = styled.div`
   min-height: 625px;
@@ -39,10 +41,25 @@ const Section = styled.div<{ border?: boolean }>`
   justify-content: center;
 `;
 
+const StateChangeText = styled(Text)`
+  color: #00bf36;
+
+  & + & {
+    margin-top: 11px;
+  }
+`;
+
 interface ScanResultsProps {
   transaction: TransactionPayload;
+  scanResults: EvmTransactionScanResult;
+  dappUrl: string;
 }
-export const ScanResults: React.FC<ScanResultsProps> = ({ transaction }) => {
+export const ScanResults: React.FC<ScanResultsProps> = ({
+  transaction,
+  scanResults,
+  dappUrl,
+}) => {
+  const host = useMemo(() => new URL(dappUrl).host, [dappUrl]);
   return (
     <Wrapper>
       <Header>
@@ -56,10 +73,24 @@ export const ScanResults: React.FC<ScanResultsProps> = ({ transaction }) => {
           </Text>
         </Section>
         <Section border>
-          <TextSmall secondary>Simulation Results</TextSmall>
+          <TextSmall secondary style={{ marginBottom: "8px" }}>
+            Simulation Results
+          </TextSmall>
+          {scanResults.simulationResults &&
+            scanResults.simulationResults.expectedStateChanges.map(
+              (result, i) => (
+                <StateChangeText
+                  key={`state-change-${i}`}
+                  style={{ color: "#00BF36" }}
+                >
+                  {result.humanReadableDiff}
+                </StateChangeText>
+              )
+            )}
         </Section>
         <Section>
           <TextSmall secondary>Request by</TextSmall>
+          <Text style={{ marginTop: "8px" }}>{host}</Text>
         </Section>
       </SimulationResults>
     </Wrapper>
