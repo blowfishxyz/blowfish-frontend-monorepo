@@ -1,28 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-import { BlowfishLogo } from "./logos/BlowfishLogo";
 import { WalletLogo } from "./logos/WalletLogo";
 import { EthereumLogo } from "./logos/ChainLogos";
 import { shortenAddress } from "../utils/hex";
 import { TextSmall } from "./Typography";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { InformationContext } from "../types";
-
-const StyledBlowfishLogo = styled(BlowfishLogo)`
-  width: 105px;
-  height: auto;
-  position: absolute;
-  margin-left: auto;
-  margin-right: auto;
-  left: 0;
-  right: 0;
-  bottom: 24px;
-  text-align: center;
-  & > path {
-    fill: rgba(0, 0, 0, 0.5);
-  }
-`;
 
 const StyledWalletLogo = styled(WalletLogo)`
   width: 16px;
@@ -80,7 +64,7 @@ const Wrapper = styled.div<{ informationContext?: InformationContext }>`
   position: relative;
   background-color: ${({ informationContext, theme }) =>
     theme.contextBackgroundColors[informationContext ?? "INFO"]};
-  padding: 48px 12px 75px 12px;
+  padding: 48px 12px 12px 12px;
   height: 100vh;
   width: 100%;
   box-sizing: border-box;
@@ -118,7 +102,6 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
         </HeaderRight>
       )}
       {children}
-      <StyledBlowfishLogo />
     </Wrapper>
   );
 };

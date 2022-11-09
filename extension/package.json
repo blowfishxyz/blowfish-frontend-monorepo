@@ -17,13 +17,16 @@
     "types:copy": "cp ../blowfish-monorepo/components/types/bindings/* ./src/utils/BlowfishApiClient/types",
     "types:update": "yarn types:clean && yarn types:copy && yarn lint:prettier && yarn typecheck",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "chromatic": "npx chromatic --project-token=3a6769686749"
   },
-  "author": "Kim Persson",
+  "author": {
+    "name": "Kim Persson"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/blowfishxyz/extension.git"
+    "url": "git+https://github.com/blowfishxyz/extension.git"
   },
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
@@ -61,6 +64,7 @@
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "babel-loader": "^8.2.5",
+    "chromatic": "^6.11.4",
     "copy-webpack-plugin": "^11.0.0",
     "dotenv-webpack": "^8.0.1",
     "eslint": "^8.0.1",
@@ -77,5 +81,11 @@
     "webpack": "^5.61.0",
     "webpack-cli": "^4.0.0",
     "webpack-merge": "^5.0.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/blowfishxyz/extension/issues"
+  },
+  "readme": "https://github.com/blowfishxyz/extension#readme",
+  "homepage": "https://github.com/blowfishxyz/extension#readme",
+  "_id": "blowfish-extension@0.0.1"
 }
