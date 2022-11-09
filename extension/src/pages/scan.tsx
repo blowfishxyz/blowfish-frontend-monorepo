@@ -18,6 +18,8 @@ import {
   BlowfishApiClient,
   EvmTransactionScanResult,
   EvmMessageScanResult,
+  ChainNetwork,
+  ChainFamily,
 } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { respondWithUserDecision } from "./page-utils";
@@ -33,6 +35,12 @@ const ErrorMessage = styled.p`
 `;
 
 const ScanResult: React.FC = () => {
+  const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
+    undefined
+  );
+  const [chainFamily, setChainFamily] = useState<ChainFamily | undefined>(
+    undefined
+  );
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
@@ -60,18 +68,20 @@ const ScanResult: React.FC = () => {
       return;
     }
 
-    const { chainFamily, chainNetwork } =
+    const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
       chainIdToSupportedChainMapping[chainId];
 
     const _client = new BlowfishApiClient(
-      chainFamily,
-      chainNetwork,
+      _chainFamily,
+      _chainNetwork,
       undefined,
       BLOWFISH_API_BASE_URL
     );
     setMessage(_message);
     setRequest(_request);
     setClient(_client);
+    setChainFamily(_chainFamily);
+    setChainNetwork(_chainNetwork);
   }, []);
 
   useEffect(() => {
@@ -127,13 +137,17 @@ const ScanResult: React.FC = () => {
 
   logger.debug(message);
   logger.debug(request);
+
+  const hasResultsLoaded =
+    scanResults && request && message && chainFamily && chainNetwork;
+  // TODO(kimpers): Pass address and chain to popup container!
   return (
     <PopupContainer>
       {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
       {scanError && (
         <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>
       )}
-      {scanResults && request && message && (
+      {hasResultsLoaded && (
         // TODO(kimpers): support for messages and other interactions
         <ScanResults
           transaction={request.payload as TransactionPayload}
@@ -141,6 +155,8 @@ const ScanResult: React.FC = () => {
           dappUrl={message.origin!}
           onContinue={() => handleUserDecision(true)}
           onCancel={() => handleUserDecision(false)}
+          chainFamily={chainFamily}
+          chainNetwork={chainNetwork}
         />
       )}
     </PopupContainer>

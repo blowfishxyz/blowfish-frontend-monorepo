@@ -3,9 +3,14 @@ import styled from "styled-components";
 
 import { TextLarge, Text, TextSmall } from "./Typography";
 import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
+import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { shortenAddress } from "../utils/hex";
 
-import type { EvmTransactionScanResult } from "../utils/BlowfishApiClient";
+import type {
+  EvmTransactionScanResult,
+  ChainFamily,
+  ChainNetwork,
+} from "../utils/BlowfishApiClient";
 import type { TransactionPayload } from "../types";
 
 const Wrapper = styled.div`
@@ -69,6 +74,8 @@ const ButtonRow = styled.div`
 interface ScanResultsProps {
   transaction: TransactionPayload;
   scanResults: EvmTransactionScanResult;
+  chainFamily: ChainFamily;
+  chainNetwork: ChainNetwork;
   dappUrl: string;
   onContinue: () => Promise<void>;
   onCancel: () => Promise<void>;
@@ -76,11 +83,13 @@ interface ScanResultsProps {
 export const ScanResults: React.FC<ScanResultsProps> = ({
   transaction,
   scanResults,
-  dappUrl,
   onContinue,
   onCancel,
+  chainNetwork,
+  chainFamily,
+  ...props
 }) => {
-  const host = useMemo(() => new URL(dappUrl).host, [dappUrl]);
+  const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
   return (
     <Wrapper>
       <Header borderBottom>
@@ -90,7 +99,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         <Section borderBottom>
           <TextSmall secondary>To Address</TextSmall>
           <Text style={{ marginTop: "8px" }}>
-            {shortenAddress(transaction.to)}
+            <BlockExplorerLink
+              address={transaction.to}
+              chainFamily={chainFamily}
+              chainNetwork={chainNetwork}
+            >
+              {shortenAddress(transaction.to)}
+            </BlockExplorerLink>
           </Text>
         </Section>
         <Section borderBottom>
@@ -99,16 +114,29 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           </TextSmall>
           {scanResults.simulationResults &&
             scanResults.simulationResults.expectedStateChanges.map(
-              (result, i) => (
-                <StateChangeText key={`state-change-${i}`}>
-                  {result.humanReadableDiff}
-                </StateChangeText>
-              )
+              (result, i) => {
+                const address = result.rawInfo.data.contract.address;
+                return (
+                  <StateChangeText key={`state-change-${i}`}>
+                    <BlockExplorerLink
+                      address={address}
+                      chainFamily={chainFamily}
+                      chainNetwork={chainNetwork}
+                    >
+                      <StateChangeText>
+                        {result.humanReadableDiff}
+                      </StateChangeText>
+                    </BlockExplorerLink>
+                  </StateChangeText>
+                );
+              }
             )}
         </Section>
         <Section>
           <TextSmall secondary>Request by</TextSmall>
-          <Text style={{ marginTop: "8px" }}>{host}</Text>
+          <LinkWithArrow href={dappUrl.origin}>
+            <Text style={{ marginTop: "8px" }}>{dappUrl.host}</Text>
+          </LinkWithArrow>
         </Section>
       </SimulationResults>
       <Section

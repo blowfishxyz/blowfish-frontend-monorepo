@@ -18,7 +18,7 @@ export default {
 } as ComponentMeta<typeof PopupContainer>;
 
 export const Container: ComponentStory<typeof PopupContainer> = (props) => (
-  <div style={{ width: "368px", height: "625px" }}>
+  <div style={{ width: "392px", height: "748px" }}>
     <Providers>
       <PopupContainer {...props}>
         <ScanResults
@@ -31,6 +31,8 @@ export const Container: ComponentStory<typeof PopupContainer> = (props) => (
           onCancel={async () => {
             console.log("CANCEL");
           }}
+          chainNetwork="mainnet"
+          chainFamily="ethereum"
         />
       </PopupContainer>
     </Providers>
