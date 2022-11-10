@@ -41,6 +41,7 @@ const ScanResult: React.FC = () => {
   const [chainFamily, setChainFamily] = useState<ChainFamily | undefined>(
     undefined
   );
+  const [userAccount, setUserAccount] = useState<string | undefined>(undefined);
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
@@ -90,6 +91,7 @@ const ScanResult: React.FC = () => {
     }
     const scanRequest = async () => {
       if (isTransactionRequest(request)) {
+        setUserAccount(request.userAccount);
         const _scanResults = await client.scanTransaction(
           request.payload,
           request.userAccount,
@@ -98,6 +100,7 @@ const ScanResult: React.FC = () => {
 
         setScanResults(_scanResults);
       } else if (isSignTypedDataRequest(request)) {
+        setUserAccount(request.userAccount);
         const _scanResults = await client.scanSignTypedData(
           request.payload,
           request.userAccount,
@@ -106,6 +109,7 @@ const ScanResult: React.FC = () => {
 
         setScanResults(_scanResults);
       } else if (isSignMessageRequest(request)) {
+        setUserAccount(request.userAccount);
         const _scanResults = await client.scanSignMessage(
           request.payload.message,
           request.userAccount,
@@ -139,10 +143,19 @@ const ScanResult: React.FC = () => {
   logger.debug(request);
 
   const hasResultsLoaded =
-    scanResults && request && message && chainFamily && chainNetwork;
+    scanResults &&
+    request &&
+    message &&
+    chainFamily &&
+    chainNetwork &&
+    userAccount;
   // TODO(kimpers): Pass address and chain to popup container!
   return (
-    <PopupContainer>
+    <PopupContainer
+      userAccount={userAccount}
+      chainNetwork={chainNetwork}
+      chainFamily={chainFamily}
+    >
       {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
       {scanError && (
         <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>

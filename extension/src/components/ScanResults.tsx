@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { TextLarge, Text, TextSmall } from "./Typography";
 import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
-import { shortenAddress } from "../utils/hex";
+import { shortenAddress, isNativeAsset } from "../utils/hex";
 
 import type {
   EvmTransactionScanResult,
@@ -116,17 +116,22 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             scanResults.simulationResults.expectedStateChanges.map(
               (result, i) => {
                 const address = result.rawInfo.data.contract.address;
+                // TODO(kimpers): What to link to for native assets?
                 return (
                   <StateChangeText key={`state-change-${i}`}>
-                    <BlockExplorerLink
-                      address={address}
-                      chainFamily={chainFamily}
-                      chainNetwork={chainNetwork}
-                    >
-                      <StateChangeText>
-                        {result.humanReadableDiff}
-                      </StateChangeText>
-                    </BlockExplorerLink>
+                    {isNativeAsset(address) ? (
+                      result.humanReadableDiff
+                    ) : (
+                      <BlockExplorerLink
+                        address={address}
+                        chainFamily={chainFamily}
+                        chainNetwork={chainNetwork}
+                      >
+                        <StateChangeText>
+                          {result.humanReadableDiff}
+                        </StateChangeText>
+                      </BlockExplorerLink>
+                    )}
                   </StateChangeText>
                 );
               }

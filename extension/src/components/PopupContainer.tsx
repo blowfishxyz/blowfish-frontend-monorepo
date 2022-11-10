@@ -54,7 +54,7 @@ const HeaderRight = styled.div`
 interface PopupContainerProps extends React.PropsWithChildren {
   style?: React.CSSProperties;
   className?: string;
-  userAddress?: string;
+  userAccount?: string;
   chainNetwork?: ChainNetwork;
   chainFamily?: ChainFamily;
   informationContext?: InformationContext;
@@ -74,7 +74,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
   children,
   style,
   className,
-  userAddress,
+  userAccount,
   chainFamily,
   chainNetwork,
   informationContext,
@@ -85,11 +85,11 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       className={className}
       informationContext={informationContext}
     >
-      {userAddress && (
+      {userAccount && (
         <HeaderLeft>
           <StyledWalletLogo />
           <TextSmall style={{ marginLeft: "9px" }} secondary>
-            {shortenAddress(userAddress)}
+            {shortenAddress(userAccount)}
           </TextSmall>
         </HeaderLeft>
       )}

@@ -43,13 +43,13 @@ export const createSignTypedDataRequestMessage = (
   userAccount: string
 ): Message<SignTypedDataRequest> => {
   const type = RequestType.SignTypedData;
-  const transactionRequest: SignTypedDataRequest = {
+  const signTypedDataRequest: SignTypedDataRequest = {
     type,
     payload,
     chainId: chainId.toString(),
     userAccount,
   };
-  return createRawMessage(type, transactionRequest);
+  return createRawMessage(type, signTypedDataRequest);
 };
 
 export const createSignMessageRequestMessage = (
@@ -58,13 +58,13 @@ export const createSignMessageRequestMessage = (
   userAccount: string
 ): Message<SignMessageRequest> => {
   const type = RequestType.SignMessage;
-  const transactionRequest: SignMessageRequest = {
+  const messageRequest: SignMessageRequest = {
     type,
     payload,
     chainId: chainId.toString(),
     userAccount,
   };
-  return createRawMessage(type, transactionRequest);
+  return createRawMessage(type, messageRequest);
 };
 
 export const sendAndAwaitResponseFromStream = <T extends object>(
