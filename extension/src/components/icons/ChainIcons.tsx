@@ -1,11 +1,11 @@
 import React from "react";
 
-interface ChainLogoProps {
+interface ChainIconProps {
   className?: string;
   style?: React.CSSProperties;
 }
 
-const EthereumLogo: React.FC<ChainLogoProps> = ({ className, style }) => (
+const EthereumIcon: React.FC<ChainIconProps> = ({ className, style }) => (
   <svg
     className={className}
     style={style}
@@ -45,5 +45,5 @@ const EthereumLogo: React.FC<ChainLogoProps> = ({ className, style }) => (
   </svg>
 );
 
-const EthereumLogoMemo = React.memo(EthereumLogo);
-export { EthereumLogoMemo as EthereumLogo };
+const EthereumIconMemo = React.memo(EthereumIcon);
+export { EthereumIconMemo as EthereumIcon };

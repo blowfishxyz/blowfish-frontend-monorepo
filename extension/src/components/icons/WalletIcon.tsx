@@ -1,11 +1,11 @@
 import React from "react";
 
-interface WalletLogoProps {
+interface WalletIconProps {
   className?: string;
   style?: React.CSSProperties;
 }
 
-const WalletLogo: React.FC<WalletLogoProps> = ({ className, style }) => (
+const WalletIcon: React.FC<WalletIconProps> = ({ className, style }) => (
   <svg
     className={className}
     style={style}
@@ -22,5 +22,5 @@ const WalletLogo: React.FC<WalletLogoProps> = ({ className, style }) => (
   </svg>
 );
 
-const WalletLogoMemo = React.memo(WalletLogo);
-export { WalletLogoMemo as WalletLogo };
+const WalletIconMemo = React.memo(WalletIcon);
+export { WalletIconMemo as WalletIcon };

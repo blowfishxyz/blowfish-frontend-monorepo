@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-import { WalletLogo } from "./logos/WalletLogo";
-import { EthereumLogo } from "./logos/ChainLogos";
+import { WalletIcon } from "./icons/WalletIcon";
+import { EthereumIcon } from "./icons/ChainIcons";
 import { shortenAddress } from "../utils/hex";
 import { TextSmall } from "./Typography";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { InformationContext } from "../types";
 
-const StyledWalletLogo = styled(WalletLogo)`
+const StyledWalletIcon = styled(WalletIcon)`
   width: 16px;
   height: auto;
   & > path {
@@ -16,7 +16,7 @@ const StyledWalletLogo = styled(WalletLogo)`
   }
 `;
 
-const StyledEthereumLogo = styled(EthereumLogo)`
+const StyledEthereumIcon = styled(EthereumIcon)`
   height: 16px;
   width: auto;
   & > path {
@@ -87,7 +87,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
     >
       {userAccount && (
         <HeaderLeft>
-          <StyledWalletLogo />
+          <StyledWalletIcon />
           <TextSmall style={{ marginLeft: "9px" }} secondary>
             {shortenAddress(userAccount)}
           </TextSmall>
@@ -95,7 +95,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       )}
       {chainFamily && chainNetwork && (
         <HeaderRight>
-          <StyledEthereumLogo />
+          <StyledEthereumIcon />
           <span>
             {chainFamily} {chainNetwork}
           </span>

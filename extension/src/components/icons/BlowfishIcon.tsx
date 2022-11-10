@@ -1,11 +1,11 @@
 import React from "react";
 
-interface BlowfishLogoProps {
+interface BlowfishIconProps {
   className?: string;
   style?: React.CSSProperties;
 }
 
-const BlowfishLogo: React.FC<BlowfishLogoProps> = ({ className, style }) => (
+const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
   <svg
     className={className}
     style={style}
@@ -56,5 +56,5 @@ const BlowfishLogo: React.FC<BlowfishLogoProps> = ({ className, style }) => (
   </svg>
 );
 
-const BlowfishLogoMemo = React.memo(BlowfishLogo);
-export { BlowfishLogoMemo as BlowfishLogo };
+const BlowfishIconMemo = React.memo(BlowfishIcon);
+export { BlowfishIconMemo as BlowfishIcon };

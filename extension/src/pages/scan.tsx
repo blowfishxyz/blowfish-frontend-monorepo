@@ -149,7 +149,6 @@ const ScanResult: React.FC = () => {
     chainFamily &&
     chainNetwork &&
     userAccount;
-  // TODO(kimpers): Pass address and chain to popup container!
   return (
     <PopupContainer
       userAccount={userAccount}
