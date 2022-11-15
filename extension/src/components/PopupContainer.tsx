@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { WalletIcon } from "./icons/WalletIcon";
 import { EthereumIcon } from "./icons/ChainIcons";
-import { shortenAddress } from "../utils/hex";
+import { shortenHex } from "../utils/hex";
 import { TextSmall } from "./Typography";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { InformationContext } from "../types";
@@ -65,7 +65,7 @@ const Wrapper = styled.div<{ informationContext?: InformationContext }>`
   background-color: ${({ informationContext, theme }) =>
     theme.contextBackgroundColors[informationContext ?? "INFO"]};
   padding: 48px 12px 12px 12px;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   box-sizing: border-box;
 `;
@@ -89,7 +89,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
         <HeaderLeft>
           <StyledWalletIcon />
           <TextSmall style={{ marginLeft: "9px" }} secondary>
-            {shortenAddress(userAccount)}
+            {shortenHex(userAccount)}
           </TextSmall>
         </HeaderLeft>
       )}

@@ -1,10 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { TextLarge, Text, TextSmall } from "./Typography";
 import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
+import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
-import { shortenAddress, isNativeAsset } from "../utils/hex";
+import { shortenHex, isNativeAsset } from "../utils/hex";
+import { JsonViewer } from "./JsonViewer";
+import { ExpandIcon } from "./icons/ExpandArrow";
 
 import type {
   EvmTransactionScanResult,
@@ -71,6 +74,21 @@ const ButtonRow = styled.div`
   }
 `;
 
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const AdvancedDetailsToggleButton = styled(BaseButton)`
+  /* Increase clickable area slightly without messing with alignment */
+  padding: 3px;
+  margin: -3px;
+  cursor: pointer;
+  ${TextLarge} {
+    margin-right: 5px;
+  }
+`;
+
 interface ScanResultsProps {
   transaction: TransactionPayload;
   scanResults: EvmTransactionScanResult;
@@ -89,7 +107,17 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   chainFamily,
   ...props
 }) => {
+  const [showAdvancedDetails, setShowAdvancedDetails] =
+    useState<boolean>(false);
   const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
+  // NOTE: For display purposes we want to show 0 when value is null
+  const displayTransaction: TransactionPayload = useMemo(
+    () => ({
+      ...transaction,
+      value: transaction.value || "0",
+    }),
+    [transaction]
+  );
   return (
     <Wrapper>
       <Header borderBottom>
@@ -104,7 +132,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               chainFamily={chainFamily}
               chainNetwork={chainNetwork}
             >
-              {shortenAddress(transaction.to)}
+              {shortenHex(transaction.to)}
             </BlockExplorerLink>
           </Text>
         </Section>
@@ -148,7 +176,15 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         borderTop
         style={{ padding: "25px", flex: 1, justifyContent: "unset" }}
       >
-        <TextLarge>Advanced Details</TextLarge>
+        <Row>
+          <AdvancedDetailsToggleButton
+            onClick={() => setShowAdvancedDetails((prev) => !prev)}
+          >
+            <TextLarge>Advanced Details</TextLarge>
+            <ExpandIcon expanded={showAdvancedDetails} />
+          </AdvancedDetailsToggleButton>
+        </Row>
+        {showAdvancedDetails && <JsonViewer data={displayTransaction} />}
       </Section>
       <ReportRow>
         <TextButton>

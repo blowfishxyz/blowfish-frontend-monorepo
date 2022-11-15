@@ -18,7 +18,7 @@ export default {
 } as ComponentMeta<typeof PopupContainer>;
 
 export const Container: ComponentStory<typeof PopupContainer> = (props) => (
-  <div style={{ width: "392px", height: "748px" }}>
+  <div style={{ width: "392px", minHeight: "748px" }}>
     <Providers>
       <PopupContainer {...props}>
         <ScanResults
