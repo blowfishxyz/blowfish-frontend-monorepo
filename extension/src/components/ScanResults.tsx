@@ -8,6 +8,7 @@ import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { shortenHex, isNativeAsset } from "../utils/hex";
 import { JsonViewer } from "./JsonViewer";
 import { ExpandIcon } from "./icons/ExpandArrow";
+import { WarningIcon } from "./icons/WarningIcon";
 
 import type {
   EvmTransactionScanResult,
@@ -28,6 +29,10 @@ const Wrapper = styled.div`
 
 const SimulationResults = styled.div`
   padding: 0 25px;
+`;
+
+const StyledWarningIcon = styled(WarningIcon)`
+  margin-right: 4px;
 `;
 
 const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
@@ -53,9 +58,12 @@ const Header = styled(Section)`
   }
 `;
 
-const StateChangeText = styled(Text)`
-  color: #00bf36;
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
+const StateChangeRow = styled(Row)`
   & + & {
     margin-top: 11px;
   }
@@ -72,11 +80,6 @@ const ButtonRow = styled.div`
   button {
     width: 160px;
   }
-`;
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
 `;
 
 const AdvancedDetailsToggleButton = styled(BaseButton)`
@@ -146,21 +149,22 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                 const address = result.rawInfo.data.contract.address;
                 // TODO(kimpers): What to link to for native assets?
                 return (
-                  <StateChangeText key={`state-change-${i}`}>
-                    {isNativeAsset(address) ? (
-                      result.humanReadableDiff
-                    ) : (
-                      <BlockExplorerLink
-                        address={address}
-                        chainFamily={chainFamily}
-                        chainNetwork={chainNetwork}
-                      >
-                        <StateChangeText>
-                          {result.humanReadableDiff}
-                        </StateChangeText>
-                      </BlockExplorerLink>
-                    )}
-                  </StateChangeText>
+                  <>
+                    <StateChangeRow key={`state-change-${i}`}>
+                      {scanResults.action == "WARN" && <StyledWarningIcon />}
+                      {isNativeAsset(address) ? (
+                        <Text>{result.humanReadableDiff}</Text>
+                      ) : (
+                        <BlockExplorerLink
+                          address={address}
+                          chainFamily={chainFamily}
+                          chainNetwork={chainNetwork}
+                        >
+                          <Text>{result.humanReadableDiff}</Text>
+                        </BlockExplorerLink>
+                      )}
+                    </StateChangeRow>
+                  </>
                 );
               }
             )}
