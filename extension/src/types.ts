@@ -1,3 +1,4 @@
+import type { Action } from "./utils/BlowfishApiClient";
 export interface TransactionPayload {
   to: string;
   from: string;
@@ -6,6 +7,19 @@ export interface TransactionPayload {
 }
 
 export type InformationContext = "INFO" | "WARNING" | "CRITICAL";
+
+export const actionToInformationContext = (
+  action: Action
+): InformationContext => {
+  switch (action) {
+    case "BLOCK":
+      return "CRITICAL";
+    case "WARN":
+      return "WARNING";
+    case "NONE":
+      return "INFO";
+  }
+};
 
 export enum Identifier {
   MetamaskInpage = "METAMASK_INPAGE",
