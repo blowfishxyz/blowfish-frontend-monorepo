@@ -51,7 +51,7 @@ const HeaderRight = styled.div`
   }
 `;
 
-interface PopupContainerProps extends React.PropsWithChildren {
+export interface PopupContainerProps extends React.PropsWithChildren {
   style?: React.CSSProperties;
   className?: string;
   userAccount?: string;

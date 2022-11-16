@@ -19,6 +19,7 @@ module.exports = {
   plugins: ["react", "@typescript-eslint"],
   rules: {
     "@typescript-eslint/no-non-null-assertion": 0,
+    "react/prop-types": [2, { skipUndeclared: true }],
   },
   settings: {
     react: {
@@ -26,4 +27,3 @@ module.exports = {
     },
   },
 };
-

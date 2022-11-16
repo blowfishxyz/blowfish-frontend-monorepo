@@ -59,4 +59,91 @@ export const noActionScanResult: EvmTransactionScanResult = {
   warnings: [],
 };
 
+export const warningScanResult: EvmTransactionScanResult = {
+  action: "WARN",
+  simulationResults: {
+    error: null,
+    expectedStateChanges: [
+      {
+        humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
+        rawInfo: {
+          data: {
+            amount: {
+              after:
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+              before: "0",
+            },
+            contract: {
+              address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+              kind: "ACCOUNT",
+            },
+            name: "BoredApeYachtClub",
+            owner: {
+              address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+              kind: "ACCOUNT",
+            },
+            spender: {
+              address: "0x00000000006c3852cbef3e08e8df289169ede581",
+              kind: "ACCOUNT",
+            },
+            symbol: "BAYC",
+          },
+          kind: "ERC721_APPROVAL_FOR_ALL",
+        },
+      },
+    ],
+  },
+  warnings: [
+    {
+      kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
+      message:
+        "You are allowing this dApp to withdraw funds from your account in the future",
+      severity: "WARNING",
+    },
+  ],
+};
+export const blockScanResult: EvmTransactionScanResult = {
+  action: "BLOCK",
+  simulationResults: {
+    error: null,
+    expectedStateChanges: [
+      {
+        humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
+        rawInfo: {
+          data: {
+            amount: {
+              after:
+                "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+              before: "0",
+            },
+            contract: {
+              address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+              kind: "ACCOUNT",
+            },
+            name: "BoredApeYachtClub",
+            owner: {
+              address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+              kind: "ACCOUNT",
+            },
+            spender: {
+              address: "0x00000000006c3852cbef3e08e8df289169ede581",
+              kind: "ACCOUNT",
+            },
+            symbol: "BAYC",
+          },
+          kind: "ERC721_APPROVAL_FOR_ALL",
+        },
+      },
+    ],
+  },
+  warnings: [
+    {
+      kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
+      message:
+        "You are allowing this dApp to withdraw funds from your account in the future",
+      severity: "WARNING",
+    },
+  ],
+};
+
 export const exampleDappUrl = "https://app.uniswap.org/#/swap";

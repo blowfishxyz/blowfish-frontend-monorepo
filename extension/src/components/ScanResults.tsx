@@ -92,7 +92,7 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   }
 `;
 
-interface ScanResultsProps {
+export interface ScanResultsProps {
   transaction: TransactionPayload;
   scanResults: EvmTransactionScanResult;
   chainFamily: ChainFamily;
