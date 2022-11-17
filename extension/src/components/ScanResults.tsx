@@ -9,6 +9,7 @@ import { shortenHex, isNativeAsset } from "../utils/hex";
 import { JsonViewer } from "./JsonViewer";
 import { ExpandIcon } from "./icons/ExpandArrow";
 import { WarningIcon } from "./icons/WarningIcon";
+import { WarningNotice } from "./WarningNotice";
 
 import type {
   EvmTransactionScanResult,
@@ -46,16 +47,17 @@ const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
 `;
 
 const Header = styled(Section)`
-  height: 56px;
+  min-height: 56px;
   /* Overwrite section styles */
   justify-content: unset;
-  padding: 0 25px;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: unset;
 
+  padding: 0 12px;
   & > h1 {
-    margin: 0;
+    padding-left: 25px;
+    align-self: flex-start;
   }
 `;
 
@@ -128,13 +130,21 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   );
   return (
     <Wrapper>
-      <Header borderBottom>
+      <Header borderBottom={scanResults.action === "NONE"}>
         <TextLarge as="h1">Transaction Details</TextLarge>
+        {scanResults.action !== "NONE" && (
+          <WarningNotice
+            action={scanResults.action}
+            message="You are allowing this website to withdraw funds from your account in the future"
+          />
+        )}
       </Header>
       <SimulationResults>
         <Section borderBottom>
-          <TextSmall secondary>To Address</TextSmall>
-          <Text style={{ marginTop: "8px" }}>
+          <TextSmall secondary style={{ marginBottom: "8px" }}>
+            To Address
+          </TextSmall>
+          <Text>
             <BlockExplorerLink
               address={transaction.to}
               chainFamily={chainFamily}
@@ -179,9 +189,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             )}
         </Section>
         <Section>
-          <TextSmall secondary>Request by</TextSmall>
+          <TextSmall secondary style={{ marginBottom: "8px" }}>
+            Request by
+          </TextSmall>
           <LinkWithArrow href={dappUrl.origin}>
-            <Text style={{ marginTop: "8px" }}>{dappUrl.host}</Text>
+            <Text>{dappUrl.host}</Text>
           </LinkWithArrow>
         </Section>
       </SimulationResults>

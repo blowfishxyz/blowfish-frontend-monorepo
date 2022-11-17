@@ -3,6 +3,7 @@ import { InformationContext } from "./types";
 
 const palette = {
   warningBackground: "#FFFCF2",
+  blockBackground: "#FFFAFA",
   white: "#FFF",
   black: "#000",
   gray: "#00000080",
