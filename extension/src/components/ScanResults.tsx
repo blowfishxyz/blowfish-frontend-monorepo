@@ -32,6 +32,7 @@ const SimulationResults = styled.div`
 `;
 
 const StyledWarningIcon = styled(WarningIcon)`
+  align-self: flex-start;
   margin-right: 4px;
 `;
 
@@ -90,6 +91,10 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   ${TextLarge} {
     margin-right: 5px;
   }
+`;
+
+const StateChangeText = styled(Text)`
+  line-height: 16px;
 `;
 
 export interface ScanResultsProps {
@@ -153,14 +158,18 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                     <StateChangeRow key={`state-change-${i}`}>
                       {scanResults.action == "WARN" && <StyledWarningIcon />}
                       {isNativeAsset(address) ? (
-                        <Text>{result.humanReadableDiff}</Text>
+                        <StateChangeText>
+                          {result.humanReadableDiff}
+                        </StateChangeText>
                       ) : (
                         <BlockExplorerLink
                           address={address}
                           chainFamily={chainFamily}
                           chainNetwork={chainNetwork}
                         >
-                          <Text>{result.humanReadableDiff}</Text>
+                          <StateChangeText>
+                            {result.humanReadableDiff}
+                          </StateChangeText>
                         </BlockExplorerLink>
                       )}
                     </StateChangeRow>
