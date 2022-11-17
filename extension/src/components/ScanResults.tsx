@@ -56,7 +56,8 @@ const Header = styled(Section)`
 
   padding: 0 12px;
   & > h1 {
-    padding-left: 25px;
+    padding-left: 13px;
+    margin-top: 19px;
     align-self: flex-start;
   }
 `;
