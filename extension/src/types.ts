@@ -6,11 +6,10 @@ export interface TransactionPayload {
   data: string | null;
 }
 
-export type InformationContext = "INFO" | "WARNING" | "CRITICAL";
+export type WarningSeverity = "WARNING" | "CRITICAL";
+export type Severity = "INFO" | WarningSeverity;
 
-export const actionToInformationContext = (
-  action: Action
-): InformationContext => {
+export const actionToSeverity = (action: Action): Severity => {
   switch (action) {
     case "BLOCK":
       return "CRITICAL";

@@ -6,7 +6,7 @@ import { EthereumIcon } from "./icons/ChainIcons";
 import { shortenHex } from "../utils/hex";
 import { TextSmall } from "./Typography";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
-import type { InformationContext } from "../types";
+import type { Severity } from "../types";
 
 const StyledWalletIcon = styled(WalletIcon)`
   width: 16px;
@@ -57,13 +57,13 @@ export interface PopupContainerProps extends React.PropsWithChildren {
   userAccount?: string;
   chainNetwork?: ChainNetwork;
   chainFamily?: ChainFamily;
-  informationContext?: InformationContext;
+  severity?: Severity;
 }
-const Wrapper = styled.div<{ informationContext?: InformationContext }>`
+const Wrapper = styled.div<{ severity?: Severity }>`
   display: flex;
   position: relative;
-  background-color: ${({ informationContext, theme }) =>
-    theme.contextBackgroundColors[informationContext ?? "INFO"]};
+  background-color: ${({ severity, theme }) =>
+    theme.contextBackgroundColors[severity ?? "INFO"]};
   padding: 48px 12px 12px 12px;
   height: 100%;
   width: 100%;
@@ -77,14 +77,10 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
   userAccount,
   chainFamily,
   chainNetwork,
-  informationContext,
+  severity,
 }) => {
   return (
-    <Wrapper
-      style={style}
-      className={className}
-      informationContext={informationContext}
-    >
+    <Wrapper style={style} className={className} severity={severity}>
       {userAccount && (
         <HeaderLeft>
           <StyledWalletIcon />

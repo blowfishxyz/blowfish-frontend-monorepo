@@ -7,7 +7,7 @@ import {
   PopupContainerProps,
 } from "../components/PopupContainer";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
-import { InformationContext, actionToInformationContext } from "../types";
+import { Severity, actionToSeverity } from "../types";
 
 import {
   noActionScanResult,
@@ -33,19 +33,19 @@ export const NoActionResults: ComponentStory<
   React.FC<PopupContainerProps & ScanResultsProps>
 > = (props) => {
   const { scanResults, transaction } = props;
-  let informationContext: InformationContext;
+  let severity: Severity;
   // If the story has manually set something other than info allow that override
-  if (props.informationContext && props.informationContext !== "INFO") {
-    informationContext = props.informationContext!;
+  if (props.severity && props.severity !== "INFO") {
+    severity = props.severity!;
   } else {
     // Otherwise use the context derived from the action
-    informationContext = actionToInformationContext(scanResults.action);
+    severity = actionToSeverity(scanResults.action);
   }
 
   return (
     <div style={{ width: "392px", minHeight: "748px" }}>
       <Providers>
-        <PopupContainer {...props} informationContext={informationContext}>
+        <PopupContainer {...props} severity={severity}>
           <ScanResults
             transaction={transaction}
             scanResults={scanResults}

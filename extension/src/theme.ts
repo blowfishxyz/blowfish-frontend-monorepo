@@ -1,5 +1,5 @@
 import { lighten } from "polished";
-import { InformationContext } from "./types";
+import { Severity } from "./types";
 
 const palette = {
   warningBackground: "#FFFCF2",
@@ -50,7 +50,7 @@ const opacities = {
   secondaryText: 0.5,
 };
 
-const contextBackgroundColors: { [key in InformationContext]: string } = {
+const contextBackgroundColors: { [key in Severity]: string } = {
   CRITICAL: "#FFC1AD",
   WARNING: "#FFD567",
   INFO: "#EFF2F0",
