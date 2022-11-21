@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { Decimal } from "decimal.js";
 
 import { TextLarge, Text, TextSmall } from "./Typography";
 import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
@@ -16,7 +17,7 @@ import type {
   ChainFamily,
   ChainNetwork,
 } from "../utils/BlowfishApiClient";
-import type { TransactionPayload } from "../types";
+import type { TransactionPayload, WarningSeverity } from "../types";
 
 const Wrapper = styled.div`
   min-height: 625px;
@@ -32,7 +33,16 @@ const SimulationResults = styled.div`
   padding: 0 25px;
 `;
 
-const StyledWarningIcon = styled(WarningIcon)`
+const StyledWarningIcon = styled(WarningIcon)<{
+  severity: WarningSeverity;
+}>`
+  ${({ severity }) =>
+    severity === "CRITICAL" &&
+    css`
+      path {
+        fill: ${({ theme }) => theme.palette.red};
+      }
+    `}
   align-self: flex-start;
   margin-right: 4px;
 `;
@@ -96,7 +106,9 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   }
 `;
 
-const StateChangeText = styled(Text)`
+const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
+  color: ${({ isPositiveEffect, theme }) =>
+    isPositiveEffect ? theme.palette.green : theme.palette.red};
   line-height: 16px;
 `;
 
@@ -129,6 +141,23 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     }),
     [transaction]
   );
+
+  const expectedStateChangesProcessed = useMemo(
+    () =>
+      scanResults.simulationResults.expectedStateChanges.map(
+        (expectedStateChange) => {
+          const { amount } = expectedStateChange.rawInfo.data;
+
+          const diff = new Decimal(amount.before).sub(amount.after);
+          return {
+            ...expectedStateChange,
+            diff,
+          };
+        }
+      ),
+    [scanResults.simulationResults.expectedStateChanges]
+  );
+
   return (
     <Wrapper>
       <Header borderBottom={scanResults.action === "NONE"}>
@@ -159,35 +188,43 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           <TextSmall secondary style={{ marginBottom: "8px" }}>
             Simulation Results
           </TextSmall>
-          {scanResults.simulationResults &&
-            scanResults.simulationResults.expectedStateChanges.map(
-              (result, i) => {
-                const address = result.rawInfo.data.contract.address;
-                // TODO(kimpers): What to link to for native assets?
-                return (
-                  <>
-                    <StateChangeRow key={`state-change-${i}`}>
-                      {scanResults.action == "WARN" && <StyledWarningIcon />}
-                      {isNativeAsset(address) ? (
-                        <StateChangeText>
-                          {result.humanReadableDiff}
-                        </StateChangeText>
-                      ) : (
-                        <BlockExplorerLink
-                          address={address}
-                          chainFamily={chainFamily}
-                          chainNetwork={chainNetwork}
-                        >
-                          <StateChangeText>
-                            {result.humanReadableDiff}
-                          </StateChangeText>
-                        </BlockExplorerLink>
-                      )}
-                    </StateChangeRow>
-                  </>
-                );
-              }
-            )}
+          {expectedStateChangesProcessed.map((stateChange, i) => {
+            const address = stateChange.rawInfo.data.contract.address;
+            const isApproval = stateChange.rawInfo.kind.includes("APPROVAL");
+            // NOTE(kimpers): We define positive as decreased approval or increased balance
+            const isPositiveEffect =
+              (isApproval && stateChange.diff.gt(0)) ||
+              (!isApproval && stateChange.diff.lt(0));
+            // TODO(kimpers): What to link to for native assets?
+            return (
+              <>
+                <StateChangeRow key={`state-change-${i}`}>
+                  {scanResults.action !== "NONE" && (
+                    <StyledWarningIcon
+                      severity={
+                        scanResults.action == "WARN" ? "WARNING" : "CRITICAL"
+                      }
+                    />
+                  )}
+                  {isNativeAsset(address) ? (
+                    <StateChangeText isPositiveEffect={isPositiveEffect}>
+                      {stateChange.humanReadableDiff}
+                    </StateChangeText>
+                  ) : (
+                    <BlockExplorerLink
+                      address={address}
+                      chainFamily={chainFamily}
+                      chainNetwork={chainNetwork}
+                    >
+                      <StateChangeText isPositiveEffect={isPositiveEffect}>
+                        {stateChange.humanReadableDiff}
+                      </StateChangeText>
+                    </BlockExplorerLink>
+                  )}
+                </StateChangeRow>
+              </>
+            );
+          })}
         </Section>
         <Section>
           <TextSmall secondary style={{ marginBottom: "8px" }}>
