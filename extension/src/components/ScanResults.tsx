@@ -165,7 +165,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         {scanResults.action !== "NONE" && (
           <WarningNotice
             severity={scanResults.action === "WARN" ? "WARNING" : "CRITICAL"}
-            message="You are allowing this website to withdraw funds from your account in the future"
+            warning={scanResults.warnings[0]}
           />
         )}
       </Header>

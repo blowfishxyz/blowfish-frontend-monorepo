@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { Text } from "./Typography";
 import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcon";
 import { WarningSeverity } from "../types";
+import type { Warning } from "../utils/BlowfishApiClient";
 
 const Wrapper = styled.div<{ severity: WarningSeverity }>`
   box-sizing: border-box;
@@ -45,11 +46,11 @@ const MessageContainer = styled.div`
 
 interface WarningNoticeProps {
   severity: WarningSeverity;
-  message: string;
+  warning: Warning;
 }
 export const WarningNotice: React.FC<WarningNoticeProps> = ({
   severity,
-  message,
+  warning,
 }) => {
   const headline = severity === "WARNING" ? "WARNING" : "CRITICAL WARNING";
   return (
@@ -57,7 +58,7 @@ export const WarningNotice: React.FC<WarningNoticeProps> = ({
       <BlowfishWarningIcon severity={severity} />
       <MessageContainer>
         <WarningHeadline severity={severity}>{headline}</WarningHeadline>
-        <Text>{message}</Text>
+        <Text>{warning.message}</Text>
       </MessageContainer>
     </Wrapper>
   );
