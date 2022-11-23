@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 import { Providers } from "../components/Providers";
@@ -13,6 +13,7 @@ import {
   isSignMessageRequest,
   UntypedMessageData,
   TransactionPayload,
+  actionToSeverity,
 } from "../types";
 import {
   BlowfishApiClient,
@@ -149,11 +150,19 @@ const ScanResult: React.FC = () => {
     chainFamily &&
     chainNetwork &&
     userAccount;
+
+  const severity = useMemo(
+    () =>
+      scanResults?.action ? actionToSeverity(scanResults?.action) : undefined,
+    [scanResults?.action]
+  );
+
   return (
     <PopupContainer
       userAccount={userAccount}
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
+      severity={severity}
     >
       {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
       {scanError && (

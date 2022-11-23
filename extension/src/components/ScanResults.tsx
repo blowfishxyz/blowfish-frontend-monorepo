@@ -162,7 +162,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     <Wrapper>
       <Header borderBottom={scanResults.action === "NONE"}>
         <TextLarge as="h1">Transaction Details</TextLarge>
-        {scanResults.action !== "NONE" && (
+        {scanResults.warnings[0] && (
           <WarningNotice
             severity={scanResults.action === "WARN" ? "WARNING" : "CRITICAL"}
             warning={scanResults.warnings[0]}
