@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { blowfishProxyHandler } from "./routes/proxy";
+import { healthHandler } from "./routes/health";
 
 const port = process.env.PORT ?? "3000";
 
@@ -26,6 +27,7 @@ app.use(bodyParser.json());
 
 // Proxy all request paths starting with /proxy/api/* to Blowfish API
 app.use(`/proxy/api/*`, blowfishProxyHandler);
+app.use(`/healthz`, healthHandler);
 app.use("*", (req: Request, res: Response) => {
   const { path } = req;
   req.log.warn({ path }, "Invalid path requested");
