@@ -33,3 +33,4 @@ public/sitemap.xml
 
 tmp
 tsconfig.tsbuildinfo
+dist/
