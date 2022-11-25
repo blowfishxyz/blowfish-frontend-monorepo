@@ -19,7 +19,7 @@ import {
 
 export default {
   title: "ScanResults",
-  component: PopupContainer,
+  component: ScanResults,
   args: {
     userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     chainFamily: "ethereum",

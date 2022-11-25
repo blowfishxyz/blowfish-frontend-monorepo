@@ -17,6 +17,12 @@ export const TextLarge = styled.span<TypographyProps>`
     secondary ? theme.colors.secondaryText : theme.colors.primaryText};
 `;
 
+export const TextXL = styled.span<TypographyProps>`
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 23px;
+`;
+
 export const Text = styled.span<TypographyProps>`
   font-family: "GT Planar";
   font-style: normal;
