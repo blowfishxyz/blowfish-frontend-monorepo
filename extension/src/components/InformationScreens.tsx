@@ -38,6 +38,7 @@ const Wrapper = styled.div<SharedProps>`
   border-radius: 12px;
   padding: 120px 32px 32px 32px;
   align-items: center;
+  box-sizing: border-box;
 `;
 
 type InformationScreenKind =

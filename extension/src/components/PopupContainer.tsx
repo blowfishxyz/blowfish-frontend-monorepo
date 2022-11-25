@@ -1,12 +1,15 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { WalletIcon } from "./icons/WalletIcon";
 import { EthereumIcon } from "./icons/ChainIcons";
 import { shortenHex } from "../utils/hex";
 import { TextSmall } from "./Typography";
+import { SLIM_BOTTOM_MENU_HEIGHT } from "./BottomMenus";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { Severity } from "../types";
+
+const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 
 const StyledWalletIcon = styled(WalletIcon)`
   width: 16px;
@@ -58,8 +61,10 @@ export interface PopupContainerProps extends React.PropsWithChildren {
   chainNetwork?: ChainNetwork;
   chainFamily?: ChainFamily;
   severity?: Severity;
+  bottomMenuType?: MenuType;
 }
-const Wrapper = styled.div<{ severity?: Severity }>`
+type MenuType = "NONE" | "SLIM" | "FULL";
+const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   display: flex;
   position: relative;
   background-color: ${({ severity, theme }) =>
@@ -69,6 +74,11 @@ const Wrapper = styled.div<{ severity?: Severity }>`
   height: 100%;
   width: 100%;
   box-sizing: border-box;
+  ${({ bottomMenuType }) =>
+    bottomMenuType === "SLIM" &&
+    css`
+      padding-bottom: ${SLIM_BOTTOM_MENU_PADDING}px;
+    `}
 `;
 
 export const PopupContainer: React.FC<PopupContainerProps> = ({
@@ -79,9 +89,15 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
   chainFamily,
   chainNetwork,
   severity,
+  bottomMenuType,
 }) => {
   return (
-    <Wrapper style={style} className={className} severity={severity}>
+    <Wrapper
+      style={style}
+      className={className}
+      severity={severity}
+      bottomMenuType={bottomMenuType}
+    >
       {userAccount && (
         <HeaderLeft>
           <StyledWalletIcon />

@@ -10,6 +10,7 @@ import {
   TransactionBlockedScreen as TransactionBlockedScreenComponent,
   TransactionBlockedScreenProps,
 } from "../components/InformationScreens";
+import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
 
 export default {
   title: "TransacitonBlockedScreen",
@@ -19,17 +20,21 @@ export default {
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
     onProceed: () => alert("Proceeding..."),
+    onClose: () => alert("Closing..."),
   },
 } as ComponentMeta<typeof TransactionBlockedScreenComponent>;
 
 export const TransactionBlocked: ComponentStory<
-  React.FC<PopupContainerProps & TransactionBlockedScreenProps>
+  React.FC<
+    PopupContainerProps & TransactionBlockedScreenProps & SlimBottomMenuProps
+  >
 > = (props) => {
   return (
-    <div style={{ width: "392px", minHeight: "748px" }}>
+    <div style={{ width: "392px", minHeight: "768px" }}>
       <Providers>
-        <PopupContainer {...props} severity="CRITICAL">
+        <PopupContainer {...props} severity="CRITICAL" bottomMenuType="SLIM">
           <TransactionBlockedScreenComponent onProceed={props.onProceed} />
+          <SlimBottomMenu onClick={props.onClick} buttonLabel="Close" />
         </PopupContainer>
       </Providers>
     </div>

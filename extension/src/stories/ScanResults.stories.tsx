@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { Providers } from "../components/Providers";
@@ -7,6 +7,8 @@ import {
   PopupContainerProps,
 } from "../components/PopupContainer";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
+import { TransactionBlockedScreen } from "../components/InformationScreens";
+import { SlimBottomMenu } from "../components/BottomMenus";
 import { Severity, actionToSeverity } from "../types";
 
 import {
@@ -32,6 +34,8 @@ export default {
 export const NoActionResults: ComponentStory<
   React.FC<PopupContainerProps & ScanResultsProps>
 > = (props) => {
+  const [hasDismissedWarningScreen, setHasDismissedWarningScreen] =
+    useState<boolean>(false);
   const { scanResults, transaction } = props;
   let severity: Severity;
   // If the story has manually set something other than info allow that override
@@ -42,23 +46,42 @@ export const NoActionResults: ComponentStory<
     severity = actionToSeverity(scanResults.action);
   }
 
+  const shouldShowWarningScreen =
+    scanResults.action === "BLOCK" && !hasDismissedWarningScreen;
+
   return (
     <div style={{ width: "392px", minHeight: "748px" }}>
       <Providers>
-        <PopupContainer {...props} severity={severity}>
-          <ScanResults
-            transaction={transaction}
-            scanResults={scanResults}
-            dappUrl={exampleDappUrl}
-            onContinue={async () => {
-              console.log("CONTINUE");
-            }}
-            onCancel={async () => {
-              console.log("CANCEL");
-            }}
-            chainNetwork="mainnet"
-            chainFamily="ethereum"
-          />
+        <PopupContainer
+          {...props}
+          severity={severity}
+          bottomMenuType={shouldShowWarningScreen ? "SLIM" : "NONE"}
+        >
+          {shouldShowWarningScreen ? (
+            <>
+              <TransactionBlockedScreen
+                onProceed={() => setHasDismissedWarningScreen(true)}
+              />
+              <SlimBottomMenu
+                onClick={() => alert("ABORTED...")}
+                buttonLabel="Close"
+              />
+            </>
+          ) : (
+            <ScanResults
+              transaction={transaction}
+              scanResults={scanResults}
+              dappUrl={exampleDappUrl}
+              onContinue={async () => {
+                console.log("CONTINUE");
+              }}
+              onCancel={async () => {
+                console.log("CANCEL");
+              }}
+              chainNetwork="mainnet"
+              chainFamily="ethereum"
+            />
+          )}
         </PopupContainer>
       </Providers>
     </div>
