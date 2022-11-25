@@ -28,7 +28,6 @@ const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
 `;
 
 const Wrapper = styled.div<SharedProps>`
-  min-height: 625px;
   width: 100%;
   background-color: ${({ kind, theme }) =>
     kind === "TRANSACTION_BLOCKED" ? "#340000" : theme.palette.white};

@@ -14,7 +14,7 @@ import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { postResponseToPort } from "./utils/messages";
 import { logger } from "./utils/logger";
 
-const DIMENSIONS = { width: 392, height: 748 };
+const DIMENSIONS = { width: 392, height: 768 };
 
 logger.debug("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();

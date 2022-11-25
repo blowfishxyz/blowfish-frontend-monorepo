@@ -27,6 +27,8 @@ import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
 import { PopupContainer } from "../components/PopupContainer";
 import { ScanResults } from "../components/ScanResults";
+import { TransactionBlockedScreen } from "../components/InformationScreens";
+import { SlimBottomMenu } from "../components/BottomMenus";
 
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
@@ -54,6 +56,8 @@ const ScanResult: React.FC = () => {
     EvmMessageScanResult | EvmTransactionScanResult | undefined
   >(undefined);
   const [scanError, setScanError] = useState<Error | undefined>(undefined);
+  const [hasDismissedBlockScreen, setHasDismissedBlockScreen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -157,29 +161,44 @@ const ScanResult: React.FC = () => {
     [scanResults?.action]
   );
 
+  const shouldShowBlockScreen =
+    scanResults?.action === "BLOCK" && !hasDismissedBlockScreen;
+
   return (
     <PopupContainer
       userAccount={userAccount}
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
       severity={severity}
+      bottomMenuType={shouldShowBlockScreen ? "SLIM" : "NONE"}
     >
       {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
       {scanError && (
         <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>
       )}
-      {hasResultsLoaded && (
-        // TODO(kimpers): support for messages and other interactions
-        <ScanResults
-          transaction={request.payload as TransactionPayload}
-          scanResults={scanResults as EvmTransactionScanResult}
-          dappUrl={message.origin!}
-          onContinue={() => handleUserDecision(true)}
-          onCancel={() => handleUserDecision(false)}
-          chainFamily={chainFamily}
-          chainNetwork={chainNetwork}
-        />
-      )}
+      {hasResultsLoaded &&
+        (shouldShowBlockScreen ? (
+          <>
+            <TransactionBlockedScreen
+              onProceed={() => setHasDismissedBlockScreen(true)}
+            />
+            <SlimBottomMenu
+              onClick={() => alert("ABORTED...")}
+              buttonLabel="Close"
+            />
+          </>
+        ) : (
+          // TODO(kimpers): support for messages and other interactions
+          <ScanResults
+            transaction={request.payload as TransactionPayload}
+            scanResults={scanResults as EvmTransactionScanResult}
+            dappUrl={message.origin!}
+            onContinue={() => handleUserDecision(true)}
+            onCancel={() => handleUserDecision(false)}
+            chainFamily={chainFamily}
+            chainNetwork={chainNetwork}
+          />
+        ))}
     </PopupContainer>
   );
 };

@@ -5,7 +5,7 @@ import { PrimaryButton } from "./Buttons";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 const SlimBottomMenuWrapper = styled.div`
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
