@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 import { Providers } from "../components/Providers";
+import { LoadingScreen } from "../components/LoadingScreen";
 import qs from "qs";
 
 import {
@@ -149,14 +150,6 @@ const ScanResult: React.FC = () => {
   logger.debug(message);
   logger.debug(request);
 
-  const hasResultsLoaded =
-    scanResults &&
-    request &&
-    message &&
-    chainFamily &&
-    chainNetwork &&
-    userAccount;
-
   const severity = useMemo(
     () =>
       scanResults?.action ? actionToSeverity(scanResults?.action) : undefined,
@@ -166,6 +159,17 @@ const ScanResult: React.FC = () => {
   const shouldShowBlockScreen =
     scanResults?.action === "BLOCK" && !hasDismissedBlockScreen;
 
+  const isLoading = !scanResults && !scanError;
+  const isError = !isLoading && scanError;
+  const hasAllData =
+    scanResults &&
+    request &&
+    message &&
+    chainFamily &&
+    chainNetwork &&
+    userAccount;
+  const hasResultsLoaded = !isLoading && !isError && hasAllData;
+
   return (
     <PopupContainer
       userAccount={userAccount}
@@ -174,10 +178,8 @@ const ScanResult: React.FC = () => {
       severity={severity}
       bottomMenuType={shouldShowBlockScreen ? "SLIM" : "NONE"}
     >
-      {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
-      {scanError && (
-        <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>
-      )}
+      {isLoading && <LoadingScreen />}
+      {isError && <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>}
       {hasResultsLoaded &&
         (shouldShowBlockScreen ? (
           <>

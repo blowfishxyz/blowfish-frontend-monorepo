@@ -9,8 +9,11 @@ const SyledArrowIcon = styled(ArrowIcon)`
   margin-left: 4px;
 `;
 
-export const A = styled.a`
+export const UnstyledA = styled.a`
   text-decoration: none;
+`;
+
+export const A = styled(UnstyledA)`
   color: ${(props) => props.theme.colors.primaryText};
 `;
 
