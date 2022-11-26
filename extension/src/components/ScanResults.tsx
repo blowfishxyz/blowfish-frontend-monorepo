@@ -197,32 +197,30 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               (!isApproval && stateChange.diff.lt(0));
             // TODO(kimpers): What to link to for native assets?
             return (
-              <>
-                <StateChangeRow key={`state-change-${i}`}>
-                  {scanResults.action !== "NONE" && (
-                    <StyledWarningIcon
-                      severity={
-                        scanResults.action == "WARN" ? "WARNING" : "CRITICAL"
-                      }
-                    />
-                  )}
-                  {isNativeAsset(address) ? (
+              <StateChangeRow key={`state-change-${i}`}>
+                {scanResults.action !== "NONE" && (
+                  <StyledWarningIcon
+                    severity={
+                      scanResults.action == "WARN" ? "WARNING" : "CRITICAL"
+                    }
+                  />
+                )}
+                {isNativeAsset(address) ? (
+                  <StateChangeText isPositiveEffect={isPositiveEffect}>
+                    {stateChange.humanReadableDiff}
+                  </StateChangeText>
+                ) : (
+                  <BlockExplorerLink
+                    address={address}
+                    chainFamily={chainFamily}
+                    chainNetwork={chainNetwork}
+                  >
                     <StateChangeText isPositiveEffect={isPositiveEffect}>
                       {stateChange.humanReadableDiff}
                     </StateChangeText>
-                  ) : (
-                    <BlockExplorerLink
-                      address={address}
-                      chainFamily={chainFamily}
-                      chainNetwork={chainNetwork}
-                    >
-                      <StateChangeText isPositiveEffect={isPositiveEffect}>
-                        {stateChange.humanReadableDiff}
-                      </StateChangeText>
-                    </BlockExplorerLink>
-                  )}
-                </StateChangeRow>
-              </>
+                  </BlockExplorerLink>
+                )}
+              </StateChangeRow>
             );
           })}
         </Section>

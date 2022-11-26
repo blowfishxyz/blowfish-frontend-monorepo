@@ -53,6 +53,11 @@ export const NoActionResults: ComponentStory<
     <div style={{ width: "392px", minHeight: "748px" }}>
       <Providers>
         <PopupContainer
+          style={{
+            /* NOTE This is only for the story,
+             * normally we want this to take up all the available window height */
+            minHeight: "748px",
+          }}
           {...props}
           severity={severity}
           bottomMenuType={shouldShowWarningScreen ? "SLIM" : "NONE"}
@@ -60,9 +65,14 @@ export const NoActionResults: ComponentStory<
           {shouldShowWarningScreen ? (
             <>
               <TransactionBlockedScreen
-                onProceed={() => setHasDismissedWarningScreen(true)}
+                onContinue={() => setHasDismissedWarningScreen(true)}
               />
               <SlimBottomMenu
+                style={{
+                  /* NOTE: This is only applicable in the context of the storybook,
+                   * in the extension we want this fixed to to bottom of the window */
+                  position: "absolute",
+                }}
                 onClick={() => alert("ABORTED...")}
                 buttonLabel="Close"
               />

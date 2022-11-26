@@ -131,6 +131,8 @@ const ScanResult: React.FC = () => {
     });
   }, [client, message, request]);
 
+  const closeWindow = useCallback(() => window.close(), []);
+
   const handleUserDecision = useCallback(
     async (shouldProceed: boolean) => {
       if (!message) {
@@ -138,10 +140,10 @@ const ScanResult: React.FC = () => {
         return;
       }
       await respondWithUserDecision(message.id, shouldProceed);
-      window.close();
+      closeWindow();
     },
 
-    [message]
+    [message, closeWindow]
   );
 
   logger.debug(message);
@@ -180,12 +182,9 @@ const ScanResult: React.FC = () => {
         (shouldShowBlockScreen ? (
           <>
             <TransactionBlockedScreen
-              onProceed={() => setHasDismissedBlockScreen(true)}
+              onContinue={() => setHasDismissedBlockScreen(true)}
             />
-            <SlimBottomMenu
-              onClick={() => alert("ABORTED...")}
-              buttonLabel="Close"
-            />
+            <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
           </>
         ) : (
           // TODO(kimpers): support for messages and other interactions

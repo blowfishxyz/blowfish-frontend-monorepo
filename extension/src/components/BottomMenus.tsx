@@ -20,13 +20,17 @@ const SlimBottomMenuWrapper = styled.div`
 export interface SlimBottomMenuProps {
   buttonLabel: string;
   onClick: () => void;
+  style?: React.CSSProperties;
+  className?: string;
 }
 export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
   onClick,
   buttonLabel,
+  style,
+  className,
 }) => {
   return (
-    <SlimBottomMenuWrapper>
+    <SlimBottomMenuWrapper style={style} className={className}>
       <PrimaryButton onClick={onClick}>{buttonLabel}</PrimaryButton>
     </SlimBottomMenuWrapper>
   );

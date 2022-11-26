@@ -47,11 +47,11 @@ type InformationScreenKind =
   | "UNSUPPORTED_CHAIN";
 
 export interface TransactionBlockedScreenProps {
-  onProceed: () => void;
+  onContinue: () => void;
 }
 export const TransactionBlockedScreen: React.FC<
   TransactionBlockedScreenProps
-> = ({ onProceed }) => {
+> = ({ onContinue }) => {
   const kind = "TRANSACTION_BLOCKED";
   return (
     <Wrapper kind={kind}>
@@ -61,7 +61,7 @@ export const TransactionBlockedScreen: React.FC<
         We believe this transaction is malicious and unsafe to sign. Approving
         may lead to loss of funds
       </StyledText>
-      <TextButton onClick={onProceed}>
+      <TextButton onClick={onContinue}>
         <StyledText
           kind={kind}
           style={{
