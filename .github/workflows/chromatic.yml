@@ -18,3 +18,4 @@ jobs:
         with:
           workingDir: ./extension
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          autoAcceptChanges: true
