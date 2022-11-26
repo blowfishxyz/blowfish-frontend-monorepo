@@ -1,0 +1,91 @@
+html,
+body,
+div#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "GT-Planar", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+  position: relative;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+}
+
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Italic-15-Regular.ttf") format("opentype");
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Italic-15-Bold.otf") format("opentype");
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Italic-15-Light.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Thin.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Italic-15-Thin.otf") format("opentype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Italic-15-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "GT-Planar";
+  src: url("./fonts/GT-Planar-Black.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+}

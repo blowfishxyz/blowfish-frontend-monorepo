@@ -1,6 +1,24 @@
-import { EvmTransactionObject as TransactionPayload } from "./utils/BlowfishApiClient";
+import type { Action } from "./utils/BlowfishApiClient";
+export interface TransactionPayload {
+  to: string;
+  from: string;
+  value: string | null;
+  data: string | null;
+}
 
-export { TransactionPayload };
+export type WarningSeverity = "WARNING" | "CRITICAL";
+export type Severity = "INFO" | WarningSeverity;
+
+export const actionToSeverity = (action: Action): Severity => {
+  switch (action) {
+    case "BLOCK":
+      return "CRITICAL";
+    case "WARN":
+      return "WARNING";
+    case "NONE":
+      return "INFO";
+  }
+};
 
 export enum Identifier {
   MetamaskInpage = "METAMASK_INPAGE",

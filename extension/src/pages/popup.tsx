@@ -2,13 +2,14 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 
+import { Providers } from "../components/Providers";
+
 const H1 = styled.h1`
   text-align: center;
 `;
 
 const P = styled.p`
   font-size: 18px;
-  font-weight: bold;
   text-align: center;
 `;
 
@@ -31,7 +32,9 @@ const Popup: React.FC = () => {
     <ResultContainer>
       <H1>🐡 Blowfish 🐡</H1>
       <CenterContainer>
-        <P>Blowfish protection enabled</P>
+        <P>
+          Blowfish <i>protection</i> enabled
+        </P>
         <a
           href="https://www.notion.so/blowfish-xyz/Dogfood-feedback-and-ideas-cdb412d4e98a4dfc84a60324ed9095f6"
           target="_blank"
@@ -48,4 +51,8 @@ const Popup: React.FC = () => {
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
-root.render(<Popup />);
+root.render(
+  <Providers>
+    <Popup />
+  </Providers>
+);

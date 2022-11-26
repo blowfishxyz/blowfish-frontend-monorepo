@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import styled from "styled-components";
-import { JsonViewer } from "@textea/json-viewer";
+import { Providers } from "../components/Providers";
+import { LoadingScreen } from "../components/LoadingScreen";
 import qs from "qs";
 
 import {
@@ -12,21 +13,24 @@ import {
   isSignTypedDataRequest,
   isSignMessageRequest,
   UntypedMessageData,
+  TransactionPayload,
+  actionToSeverity,
 } from "../types";
 import {
   BlowfishApiClient,
   EvmTransactionScanResult,
   EvmMessageScanResult,
+  ChainNetwork,
+  ChainFamily,
 } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
-import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
+import { PopupContainer } from "../components/PopupContainer";
+import { ScanResults } from "../components/ScanResults";
+import { TransactionBlockedScreen } from "../components/InformationScreens";
+import { SlimBottomMenu } from "../components/BottomMenus";
 
-const ResultContainer = styled.div``;
-
-const BLOWFISH_API_KEY = process.env.BLOWFISH_API_KEY as string;
-// TODO(kimpers): Set up a rate limited proxy so we don't need to embed the API key
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
 const ErrorMessage = styled.p`
@@ -35,6 +39,13 @@ const ErrorMessage = styled.p`
 `;
 
 const ScanResult: React.FC = () => {
+  const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
+    undefined
+  );
+  const [chainFamily, setChainFamily] = useState<ChainFamily | undefined>(
+    undefined
+  );
+  const [userAccount, setUserAccount] = useState<string | undefined>(undefined);
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
@@ -46,6 +57,8 @@ const ScanResult: React.FC = () => {
     EvmMessageScanResult | EvmTransactionScanResult | undefined
   >(undefined);
   const [scanError, setScanError] = useState<Error | undefined>(undefined);
+  const [hasDismissedBlockScreen, setHasDismissedBlockScreen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -62,18 +75,20 @@ const ScanResult: React.FC = () => {
       return;
     }
 
-    const { chainFamily, chainNetwork } =
+    const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
       chainIdToSupportedChainMapping[chainId];
 
     const _client = new BlowfishApiClient(
-      chainFamily,
-      chainNetwork,
-      BLOWFISH_API_KEY,
+      _chainFamily,
+      _chainNetwork,
+      undefined,
       BLOWFISH_API_BASE_URL
     );
     setMessage(_message);
     setRequest(_request);
     setClient(_client);
+    setChainFamily(_chainFamily);
+    setChainNetwork(_chainNetwork);
   }, []);
 
   useEffect(() => {
@@ -82,6 +97,7 @@ const ScanResult: React.FC = () => {
     }
     const scanRequest = async () => {
       if (isTransactionRequest(request)) {
+        setUserAccount(request.userAccount);
         const _scanResults = await client.scanTransaction(
           request.payload,
           request.userAccount,
@@ -90,6 +106,7 @@ const ScanResult: React.FC = () => {
 
         setScanResults(_scanResults);
       } else if (isSignTypedDataRequest(request)) {
+        setUserAccount(request.userAccount);
         const _scanResults = await client.scanSignTypedData(
           request.payload,
           request.userAccount,
@@ -98,8 +115,9 @@ const ScanResult: React.FC = () => {
 
         setScanResults(_scanResults);
       } else if (isSignMessageRequest(request)) {
-        const _scanResults = await client.scanSignTypedData(
-          request.payload,
+        setUserAccount(request.userAccount);
+        const _scanResults = await client.scanSignMessage(
+          request.payload.message,
           request.userAccount,
           { origin: message.origin! }
         );
@@ -114,6 +132,8 @@ const ScanResult: React.FC = () => {
     });
   }, [client, message, request]);
 
+  const closeWindow = useCallback(() => window.close(), []);
+
   const handleUserDecision = useCallback(
     async (shouldProceed: boolean) => {
       if (!message) {
@@ -121,46 +141,73 @@ const ScanResult: React.FC = () => {
         return;
       }
       await respondWithUserDecision(message.id, shouldProceed);
-      window.close();
+      closeWindow();
     },
 
-    [message]
+    [message, closeWindow]
   );
 
   logger.debug(message);
   logger.debug(request);
+
+  const severity = useMemo(
+    () =>
+      scanResults?.action ? actionToSeverity(scanResults?.action) : undefined,
+    [scanResults?.action]
+  );
+
+  const shouldShowBlockScreen =
+    scanResults?.action === "BLOCK" && !hasDismissedBlockScreen;
+
+  const isLoading = !scanResults && !scanError;
+  const isError = !isLoading && scanError;
+  const hasAllData =
+    scanResults &&
+    request &&
+    message &&
+    chainFamily &&
+    chainNetwork &&
+    userAccount;
+  const hasResultsLoaded = !isLoading && !isError && hasAllData;
+
   return (
-    <ResultContainer>
-      {!scanResults && !scanError && <p>Scanning dApp interaction...</p>}
-      {scanError && (
-        <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>
-      )}
-      {scanResults && (
-        <div>
-          <h1>Scan Result</h1>
-          <JsonViewer
-            value={scanResults}
-            collapseStringsAfterLength={false}
-            rootName={false}
-            indentWidth={2}
-            defaultInspectDepth={4}
+    <PopupContainer
+      userAccount={userAccount}
+      chainNetwork={chainNetwork}
+      chainFamily={chainFamily}
+      severity={severity}
+      bottomMenuType={shouldShowBlockScreen ? "SLIM" : "NONE"}
+    >
+      {isLoading && <LoadingScreen />}
+      {isError && <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>}
+      {hasResultsLoaded &&
+        (shouldShowBlockScreen ? (
+          <>
+            <TransactionBlockedScreen
+              onContinue={() => setHasDismissedBlockScreen(true)}
+            />
+            <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+          </>
+        ) : (
+          // TODO(kimpers): support for messages and other interactions
+          <ScanResults
+            transaction={request.payload as TransactionPayload}
+            scanResults={scanResults as EvmTransactionScanResult}
+            dappUrl={message.origin!}
+            onContinue={() => handleUserDecision(true)}
+            onCancel={() => handleUserDecision(false)}
+            chainFamily={chainFamily}
+            chainNetwork={chainNetwork}
           />
-        </div>
-      )}
-      {(scanResults || scanError) && (
-        <>
-          <PrimaryButton onClick={() => handleUserDecision(true)}>
-            Proceed
-          </PrimaryButton>
-          <SecondaryButton onClick={() => handleUserDecision(false)}>
-            Cancel
-          </SecondaryButton>
-        </>
-      )}
-    </ResultContainer>
+        ))}
+    </PopupContainer>
   );
 };
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
-root.render(<ScanResult />);
+root.render(
+  <Providers>
+    <ScanResult />
+  </Providers>
+);

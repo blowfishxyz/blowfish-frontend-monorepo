@@ -3,17 +3,29 @@ import { BaseButton } from "./BaseButton";
 
 const PrimaryButton = styled(BaseButton)`
   width: 100%;
-  height: 60px;
-  background: #333b4e;
-  box-shadow: 0px 1px 2px #0f0e39, inset 0px 4px 9px rgba(255, 255, 255, 0.25);
-  border-radius: 11px;
-  outline: none;
-  font-weight: bold;
+  height: 64px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 22px 0px;
+  gap: 8px;
+  background: #000000;
+  box-shadow: 0px 9.94853px 24.1177px rgba(0, 0, 0, 0.136834),
+    0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+  border-radius: 12px;
+  cursor: pointer;
+
+  /* Button text */
+  font-family: "GT Planar";
   font-style: normal;
-  font-family: monospace;
-  font-size: 16px;
-  text-align: center;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
   color: #ffffff;
+
+  /* TODO(kimpers) REMOVE SOME OF THESE
   transition: all 0.15s ease-in;
   will-change: transform, background-color, box-shadow;
   cursor: pointer;
@@ -24,53 +36,44 @@ const PrimaryButton = styled(BaseButton)`
     box-shadow: inset 0px 4px 9px rgba(255, 255, 255, 0.25);
     cursor: not-allowed;
   }
-  /* also focus ?? */
   :hover:not(:disabled) {
     transform: scale(0.98), translateY(-2px);
   }
+  */
 `;
 
 const SecondaryButton = styled(BaseButton)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
-  height: 60px;
-  text-decoration: none;
-  background: #ffffff;
-  border: 1px solid #e3f0ff;
-  box-shadow: inset 0px 4px 9px rgba(255, 255, 255, 0.25);
-  border-radius: 11px;
-  outline: none;
-  font-weight: bold;
-  font-style: normal;
-  font-family: monospace;
-  font-size: 16px;
-  line-height: 19px;
-  text-align: center;
-  color: #333b4e;
-  transition: all 0.15s ease-in;
-  will-change: transform, background-color, box-shadow;
-  cursor: pointer;
-  :active {
-    transform: scale(0.98);
-  }
-  :disabled {
-    box-shadow: inset 0px 4px 9px rgba(255, 255, 255, 0.25);
-    cursor: not-allowed;
-  }
-  :hover:not(:disabled) {
-    transform: scale(0.98), translateY(-2px);
-  }
-`;
-
-const PrimaryButtonLink = styled(PrimaryButton)`
-  text-decoration: none;
-  width: 162px;
+  height: 64px;
+  box-sizing: border-box;
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  margin-right: 30px;
+  align-items: center;
+  padding: 22px 0px;
+  gap: 8px;
+  cursor: pointer;
+
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+  border-radius: 12px;
+
+  /* Button text */
+  font-family: "GT Planar";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 23px;
+  color: #010101;
 `;
 
-export { PrimaryButton, PrimaryButtonLink, SecondaryButton };
+const TextButton = styled(BaseButton)`
+  cursor: pointer;
+  /* Increase clickable area slightly for better UX */
+  padding: 3px;
+  margin: -3px;
+`;
+
+export { PrimaryButton, SecondaryButton, TextButton };
