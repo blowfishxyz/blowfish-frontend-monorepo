@@ -13,7 +13,6 @@ import {
   isSignTypedDataRequest,
   isSignMessageRequest,
   UntypedMessageData,
-  TransactionPayload,
   actionToSeverity,
 } from "../types";
 import {
@@ -170,6 +169,12 @@ const ScanResult: React.FC = () => {
     userAccount;
   const hasResultsLoaded = !isLoading && !isError && hasAllData;
 
+  const isMessageSignatureRequest = useMemo(
+    () =>
+      request &&
+      (isSignMessageRequest(request) || isSignTypedDataRequest(request)),
+    [request]
+  );
   return (
     <PopupContainer
       userAccount={userAccount}
@@ -178,7 +183,11 @@ const ScanResult: React.FC = () => {
       severity={severity}
       bottomMenuType={shouldShowBlockScreen ? "SLIM" : "NONE"}
     >
-      {isLoading && <LoadingScreen />}
+      {isLoading && (
+        <LoadingScreen
+          type={isMessageSignatureRequest ? "message" : "transaction"}
+        />
+      )}
       {isError && <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>}
       {hasResultsLoaded &&
         (shouldShowBlockScreen ? (
@@ -189,10 +198,9 @@ const ScanResult: React.FC = () => {
             <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
           </>
         ) : (
-          // TODO(kimpers): support for messages and other interactions
           <ScanResults
-            transaction={request.payload as TransactionPayload}
-            scanResults={scanResults as EvmTransactionScanResult}
+            request={request}
+            scanResults={scanResults}
             dappUrl={message.origin!}
             onContinue={() => handleUserDecision(true)}
             onCancel={() => handleUserDecision(false)}

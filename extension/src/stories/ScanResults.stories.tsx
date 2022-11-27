@@ -12,10 +12,14 @@ import { SlimBottomMenu } from "../components/BottomMenus";
 import { Severity, actionToSeverity } from "../types";
 
 import {
-  noActionScanResult,
-  warningScanResult,
-  blockScanResult,
-  exampleTransaction,
+  transactionNoActionScanResult,
+  transactionWarningScanResult,
+  transactionBlockScanResult,
+  messageNoActionScanResult,
+  exampleTransactionRequest,
+  exampleNftSignTypedDataRequest,
+  examplePermitSignTypeDataRequest,
+  messageWarnResultScanResult,
   exampleDappUrl,
 } from "./fixtures/scan";
 
@@ -26,17 +30,17 @@ export default {
     userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
-    transaction: exampleTransaction,
-    scanResults: noActionScanResult,
+    request: exampleTransactionRequest,
+    scanResults: transactionNoActionScanResult,
   },
 } as ComponentMeta<typeof PopupContainer>;
 
-export const NoActionResults: ComponentStory<
+export const TransactionNoAction: ComponentStory<
   React.FC<PopupContainerProps & ScanResultsProps>
 > = (props) => {
   const [hasDismissedWarningScreen, setHasDismissedWarningScreen] =
     useState<boolean>(false);
-  const { scanResults, transaction } = props;
+  const { scanResults, request } = props;
   let severity: Severity;
   // If the story has manually set something other than info allow that override
   if (props.severity && props.severity !== "INFO") {
@@ -79,7 +83,7 @@ export const NoActionResults: ComponentStory<
             </>
           ) : (
             <ScanResults
-              transaction={transaction}
+              request={request}
               scanResults={scanResults}
               dappUrl={exampleDappUrl}
               onContinue={async () => {
@@ -98,12 +102,24 @@ export const NoActionResults: ComponentStory<
   );
 };
 
-export const WarnResults = NoActionResults.bind({});
-WarnResults.args = {
-  scanResults: warningScanResult,
+export const TransactionWarn = TransactionNoAction.bind({});
+TransactionWarn.args = {
+  scanResults: transactionWarningScanResult,
 };
 
-export const BlockResults = WarnResults.bind({});
-BlockResults.args = {
-  scanResults: blockScanResult,
+export const TransactionBlock = TransactionWarn.bind({});
+TransactionBlock.args = {
+  scanResults: transactionBlockScanResult,
+};
+
+export const MessageNoAction = TransactionNoAction.bind({});
+MessageNoAction.args = {
+  request: exampleNftSignTypedDataRequest,
+  scanResults: messageNoActionScanResult,
+};
+
+export const MessageWarn = TransactionNoAction.bind({});
+MessageWarn.args = {
+  request: examplePermitSignTypeDataRequest,
+  scanResults: messageWarnResultScanResult,
 };

@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 import { WalletIcon } from "./icons/WalletIcon";
-import { EthereumIcon } from "./icons/ChainIcons";
+import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
 import { shortenHex } from "../utils/hex";
 import { TextSmall } from "./Typography";
 import { SLIM_BOTTOM_MENU_HEIGHT } from "./BottomMenus";
@@ -22,9 +22,11 @@ const StyledWalletIcon = styled(WalletIcon)`
 const StyledEthereumIcon = styled(EthereumIcon)`
   height: 16px;
   width: auto;
-  & > path {
-    fill: rgba(0, 0, 0, 0.33);
-  }
+`;
+
+const StyledPolygonIcon = styled(PolygonIcon)`
+  height: 14px;
+  width: auto;
 `;
 
 const HeaderLeft = styled.div`
@@ -108,7 +110,11 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       )}
       {chainFamily && chainNetwork && (
         <HeaderRight>
-          <StyledEthereumIcon />
+          {chainFamily === "polygon" ? (
+            <StyledPolygonIcon />
+          ) : (
+            <StyledEthereumIcon />
+          )}
           <span>
             {chainFamily} {chainNetwork}
           </span>

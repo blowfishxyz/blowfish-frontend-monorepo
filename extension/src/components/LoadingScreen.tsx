@@ -8,12 +8,20 @@ import { BlowfishIcon } from "./icons/BlowfishIcon";
 import { UnstyledA } from "./Links";
 
 // TODO(kimpers): Actual copy
-const LOADING_STATES = [
-  "Simulating transaction",
-  "Analyzing smart contract",
-  "Verifying accounts",
-  "Checking for malicious code",
-];
+const LOADING_STATES = {
+  transaction: [
+    "Simulating transaction",
+    "Analyzing smart contract",
+    "Verifying accounts",
+    "Checking for malicious code",
+  ],
+  message: [
+    "Simulating message",
+    "Checking for malicious code",
+    "Verifying accounts",
+    "Analyzing signature request",
+  ],
+};
 const STATE_CHANGE_DELAY = 2000;
 
 const StyledLoadingAnimation = styled(LoadingAnimation)`
@@ -48,25 +56,30 @@ const Wrapper = styled.div`
   }
 `;
 interface LoadingScreenProps {
+  type?: "transaction" | "message";
   style?: React.CSSProperties;
   className?: string;
 }
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   style,
+  type = "transaction",
   className,
 }) => {
-  const [stateTextIndex, setStateTextIndex] = useState<number>(0);
+  const loadingStatesLength = LOADING_STATES[type].length;
+  const [stateTextIndex, setStateTextIndex] = useState<number>(
+    Math.round(Math.random() * loadingStatesLength)
+  );
   useInterval(
-    () => setStateTextIndex((stateTextIndex + 1) % LOADING_STATES.length),
+    () => setStateTextIndex((stateTextIndex + 1) % loadingStatesLength),
     STATE_CHANGE_DELAY
   );
   return (
     <Wrapper style={style} className={className}>
       <StyledLoadingAnimation />
-      <Text>Simulating Transaction...</Text>
+      <Text>Simulating {type}...</Text>
       <TextSmall style={{ opacity: 0.3 }}>
-        {LOADING_STATES[stateTextIndex]}
+        {LOADING_STATES[type][stateTextIndex]}
       </TextSmall>
       <StyledLink href="https://blowfish.xyz" target="_blank" rel="noopener">
         <StyledBlowfishIcon />
