@@ -68,6 +68,18 @@ export interface Erc20ApprovalData {
   assetPrice: Price | null;
 }
 
+export interface Erc20PermitData {
+  contract: EvmAddressInfo;
+  name: string;
+  symbol: string;
+  decimals: number;
+  owner: EvmAddressInfo;
+  spender: EvmAddressInfo;
+  amount: string;
+  nonce: string;
+  deadline: null | number;
+}
+
 export type EvmStateChange =
   | {
       kind: "ERC20_TRANSFER";
@@ -105,4 +117,8 @@ export type EvmStateChange =
   | {
       kind: "ERC20_APPROVAL";
       data: Erc20ApprovalData;
+    }
+  | {
+      kind: "ERC20_PERMIT";
+      data: Erc20PermitData;
     };

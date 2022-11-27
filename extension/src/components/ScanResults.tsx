@@ -142,7 +142,8 @@ const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
       };
       return displayTransaction;
     } else if (isSignTypedDataRequest(request)) {
-      return request.payload;
+      const { domain, message } = request.payload;
+      return { domain, message };
     } else if (isSignMessageRequest(request)) {
       const { message } = request.payload;
       return {
@@ -196,8 +197,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
       scanResults?.simulationResults?.expectedStateChanges.map(
         (expectedStateChange) => {
           const { amount } = expectedStateChange.rawInfo.data;
+          let diff;
+          if (typeof amount === "object") {
+            diff = new Decimal(amount.before).sub(amount.after);
+          } else {
+            diff = new Decimal(amount);
+          }
 
-          const diff = new Decimal(amount.before).sub(amount.after);
           return {
             ...expectedStateChange,
             diff,

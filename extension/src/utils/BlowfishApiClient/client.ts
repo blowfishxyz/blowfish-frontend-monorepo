@@ -18,6 +18,9 @@ export interface SignTypedDataPayload {
     verifyingContract: string;
   };
   message: object;
+  // TODO(kimpers): Proper typing
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 export interface SignTypedDataRequest {

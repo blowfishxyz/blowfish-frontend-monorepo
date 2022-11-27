@@ -12,10 +12,14 @@ import { SlimBottomMenu } from "../components/BottomMenus";
 import { Severity, actionToSeverity } from "../types";
 
 import {
-  noActionScanResult,
-  warningScanResult,
-  blockScanResult,
+  transactionNoActionScanResult,
+  transactionWarningScanResult,
+  transactionBlockScanResult,
+  messageNoActionScanResult,
   exampleTransactionRequest,
+  exampleNftSignTypedDataRequest,
+  examplePermitSignTypeDataRequest,
+  messageWarnResultScanResult,
   exampleDappUrl,
 } from "./fixtures/scan";
 
@@ -27,11 +31,11 @@ export default {
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
     request: exampleTransactionRequest,
-    scanResults: noActionScanResult,
+    scanResults: transactionNoActionScanResult,
   },
 } as ComponentMeta<typeof PopupContainer>;
 
-export const NoActionResults: ComponentStory<
+export const TransactionNoAction: ComponentStory<
   React.FC<PopupContainerProps & ScanResultsProps>
 > = (props) => {
   const [hasDismissedWarningScreen, setHasDismissedWarningScreen] =
@@ -98,12 +102,24 @@ export const NoActionResults: ComponentStory<
   );
 };
 
-export const WarnResults = NoActionResults.bind({});
-WarnResults.args = {
-  scanResults: warningScanResult,
+export const TransactionWarn = TransactionNoAction.bind({});
+TransactionWarn.args = {
+  scanResults: transactionWarningScanResult,
 };
 
-export const BlockResults = WarnResults.bind({});
-BlockResults.args = {
-  scanResults: blockScanResult,
+export const TransactionBlock = TransactionWarn.bind({});
+TransactionBlock.args = {
+  scanResults: transactionBlockScanResult,
+};
+
+export const MessageNoAction = TransactionNoAction.bind({});
+MessageNoAction.args = {
+  request: exampleNftSignTypedDataRequest,
+  scanResults: messageNoActionScanResult,
+};
+
+export const MessageWarn = TransactionNoAction.bind({});
+MessageWarn.args = {
+  request: examplePermitSignTypeDataRequest,
+  scanResults: messageWarnResultScanResult,
 };
