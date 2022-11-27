@@ -29,7 +29,6 @@ export const Text = styled.span<TypographyProps>`
   font-weight: 400;
   font-size: 16px;
   line-height: 18px;
-  text-transform: titlecase;
 
   color: ${({ theme, secondary }) =>
     secondary ? theme.colors.secondaryText : theme.colors.primaryText};

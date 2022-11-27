@@ -124,6 +124,10 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   }
 `;
 
+const TitleText = styled(TextLarge)`
+  text-transform: titlecase;
+`;
+
 const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   color: ${({ isPositiveEffect, theme }) =>
     isPositiveEffect ? theme.palette.green : theme.palette.red};
@@ -233,7 +237,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   return (
     <Wrapper>
       <Header borderBottom={scanResults.action === "NONE"}>
-        <TextLarge as="h1">{requestTypeStr} Details</TextLarge>
+        <TitleText as="h1">{requestTypeStr} Details</TitleText>
         {scanResults.warnings[0] && (
           <WarningNotice
             severity={scanResults.action === "WARN" ? "WARNING" : "CRITICAL"}
