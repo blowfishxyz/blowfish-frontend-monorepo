@@ -4,48 +4,86 @@ import type { EvmAmountDiff } from "./EvmAmountDiff";
 import type { EvmTokenMetadata } from "./EvmTokenMetadata";
 import type { Price } from "./Price";
 
+export interface Erc20TransferData {
+  symbol: string;
+  name: string;
+  decimals: number;
+  amount: EvmAmountDiff;
+  contract: EvmAddressInfo;
+  assetPrice: Price | null;
+}
+
+export interface Erc721TransferData {
+  symbol: string;
+  name: string;
+  tokenId: string | null;
+  amount: EvmAmountDiff;
+  contract: EvmAddressInfo;
+  metadata: EvmTokenMetadata;
+}
+
+export interface Erc1155TransferData {
+  amount: EvmAmountDiff;
+  contract: EvmAddressInfo;
+  tokenId: string;
+  metadata: EvmTokenMetadata;
+}
+
+export interface Erc721ApprovalForAllData {
+  symbol: string;
+  name: string;
+  spender: EvmAddressInfo;
+  contract: EvmAddressInfo;
+  owner: EvmAddressInfo;
+  amount: EvmAmountDiff;
+}
+
+export interface Erc721ApprovalData {
+  symbol: string;
+  name: string;
+  spender: EvmAddressInfo;
+  contract: EvmAddressInfo;
+  owner: EvmAddressInfo;
+  tokenId: string;
+  amount: EvmAmountDiff;
+  metadata: EvmTokenMetadata;
+}
+
+export interface NativeAssetTransferData {
+  symbol: string;
+  name: string;
+  decimals: number;
+  amount: EvmAmountDiff;
+  contract: EvmAddressInfo;
+}
+
+export interface Erc20ApprovalData {
+  name: string;
+  symbol: string;
+  decimals: number;
+  spender: EvmAddressInfo;
+  amount: EvmAmountDiff;
+  contract: EvmAddressInfo;
+  owner: EvmAddressInfo;
+  assetPrice: Price | null;
+}
+
 export type EvmStateChange =
   | {
       kind: "ERC20_TRANSFER";
-      data: {
-        symbol: string;
-        name: string;
-        decimals: number;
-        amount: EvmAmountDiff;
-        contract: EvmAddressInfo;
-        assetPrice: Price | null;
-      };
+      data: Erc20TransferData;
     }
   | {
       kind: "ERC721_TRANSFER";
-      data: {
-        symbol: string;
-        name: string;
-        tokenId: string | null;
-        amount: EvmAmountDiff;
-        contract: EvmAddressInfo;
-        metadata: EvmTokenMetadata;
-      };
+      data: Erc721TransferData;
     }
   | {
       kind: "ERC1155_TRANSFER";
-      data: {
-        amount: EvmAmountDiff;
-        contract: EvmAddressInfo;
-        tokenId: string;
-        metadata: EvmTokenMetadata;
-      };
+      data: Erc1155TransferData;
     }
   | {
       kind: "ERC721_APPROVAL_FOR_ALL";
-      data: {
-        symbol: string;
-        name: string;
-        spender: EvmAddressInfo;
-        contract: EvmAddressInfo;
-        owner: EvmAddressInfo;
-        amount: EvmAmountDiff;
-      };
+      data: Erc721ApprovalForAllData;
     }
   | {
       kind: "ERC1155_APPROVAL_FOR_ALL";
@@ -58,37 +96,13 @@ export type EvmStateChange =
     }
   | {
       kind: "ERC721_APPROVAL";
-      data: {
-        symbol: string;
-        name: string;
-        spender: EvmAddressInfo;
-        contract: EvmAddressInfo;
-        owner: EvmAddressInfo;
-        tokenId: string;
-        amount: EvmAmountDiff;
-        metadata: EvmTokenMetadata;
-      };
+      data: Erc721ApprovalData;
     }
   | {
       kind: "NATIVE_ASSET_TRANSFER";
-      data: {
-        symbol: string;
-        name: string;
-        decimals: number;
-        amount: EvmAmountDiff;
-        contract: EvmAddressInfo;
-      };
+      data: NativeAssetTransferData;
     }
   | {
       kind: "ERC20_APPROVAL";
-      data: {
-        name: string;
-        symbol: string;
-        decimals: number;
-        spender: EvmAddressInfo;
-        amount: EvmAmountDiff;
-        contract: EvmAddressInfo;
-        owner: EvmAddressInfo;
-        assetPrice: Price | null;
-      };
+      data: Erc20ApprovalData;
     };

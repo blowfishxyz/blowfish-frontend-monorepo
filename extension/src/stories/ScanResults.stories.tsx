@@ -15,7 +15,7 @@ import {
   noActionScanResult,
   warningScanResult,
   blockScanResult,
-  exampleTransaction,
+  exampleTransactionRequest,
   exampleDappUrl,
 } from "./fixtures/scan";
 
@@ -26,7 +26,7 @@ export default {
     userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
-    transaction: exampleTransaction,
+    request: exampleTransactionRequest,
     scanResults: noActionScanResult,
   },
 } as ComponentMeta<typeof PopupContainer>;
@@ -36,7 +36,7 @@ export const NoActionResults: ComponentStory<
 > = (props) => {
   const [hasDismissedWarningScreen, setHasDismissedWarningScreen] =
     useState<boolean>(false);
-  const { scanResults, transaction } = props;
+  const { scanResults, request } = props;
   let severity: Severity;
   // If the story has manually set something other than info allow that override
   if (props.severity && props.severity !== "INFO") {
@@ -79,7 +79,7 @@ export const NoActionResults: ComponentStory<
             </>
           ) : (
             <ScanResults
-              transaction={transaction}
+              request={request}
               scanResults={scanResults}
               dappUrl={exampleDappUrl}
               onContinue={async () => {

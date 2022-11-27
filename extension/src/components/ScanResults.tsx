@@ -11,13 +11,30 @@ import { JsonViewer } from "./JsonViewer";
 import { ExpandIcon } from "./icons/ExpandArrow";
 import { WarningIcon } from "./icons/WarningIcon";
 import { WarningNotice } from "./WarningNotice";
+import { logger } from "../utils/logger";
 
 import type {
   EvmTransactionScanResult,
+  EvmMessageScanResult,
   ChainFamily,
   ChainNetwork,
+  Erc721ApprovalData,
+  Erc721TransferData,
+  Erc1155TransferData,
 } from "../utils/BlowfishApiClient";
-import type { TransactionPayload, WarningSeverity } from "../types";
+import {
+  WarningSeverity,
+  DappRequest,
+  isTransactionRequest,
+  isSignTypedDataRequest,
+  isSignMessageRequest,
+  TransactionPayload,
+} from "../types";
+
+type NftStateChangeWithTokenId =
+  | Erc721TransferData
+  | Erc1155TransferData
+  | Erc721ApprovalData;
 
 const Wrapper = styled.div`
   min-height: 625px;
@@ -27,6 +44,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
   border-radius: 12px;
+  overflow-x: scroll;
 `;
 
 const SimulationResults = styled.div`
@@ -112,9 +130,50 @@ const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   line-height: 16px;
 `;
 
+const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
+  const [showAdvancedDetails, setShowAdvancedDetails] =
+    useState<boolean>(false);
+  const content = useMemo(() => {
+    if (isTransactionRequest(request)) {
+      // NOTE: For display purposes we want to show 0 when value is null
+      const displayTransaction: TransactionPayload = {
+        ...request.payload,
+        value: request.payload.value || "0",
+      };
+      return displayTransaction;
+    } else if (isSignTypedDataRequest(request)) {
+      return request.payload;
+    } else if (isSignMessageRequest(request)) {
+      const { message } = request.payload;
+      return {
+        message,
+      };
+    } else {
+      logger.error("AdvancedDetails: Unhandled request type", request);
+    }
+  }, [request]);
+
+  return (
+    <Section
+      borderTop
+      style={{ padding: "25px", flex: 1, justifyContent: "unset" }}
+    >
+      <Row>
+        <AdvancedDetailsToggleButton
+          onClick={() => setShowAdvancedDetails((prev) => !prev)}
+        >
+          <TextLarge>Advanced Details</TextLarge>
+          <ExpandIcon expanded={showAdvancedDetails} />
+        </AdvancedDetailsToggleButton>
+      </Row>
+      {showAdvancedDetails && content && <JsonViewer data={content} />}
+    </Section>
+  );
+};
+
 export interface ScanResultsProps {
-  transaction: TransactionPayload;
-  scanResults: EvmTransactionScanResult;
+  request: DappRequest;
+  scanResults: EvmTransactionScanResult | EvmMessageScanResult;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
@@ -122,7 +181,7 @@ export interface ScanResultsProps {
   onCancel: () => Promise<void>;
 }
 export const ScanResults: React.FC<ScanResultsProps> = ({
-  transaction,
+  request,
   scanResults,
   onContinue,
   onCancel,
@@ -130,21 +189,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   chainFamily,
   ...props
 }) => {
-  const [showAdvancedDetails, setShowAdvancedDetails] =
-    useState<boolean>(false);
   const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
-  // NOTE: For display purposes we want to show 0 when value is null
-  const displayTransaction: TransactionPayload = useMemo(
-    () => ({
-      ...transaction,
-      value: transaction.value || "0",
-    }),
-    [transaction]
-  );
 
   const expectedStateChangesProcessed = useMemo(
     () =>
-      scanResults.simulationResults.expectedStateChanges.map(
+      scanResults?.simulationResults?.expectedStateChanges.map(
         (expectedStateChange) => {
           const { amount } = expectedStateChange.rawInfo.data;
 
@@ -155,13 +204,30 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           };
         }
       ),
-    [scanResults.simulationResults.expectedStateChanges]
+    [scanResults?.simulationResults?.expectedStateChanges]
   );
+  const toAddress = useMemo(() => {
+    if (isTransactionRequest(request)) {
+      return request.payload?.to;
+    } else if (isSignTypedDataRequest(request)) {
+      return request.payload?.domain?.verifyingContract;
+    }
+
+    return undefined;
+  }, [request]);
+
+  const requestTypeStr = useMemo(() => {
+    if (isTransactionRequest(request)) {
+      return "Transaction";
+    }
+
+    return "Message";
+  }, [request]);
 
   return (
     <Wrapper>
       <Header borderBottom={scanResults.action === "NONE"}>
-        <TextLarge as="h1">Transaction Details</TextLarge>
+        <TextLarge as="h1">{requestTypeStr} Details</TextLarge>
         {scanResults.warnings[0] && (
           <WarningNotice
             severity={scanResults.action === "WARN" ? "WARNING" : "CRITICAL"}
@@ -175,22 +241,32 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             To Address
           </TextSmall>
           <Text>
-            <BlockExplorerLink
-              address={transaction.to}
-              chainFamily={chainFamily}
-              chainNetwork={chainNetwork}
-            >
-              {shortenHex(transaction.to)}
-            </BlockExplorerLink>
+            {toAddress && (
+              <BlockExplorerLink
+                address={toAddress}
+                chainFamily={chainFamily}
+                chainNetwork={chainNetwork}
+              >
+                {shortenHex(toAddress)}
+              </BlockExplorerLink>
+            )}
           </Text>
         </Section>
         <Section borderBottom>
           <TextSmall secondary style={{ marginBottom: "8px" }}>
             Simulation Results
           </TextSmall>
-          {expectedStateChangesProcessed.map((stateChange, i) => {
+          {expectedStateChangesProcessed?.map((stateChange, i) => {
             const address = stateChange.rawInfo.data.contract.address;
-            const isApproval = stateChange.rawInfo.kind.includes("APPROVAL");
+            const { kind } = stateChange.rawInfo;
+            const isApproval = kind.includes("APPROVAL");
+            const isNft = kind.includes("ERC721") || kind.includes("ERC1155");
+            let nftTokenId: string | undefined;
+            if (isNft) {
+              const nftData = stateChange.rawInfo
+                .data as NftStateChangeWithTokenId;
+              nftTokenId = nftData.tokenId || undefined;
+            }
             // NOTE(kimpers): We define positive as decreased approval or increased balance
             const isPositiveEffect =
               (isApproval && stateChange.diff.gt(0)) ||
@@ -214,6 +290,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                     address={address}
                     chainFamily={chainFamily}
                     chainNetwork={chainNetwork}
+                    nftTokenId={nftTokenId}
                   >
                     <StateChangeText isPositiveEffect={isPositiveEffect}>
                       {stateChange.humanReadableDiff}
@@ -233,24 +310,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           </LinkWithArrow>
         </Section>
       </SimulationResults>
-      <Section
-        borderTop
-        style={{ padding: "25px", flex: 1, justifyContent: "unset" }}
-      >
-        <Row>
-          <AdvancedDetailsToggleButton
-            onClick={() => setShowAdvancedDetails((prev) => !prev)}
-          >
-            <TextLarge>Advanced Details</TextLarge>
-            <ExpandIcon expanded={showAdvancedDetails} />
-          </AdvancedDetailsToggleButton>
-        </Row>
-        {showAdvancedDetails && <JsonViewer data={displayTransaction} />}
-      </Section>
+      <AdvancedDetails request={request} />
       <ReportRow>
         <TextButton>
           <TextLarge secondary style={{ fontWeight: 400 }}>
-            Report this transaction
+            Report this {requestTypeStr.toLowerCase()}
           </TextLarge>
         </TextButton>
       </ReportRow>

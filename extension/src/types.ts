@@ -1,4 +1,7 @@
-import type { Action } from "./utils/BlowfishApiClient";
+import { Action, SignTypedDataPayload } from "./utils/BlowfishApiClient";
+
+export { SignTypedDataPayload };
+
 export interface TransactionPayload {
   to: string;
   from: string;
@@ -83,10 +86,6 @@ export const isTransactionRequest = (
   req: DappRequest
 ): req is TransactionRequest => req.type === RequestType.Transaction;
 
-export interface SignTypedDataPayload {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-}
 export interface SignTypedDataRequest extends BaseRequest {
   type: RequestType.SignTypedData;
   payload: SignTypedDataPayload;

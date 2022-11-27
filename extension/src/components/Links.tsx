@@ -45,11 +45,13 @@ interface BlockExplorerLinkProps extends Omit<LinkWithArrowProps, "href"> {
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   address: string;
+  nftTokenId?: string;
 }
 export const BlockExplorerLink: React.FC<BlockExplorerLinkProps> = ({
   chainFamily,
   chainNetwork,
   address,
+  nftTokenId,
   ...props
 }) => {
   // TODO(kimpers): move to util?
@@ -58,7 +60,11 @@ export const BlockExplorerLink: React.FC<BlockExplorerLinkProps> = ({
   if (chainFamily === "polygon") {
     url = `https://${prefix}polygonscan.com/address/${address}`;
   } else {
-    url = `https://${prefix}etherscan.io/address/${address}`;
+    // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
+    const assetType = nftTokenId ? "nft" : "address";
+    url = `https://${prefix}etherscan.io/${assetType}/${address}${
+      nftTokenId ? `/${nftTokenId}` : ""
+    }`;
   }
 
   return <LinkWithArrow href={url} {...props} />;

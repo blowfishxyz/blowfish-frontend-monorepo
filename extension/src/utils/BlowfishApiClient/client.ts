@@ -10,12 +10,22 @@ import {
 export type ChainFamily = "ethereum" | "polygon";
 export type ChainNetwork = "mainnet" | "goerli";
 
-interface SignTypedDataRequest {
-  kind: "SIGN_TYPED_DATA";
-  data: object;
+export interface SignTypedDataPayload {
+  domain: {
+    name: string;
+    version: string | number;
+    chainId: string | number;
+    verifyingContract: string;
+  };
+  message: object;
 }
 
-interface SignMessageRequest {
+export interface SignTypedDataRequest {
+  kind: "SIGN_TYPED_DATA";
+  data: SignTypedDataPayload;
+}
+
+export interface SignMessageRequest {
   kind: "SIGN_MESSAGE";
   rawMessage: string;
 }
@@ -64,7 +74,7 @@ export class BlowfishApiClient {
   }
 
   public async scanSignTypedData(
-    typedData: object,
+    typedData: SignTypedDataPayload,
     userAccount: string,
     metadata: RequestMetadata
   ): Promise<EvmMessageScanResult> {
