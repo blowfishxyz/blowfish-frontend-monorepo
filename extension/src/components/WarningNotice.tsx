@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { Text } from "./Typography";
-import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcon";
+import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcons";
 import { WarningSeverity } from "../types";
 import type { Warning } from "../utils/BlowfishApiClient";
 

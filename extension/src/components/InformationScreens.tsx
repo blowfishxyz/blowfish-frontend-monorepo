@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcon";
+import {
+  BlowfishWarningIcon,
+  BlowfishInvertedWarningIcon,
+} from "./icons/BlowfishWarningIcons";
 import { TextButton } from "./Buttons";
 import { TextXL, Text } from "./Typography";
 
@@ -25,6 +28,10 @@ const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
   width: 81px;
   height: auto;
   margin-bottom: 40px;
+`;
+
+const StyledBlowfishInvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
+  margin-bottom: 48px;
 `;
 
 const Wrapper = styled.div<SharedProps>`
@@ -72,6 +79,28 @@ export const TransactionBlockedScreen: React.FC<
           Ignore warning, proceed anyway
         </StyledText>
       </TextButton>
+    </Wrapper>
+  );
+};
+
+export interface SimulationFailedScreenProps {
+  style?: React.CSSProperties;
+  className?: string;
+}
+export const SimulationFailedScreen: React.FC<SimulationFailedScreenProps> = ({
+  style,
+  className,
+}) => {
+  const kind = "SIMULATION_FAILED";
+  // TODO(kimpers): Actual copy
+  return (
+    <Wrapper kind={kind} style={style} className={className}>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL kind={kind}>Simulation Failed</StyledTextXL>
+      <StyledText kind={kind}>
+        We are unable to simulate this transaction. Approving it may lead to
+        loss of your funds
+      </StyledText>
     </Wrapper>
   );
 };
