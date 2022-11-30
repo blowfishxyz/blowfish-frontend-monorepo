@@ -7,6 +7,7 @@ import {
 } from "./icons/BlowfishWarningIcons";
 import { TextButton } from "./Buttons";
 import { TextXL, Text } from "./Typography";
+import { ContentToggle } from "./ContentToggle";
 
 interface SharedProps {
   kind: InformationScreenKind;
@@ -15,13 +16,17 @@ const StyledTextXL = styled(TextXL)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   color: ${({ kind, theme }) =>
-    kind === "TRANSACTION_BLOCKED" ? "#ff6332" : theme.palette.black};
+    kind === "TRANSACTION_BLOCKED"
+      ? theme.palette.warningText
+      : theme.palette.black};
 `;
 const StyledText = styled(Text)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   color: ${({ kind, theme }) =>
-    kind === "TRANSACTION_BLOCKED" ? "#ff6332" : theme.palette.black};
+    kind === "TRANSACTION_BLOCKED"
+      ? theme.palette.warningText
+      : theme.palette.black};
 `;
 
 const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
@@ -45,6 +50,17 @@ const Wrapper = styled.div<SharedProps>`
   padding: 120px 32px 32px 32px;
   align-items: center;
   box-sizing: border-box;
+`;
+
+const WarningMessageWrapper = styled.div`
+  background: rgba(245, 180, 159, 0.2);
+  border-radius: 12px;
+  padding: 17px 16px;
+  word-break: break-word;
+
+  ${Text} {
+    color: ${({ theme }) => theme.palette.warningText};
+  }
 `;
 
 type InformationScreenKind =
@@ -98,9 +114,38 @@ export const SimulationFailedScreen: React.FC<SimulationFailedScreenProps> = ({
       <StyledBlowfishInvertedWarningIcon />
       <StyledTextXL kind={kind}>Simulation Failed</StyledTextXL>
       <StyledText kind={kind}>
-        We are unable to simulate this transaction. Approving it may lead to
-        loss of your funds
+        We are unable to simulate this transaction. Approving it may
+        lead&nbsp;to&nbsp;loss of funds
       </StyledText>
+    </Wrapper>
+  );
+};
+
+export interface TransactionRevertedScreenProps {
+  style?: React.CSSProperties;
+  className?: string;
+  parsedErrorMessage?: string;
+}
+export const TransactionRevertedScreen: React.FC<
+  TransactionRevertedScreenProps
+> = ({ style, className, parsedErrorMessage }) => {
+  const kind = "TRANSACTION_REVERTED";
+  // TODO(kimpers): Actual copy
+  return (
+    <Wrapper kind={kind} style={style} className={className}>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL kind={kind}>Transaction Reverted</StyledTextXL>
+      <StyledText kind={kind}>
+        The transaction reverted when we simulated it. Approving may lead to
+        loss&nbsp;of funds
+      </StyledText>
+      {parsedErrorMessage && parsedErrorMessage.length > 0 && (
+        <ContentToggle message="View error message">
+          <WarningMessageWrapper>
+            <Text>{parsedErrorMessage}</Text>
+          </WarningMessageWrapper>
+        </ContentToggle>
+      )}
     </Wrapper>
   );
 };

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import styled, { css } from "styled-components";
 import { Decimal } from "decimal.js";
 
-import { TextLarge, Text, TextSmall } from "./Typography";
+import { Text, TextSmall } from "./Typography";
 import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
 import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
@@ -119,12 +119,14 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   padding: 3px;
   margin: -3px;
   cursor: pointer;
-  ${TextLarge} {
+  ${Text} {
+    font-weight: 500;
     margin-right: 5px;
   }
 `;
 
-const TitleText = styled(TextLarge)`
+const TitleText = styled(Text)`
+  font-weight: 500;
   text-transform: titlecase;
 `;
 
@@ -167,7 +169,7 @@ const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
         <AdvancedDetailsToggleButton
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >
-          <TextLarge>Advanced Details</TextLarge>
+          <Text semiBold>Advanced Details</Text>
           <ExpandIcon expanded={showAdvancedDetails} />
         </AdvancedDetailsToggleButton>
       </Row>
@@ -323,9 +325,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
       <AdvancedDetails request={request} />
       <ReportRow>
         <TextButton>
-          <TextLarge secondary style={{ fontWeight: 400 }}>
-            Report this {requestTypeStr.toLowerCase()}
-          </TextLarge>
+          <Text secondary>Report this {requestTypeStr.toLowerCase()}</Text>
         </TextButton>
       </ReportRow>
       <ButtonRow>
