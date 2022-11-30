@@ -27,7 +27,10 @@ import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
 import { PopupContainer } from "../components/PopupContainer";
 import { ScanResults } from "../components/ScanResults";
-import { TransactionBlockedScreen } from "../components/InformationScreens";
+import {
+  TransactionBlockedScreen,
+  SimulationErrorScreen,
+} from "../components/InformationScreens";
 import { SlimBottomMenu } from "../components/BottomMenus";
 
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
@@ -56,8 +59,7 @@ const ScanResult: React.FC = () => {
     EvmMessageScanResult | EvmTransactionScanResult | undefined
   >(undefined);
   const [scanError, setScanError] = useState<Error | undefined>(undefined);
-  const [hasDismissedBlockScreen, setHasDismissedBlockScreen] =
-    useState<boolean>(false);
+  const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -155,11 +157,6 @@ const ScanResult: React.FC = () => {
     [scanResults?.action]
   );
 
-  const shouldShowBlockScreen =
-    scanResults?.action === "BLOCK" && !hasDismissedBlockScreen;
-
-  const isLoading = !scanResults && !scanError;
-  const isError = !isLoading && scanError;
   const hasAllData =
     scanResults &&
     request &&
@@ -167,47 +164,84 @@ const ScanResult: React.FC = () => {
     chainFamily &&
     chainNetwork &&
     userAccount;
-  const hasResultsLoaded = !isLoading && !isError && hasAllData;
-
   const isMessageSignatureRequest = useMemo(
     () =>
       request &&
       (isSignMessageRequest(request) || isSignTypedDataRequest(request)),
     [request]
   );
+
+  const maybeInformationScreen = useMemo(() => {
+    const isLoading = !scanResults && !scanError;
+    const isError = !isLoading && scanError;
+    const shouldShowBlockScreen =
+      scanResults?.action === "BLOCK" && !hasDismissedScreen;
+    const simulationError = scanResults && scanResults.simulationResults?.error;
+
+    if (isLoading) {
+      return (
+        <LoadingScreen
+          type={isMessageSignatureRequest ? "message" : "transaction"}
+        />
+      );
+    } else if (isError) {
+      return <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>;
+    } else if (shouldShowBlockScreen) {
+      return (
+        <>
+          <TransactionBlockedScreen
+            onContinue={() => setHasDismissedScreen(true)}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
+    } else if (simulationError) {
+      if (simulationError.kind === "SIMULATION_FAILED") {
+        return (
+          <SimulationErrorScreen
+            headline="Transaction Reverted"
+            message="The transaction reverted when we simulated it. Approving may lead to loss of funds"
+            errorMessage={simulationError.parsedErrorMessage}
+          />
+        );
+      } else {
+        return (
+          <SimulationErrorScreen
+            headline="Simulation Failed"
+            message="We are unable to simulate this transaction. Approving may lead to loss of funds"
+          />
+        );
+      }
+    }
+  }, [
+    scanResults,
+    scanError,
+    hasDismissedScreen,
+    closeWindow,
+    isMessageSignatureRequest,
+  ]);
+
   return (
     <PopupContainer
       userAccount={userAccount}
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
       severity={severity}
-      bottomMenuType={shouldShowBlockScreen ? "SLIM" : "NONE"}
+      bottomMenuType={maybeInformationScreen ? "SLIM" : "NONE"}
     >
-      {isLoading && (
-        <LoadingScreen
-          type={isMessageSignatureRequest ? "message" : "transaction"}
-        />
-      )}
-      {isError && <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>}
-      {hasResultsLoaded &&
-        (shouldShowBlockScreen ? (
-          <>
-            <TransactionBlockedScreen
-              onContinue={() => setHasDismissedBlockScreen(true)}
+      {maybeInformationScreen
+        ? maybeInformationScreen
+        : hasAllData && (
+            <ScanResults
+              request={request}
+              scanResults={scanResults}
+              dappUrl={message.origin!}
+              onContinue={() => handleUserDecision(true)}
+              onCancel={() => handleUserDecision(false)}
+              chainFamily={chainFamily}
+              chainNetwork={chainNetwork}
             />
-            <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
-          </>
-        ) : (
-          <ScanResults
-            request={request}
-            scanResults={scanResults}
-            dappUrl={message.origin!}
-            onContinue={() => handleUserDecision(true)}
-            onCancel={() => handleUserDecision(false)}
-            chainFamily={chainFamily}
-            chainNetwork={chainNetwork}
-          />
-        ))}
+          )}
     </PopupContainer>
   );
 };

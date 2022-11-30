@@ -9,10 +9,8 @@ import {
 import {
   TransactionBlockedScreen as TransactionBlockedScreenComponent,
   TransactionBlockedScreenProps,
-  SimulationFailedScreen,
-  SimulationFailedScreenProps,
-  TransactionRevertedScreen,
-  TransactionRevertedScreenProps,
+  SimulationErrorScreen,
+  SimulationErrorScreenProps,
   UnsupportedChainScreen,
   UnsupportedChainScreenProps,
 } from "../components/InformationScreens";
@@ -65,9 +63,9 @@ export const TransactionBlocked: ComponentStory<
   );
 };
 
-export const SimulationFailed: ComponentStory<
+export const SimulationError: ComponentStory<
   React.FC<
-    PopupContainerProps & SimulationFailedScreenProps & SlimBottomMenuProps
+    PopupContainerProps & SimulationErrorScreenProps & SlimBottomMenuProps
   >
 > = (props) => {
   return (
@@ -83,7 +81,10 @@ export const SimulationFailed: ComponentStory<
           severity="INFO"
           bottomMenuType="SLIM"
         >
-          <SimulationFailedScreen />
+          <SimulationErrorScreen
+            headline={props.headline}
+            message={props.message}
+          />
           <SlimBottomMenu
             style={{
               /* NOTE: This is only applicable in the context of the storybook,
@@ -99,9 +100,16 @@ export const SimulationFailed: ComponentStory<
   );
 };
 
+SimulationError.args = {
+  ...DEFAULT_ARGS,
+  headline: "Simulation Failed",
+  message:
+    "We are unable to simulate this transaction. Approving may lead to loss of funds",
+};
+
 export const TransactionReverted: ComponentStory<
   React.FC<
-    PopupContainerProps & TransactionRevertedScreenProps & SlimBottomMenuProps
+    PopupContainerProps & SimulationErrorScreenProps & SlimBottomMenuProps
   >
 > = (props) => {
   return (
@@ -117,8 +125,10 @@ export const TransactionReverted: ComponentStory<
           severity="INFO"
           bottomMenuType="SLIM"
         >
-          <TransactionRevertedScreen
-            parsedErrorMessage={props.parsedErrorMessage}
+          <SimulationErrorScreen
+            headline={props.headline}
+            message={props.message}
+            errorMessage={props.errorMessage}
           />
           <SlimBottomMenu
             style={{
@@ -136,7 +146,10 @@ export const TransactionReverted: ComponentStory<
 };
 TransactionReverted.args = {
   ...DEFAULT_ARGS,
-  parsedErrorMessage: "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT",
+  headline: "Transaction reverted",
+  message:
+    "The transaction reverted when we simulated it. Approving may lead to loss of funds",
+  errorMessage: "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT",
 };
 
 export const UnsupportedChain: ComponentStory<
