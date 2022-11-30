@@ -13,6 +13,8 @@ import {
   SimulationFailedScreenProps,
   TransactionRevertedScreen,
   TransactionRevertedScreenProps,
+  UnsupportedChainScreen,
+  UnsupportedChainScreenProps,
 } from "../components/InformationScreens";
 import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
 import { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
@@ -135,4 +137,38 @@ export const TransactionReverted: ComponentStory<
 TransactionReverted.args = {
   ...DEFAULT_ARGS,
   parsedErrorMessage: "UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT",
+};
+
+export const UnsupportedChain: ComponentStory<
+  React.FC<
+    PopupContainerProps & UnsupportedChainScreenProps & SlimBottomMenuProps
+  >
+> = (props) => {
+  return (
+    <div style={{ width: "392px", minHeight: "768px" }}>
+      <Providers>
+        <PopupContainer
+          style={{
+            /* NOTE This is only for the story,
+             * normally we want this to take up all the available window height */
+            minHeight: "748px",
+          }}
+          {...props}
+          severity="INFO"
+          bottomMenuType="SLIM"
+        >
+          <UnsupportedChainScreen />
+          <SlimBottomMenu
+            style={{
+              /* NOTE: This is only applicable in the context of the storybook,
+               * in the extension we want this fixed to to bottom of the window */
+              position: "absolute",
+            }}
+            onClick={props.onClick}
+            buttonLabel="Close"
+          />
+        </PopupContainer>
+      </Providers>
+    </div>
+  );
 };

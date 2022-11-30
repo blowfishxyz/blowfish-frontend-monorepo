@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useLocalStorage } from "react-use";
 
 import {
   BlowfishWarningIcon,
@@ -8,9 +9,10 @@ import {
 import { TextButton } from "./Buttons";
 import { TextXL, Text } from "./Typography";
 import { ContentToggle } from "./ContentToggle";
+import { PREFERENCES_LOCALSTORAGE_PREFIX } from "../constants";
 
 interface SharedProps {
-  kind: InformationScreenKind;
+  kind?: InformationScreenKind;
 }
 const StyledTextXL = styled(TextXL)<SharedProps>`
   text-align: center;
@@ -23,6 +25,7 @@ const StyledTextXL = styled(TextXL)<SharedProps>`
 const StyledText = styled(Text)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
+  line-height: 22px;
   color: ${({ kind, theme }) =>
     kind === "TRANSACTION_BLOCKED"
       ? theme.palette.warningText
@@ -84,7 +87,7 @@ export const TransactionBlockedScreen: React.FC<
         We believe this transaction is malicious and unsafe to sign. Approving
         may lead to loss of funds
       </StyledText>
-      <TextButton onClick={onContinue}>
+      <StyledTextButton onClick={onContinue}>
         <StyledText
           kind={kind}
           style={{
@@ -94,7 +97,7 @@ export const TransactionBlockedScreen: React.FC<
         >
           Ignore warning, proceed anyway
         </StyledText>
-      </TextButton>
+      </StyledTextButton>
     </Wrapper>
   );
 };
@@ -146,6 +149,51 @@ export const TransactionRevertedScreen: React.FC<
           </WarningMessageWrapper>
         </ContentToggle>
       )}
+    </Wrapper>
+  );
+};
+
+// TODO(kimpers): Checkbox styling
+const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
+  margin-right: 13px;
+`;
+
+const StyledTextButton = styled(TextButton)`
+  display: flex;
+  align-items: center;
+`;
+
+export interface UnsupportedChainScreenProps {
+  style?: React.CSSProperties;
+  className?: string;
+}
+
+export const useShouldShowUnsupportedChainScreen = () => {
+  const key = `${PREFERENCES_LOCALSTORAGE_PREFIX}show_unsupported_chain_notice`;
+  const [shouldShowScreen, setShouldShowScreen] = useLocalStorage(key, true);
+
+  return [shouldShowScreen, setShouldShowScreen] as const;
+};
+export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
+  style,
+  className,
+}) => {
+  const [shouldShowScreen, setShouldShowScreen] =
+    useShouldShowUnsupportedChainScreen();
+  // TODO(kimpers): Actual copy
+  return (
+    <Wrapper style={style} className={className}>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Unsupported Chain</StyledTextXL>
+      <StyledText>
+        This chain is currently not supported. More chains coming soon!
+      </StyledText>
+      <StyledTextButton onClick={() => setShouldShowScreen(!shouldShowScreen)}>
+        <StyledCheckbox checked={!shouldShowScreen} />
+        <StyledText style={{ marginBottom: "unset" }}>
+          Don&apos;t show this again
+        </StyledText>
+      </StyledTextButton>
     </Wrapper>
   );
 };
