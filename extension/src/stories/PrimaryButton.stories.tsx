@@ -5,7 +5,7 @@ import { Providers } from "../components/Providers";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
 
 export default {
-  title: "Button",
+  title: "Buttons",
   component: PrimaryButton,
 } as ComponentMeta<typeof PrimaryButton | typeof SecondaryButton>;
 

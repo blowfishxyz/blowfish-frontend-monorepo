@@ -8,7 +8,7 @@ import {
 } from "../components/PopupContainer";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
 import { TransactionBlockedScreen } from "../components/InformationScreens";
-import { SlimBottomMenu } from "../components/BottomMenus";
+import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
 import { Severity, actionToSeverity } from "../types";
 
 import {
@@ -82,19 +82,24 @@ export const TransactionNoAction: ComponentStory<
               />
             </>
           ) : (
-            <ScanResults
-              request={request}
-              scanResults={scanResults}
-              dappUrl={exampleDappUrl}
-              onContinue={async () => {
-                console.log("CONTINUE");
-              }}
-              onCancel={async () => {
-                console.log("CANCEL");
-              }}
-              chainNetwork="mainnet"
-              chainFamily="ethereum"
-            />
+            <>
+              <ScanResults
+                request={request}
+                scanResults={scanResults}
+                dappUrl={exampleDappUrl}
+                chainNetwork="mainnet"
+                chainFamily="ethereum"
+              />
+              <ApproveBottomMenu
+                style={{
+                  /* NOTE: This is only applicable in the context of the storybook,
+                   * in the extension we want this fixed to to bottom of the window */
+                  position: "absolute",
+                }}
+                onContinue={() => alert("PROCEEDING...")}
+                onCancel={() => alert("CANCEL")}
+              />
+            </>
           )}
         </PopupContainer>
       </Providers>

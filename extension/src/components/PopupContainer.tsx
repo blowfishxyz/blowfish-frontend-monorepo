@@ -5,11 +5,15 @@ import { WalletIcon } from "./icons/WalletIcon";
 import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
 import { shortenHex } from "../utils/hex";
 import { TextSmall } from "./Typography";
-import { SLIM_BOTTOM_MENU_HEIGHT } from "./BottomMenus";
+import {
+  SLIM_BOTTOM_MENU_HEIGHT,
+  REGULAR_BOTTOM_MENU_HEIGHT,
+} from "./BottomMenus";
 import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { Severity } from "../types";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
+const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
 
 const StyledWalletIcon = styled(WalletIcon)`
   width: 16px;
@@ -77,10 +81,13 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   width: 100%;
   box-sizing: border-box;
   ${({ bottomMenuType }) =>
-    bottomMenuType === "SLIM" &&
-    css`
-      padding-bottom: ${SLIM_BOTTOM_MENU_PADDING}px;
-    `}
+    bottomMenuType === "SLIM"
+      ? css`
+          padding-bottom: ${SLIM_BOTTOM_MENU_PADDING}px;
+        `
+      : css`
+          padding-bottom: ${REGULAR_BOTTOM_MENU_PADDING}px;
+        `}
 `;
 
 export const PopupContainer: React.FC<PopupContainerProps> = ({

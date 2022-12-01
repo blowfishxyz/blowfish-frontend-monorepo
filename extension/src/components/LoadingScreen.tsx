@@ -29,12 +29,9 @@ const StyledLoadingAnimation = styled(LoadingAnimation)`
   height: auto;
 `;
 
-const StyledLink = styled(UnstyledA)`
-  /* Override wrapper default margin between children */
-  && {
-    margin-top: auto;
-    margin-bottom: 24px;
-  }
+const FixedBottomLink = styled(UnstyledA)`
+  position: fixed;
+  bottom: 24px;
 `;
 
 const StyledBlowfishIcon = styled(BlowfishIcon)`
@@ -48,7 +45,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   padding-top: 225px;
   box-sizing: border-box;
   > * + * {
@@ -81,9 +78,13 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <TextSmall style={{ opacity: 0.3 }}>
         {LOADING_STATES[type][stateTextIndex]}
       </TextSmall>
-      <StyledLink href="https://blowfish.xyz" target="_blank" rel="noopener">
+      <FixedBottomLink
+        href="https://blowfish.xyz"
+        target="_blank"
+        rel="noopener"
+      >
         <StyledBlowfishIcon />
-      </StyledLink>
+      </FixedBottomLink>
     </Wrapper>
   );
 };

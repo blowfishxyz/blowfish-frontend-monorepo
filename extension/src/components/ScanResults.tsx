@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Decimal } from "decimal.js";
 
-import { TextLarge, Text, TextSmall } from "./Typography";
-import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
+import { Text, TextSmall } from "./Typography";
 import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { shortenHex, isNativeAsset } from "../utils/hex";
 import { JsonViewer } from "./JsonViewer";
 import { ExpandIcon } from "./icons/ExpandArrow";
-import { WarningIcon } from "./icons/WarningIcon";
 import { WarningNotice } from "./WarningNotice";
 import { logger } from "../utils/logger";
 
@@ -23,7 +21,6 @@ import type {
   Erc1155TransferData,
 } from "../utils/BlowfishApiClient";
 import {
-  WarningSeverity,
   DappRequest,
   isTransactionRequest,
   isSignTypedDataRequest,
@@ -37,32 +34,16 @@ type NftStateChangeWithTokenId =
   | Erc721ApprovalData;
 
 const Wrapper = styled.div`
-  min-height: 625px;
   width: 100%;
   background-color: ${(props) => props.theme.palette.white};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
   border-radius: 12px;
-  overflow-x: scroll;
 `;
 
 const SimulationResults = styled.div`
   padding: 0 25px;
-`;
-
-const StyledWarningIcon = styled(WarningIcon)<{
-  severity: WarningSeverity;
-}>`
-  ${({ severity }) =>
-    severity === "CRITICAL" &&
-    css`
-      path {
-        fill: ${({ theme }) => theme.palette.red};
-      }
-    `}
-  align-self: flex-start;
-  margin-right: 4px;
 `;
 
 const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
@@ -101,30 +82,19 @@ const StateChangeRow = styled(Row)`
   }
 `;
 
-const ReportRow = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-const ButtonRow = styled.div`
-  padding: 25px 16px 16px 16px;
-  display: flex;
-  justify-content: space-between;
-  button {
-    width: 160px;
-  }
-`;
-
 const AdvancedDetailsToggleButton = styled(BaseButton)`
   /* Increase clickable area slightly without messing with alignment */
   padding: 3px;
   margin: -3px;
   cursor: pointer;
-  ${TextLarge} {
+  ${Text} {
+    font-weight: 500;
     margin-right: 5px;
   }
 `;
 
-const TitleText = styled(TextLarge)`
+const TitleText = styled(Text)`
+  font-weight: 500;
   text-transform: titlecase;
 `;
 
@@ -167,7 +137,7 @@ const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
         <AdvancedDetailsToggleButton
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >
-          <TextLarge>Advanced Details</TextLarge>
+          <Text semiBold>Advanced Details</Text>
           <ExpandIcon expanded={showAdvancedDetails} />
         </AdvancedDetailsToggleButton>
       </Row>
@@ -182,14 +152,10 @@ export interface ScanResultsProps {
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
-  onContinue: () => Promise<void>;
-  onCancel: () => Promise<void>;
 }
 export const ScanResults: React.FC<ScanResultsProps> = ({
   request,
   scanResults,
-  onContinue,
-  onCancel,
   chainNetwork,
   chainFamily,
   ...props
@@ -234,14 +200,57 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     return "Message";
   }, [request]);
 
+  const warning:
+    | { message: string; severity: "WARNING" | "CRITICAL" }
+    | undefined = useMemo(() => {
+    // Take warnings return from API first hand
+    const warning = scanResults.warnings[0];
+    if (warning) {
+      const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
+      const { message } = warning;
+      return {
+        message,
+        severity,
+      };
+    }
+
+    // TODO(kimpers): Should simulation errors be warnings from the API?
+    const simulationResults = scanResults.simulationResults || undefined;
+    if (simulationResults?.error) {
+      switch (simulationResults.error.kind) {
+        case "SIMULATION_FAILED":
+          return {
+            severity: "CRITICAL",
+            message: `This transaction failed during simulation. Proceed with caution`,
+          };
+        case "INVALID_TRANSACTION":
+          return {
+            severity: "CRITICAL",
+            message: `This transaction seems does not seem valid. Proceed with caution`,
+          };
+        case "UNSUPPORTED_ORDER_TYPE":
+          return {
+            severity: "CRITICAL",
+            message:
+              "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
+          };
+        case "UNKNOWN_ERROR":
+          return {
+            severity: "CRITICAL",
+            message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
+          };
+      }
+    }
+  }, [scanResults, requestTypeStr]);
+
   return (
     <Wrapper>
       <Header borderBottom={scanResults.action === "NONE"}>
         <TitleText as="h1">{requestTypeStr} Details</TitleText>
-        {scanResults.warnings[0] && (
+        {warning && (
           <WarningNotice
-            severity={scanResults.action === "WARN" ? "WARNING" : "CRITICAL"}
-            warning={scanResults.warnings[0]}
+            severity={warning.severity}
+            message={warning.message}
           />
         )}
       </Header>
@@ -262,55 +271,52 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             )}
           </Text>
         </Section>
-        <Section borderBottom>
-          <TextSmall secondary style={{ marginBottom: "8px" }}>
-            Simulation Results
-          </TextSmall>
-          {expectedStateChangesProcessed?.map((stateChange, i) => {
-            const address = stateChange.rawInfo.data.contract.address;
-            const { kind } = stateChange.rawInfo;
-            const isApproval = kind.includes("APPROVAL");
-            const isNft = kind.includes("ERC721") || kind.includes("ERC1155");
-            let nftTokenId: string | undefined;
-            if (isNft) {
-              const nftData = stateChange.rawInfo
-                .data as NftStateChangeWithTokenId;
-              nftTokenId = nftData.tokenId || undefined;
-            }
-            // NOTE(kimpers): We define positive as decreased approval or increased balance
-            const isPositiveEffect =
-              (isApproval && stateChange.diff.gt(0)) ||
-              (!isApproval && stateChange.diff.lt(0));
-            // TODO(kimpers): What to link to for native assets?
-            return (
-              <StateChangeRow key={`state-change-${i}`}>
-                {scanResults.action !== "NONE" && (
-                  <StyledWarningIcon
-                    severity={
-                      scanResults.action == "WARN" ? "WARNING" : "CRITICAL"
-                    }
-                  />
-                )}
-                {isNativeAsset(address) ? (
-                  <StateChangeText isPositiveEffect={isPositiveEffect}>
-                    {stateChange.humanReadableDiff}
-                  </StateChangeText>
-                ) : (
-                  <BlockExplorerLink
-                    address={address}
-                    chainFamily={chainFamily}
-                    chainNetwork={chainNetwork}
-                    nftTokenId={nftTokenId}
-                  >
-                    <StateChangeText isPositiveEffect={isPositiveEffect}>
-                      {stateChange.humanReadableDiff}
-                    </StateChangeText>
-                  </BlockExplorerLink>
-                )}
-              </StateChangeRow>
-            );
-          })}
-        </Section>
+        {expectedStateChangesProcessed &&
+          expectedStateChangesProcessed?.length > 0 && (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                Simulation Results
+              </TextSmall>
+              {expectedStateChangesProcessed?.map((stateChange, i) => {
+                const address = stateChange.rawInfo.data.contract.address;
+                const { kind } = stateChange.rawInfo;
+                const isApproval = kind.includes("APPROVAL");
+                const isNft =
+                  kind.includes("ERC721") || kind.includes("ERC1155");
+                let nftTokenId: string | undefined;
+                if (isNft) {
+                  const nftData = stateChange.rawInfo
+                    .data as NftStateChangeWithTokenId;
+                  nftTokenId = nftData.tokenId || undefined;
+                }
+                // NOTE(kimpers): We define positive as decreased approval or increased balance
+                const isPositiveEffect =
+                  (isApproval && stateChange.diff.gt(0)) ||
+                  (!isApproval && stateChange.diff.lt(0));
+                // TODO(kimpers): What to link to for native assets?
+                return (
+                  <StateChangeRow key={`state-change-${i}`}>
+                    {isNativeAsset(address) ? (
+                      <StateChangeText isPositiveEffect={isPositiveEffect}>
+                        {stateChange.humanReadableDiff}
+                      </StateChangeText>
+                    ) : (
+                      <BlockExplorerLink
+                        address={address}
+                        chainFamily={chainFamily}
+                        chainNetwork={chainNetwork}
+                        nftTokenId={nftTokenId}
+                      >
+                        <StateChangeText isPositiveEffect={isPositiveEffect}>
+                          {stateChange.humanReadableDiff}
+                        </StateChangeText>
+                      </BlockExplorerLink>
+                    )}
+                  </StateChangeRow>
+                );
+              })}
+            </Section>
+          )}
         <Section>
           <TextSmall secondary style={{ marginBottom: "8px" }}>
             Request by
@@ -321,17 +327,6 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         </Section>
       </SimulationResults>
       <AdvancedDetails request={request} />
-      <ReportRow>
-        <TextButton>
-          <TextLarge secondary style={{ fontWeight: 400 }}>
-            Report this {requestTypeStr.toLowerCase()}
-          </TextLarge>
-        </TextButton>
-      </ReportRow>
-      <ButtonRow>
-        <SecondaryButton onClick={onCancel}>Cancel</SecondaryButton>
-        <PrimaryButton onClick={onContinue}>Continue</PrimaryButton>
-      </ButtonRow>
     </Wrapper>
   );
 };
