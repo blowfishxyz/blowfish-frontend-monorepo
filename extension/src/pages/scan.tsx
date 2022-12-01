@@ -174,9 +174,12 @@ const ScanResult: React.FC = () => {
   const maybeInformationScreen = useMemo(() => {
     const isLoading = !scanResults && !scanError;
     const isError = !isLoading && scanError;
-    const shouldShowBlockScreen =
-      scanResults?.action === "BLOCK" && !hasDismissedScreen;
+    const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
+
+    // NOTE(kimpers): We make th assumption that one tx can only generate one error screen
+    // currently this holds true but it may not be the case in the future
+    const onContinue = () => setHasDismissedScreen(true);
 
     if (isLoading) {
       return (
@@ -184,32 +187,36 @@ const ScanResult: React.FC = () => {
           type={isMessageSignatureRequest ? "message" : "transaction"}
         />
       );
-    } else if (isError) {
+    } else if (isError && !hasDismissedScreen) {
       return <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>;
-    } else if (shouldShowBlockScreen) {
+    } else if (shouldShowBlockScreen && !hasDismissedScreen) {
       return (
         <>
-          <TransactionBlockedScreen
-            onContinue={() => setHasDismissedScreen(true)}
-          />
+          <TransactionBlockedScreen onContinue={onContinue} />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
       );
-    } else if (simulationError) {
+    } else if (simulationError && !hasDismissedScreen) {
       if (simulationError.kind === "SIMULATION_FAILED") {
         return (
-          <SimulationErrorScreen
-            headline="Transaction Reverted"
-            message="The transaction reverted when we simulated it. Approving may lead to loss of funds"
-            errorMessage={simulationError.parsedErrorMessage}
-          />
+          <>
+            <SimulationErrorScreen
+              headline="Transaction Reverted"
+              message="The transaction reverted when we simulated it. Approving may lead to loss of funds"
+              errorMessage={simulationError.parsedErrorMessage}
+            />
+            <SlimBottomMenu onClick={onContinue} buttonLabel="Continue" />
+          </>
         );
       } else {
         return (
-          <SimulationErrorScreen
-            headline="Simulation Failed"
-            message="We are unable to simulate this transaction. Approving may lead to loss of funds"
-          />
+          <>
+            <SimulationErrorScreen
+              headline="Simulation Failed"
+              message="We are unable to simulate this transaction. Approving may lead to loss of funds"
+            />
+            <SlimBottomMenu onClick={onContinue} buttonLabel="Continue" />
+          </>
         );
       }
     }

@@ -14,7 +14,6 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
   background: ${({ theme }) => theme.palette.white};
   display: flex;
   align-items: center;

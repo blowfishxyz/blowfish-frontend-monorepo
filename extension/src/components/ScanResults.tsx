@@ -200,14 +200,57 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     return "Message";
   }, [request]);
 
+  const warning:
+    | { message: string; severity: "WARNING" | "CRITICAL" }
+    | undefined = useMemo(() => {
+    // Take warnings return from API first hand
+    const warning = scanResults.warnings[0];
+    if (warning) {
+      const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
+      const { message } = warning;
+      return {
+        message,
+        severity,
+      };
+    }
+
+    // TODO(kimpers): Should simulation errors be warnings from the API?
+    const simulationResults = scanResults.simulationResults || undefined;
+    if (simulationResults?.error) {
+      switch (simulationResults.error.kind) {
+        case "SIMULATION_FAILED":
+          return {
+            severity: "CRITICAL",
+            message: `This transaction failed during simulation. Proceed with caution`,
+          };
+        case "INVALID_TRANSACTION":
+          return {
+            severity: "CRITICAL",
+            message: `This transaction seems does not seem valid. Proceed with caution`,
+          };
+        case "UNSUPPORTED_ORDER_TYPE":
+          return {
+            severity: "CRITICAL",
+            message:
+              "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
+          };
+        case "UNKNOWN_ERROR":
+          return {
+            severity: "CRITICAL",
+            message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
+          };
+      }
+    }
+  }, [scanResults, requestTypeStr]);
+
   return (
     <Wrapper>
       <Header borderBottom={scanResults.action === "NONE"}>
         <TitleText as="h1">{requestTypeStr} Details</TitleText>
-        {scanResults.warnings[0] && (
+        {warning && (
           <WarningNotice
-            severity={scanResults.action === "WARN" ? "WARNING" : "CRITICAL"}
-            warning={scanResults.warnings[0]}
+            severity={warning.severity}
+            message={warning.message}
           />
         )}
       </Header>
@@ -228,48 +271,52 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             )}
           </Text>
         </Section>
-        <Section borderBottom>
-          <TextSmall secondary style={{ marginBottom: "8px" }}>
-            Simulation Results
-          </TextSmall>
-          {expectedStateChangesProcessed?.map((stateChange, i) => {
-            const address = stateChange.rawInfo.data.contract.address;
-            const { kind } = stateChange.rawInfo;
-            const isApproval = kind.includes("APPROVAL");
-            const isNft = kind.includes("ERC721") || kind.includes("ERC1155");
-            let nftTokenId: string | undefined;
-            if (isNft) {
-              const nftData = stateChange.rawInfo
-                .data as NftStateChangeWithTokenId;
-              nftTokenId = nftData.tokenId || undefined;
-            }
-            // NOTE(kimpers): We define positive as decreased approval or increased balance
-            const isPositiveEffect =
-              (isApproval && stateChange.diff.gt(0)) ||
-              (!isApproval && stateChange.diff.lt(0));
-            // TODO(kimpers): What to link to for native assets?
-            return (
-              <StateChangeRow key={`state-change-${i}`}>
-                {isNativeAsset(address) ? (
-                  <StateChangeText isPositiveEffect={isPositiveEffect}>
-                    {stateChange.humanReadableDiff}
-                  </StateChangeText>
-                ) : (
-                  <BlockExplorerLink
-                    address={address}
-                    chainFamily={chainFamily}
-                    chainNetwork={chainNetwork}
-                    nftTokenId={nftTokenId}
-                  >
-                    <StateChangeText isPositiveEffect={isPositiveEffect}>
-                      {stateChange.humanReadableDiff}
-                    </StateChangeText>
-                  </BlockExplorerLink>
-                )}
-              </StateChangeRow>
-            );
-          })}
-        </Section>
+        {expectedStateChangesProcessed &&
+          expectedStateChangesProcessed?.length > 0 && (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                Simulation Results
+              </TextSmall>
+              {expectedStateChangesProcessed?.map((stateChange, i) => {
+                const address = stateChange.rawInfo.data.contract.address;
+                const { kind } = stateChange.rawInfo;
+                const isApproval = kind.includes("APPROVAL");
+                const isNft =
+                  kind.includes("ERC721") || kind.includes("ERC1155");
+                let nftTokenId: string | undefined;
+                if (isNft) {
+                  const nftData = stateChange.rawInfo
+                    .data as NftStateChangeWithTokenId;
+                  nftTokenId = nftData.tokenId || undefined;
+                }
+                // NOTE(kimpers): We define positive as decreased approval or increased balance
+                const isPositiveEffect =
+                  (isApproval && stateChange.diff.gt(0)) ||
+                  (!isApproval && stateChange.diff.lt(0));
+                // TODO(kimpers): What to link to for native assets?
+                return (
+                  <StateChangeRow key={`state-change-${i}`}>
+                    {isNativeAsset(address) ? (
+                      <StateChangeText isPositiveEffect={isPositiveEffect}>
+                        {stateChange.humanReadableDiff}
+                      </StateChangeText>
+                    ) : (
+                      <BlockExplorerLink
+                        address={address}
+                        chainFamily={chainFamily}
+                        chainNetwork={chainNetwork}
+                        nftTokenId={nftTokenId}
+                      >
+                        <StateChangeText isPositiveEffect={isPositiveEffect}>
+                          {stateChange.humanReadableDiff}
+                        </StateChangeText>
+                      </BlockExplorerLink>
+                    )}
+                  </StateChangeRow>
+                );
+              })}
+            </Section>
+          )}
         <Section>
           <TextSmall secondary style={{ marginBottom: "8px" }}>
             Request by
