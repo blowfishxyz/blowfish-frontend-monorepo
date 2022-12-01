@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Decimal } from "decimal.js";
 
 import { Text, TextSmall } from "./Typography";
-import { PrimaryButton, SecondaryButton, TextButton } from "./Buttons";
 import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { shortenHex, isNativeAsset } from "../utils/hex";
 import { JsonViewer } from "./JsonViewer";
 import { ExpandIcon } from "./icons/ExpandArrow";
-import { WarningIcon } from "./icons/WarningIcon";
 import { WarningNotice } from "./WarningNotice";
 import { logger } from "../utils/logger";
 
@@ -23,7 +21,6 @@ import type {
   Erc1155TransferData,
 } from "../utils/BlowfishApiClient";
 import {
-  WarningSeverity,
   DappRequest,
   isTransactionRequest,
   isSignTypedDataRequest,
@@ -37,32 +34,16 @@ type NftStateChangeWithTokenId =
   | Erc721ApprovalData;
 
 const Wrapper = styled.div`
-  min-height: 625px;
   width: 100%;
   background-color: ${(props) => props.theme.palette.white};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
   border-radius: 12px;
-  overflow-x: scroll;
 `;
 
 const SimulationResults = styled.div`
   padding: 0 25px;
-`;
-
-const StyledWarningIcon = styled(WarningIcon)<{
-  severity: WarningSeverity;
-}>`
-  ${({ severity }) =>
-    severity === "CRITICAL" &&
-    css`
-      path {
-        fill: ${({ theme }) => theme.palette.red};
-      }
-    `}
-  align-self: flex-start;
-  margin-right: 4px;
 `;
 
 const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
@@ -98,19 +79,6 @@ const Row = styled.div`
 const StateChangeRow = styled(Row)`
   & + & {
     margin-top: 11px;
-  }
-`;
-
-const ReportRow = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-const ButtonRow = styled.div`
-  padding: 25px 16px 16px 16px;
-  display: flex;
-  justify-content: space-between;
-  button {
-    width: 160px;
   }
 `;
 
@@ -184,14 +152,10 @@ export interface ScanResultsProps {
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
-  onContinue: () => Promise<void>;
-  onCancel: () => Promise<void>;
 }
 export const ScanResults: React.FC<ScanResultsProps> = ({
   request,
   scanResults,
-  onContinue,
-  onCancel,
   chainNetwork,
   chainFamily,
   ...props
@@ -286,13 +250,6 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             // TODO(kimpers): What to link to for native assets?
             return (
               <StateChangeRow key={`state-change-${i}`}>
-                {scanResults.action !== "NONE" && (
-                  <StyledWarningIcon
-                    severity={
-                      scanResults.action == "WARN" ? "WARNING" : "CRITICAL"
-                    }
-                  />
-                )}
                 {isNativeAsset(address) ? (
                   <StateChangeText isPositiveEffect={isPositiveEffect}>
                     {stateChange.humanReadableDiff}
@@ -323,15 +280,6 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         </Section>
       </SimulationResults>
       <AdvancedDetails request={request} />
-      <ReportRow>
-        <TextButton>
-          <Text secondary>Report this {requestTypeStr.toLowerCase()}</Text>
-        </TextButton>
-      </ReportRow>
-      <ButtonRow>
-        <SecondaryButton onClick={onCancel}>Cancel</SecondaryButton>
-        <PrimaryButton onClick={onContinue}>Continue</PrimaryButton>
-      </ButtonRow>
     </Wrapper>
   );
 };

@@ -31,7 +31,7 @@ import {
   TransactionBlockedScreen,
   SimulationErrorScreen,
 } from "../components/InformationScreens";
-import { SlimBottomMenu } from "../components/BottomMenus";
+import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
 
 const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
 
@@ -232,15 +232,19 @@ const ScanResult: React.FC = () => {
       {maybeInformationScreen
         ? maybeInformationScreen
         : hasAllData && (
-            <ScanResults
-              request={request}
-              scanResults={scanResults}
-              dappUrl={message.origin!}
-              onContinue={() => handleUserDecision(true)}
-              onCancel={() => handleUserDecision(false)}
-              chainFamily={chainFamily}
-              chainNetwork={chainNetwork}
-            />
+            <>
+              <ScanResults
+                request={request}
+                scanResults={scanResults}
+                dappUrl={message.origin!}
+                chainFamily={chainFamily}
+                chainNetwork={chainNetwork}
+              />
+              <ApproveBottomMenu
+                onContinue={() => handleUserDecision(true)}
+                onCancel={() => handleUserDecision(false)}
+              />
+            </>
           )}
     </PopupContainer>
   );

@@ -1,21 +1,39 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-import { PrimaryButton } from "./Buttons";
+import { PrimaryButton, SecondaryButton } from "./Buttons";
+import { Text } from "./Typography";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
-const SlimBottomMenuWrapper = styled.div`
+export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
+interface BottomMenuWrapperProps {
+  slim?: boolean;
+}
+export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  height: ${SLIM_BOTTOM_MENU_HEIGHT}px;
   width: 100%;
   background: ${({ theme }) => theme.palette.white};
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  box-sizing: border-box;
+  ${({ slim }) =>
+    slim
+      ? css`
+          height: ${SLIM_BOTTOM_MENU_HEIGHT}px;
+          padding: 0 12px;
+        `
+      : css`
+          flex-direction: column;
+          height: ${REGULAR_BOTTOM_MENU_HEIGHT}px;
+          padding: 24px 0;
+          box-sizing: border-box;
+
+          > * > * {
+            margin-top: 24px;
+          }
+        `}
 `;
 export interface SlimBottomMenuProps {
   buttonLabel: string;
@@ -30,8 +48,43 @@ export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
   className,
 }) => {
   return (
-    <SlimBottomMenuWrapper style={style} className={className}>
+    <BottomMenuWrapper style={style} className={className} slim>
       <PrimaryButton onClick={onClick}>{buttonLabel}</PrimaryButton>
-    </SlimBottomMenuWrapper>
+    </BottomMenuWrapper>
+  );
+};
+
+const GrayText = styled(Text)`
+  color: rgba(0, 0, 0, 0.5);
+`;
+const Row = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-evenly;
+`;
+export interface ApproveBottomMenuProps {
+  onContinue: () => void;
+  onCancel: () => void;
+  style?: React.CSSProperties;
+  className?: string;
+}
+export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
+  onContinue,
+  onCancel,
+  style,
+  className,
+}) => {
+  return (
+    <BottomMenuWrapper style={style} className={className}>
+      <GrayText>Approve to continue to your wallet</GrayText>
+      <Row>
+        <SecondaryButton style={{ width: "172px" }} onClick={onCancel}>
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton style={{ width: "172px" }} onClick={onContinue}>
+          Approve
+        </PrimaryButton>
+      </Row>
+    </BottomMenuWrapper>
   );
 };
