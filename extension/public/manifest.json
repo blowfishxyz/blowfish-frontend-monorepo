@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
 
-  "name": "Blowfish Wallet Protect Extension BETA",
+  "name": "Blowfish Wallet Protect BETA",
   "description": "Blowfish API protection for injected web3 wallets",
-  "version": "0.0.2",
+  "version": "0.0.3",
 
   "options_ui": {
     "page": "popup.html"
