@@ -85,7 +85,8 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
       ? css`
           padding-bottom: ${SLIM_BOTTOM_MENU_PADDING}px;
         `
-      : css`
+      : bottomMenuType === "FULL" &&
+        css`
           padding-bottom: ${REGULAR_BOTTOM_MENU_PADDING}px;
         `}
 `;

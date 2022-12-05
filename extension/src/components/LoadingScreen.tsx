@@ -4,7 +4,7 @@ import { useInterval } from "react-use";
 
 import { LoadingAnimation } from "./LoadingAnimation";
 import { Text, TextSmall } from ".//Typography";
-import { BlowfishIcon } from "./icons/BlowfishIcon";
+import { BlowfishIconFull } from "./icons/BlowfishIcon";
 import { UnstyledA } from "./Links";
 
 // TODO(kimpers): Actual copy
@@ -34,7 +34,7 @@ const FixedBottomLink = styled(UnstyledA)`
   bottom: 24px;
 `;
 
-const StyledBlowfishIcon = styled(BlowfishIcon)`
+const StyledBlowfishIcon = styled(BlowfishIconFull)`
   height: 27px;
   width: auto;
   opacity: 0.4;
@@ -64,9 +64,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   className,
 }) => {
   const loadingStatesLength = LOADING_STATES[type].length;
-  const [stateTextIndex, setStateTextIndex] = useState<number>(
-    Math.round(Math.random() * loadingStatesLength)
-  );
+  const [stateTextIndex, setStateTextIndex] = useState<number>(0);
   useInterval(
     () => setStateTextIndex((stateTextIndex + 1) % loadingStatesLength),
     STATE_CHANGE_DELAY
