@@ -4,3 +4,4 @@ dist/
 tmp/
 .env
 build-storybook.log
+blowfish_extension_*.zip
