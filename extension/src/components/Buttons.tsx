@@ -18,7 +18,7 @@ const PrimaryButton = styled(BaseButton)`
   cursor: pointer;
 
   /* Button text */
-  font-family: "GT Planar";
+  font-family: "GT-Planar";
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
@@ -61,7 +61,7 @@ const SecondaryButton = styled(BaseButton)`
   border-radius: 12px;
 
   /* Button text */
-  font-family: "GT Planar";
+  font-family: "GT-Planar";
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
