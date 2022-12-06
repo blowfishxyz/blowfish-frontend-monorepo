@@ -282,6 +282,8 @@ const overrideWindowEthereum = () => {
   sendProxy = new Proxy(window.ethereum.send, sendHandler);
   sendAsyncProxy = new Proxy(window.ethereum.sendAsync, sendAsyncHandler);
 
+  // NOTE(kimpers): Some wallets try to protect the properties of window.ethereum
+  // by setting them to read-only, using Object.defineProperty circumvents that
   Object.defineProperty(window.ethereum, "request", {
     value: requestProxy,
     writable: false,
