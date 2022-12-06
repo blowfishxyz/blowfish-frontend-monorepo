@@ -15,7 +15,7 @@ export const TextXL = styled.span<TypographyProps>`
 `;
 
 export const Text = styled.span<TypographyProps>`
-  font-family: "GT Planar";
+  font-family: "GT-Planar";
   font-style: normal;
   font-weight: ${({ semiBold }) => (semiBold ? 500 : 400)};
   font-size: 16px;

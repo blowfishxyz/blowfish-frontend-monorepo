@@ -49,7 +49,7 @@ const HeaderRight = styled.div`
   align-items: center;
 
   & > span {
-    font-family: "GT Planar";
+    font-family: "GT-Planar";
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -85,7 +85,8 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
       ? css`
           padding-bottom: ${SLIM_BOTTOM_MENU_PADDING}px;
         `
-      : css`
+      : bottomMenuType === "FULL" &&
+        css`
           padding-bottom: ${REGULAR_BOTTOM_MENU_PADDING}px;
         `}
 `;

@@ -5,7 +5,10 @@ interface BlowfishIconProps {
   style?: React.CSSProperties;
 }
 
-const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
+const BlowfishIconFull: React.FC<BlowfishIconProps> = ({
+  className,
+  style,
+}) => (
   <svg
     className={className}
     style={style}
@@ -56,5 +59,28 @@ const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
   </svg>
 );
 
+const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
+  <svg
+    className={className}
+    style={style}
+    width="48"
+    height="47"
+    viewBox="0 0 48 47"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M23.8203 0L29.3415 7.43694L26.5161 9.53449L23.8503 5.94366L21.3445 9.39104L18.4981 7.32209L23.8203 0ZM40.4377 6.8876L39.0236 15.8285L35.5479 15.2787L36.2137 11.0692L31.7896 11.7233L31.275 8.24226L40.4377 6.8876ZM7.30073 6.92154L16.4635 8.27619L15.9488 11.7572L11.5247 11.1031L12.1905 15.3127L8.71487 15.8624L7.30073 6.92154ZM6.41192 23.4199L10.0027 20.7541L7.9052 17.9287L0.468262 23.4499L7.79035 28.7721L9.8593 25.9257L6.41192 23.4199ZM39.7993 17.9287L47.2363 23.4499L39.9142 28.7721L37.8452 25.9257L41.2926 23.4199L37.7018 20.7541L39.7993 17.9287ZM11.5544 35.7455L12.2085 31.3214L8.72749 30.8067L7.37283 39.9695L16.3137 38.5553L15.764 35.0797L11.5544 35.7455ZM39.0279 30.8237L40.3826 39.9864L31.4417 38.5723L31.9915 35.0966L36.201 35.7624L35.5469 31.3383L39.0279 30.8237ZM29.3415 39.3311L23.8203 46.768L18.4981 39.4459L21.3445 37.377L23.8503 40.8243L26.5161 37.2335L29.3415 39.3311Z"
+      fill="black"
+    />
+  </svg>
+);
+
+const BlowfishIconFullMemo = React.memo(BlowfishIconFull);
 const BlowfishIconMemo = React.memo(BlowfishIcon);
-export { BlowfishIconMemo as BlowfishIcon };
+export {
+  BlowfishIconFullMemo as BlowfishIconFull,
+  BlowfishIconMemo as BlowfishIcon,
+};

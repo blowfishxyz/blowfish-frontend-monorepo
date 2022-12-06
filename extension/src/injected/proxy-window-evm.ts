@@ -282,9 +282,20 @@ const overrideWindowEthereum = () => {
   sendProxy = new Proxy(window.ethereum.send, sendHandler);
   sendAsyncProxy = new Proxy(window.ethereum.sendAsync, sendAsyncHandler);
 
-  window.ethereum.request = requestProxy;
-  window.ethereum.send = sendProxy;
-  window.ethereum.sendAsync = sendAsyncProxy;
+  // NOTE(kimpers): Some wallets try to protect the properties of window.ethereum
+  // by setting them to read-only, using Object.defineProperty circumvents that
+  Object.defineProperty(window.ethereum, "request", {
+    value: requestProxy,
+    writable: false,
+  });
+  Object.defineProperty(window.ethereum, "send", {
+    value: sendProxy,
+    writable: false,
+  });
+  Object.defineProperty(window.ethereum, "sendAsync", {
+    value: sendAsyncProxy,
+    writable: false,
+  });
 };
 
 const overrideInterval: NodeJS.Timer = setInterval(overrideWindowEthereum, 100);
