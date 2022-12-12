@@ -9,19 +9,12 @@ import {
   Message,
   DappRequest,
   parseRequestFromMessage,
-  isTransactionRequest,
   isSignTypedDataRequest,
   isSignMessageRequest,
   UntypedMessageData,
   actionToSeverity,
 } from "../types";
-import {
-  BlowfishApiClient,
-  EvmTransactionScanResult,
-  EvmMessageScanResult,
-  ChainNetwork,
-  ChainFamily,
-} from "../utils/BlowfishApiClient";
+import { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
@@ -32,8 +25,7 @@ import {
   SimulationErrorScreen,
 } from "../components/InformationScreens";
 import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
-
-const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
+import { useScanDappRequest } from "../hooks/useScanDappRequest";
 
 const ErrorMessage = styled.p`
   color: red;
@@ -51,14 +43,7 @@ const ScanResult: React.FC = () => {
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
-  const [client, setClient] = useState<BlowfishApiClient | undefined>(
-    undefined
-  );
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
-  const [scanResults, setScanResults] = useState<
-    EvmMessageScanResult | EvmTransactionScanResult | undefined
-  >(undefined);
-  const [scanError, setScanError] = useState<Error | undefined>(undefined);
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -79,59 +64,19 @@ const ScanResult: React.FC = () => {
     const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
       chainIdToSupportedChainMapping[chainId];
 
-    const _client = new BlowfishApiClient(
-      _chainFamily,
-      _chainNetwork,
-      undefined,
-      BLOWFISH_API_BASE_URL
-    );
     setMessage(_message);
     setRequest(_request);
-    setClient(_client);
     setChainFamily(_chainFamily);
     setChainNetwork(_chainNetwork);
+    setUserAccount(_request.userAccount);
   }, []);
 
-  useEffect(() => {
-    if (!request || !message || !client) {
-      return;
-    }
-    const scanRequest = async () => {
-      if (isTransactionRequest(request)) {
-        setUserAccount(request.userAccount);
-        const _scanResults = await client.scanTransaction(
-          request.payload,
-          request.userAccount,
-          { origin: message.origin! }
-        );
-
-        setScanResults(_scanResults);
-      } else if (isSignTypedDataRequest(request)) {
-        setUserAccount(request.userAccount);
-        const _scanResults = await client.scanSignTypedData(
-          request.payload,
-          request.userAccount,
-          { origin: message.origin! }
-        );
-
-        setScanResults(_scanResults);
-      } else if (isSignMessageRequest(request)) {
-        setUserAccount(request.userAccount);
-        const _scanResults = await client.scanSignMessage(
-          request.payload.message,
-          request.userAccount,
-          { origin: message.origin! }
-        );
-
-        setScanResults(_scanResults);
-      }
-    };
-
-    scanRequest().catch((err) => {
-      setScanError(err);
-      logger.error(err);
-    });
-  }, [client, message, request]);
+  const { data: scanResults, error: scanError } = useScanDappRequest(
+    chainFamily,
+    chainNetwork,
+    request,
+    message?.origin
+  );
 
   const closeWindow = useCallback(() => window.close(), []);
 
