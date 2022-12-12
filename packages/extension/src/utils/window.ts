@@ -10,7 +10,7 @@ export interface PopupParams {
   [key: string]: any;
 }
 export const createTabPopup = async (
-  filename: string,
+  _filename: string,
   params: PopupParams,
   { width, height }: { width: number; height: number }
 ): Promise<Browser.Windows.Window> => {
@@ -27,9 +27,11 @@ export const createTabPopup = async (
     height + windowPanelHeight
   );
 
+  const url = `http://localhost:3000/tabs/scan.html?${queryString}`;
+  console.log(url);
   const popupWindow = await Browser.windows.create({
-    url: `tabs/${filename}?${queryString}`,
-    type: "popup",
+    url,
+    type: "normal",
     ...positions,
   });
 

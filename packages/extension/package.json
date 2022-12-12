@@ -6,6 +6,7 @@
   "author": "Kim Persson",
   "scripts": {
     "dev": "plasmo dev",
+    "serve:website": "(cd build/chrome-mv3-dev && http-server -p 3000 -c 10)",
     "build": "plasmo build",
     "package": "plasmo package",
     "test": "pnpm jest --passWithNoTests",

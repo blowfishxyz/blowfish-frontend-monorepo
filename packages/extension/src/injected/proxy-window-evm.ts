@@ -94,8 +94,13 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
       const [request, callback] = argumentsList;
+      const origin = window.location.host;
+      console.log(origin);
 
-      if (request?.method === "eth_sendTransaction") {
+      if (
+        request?.method === "eth_sendTransaction" &&
+        origin !== "localhost:3000"
+      ) {
         const [transaction] = request?.params ?? [];
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 
@@ -209,8 +214,13 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
       const [request] = argumentsList;
+      const origin = window.location.host;
+      console.log(origin);
 
-      if (request?.method === "eth_sendTransaction") {
+      if (
+        request?.method === "eth_sendTransaction" &&
+        origin !== "localhost:3000"
+      ) {
         const [transaction] = request?.params ?? [];
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 

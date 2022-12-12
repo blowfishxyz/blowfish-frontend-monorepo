@@ -15,10 +15,10 @@ import { PopupContainer } from "../components/PopupContainer";
 import { Providers } from "../components/Providers";
 import { ScanResults } from "../components/ScanResults";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
-import { respondWithUserDecision } from "../page-utils";
 import {
   DappRequest,
   Message,
+  TransactionRequest,
   UntypedMessageData,
   actionToSeverity,
   isSignMessageRequest,
@@ -91,11 +91,32 @@ const ScanResult: React.FC = () => {
         logger.error("Error: Cannot proceed, no message to respond to ");
         return;
       }
-      await respondWithUserDecision(message.id, shouldProceed);
-      closeWindow();
+      if (shouldProceed) {
+        const { from, to, data, value } = (request as TransactionRequest)
+          .payload;
+        //await respondWithUserDecision(message.id, shouldProceed);
+
+        // HACK: Demo tx
+        (window as any).ethereum.request({
+          method: "eth_sendTransaction",
+          params: [
+            {
+              gas: "0xb408",
+              from,
+              to,
+              data: data || "0x",
+              value: value || "0",
+            },
+          ],
+          jsonrpc: "2.0",
+          id: 23735923,
+        });
+      } else {
+        closeWindow();
+      }
     },
 
-    [message, closeWindow]
+    [message, request, closeWindow]
   );
 
   logger.debug(message);
