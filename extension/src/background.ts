@@ -58,10 +58,12 @@ Browser.runtime.onMessage.addListener(
   }
 );
 
-const processTransactionRequest = async (
-  message: Message<TransactionRequest>,
+const processRequestBase = async (
+  message: Message<
+    TransactionRequest | SignTypedDataRequest | SignMessageRequest
+  >,
   remotePort: Browser.Runtime.Port
-) => {
+): Promise<void> => {
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   if (!chainIdToSupportedChainMapping[chainId]) {
@@ -71,51 +73,45 @@ const processTransactionRequest = async (
     return;
   }
 
-  logger.debug(message);
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
-  createPopupWithFile("scan.html", message, DIMENSIONS);
+  logger.debug(message);
+  const windowPromise = createPopupWithFile("scan.html", message, DIMENSIONS);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
+  const win = await windowPromise;
+  const tabId = win.tabs?.[0]?.id;
+  Browser.tabs.onRemoved.addListener((removedTabId) => {
+    // If the window is closed before we received a response we assume cancel
+    // as the user probably just closed the window
+    if (removedTabId === tabId && messageToPortMapping.has(message.id)) {
+      logger.debug(
+        "Window closed without response, assuming the user wants to cancel"
+      );
+      const responseData: UserDecisionData = { isOk: false };
+      postResponseToPort(remotePort, message, responseData);
+    }
+  });
+};
+
+const processTransactionRequest = async (
+  message: Message<TransactionRequest>,
+  remotePort: Browser.Runtime.Port
+): Promise<void> => {
+  await processRequestBase(message, remotePort);
 };
 
 const processSignTypedDataRequest = async (
   message: Message<SignTypedDataRequest>,
   remotePort: Browser.Runtime.Port
-) => {
-  const { chainId } = message.data;
-  // Just proxy the request if we don't support the current chain
-  if (!chainIdToSupportedChainMapping[chainId]) {
-    logger.info(`Unsupported chain id ${chainId}`);
-    const responseData: UserDecisionData = { isOk: true };
-    postResponseToPort(remotePort, message, responseData);
-    return;
-  }
-
-  logger.debug(message);
-  createPopupWithFile("scan.html", message, DIMENSIONS);
-
-  // Store port to id mapping so we can respond to the message later on
-  messageToPortMapping.set(message.id, remotePort);
+): Promise<void> => {
+  await processRequestBase(message, remotePort);
 };
 
 const processSignMessageRequest = async (
   message: Message<SignMessageRequest>,
   remotePort: Browser.Runtime.Port
-) => {
-  const { chainId } = message.data;
-  // Just proxy the request if we don't support the current chain
-  if (!chainIdToSupportedChainMapping[chainId]) {
-    logger.info(`Unsupported chain id ${chainId}`);
-    const responseData: UserDecisionData = { isOk: true };
-    postResponseToPort(remotePort, message, responseData);
-    return;
-  }
-
-  logger.debug(message);
-  createPopupWithFile("scan.html", message, DIMENSIONS);
-
-  // Store port to id mapping so we can respond to the message later on
-  messageToPortMapping.set(message.id, remotePort);
+): Promise<void> => {
+  await processRequestBase(message, remotePort);
 };
