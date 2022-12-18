@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
-import styled from "styled-components";
 import { Providers } from "../components/Providers";
 import { LoadingScreen } from "../components/LoadingScreen";
 import qs from "qs";
@@ -23,14 +22,10 @@ import { ScanResults } from "../components/ScanResults";
 import {
   TransactionBlockedScreen,
   SimulationErrorScreen,
+  UnknownErrorScreen,
 } from "../components/InformationScreens";
 import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-weight: bold;
-`;
 
 const ScanResult: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
@@ -71,12 +66,11 @@ const ScanResult: React.FC = () => {
     setUserAccount(_request.userAccount);
   }, []);
 
-  const { data: scanResults, error: scanError } = useScanDappRequest(
-    chainFamily,
-    chainNetwork,
-    request,
-    message?.origin
-  );
+  const {
+    data: scanResults,
+    error: scanError,
+    mutate,
+  } = useScanDappRequest(chainFamily, chainNetwork, request, message?.origin);
 
   const closeWindow = useCallback(() => window.close(), []);
 
@@ -122,6 +116,10 @@ const ScanResult: React.FC = () => {
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
 
+    if (isError) {
+      logger.error(scanError);
+    }
+
     // NOTE(kimpers): We make th assumption that one tx can only generate one error screen
     // currently this holds true but it may not be the case in the future
     const onContinue = () => setHasDismissedScreen(true);
@@ -133,7 +131,13 @@ const ScanResult: React.FC = () => {
         />
       );
     } else if (isError && !hasDismissedScreen) {
-      return <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>;
+      // TODO(kimpers): Error message propagation from the API
+      return (
+        <>
+          <UnknownErrorScreen onRetry={() => mutate()} />;
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
     } else if (shouldShowBlockScreen && !hasDismissedScreen) {
       return (
         <>
@@ -171,6 +175,7 @@ const ScanResult: React.FC = () => {
     hasDismissedScreen,
     closeWindow,
     isMessageSignatureRequest,
+    mutate,
   ]);
 
   return (

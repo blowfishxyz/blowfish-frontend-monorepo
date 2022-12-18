@@ -165,3 +165,28 @@ export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
     </Wrapper>
   );
 };
+
+export interface UnknownErrorScreenProps {
+  style?: React.CSSProperties;
+  className?: string;
+  onRetry: () => void;
+}
+
+export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
+  style,
+  className,
+  onRetry,
+}) => {
+  return (
+    <Wrapper style={style} className={className}>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Something went wrong</StyledTextXL>
+      <StyledText>
+        Something unexpected happened. Please try again later.
+      </StyledText>
+      <TextButton onClick={onRetry}>
+        <StyledText style={{ opacity: 0.5 }}>Retry this transaction</StyledText>
+      </TextButton>
+    </Wrapper>
+  );
+};
