@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useLocalStorage } from "react-use";
 
 import {
   BlowfishWarningIcon,
@@ -9,7 +8,7 @@ import {
 import { TextButton } from "./Buttons";
 import { TextXL, Text } from "./Typography";
 import { ContentToggle } from "./ContentToggle";
-import { PREFERENCES_LOCALSTORAGE_PREFIX } from "../constants";
+import { logger } from "../utils/logger";
 
 interface SharedProps {
   darkMode?: boolean;
@@ -134,20 +133,15 @@ const StyledTextButton = styled(TextButton)`
 export interface UnsupportedChainScreenProps {
   style?: React.CSSProperties;
   className?: string;
+  onDismissUnsupportedChain: (isDismissed: boolean) => Promise<void>;
 }
 
-export const useShouldShowUnsupportedChainScreen = () => {
-  const key = `${PREFERENCES_LOCALSTORAGE_PREFIX}show_unsupported_chain_notice`;
-  const [shouldShowScreen, setShouldShowScreen] = useLocalStorage(key, true);
-
-  return [shouldShowScreen, setShouldShowScreen] as const;
-};
 export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
   style,
   className,
+  onDismissUnsupportedChain,
 }) => {
-  const [shouldShowScreen, setShouldShowScreen] =
-    useShouldShowUnsupportedChainScreen();
+  const [shouldShowScreen, setShouldShowScreen] = useState<boolean>(true);
   // TODO(kimpers): Actual copy
   return (
     <Wrapper style={style} className={className}>
@@ -156,7 +150,15 @@ export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
       <StyledText>
         This chain is currently not supported. More chains coming soon!
       </StyledText>
-      <StyledTextButton onClick={() => setShouldShowScreen(!shouldShowScreen)}>
+      <StyledTextButton
+        onClick={() => {
+          setShouldShowScreen(!shouldShowScreen);
+          // NOTE: we invert the boolean because we store whether it's been dismissed
+          onDismissUnsupportedChain(shouldShowScreen).catch((err) =>
+            logger.error(err)
+          );
+        }}
+      >
         <StyledCheckbox checked={!shouldShowScreen} />
         <StyledText style={{ marginBottom: "unset" }}>
           Don&apos;t show this again

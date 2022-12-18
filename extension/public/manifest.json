@@ -38,6 +38,6 @@
   "background": {
     "service_worker": "js/background.js"
   },
-  "permissions": [],
+  "permissions": ["storage"],
   "host_permissions": ["<all_urls>"]
 }

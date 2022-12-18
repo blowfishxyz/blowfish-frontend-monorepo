@@ -172,7 +172,11 @@ export const UnsupportedChain: ComponentStory<
           severity="INFO"
           bottomMenuType="SLIM"
         >
-          <UnsupportedChainScreen />
+          <UnsupportedChainScreen
+            onDismissUnsupportedChain={async (value) => {
+              console.log("onToggleShowUnsupportedChain", value);
+            }}
+          />
           <SlimBottomMenu
             style={{
               /* NOTE: This is only applicable in the context of the storybook,

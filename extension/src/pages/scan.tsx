@@ -22,8 +22,10 @@ import { ScanResults } from "../components/ScanResults";
 import {
   TransactionBlockedScreen,
   SimulationErrorScreen,
+  UnsupportedChainScreen,
   UnknownErrorScreen,
 } from "../components/InformationScreens";
+import { setUnsupportedChainDismissed } from "../utils/storage";
 import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
 
@@ -49,21 +51,20 @@ const ScanResult: React.FC = () => {
     const _request = parseRequestFromMessage(_message);
     const chainId = _message.data.chainId.toString();
 
+    setMessage(_message);
+    setRequest(_request);
+    setUserAccount(_request.userAccount);
+
     // NOTE: This should never happen since we verify
     // that the chain is supported before we create this page
     if (!chainIdToSupportedChainMapping[chainId]) {
-      logger.error(`Blowfish unsupported chainId ${chainId}`);
+      logger.debug(`Blowfish unsupported chainId ${chainId}`);
       return;
     }
-
     const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
       chainIdToSupportedChainMapping[chainId];
-
-    setMessage(_message);
-    setRequest(_request);
     setChainFamily(_chainFamily);
     setChainNetwork(_chainNetwork);
-    setUserAccount(_request.userAccount);
   }, []);
 
   const {
@@ -115,6 +116,7 @@ const ScanResult: React.FC = () => {
     const isError = !isLoading && scanError;
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
+    const isUnsupportedChain = !chainFamily || !chainNetwork;
 
     if (isError) {
       logger.error(scanError);
@@ -124,7 +126,28 @@ const ScanResult: React.FC = () => {
     // currently this holds true but it may not be the case in the future
     const onContinue = () => setHasDismissedScreen(true);
 
-    if (isLoading) {
+    if (isUnsupportedChain && message) {
+      const onToggleShowUnsupportedChain = async (value: boolean) => {
+        const chainId = message?.data?.chainId as string | undefined;
+        if (!chainId) {
+          logger.error(`No chainId found in message ${message}`);
+          return;
+        }
+        await setUnsupportedChainDismissed(chainId, value);
+      };
+
+      return (
+        <>
+          <UnsupportedChainScreen
+            onDismissUnsupportedChain={onToggleShowUnsupportedChain}
+          />
+          <SlimBottomMenu
+            onClick={() => handleUserDecision(true)}
+            buttonLabel="Close"
+          />
+        </>
+      );
+    } else if (isLoading) {
       return (
         <LoadingScreen
           type={isMessageSignatureRequest ? "message" : "transaction"}
@@ -176,6 +199,10 @@ const ScanResult: React.FC = () => {
     closeWindow,
     isMessageSignatureRequest,
     mutate,
+    chainFamily,
+    chainNetwork,
+    message,
+    handleUserDecision,
   ]);
 
   return (

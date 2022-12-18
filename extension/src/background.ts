@@ -13,6 +13,7 @@ import { createPopupWithFile } from "./utils/window";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { postResponseToPort } from "./utils/messages";
 import { logger } from "./utils/logger";
+import { isUnsupportedChainDismissed } from "./utils/storage";
 
 const DIMENSIONS = { width: 392, height: 768 };
 
@@ -66,11 +67,15 @@ const processRequestBase = async (
 ): Promise<void> => {
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
+  // and the user dismissed the notice
   if (!chainIdToSupportedChainMapping[chainId]) {
-    logger.info(`Unsupported chain id ${chainId}`);
-    const responseData: UserDecisionData = { isOk: true };
-    postResponseToPort(remotePort, message, responseData);
-    return;
+    const isDismissed = await isUnsupportedChainDismissed(chainId);
+    if (isDismissed) {
+      logger.info(`Unsupported chain id ${chainId}`);
+      const responseData: UserDecisionData = { isOk: true };
+      postResponseToPort(remotePort, message, responseData);
+      return;
+    }
   }
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
