@@ -1,4 +1,4 @@
-import objectHash from "object-hash";
+import objectHash, { NotUndefined } from "object-hash";
 import { Duplex } from "readable-stream";
 import Browser from "webextension-polyfill";
 
@@ -18,7 +18,7 @@ const createRawMessage = <T extends object>(
   type: RequestType,
   data: T
 ): Message<T> => {
-  const id = objectHash(data);
+  const id = objectHash(data as NotUndefined);
   return { id, data, type };
 };
 
