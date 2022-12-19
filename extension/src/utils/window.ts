@@ -13,7 +13,7 @@ export const createPopupWithFile = async (
   filename: string,
   params: PopupParams,
   { width, height }: { width: number; height: number }
-) => {
+): Promise<Browser.Windows.Window> => {
   const [window] = await Promise.all([
     Browser.windows.getCurrent(),
     sleep(100), // HACK: Add a slight delay to prevent weird window positioning
@@ -36,6 +36,8 @@ export const createPopupWithFile = async (
   // HACK: Positioning doesn't work on Firefox, on Chrome the window is already
   // in the right position
   await Browser.windows.update(popupWindow.id!, positions);
+
+  return popupWindow;
 };
 
 const getPopupPositions = (

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { createRoot } from "react-dom/client";
-import styled from "styled-components";
 import { Providers } from "../components/Providers";
 import { LoadingScreen } from "../components/LoadingScreen";
 import qs from "qs";
@@ -9,19 +8,12 @@ import {
   Message,
   DappRequest,
   parseRequestFromMessage,
-  isTransactionRequest,
   isSignTypedDataRequest,
   isSignMessageRequest,
   UntypedMessageData,
   actionToSeverity,
 } from "../types";
-import {
-  BlowfishApiClient,
-  EvmTransactionScanResult,
-  EvmMessageScanResult,
-  ChainNetwork,
-  ChainFamily,
-} from "../utils/BlowfishApiClient";
+import { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
@@ -30,15 +22,12 @@ import { ScanResults } from "../components/ScanResults";
 import {
   TransactionBlockedScreen,
   SimulationErrorScreen,
+  UnsupportedChainScreen,
+  UnknownErrorScreen,
 } from "../components/InformationScreens";
+import { setUnsupportedChainDismissed } from "../utils/storage";
 import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
-
-const BLOWFISH_API_BASE_URL = process.env.BLOWFISH_API_BASE_URL as string;
-
-const ErrorMessage = styled.p`
-  color: red;
-  font-weight: bold;
-`;
+import { useScanDappRequest } from "../hooks/useScanDappRequest";
 
 const ScanResult: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
@@ -51,14 +40,7 @@ const ScanResult: React.FC = () => {
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
-  const [client, setClient] = useState<BlowfishApiClient | undefined>(
-    undefined
-  );
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
-  const [scanResults, setScanResults] = useState<
-    EvmMessageScanResult | EvmTransactionScanResult | undefined
-  >(undefined);
-  const [scanError, setScanError] = useState<Error | undefined>(undefined);
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
 
   useEffect(() => {
@@ -69,69 +51,27 @@ const ScanResult: React.FC = () => {
     const _request = parseRequestFromMessage(_message);
     const chainId = _message.data.chainId.toString();
 
+    setMessage(_message);
+    setRequest(_request);
+    setUserAccount(_request.userAccount);
+
     // NOTE: This should never happen since we verify
     // that the chain is supported before we create this page
     if (!chainIdToSupportedChainMapping[chainId]) {
-      logger.error(`Blowfish unsupported chainId ${chainId}`);
+      logger.debug(`Blowfish unsupported chainId ${chainId}`);
       return;
     }
-
     const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
       chainIdToSupportedChainMapping[chainId];
-
-    const _client = new BlowfishApiClient(
-      _chainFamily,
-      _chainNetwork,
-      undefined,
-      BLOWFISH_API_BASE_URL
-    );
-    setMessage(_message);
-    setRequest(_request);
-    setClient(_client);
     setChainFamily(_chainFamily);
     setChainNetwork(_chainNetwork);
   }, []);
 
-  useEffect(() => {
-    if (!request || !message || !client) {
-      return;
-    }
-    const scanRequest = async () => {
-      if (isTransactionRequest(request)) {
-        setUserAccount(request.userAccount);
-        const _scanResults = await client.scanTransaction(
-          request.payload,
-          request.userAccount,
-          { origin: message.origin! }
-        );
-
-        setScanResults(_scanResults);
-      } else if (isSignTypedDataRequest(request)) {
-        setUserAccount(request.userAccount);
-        const _scanResults = await client.scanSignTypedData(
-          request.payload,
-          request.userAccount,
-          { origin: message.origin! }
-        );
-
-        setScanResults(_scanResults);
-      } else if (isSignMessageRequest(request)) {
-        setUserAccount(request.userAccount);
-        const _scanResults = await client.scanSignMessage(
-          request.payload.message,
-          request.userAccount,
-          { origin: message.origin! }
-        );
-
-        setScanResults(_scanResults);
-      }
-    };
-
-    scanRequest().catch((err) => {
-      setScanError(err);
-      logger.error(err);
-    });
-  }, [client, message, request]);
+  const {
+    data: scanResults,
+    error: scanError,
+    mutate,
+  } = useScanDappRequest(chainFamily, chainNetwork, request, message?.origin);
 
   const closeWindow = useCallback(() => window.close(), []);
 
@@ -176,19 +116,51 @@ const ScanResult: React.FC = () => {
     const isError = !isLoading && scanError;
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
+    const isUnsupportedChain = !chainFamily || !chainNetwork;
+
+    if (isError) {
+      logger.error(scanError);
+    }
 
     // NOTE(kimpers): We make th assumption that one tx can only generate one error screen
     // currently this holds true but it may not be the case in the future
     const onContinue = () => setHasDismissedScreen(true);
 
-    if (isLoading) {
+    if (isUnsupportedChain && message) {
+      const onToggleShowUnsupportedChain = async (value: boolean) => {
+        const chainId = message?.data?.chainId as string | undefined;
+        if (!chainId) {
+          logger.error(`No chainId found in message ${message}`);
+          return;
+        }
+        await setUnsupportedChainDismissed(chainId, value);
+      };
+
+      return (
+        <>
+          <UnsupportedChainScreen
+            onDismissUnsupportedChain={onToggleShowUnsupportedChain}
+          />
+          <SlimBottomMenu
+            onClick={() => handleUserDecision(true)}
+            buttonLabel="Close"
+          />
+        </>
+      );
+    } else if (isLoading) {
       return (
         <LoadingScreen
           type={isMessageSignatureRequest ? "message" : "transaction"}
         />
       );
     } else if (isError && !hasDismissedScreen) {
-      return <ErrorMessage>Scan failed: {scanError.message}</ErrorMessage>;
+      // TODO(kimpers): Error message propagation from the API
+      return (
+        <>
+          <UnknownErrorScreen onRetry={() => mutate()} />;
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
     } else if (shouldShowBlockScreen && !hasDismissedScreen) {
       return (
         <>
@@ -226,6 +198,11 @@ const ScanResult: React.FC = () => {
     hasDismissedScreen,
     closeWindow,
     isMessageSignatureRequest,
+    mutate,
+    chainFamily,
+    chainNetwork,
+    message,
+    handleUserDecision,
   ]);
 
   return (
