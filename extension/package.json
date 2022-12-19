@@ -1,6 +1,6 @@
 {
   "name": "blowfish-extension",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Blowfish API protection for injected web3 wallets",
   "main": "index.js",
   "scripts": {
