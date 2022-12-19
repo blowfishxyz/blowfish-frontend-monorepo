@@ -99,14 +99,18 @@ const StyledItalicText = styled(Text)`
   font-style: italic;
   text-align: center;
   margin-top: 20px;
-  margin-bottom: 72px;
 `;
 
-const ListContainer = styled.div`
+const ContentContainer = styled.div`
+  margin-top: 20px;
+  width: 100%;
   & > ol {
     list-style-position: inside;
     padding-left: 0;
-    margin-top: 22px;
+
+    li + li {
+      margin-top: 0.5em;
+    }
   }
 `;
 
@@ -123,19 +127,35 @@ const Popup: React.FC = () => {
       <StyledItalicText>
         We simulate your web3 transactions and detect scams before they happen
       </StyledItalicText>
-      <ListContainer>
-        <Text>To use:</Text>
+      <ContentContainer>
+        <Text semiBold>To use:</Text>
         <ol>
-          <Text as="li">Make a web3 transaction</Text>
-          <Text as="li">Blowfish will open before your wallet</Text>
-          <Text as="li">Transact with confidence</Text>
           <Text as="li">
-            <LinkWithArrow href={BLOWFISH_FEEDBACK_URL}>
-              Report any bugs or feature ideas
-            </LinkWithArrow>
+            Initiate your web3 transaction as you normally would.
+          </Text>
+          <Text as="li">
+            Blowfish’s transaction simulation results and any warnings will pop
+            up as a separate screen before you submit your transaction.
+          </Text>
+          <Text as="li">
+            Click “Confirm” to approve your desired transaction within your
+            wallet.
           </Text>
         </ol>
-      </ListContainer>
+      </ContentContainer>
+      <ContentContainer>
+        <Text semiBold>Feedback</Text>
+        <Text as="p">
+          If you run into any bugs or have any suggestions, please{" "}
+          <LinkWithArrow
+            href={BLOWFISH_FEEDBACK_URL}
+            style={{ textDecorationLine: "underline" }}
+          >
+            send them to us
+          </LinkWithArrow>
+        </Text>
+      </ContentContainer>
+
       <IconRow>
         <BottomLink href={BLOWFISH_WEBSITE_URL} target="_blank" rel="noopener">
           <WebsiteIcon />

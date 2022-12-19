@@ -75,13 +75,13 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
 }) => {
   return (
     <BottomMenuWrapper style={style} className={className}>
-      <GrayText>Approve to continue to your wallet</GrayText>
+      <GrayText>Confirm to continue to your wallet</GrayText>
       <Row>
         <SecondaryButton style={{ width: "172px" }} onClick={onCancel}>
           Cancel
         </SecondaryButton>
         <PrimaryButton style={{ width: "172px" }} onClick={onContinue}>
-          Approve
+          Confirm
         </PrimaryButton>
       </Row>
     </BottomMenuWrapper>
