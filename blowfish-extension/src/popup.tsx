@@ -1,8 +1,11 @@
 import React from "react"
 import styled from "styled-components"
 
+import "./style.css"
+
 import { LinkWithArrow, UnstyledA } from "./components/Links"
 import { PopupContainer } from "./components/PopupContainer"
+import { Providers } from "./components/Providers"
 import { Text, TextXL } from "./components/Typography"
 import { BlowfishIcon } from "./components/icons/BlowfishIcon"
 import {
@@ -167,4 +170,10 @@ const Popup: React.FC = () => {
   )
 }
 
-export default Popup
+const Page: React.FC = () => (
+  <Providers>
+    <Popup />
+  </Providers>
+)
+
+export default Page

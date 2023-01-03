@@ -300,3 +300,5 @@ const overrideWindowEthereum = () => {
 
 const overrideInterval: NodeJS.Timer = setInterval(overrideWindowEthereum, 100)
 overrideWindowEthereum()
+
+export default {}

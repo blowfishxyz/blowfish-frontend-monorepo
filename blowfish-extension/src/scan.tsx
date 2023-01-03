@@ -1,6 +1,7 @@
 import qs from "qs"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { createRoot } from "react-dom/client"
+
+import "./style.css"
 
 import { ApproveBottomMenu, SlimBottomMenu } from "./components/BottomMenus"
 import {
@@ -233,10 +234,10 @@ const ScanResult: React.FC = () => {
   )
 }
 
-const container = document.getElementById("root") as HTMLElement
-const root = createRoot(container)
-root.render(
+const Page: React.FC = () => (
   <Providers>
     <ScanResult />
   </Providers>
 )
+
+export default Page

@@ -1,11 +1,11 @@
-const EXTENSION_ENV = process.env.EXTENSION_ENV
+const NODE_ENV = process.env.NODE_ENV
 
 export const logger = {
   /**
    * Logs a message to the console only when in development mode
    */
   debug: (...args: unknown[]) => {
-    if (EXTENSION_ENV === "development") {
+    if (NODE_ENV === "development") {
       console.log("[DEBUG]: ", ...args)
     }
   },
