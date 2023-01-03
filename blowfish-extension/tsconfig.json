@@ -6,6 +6,13 @@
     "paths": {
       "~*": ["./src/*"]
     },
-    "baseUrl": "."
+    "baseUrl": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "noEmitOnError": true,
+    "jsx": "react",
+    "typeRoots": ["node_modules/@types"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   }
 }

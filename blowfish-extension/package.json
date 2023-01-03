@@ -3,16 +3,42 @@
   "displayName": "Blowfish Wallet Protect BETA",
   "version": "0.0.6",
   "description": "Blowfish API protection for injected web3 wallets",
-  "author": "kim",
+  "author": "Kim Persson",
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "package": "plasmo package"
+    "package": "plasmo package",
+    "test": "yarn jest --passWithNoTests",
+    "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "lint:prettier:check": "prettier --check \"src/**/*.{ts,tsx}\"",
+    "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint": "yarn lint:eslint && yarn lint:prettier:check",
+    "typecheck": "tsc --noEmit",
+    "types:clean": "(cd ./src/utils/BlowfishApiClient/types && find . ! -name 'index.ts' -type f -exec rm -f {} + )",
+    "types:copy": "cp ../blowfish-monorepo/components/types/bindings/* ./src/utils/BlowfishApiClient/types",
+    "types:update": "yarn types:clean && yarn types:copy && yarn lint:prettier && yarn typecheck",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook",
+    "chromatic": "npx chromatic --project-token=3a6769686749"
   },
   "dependencies": {
     "plasmo": "0.61.2",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "@ethersproject/address": "^5.7.0",
+    "@metamask/post-message-stream": "^6.0.0",
+    "decimal.js": "^10.4.3",
+    "eth-rpc-errors": "^4.0.3",
+    "ethers": "^5.7.2",
+    "lottie-react": "^2.3.1",
+    "object-hash": "^3.0.0",
+    "polished": "^4.2.2",
+    "qs": "^6.11.0",
+    "react-use": "^17.4.0",
+    "readable-stream": "^4.2.0",
+    "styled-components": "^5.3.6",
+    "swr": "^2.0.0",
+    "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
     "@types/chrome": "0.0.206",
@@ -21,14 +47,40 @@
     "@types/react-dom": "18.0.10",
     "prettier": "2.8.1",
     "typescript": "4.9.4",
-    "@plasmohq/prettier-plugin-sort-imports": "3.6.1"
+    "@plasmohq/prettier-plugin-sort-imports": "3.6.1",
+    "@storybook/addon-actions": "^6.5.15",
+    "@storybook/addon-essentials": "^6.5.15",
+    "@storybook/addon-interactions": "^6.5.15",
+    "@storybook/addon-links": "^6.5.15",
+    "@storybook/builder-webpack5": "^6.5.15",
+    "@storybook/manager-webpack5": "^6.5.15",
+    "@storybook/react": "6.5.15",
+    "@storybook/testing-library": "^0.0.13",
+    "@types/jest": "^29.2.4",
+    "@types/object-hash": "^3.0.1",
+    "@types/qs": "^6.9.7",
+    "@types/readable-stream": "^2.3.15",
+    "@types/styled-components": "^5.1.26",
+    "@types/webextension-polyfill": "^0.9.2",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.46.1",
+    "babel-loader": "^9.1.0",
+    "chromatic": "^6.14.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "eslint": "^8.30.0",
+    "eslint-plugin-react": "^7.31.11",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-storybook": "^0.6.8",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3",
+    "ts-loader": "^9.4.2"
   },
   "manifest": {
-    "host_permissions": [
-      "https://*/*"
-    ],
     "permissions": [
-      "tabs"
+      "storage"
+    ],
+    "host_permissions": [
+      "<all_urls>"
     ]
   }
 }
