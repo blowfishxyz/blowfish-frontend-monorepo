@@ -9,7 +9,7 @@ export interface PopupParams {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }
-export const createPopupWithFile = async (
+export const createTabPopup = async (
   filename: string,
   params: PopupParams,
   { width, height }: { width: number; height: number }
@@ -24,7 +24,7 @@ export const createPopupWithFile = async (
   const positions = getPopupPositions(window, width, height + windowPanelHeight)
 
   const popupWindow = await Browser.windows.create({
-    url: `${filename}?${queryString}`,
+    url: `tabs/${filename}?${queryString}`,
     type: "popup",
     ...positions
   })

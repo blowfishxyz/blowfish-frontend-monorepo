@@ -13,7 +13,7 @@ import { chainIdToSupportedChainMapping } from "./utils/constants"
 import { logger } from "./utils/logger"
 import { postResponseToPort } from "./utils/messages"
 import { isUnsupportedChainDismissed } from "./utils/storage"
-import { createPopupWithFile } from "./utils/window"
+import { createTabPopup } from "./utils/window"
 
 const DIMENSIONS = { width: 392, height: 768 }
 
@@ -56,6 +56,9 @@ Browser.runtime.onMessage.addListener(
         `Missing remote port for message ${message.id}: ${message.type}`
       )
     }
+    // HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
+    // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
+    return Promise.resolve(true)
   }
 )
 
@@ -81,7 +84,7 @@ const processRequestBase = async (
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message)
-  const windowPromise = createPopupWithFile("scan.html", message, DIMENSIONS)
+  const windowPromise = createTabPopup("scan.html", message, DIMENSIONS)
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort)

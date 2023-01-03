@@ -1,21 +1,21 @@
 import qs from "qs"
 import React, { useCallback, useEffect, useMemo, useState } from "react"
 
-import "./style.css"
+import "../style.css"
 
-import { ApproveBottomMenu, SlimBottomMenu } from "./components/BottomMenus"
+import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus"
 import {
   SimulationErrorScreen,
   TransactionBlockedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen
-} from "./components/InformationScreens"
-import { LoadingScreen } from "./components/LoadingScreen"
-import { PopupContainer } from "./components/PopupContainer"
-import { Providers } from "./components/Providers"
-import { ScanResults } from "./components/ScanResults"
-import { useScanDappRequest } from "./hooks/useScanDappRequest"
-import { respondWithUserDecision } from "./page-utils"
+} from "../components/InformationScreens"
+import { LoadingScreen } from "../components/LoadingScreen"
+import { PopupContainer } from "../components/PopupContainer"
+import { Providers } from "../components/Providers"
+import { ScanResults } from "../components/ScanResults"
+import { useScanDappRequest } from "../hooks/useScanDappRequest"
+import { respondWithUserDecision } from "../page-utils"
 import {
   DappRequest,
   Message,
@@ -24,11 +24,11 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   parseRequestFromMessage
-} from "./types"
-import type { ChainFamily, ChainNetwork } from "./utils/BlowfishApiClient"
-import { chainIdToSupportedChainMapping } from "./utils/constants"
-import { logger } from "./utils/logger"
-import { setUnsupportedChainDismissed } from "./utils/storage"
+} from "../types"
+import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient"
+import { chainIdToSupportedChainMapping } from "../utils/constants"
+import { logger } from "../utils/logger"
+import { setUnsupportedChainDismissed } from "../utils/storage"
 
 const ScanResult: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
