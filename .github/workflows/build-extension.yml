@@ -19,20 +19,16 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '16.x'
-    - run: yarn install
-      working-directory: ./extension
-    - run: yarn typecheck
-      working-directory: ./extension
-    - run: yarn lint
-      working-directory: ./extension
-    - run: yarn test
-      working-directory: ./extension
-    - run: yarn run build --json webpack-stats.json
-      working-directory: ./extension
-    # Send webpack stats and build information to RelativeCI
-    - name: Send webpack stats to RelativeCI
-      uses: relative-ci/agent-action@v2
+    - uses: pnpm/action-setup@v2
       with:
-        webpackStatsFile: ./extension/webpack-stats.json
-        key: ${{ secrets.RELATIVE_CI_KEY }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        version: 7
+    - run: pnpm install
+      working-directory: ./extension
+    - run: pnpm typecheck
+      working-directory: ./extension
+    - run: pnpm lint
+      working-directory: ./extension
+    - run: pnpm test
+      working-directory: ./extension
+    - run: pnpm build
+      working-directory: ./extension
