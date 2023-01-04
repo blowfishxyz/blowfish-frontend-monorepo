@@ -1,7 +1,7 @@
-import Browser from "webextension-polyfill";
 import qs from "qs";
+import Browser from "webextension-polyfill";
 
-import { RequestType } from "../types";
+import type { RequestType } from "../types";
 import { sleep } from "../utils/utils";
 
 export interface PopupParams {
@@ -9,7 +9,7 @@ export interface PopupParams {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
-export const createPopupWithFile = async (
+export const createTabPopup = async (
   filename: string,
   params: PopupParams,
   { width, height }: { width: number; height: number }
@@ -28,7 +28,7 @@ export const createPopupWithFile = async (
   );
 
   const popupWindow = await Browser.windows.create({
-    url: `${filename}?${queryString}`,
+    url: `tabs/${filename}?${queryString}`,
     type: "popup",
     ...positions,
   });

@@ -6,13 +6,13 @@ import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
 import { Identifier } from "../types";
-import {
-  sendAndAwaitResponseFromStream,
-  createTransactionRequestMessage,
-  createSignTypedDataRequestMessage,
-  createSignMessageRequestMessage,
-} from "../utils/messages";
 import { logger } from "../utils/logger";
+import {
+  createSignMessageRequestMessage,
+  createSignTypedDataRequestMessage,
+  createTransactionRequestMessage,
+  sendAndAwaitResponseFromStream,
+} from "../utils/messages";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -300,3 +300,5 @@ const overrideWindowEthereum = () => {
 
 const overrideInterval: NodeJS.Timer = setInterval(overrideWindowEthereum, 100);
 overrideWindowEthereum();
+
+export default {};

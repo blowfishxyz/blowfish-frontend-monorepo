@@ -1,6 +1,6 @@
+import { getAddress, isAddress } from "@ethersproject/address";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
-import { getAddress, isAddress } from "@ethersproject/address";
 
 import { TextSmall } from "./Typography";
 

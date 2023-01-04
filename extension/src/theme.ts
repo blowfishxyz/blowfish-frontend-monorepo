@@ -1,5 +1,6 @@
 import { lighten } from "polished";
-import { Severity } from "./types";
+
+import type { Severity } from "./types";
 
 const palette = {
   warningBackground: "#FFFCF2",

@@ -1,8 +1,8 @@
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import { Providers } from "../components/Providers";
 import { LoadingScreen as LoadingScreenComponent } from "../components/LoadingScreen";
+import { Providers } from "../components/Providers";
 import { PopupContainer } from "./../components/PopupContainer";
 
 export default {

@@ -1,4 +1,5 @@
 import type { ChainFamily, ChainNetwork } from "./BlowfishApiClient";
+
 interface ChainInfo {
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;

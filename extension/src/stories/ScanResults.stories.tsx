@@ -1,26 +1,25 @@
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React, { useState } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import { Providers } from "../components/Providers";
+import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
+import { TransactionBlockedScreen } from "../components/InformationScreens";
 import {
   PopupContainer,
   PopupContainerProps,
 } from "../components/PopupContainer";
+import { Providers } from "../components/Providers";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
-import { TransactionBlockedScreen } from "../components/InformationScreens";
-import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
 import { Severity, actionToSeverity } from "../types";
-
 import {
-  transactionNoActionScanResult,
-  transactionWarningScanResult,
-  transactionBlockScanResult,
-  messageNoActionScanResult,
-  exampleTransactionRequest,
+  exampleDappUrl,
   exampleNftSignTypedDataRequest,
   examplePermitSignTypeDataRequest,
+  exampleTransactionRequest,
+  messageNoActionScanResult,
   messageWarnResultScanResult,
-  exampleDappUrl,
+  transactionBlockScanResult,
+  transactionNoActionScanResult,
+  transactionWarningScanResult,
 } from "./fixtures/scan";
 
 export default {

@@ -1,8 +1,8 @@
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import { Providers } from "../components/Providers";
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
+import { Providers } from "../components/Providers";
 
 export default {
   title: "Buttons",

@@ -1,17 +1,17 @@
 import objectHash, { NotUndefined } from "object-hash";
-import { Duplex } from "readable-stream";
-import Browser from "webextension-polyfill";
+import type { Duplex } from "readable-stream";
+import type Browser from "webextension-polyfill";
 
 import {
+  Message,
   RequestType,
-  TransactionPayload,
-  TransactionRequest,
-  SignTypedDataPayload,
-  SignTypedDataRequest,
   SignMessagePayload,
   SignMessageRequest,
+  SignTypedDataPayload,
+  SignTypedDataRequest,
+  TransactionPayload,
+  TransactionRequest,
   UntypedMessageData,
-  Message,
 } from "../types";
 
 const createRawMessage = <T extends object>(

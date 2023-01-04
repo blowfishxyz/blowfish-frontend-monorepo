@@ -1,33 +1,34 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { createRoot } from "react-dom/client";
-import { Providers } from "../components/Providers";
-import { LoadingScreen } from "../components/LoadingScreen";
 import qs from "qs";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
+import "../style.css";
+
+import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {
-  Message,
+  SimulationErrorScreen,
+  TransactionBlockedScreen,
+  UnknownErrorScreen,
+  UnsupportedChainScreen,
+} from "../components/InformationScreens";
+import { LoadingScreen } from "../components/LoadingScreen";
+import { PopupContainer } from "../components/PopupContainer";
+import { Providers } from "../components/Providers";
+import { ScanResults } from "../components/ScanResults";
+import { useScanDappRequest } from "../hooks/useScanDappRequest";
+import { respondWithUserDecision } from "../page-utils";
+import {
   DappRequest,
-  parseRequestFromMessage,
-  isSignTypedDataRequest,
-  isSignMessageRequest,
+  Message,
   UntypedMessageData,
   actionToSeverity,
+  isSignMessageRequest,
+  isSignTypedDataRequest,
+  parseRequestFromMessage,
 } from "../types";
-import { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
-import { respondWithUserDecision } from "./page-utils";
 import { logger } from "../utils/logger";
-import { PopupContainer } from "../components/PopupContainer";
-import { ScanResults } from "../components/ScanResults";
-import {
-  TransactionBlockedScreen,
-  SimulationErrorScreen,
-  UnsupportedChainScreen,
-  UnknownErrorScreen,
-} from "../components/InformationScreens";
 import { setUnsupportedChainDismissed } from "../utils/storage";
-import { SlimBottomMenu, ApproveBottomMenu } from "../components/BottomMenus";
-import { useScanDappRequest } from "../hooks/useScanDappRequest";
 
 const ScanResult: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
@@ -234,10 +235,10 @@ const ScanResult: React.FC = () => {
   );
 };
 
-const container = document.getElementById("root") as HTMLElement;
-const root = createRoot(container);
-root.render(
+const Page: React.FC = () => (
   <Providers>
     <ScanResult />
   </Providers>
 );
+
+export default Page;

@@ -1,20 +1,21 @@
 import useSWR, { SWRResponse } from "swr";
+
 import {
   DappRequest,
-  isTransactionRequest,
-  isSignTypedDataRequest,
   isSignMessageRequest,
+  isSignTypedDataRequest,
+  isTransactionRequest,
 } from "../types";
 import {
   BlowfishApiClient,
   ChainFamily,
   ChainNetwork,
-  EvmTransactionScanResult,
   EvmMessageScanResult,
+  EvmTransactionScanResult,
 } from "../utils/BlowfishApiClient";
 
 export const BLOWFISH_API_BASE_URL = process.env
-  .BLOWFISH_API_BASE_URL as string;
+  .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string;
 
 const SCAN_REFRESH_INTERVAL_MS = 15_000;
 

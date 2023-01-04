@@ -1,5 +1,6 @@
+import { LottieOptions, useLottie } from "lottie-react";
 import React from "react";
-import { useLottie, LottieOptions } from "lottie-react";
+
 import loadingAnimation from "./loader.json";
 
 const animationOptions: LottieOptions = {

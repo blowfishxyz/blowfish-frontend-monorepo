@@ -1,23 +1,23 @@
+import type { ComponentStory } from "@storybook/react";
 import React from "react";
-import { ComponentStory } from "@storybook/react";
 
-import { Providers } from "../components/Providers";
+import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
+import {
+  SimulationErrorScreen,
+  SimulationErrorScreenProps,
+  TransactionBlockedScreen as TransactionBlockedScreenComponent,
+  TransactionBlockedScreenProps,
+  UnknownErrorScreen,
+  UnknownErrorScreenProps,
+  UnsupportedChainScreen,
+  UnsupportedChainScreenProps,
+} from "../components/InformationScreens";
 import {
   PopupContainer,
   PopupContainerProps,
 } from "../components/PopupContainer";
-import {
-  TransactionBlockedScreen as TransactionBlockedScreenComponent,
-  TransactionBlockedScreenProps,
-  SimulationErrorScreen,
-  SimulationErrorScreenProps,
-  UnsupportedChainScreen,
-  UnsupportedChainScreenProps,
-  UnknownErrorScreen,
-  UnknownErrorScreenProps,
-} from "../components/InformationScreens";
-import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
-import { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
+import { Providers } from "../components/Providers";
+import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
 
 const DEFAULT_ARGS = {
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",

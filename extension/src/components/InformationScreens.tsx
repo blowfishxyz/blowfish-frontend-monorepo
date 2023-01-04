@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import {
-  BlowfishWarningIcon,
-  BlowfishInvertedWarningIcon,
-} from "./icons/BlowfishWarningIcons";
-import { TextButton } from "./Buttons";
-import { TextXL, Text } from "./Typography";
-import { ContentToggle } from "./ContentToggle";
 import { logger } from "../utils/logger";
+import { TextButton } from "./Buttons";
+import { ContentToggle } from "./ContentToggle";
+import { Text, TextXL } from "./Typography";
+import {
+  BlowfishInvertedWarningIcon,
+  BlowfishWarningIcon,
+} from "./icons/BlowfishWarningIcons";
 
 interface SharedProps {
   darkMode?: boolean;

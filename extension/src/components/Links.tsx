@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
-import { ArrowIcon } from "./icons/ArrowIcon";
-
 import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
+import { ArrowIcon } from "./icons/ArrowIcon";
 
 const SyledArrowIcon = styled(ArrowIcon)`
   margin-left: 4px;

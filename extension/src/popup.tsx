@@ -1,18 +1,18 @@
 import React from "react";
-import { createRoot } from "react-dom/client";
 import styled from "styled-components";
 
-import { Providers } from "../components/Providers";
-import { PopupContainer } from "../components/PopupContainer";
-import { BlowfishIcon } from "../components/icons/BlowfishIcon";
-import { TextXL, Text } from "../components/Typography";
-import { UnstyledA, LinkWithArrow } from "../components/Links";
+import "./style.css";
 
+import { LinkWithArrow, UnstyledA } from "./components/Links";
+import { PopupContainer } from "./components/PopupContainer";
+import { Providers } from "./components/Providers";
+import { Text, TextXL } from "./components/Typography";
+import { BlowfishIcon } from "./components/icons/BlowfishIcon";
 import {
+  BLOWFISH_FEEDBACK_URL,
   BLOWFISH_TWITTER_URL,
   BLOWFISH_WEBSITE_URL,
-  BLOWFISH_FEEDBACK_URL,
-} from "../constants";
+} from "./constants";
 
 const WebsiteIcon = () => {
   return (
@@ -174,10 +174,10 @@ const Popup: React.FC = () => {
   );
 };
 
-const container = document.getElementById("root") as HTMLElement;
-const root = createRoot(container);
-root.render(
+const Page: React.FC = () => (
   <Providers>
     <Popup />
   </Providers>
 );
+
+export default Page;

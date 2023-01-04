@@ -5,7 +5,7 @@ module.exports = {
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
   ],
-  staticDirs: ["../public"],
+  //staticDirs: ["../public"],
   framework: "@storybook/react",
   core: {
     builder: "@storybook/builder-webpack5",

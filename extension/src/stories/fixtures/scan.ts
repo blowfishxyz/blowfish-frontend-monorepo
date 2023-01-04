@@ -1,12 +1,12 @@
 import {
-  EvmTransactionScanResult,
-  EvmMessageScanResult,
-} from "../../utils/BlowfishApiClient";
-import {
-  TransactionRequest,
   RequestType,
   SignTypedDataRequest,
+  TransactionRequest,
 } from "../../types";
+import type {
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
+} from "../../utils/BlowfishApiClient";
 
 export const exampleTransactionRequest: TransactionRequest = {
   type: RequestType.Transaction,

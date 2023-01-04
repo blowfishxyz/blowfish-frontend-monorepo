@@ -1,8 +1,15 @@
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
+import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
+
 import { Identifier, Message, UntypedMessageData } from "../types";
 import { sendAndAwaitResponseFromPort } from "../utils/messages";
 
+export const config: PlasmoContentScript = {
+  matches: ["<all_urls>"],
+  all_frames: true,
+  run_at: "document_start",
+};
 // Connect to page
 const stream = new WindowPostMessageStream({
   name: Identifier.ContentScript,
@@ -26,3 +33,5 @@ stream.on("data", (message: Message<UntypedMessageData>) => {
     }
   );
 });
+
+export default {};

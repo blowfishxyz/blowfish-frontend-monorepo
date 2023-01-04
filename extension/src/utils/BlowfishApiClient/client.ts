@@ -1,11 +1,12 @@
-const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
-import {
-  EvmTransactionScanResult,
+import type {
+  EvmMessageScanResult,
   EvmTransactionObject,
   EvmTransactionRequest,
+  EvmTransactionScanResult,
   RequestMetadata,
-  EvmMessageScanResult,
 } from "./types/index";
+
+const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
 
 export type ChainFamily = "ethereum" | "polygon";
 export type ChainNetwork = "mainnet" | "goerli";

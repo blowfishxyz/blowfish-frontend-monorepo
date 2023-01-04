@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+
 import { BaseButton } from "./BaseButton";
-import { ExpandIcon } from "./icons/ExpandArrow";
 import { Text } from "./Typography";
+import { ExpandIcon } from "./icons/ExpandArrow";
 
 const ToggleButton = styled(BaseButton)`
   /* Increase clickable area slightly without messing with alignment */

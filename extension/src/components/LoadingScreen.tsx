@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useInterval } from "react-use";
+import styled from "styled-components";
 
-import { LoadingAnimation } from "./LoadingAnimation";
 import { Text, TextSmall } from ".//Typography";
-import { BlowfishIconFull } from "./icons/BlowfishIcon";
 import { UnstyledA } from "./Links";
+import { LoadingAnimation } from "./LoadingAnimation";
+import { BlowfishIconFull } from "./icons/BlowfishIcon";
 
 // TODO(kimpers): Actual copy
 const LOADING_STATES = {
@@ -52,7 +52,7 @@ const Wrapper = styled.div`
     margin-top: 16px;
   }
 `;
-interface LoadingScreenProps {
+export interface LoadingScreenProps {
   type?: "transaction" | "message";
   style?: React.CSSProperties;
   className?: string;

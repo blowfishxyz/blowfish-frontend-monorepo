@@ -1,16 +1,16 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { WalletIcon } from "./icons/WalletIcon";
-import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
-import { shortenHex } from "../utils/hex";
-import { TextSmall } from "./Typography";
-import {
-  SLIM_BOTTOM_MENU_HEIGHT,
-  REGULAR_BOTTOM_MENU_HEIGHT,
-} from "./BottomMenus";
-import type { ChainNetwork, ChainFamily } from "../utils/BlowfishApiClient";
 import type { Severity } from "../types";
+import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
+import { shortenHex } from "../utils/hex";
+import {
+  REGULAR_BOTTOM_MENU_HEIGHT,
+  SLIM_BOTTOM_MENU_HEIGHT,
+} from "./BottomMenus";
+import { TextSmall } from "./Typography";
+import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
+import { WalletIcon } from "./icons/WalletIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;

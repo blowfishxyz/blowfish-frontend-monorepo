@@ -1,32 +1,31 @@
+import { Decimal } from "decimal.js";
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { Decimal } from "decimal.js";
 
-import { Text, TextSmall } from "./Typography";
-import { BaseButton } from "./BaseButton";
-import { BlockExplorerLink, LinkWithArrow } from "./Links";
-import { shortenHex, isNativeAsset } from "../utils/hex";
-import { JsonViewer } from "./JsonViewer";
-import { ExpandIcon } from "./icons/ExpandArrow";
-import { WarningNotice } from "./WarningNotice";
-import { logger } from "../utils/logger";
-
+import {
+  DappRequest,
+  TransactionPayload,
+  isSignMessageRequest,
+  isSignTypedDataRequest,
+  isTransactionRequest,
+} from "../types";
 import type {
-  EvmTransactionScanResult,
-  EvmMessageScanResult,
   ChainFamily,
   ChainNetwork,
   Erc721ApprovalData,
   Erc721TransferData,
   Erc1155TransferData,
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
 } from "../utils/BlowfishApiClient";
-import {
-  DappRequest,
-  isTransactionRequest,
-  isSignTypedDataRequest,
-  isSignMessageRequest,
-  TransactionPayload,
-} from "../types";
+import { isNativeAsset, shortenHex } from "../utils/hex";
+import { logger } from "../utils/logger";
+import { BaseButton } from "./BaseButton";
+import { JsonViewer } from "./JsonViewer";
+import { BlockExplorerLink, LinkWithArrow } from "./Links";
+import { Text, TextSmall } from "./Typography";
+import { WarningNotice } from "./WarningNotice";
+import { ExpandIcon } from "./icons/ExpandArrow";
 
 type NftStateChangeWithTokenId =
   | Erc721TransferData

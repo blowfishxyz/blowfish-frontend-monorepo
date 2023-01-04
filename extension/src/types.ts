@@ -1,4 +1,4 @@
-import { Action, SignTypedDataPayload } from "./utils/BlowfishApiClient";
+import type { Action, SignTypedDataPayload } from "./utils/BlowfishApiClient";
 
 export { SignTypedDataPayload };
 
