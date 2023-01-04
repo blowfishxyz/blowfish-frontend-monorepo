@@ -1,16 +1,16 @@
-import { getAddress, isAddress } from "@ethersproject/address"
-import React, { useMemo } from "react"
-import styled, { css } from "styled-components"
+import { getAddress, isAddress } from "@ethersproject/address";
+import React, { useMemo } from "react";
+import styled, { css } from "styled-components";
 
-import { TextSmall } from "./Typography"
+import { TextSmall } from "./Typography";
 
 const Wrapper = styled.div`
   margin: 16px 0;
-`
+`;
 
 const StyledTextSmall = styled(TextSmall)<{
-  capitalize?: boolean
-  isValue?: boolean
+  capitalize?: boolean;
+  isValue?: boolean;
 }>`
   word-wrap: break-word;
   ${(props) =>
@@ -25,7 +25,7 @@ const StyledTextSmall = styled(TextSmall)<{
     css`
       text-transform: capitalize;
     `}
-`
+`;
 const DetailsRow = styled.div`
   display: flex;
   flex-direction: column;
@@ -37,23 +37,23 @@ const DetailsRow = styled.div`
   & + & {
     margin-top: 16px;
   }
-`
+`;
 
 const isFlatObject = (obj: object) =>
-  Object.values(obj).every((v) => !(typeof v === "object" && v !== null))
+  Object.values(obj).every((v) => !(typeof v === "object" && v !== null));
 
 interface JsonViewerProps {
-  data: object
+  data: object;
 }
 export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
-  const isFlat = useMemo(() => isFlatObject(data), [data])
+  const isFlat = useMemo(() => isFlatObject(data), [data]);
 
   // TODO(kimpers): A prettier way to display arbitrary json
   return (
     <Wrapper>
       {isFlat ? (
         Object.entries(data).map(([key, value]) => {
-          const displayValue = isAddress(value) ? getAddress(value) : value
+          const displayValue = isAddress(value) ? getAddress(value) : value;
 
           return (
             <DetailsRow key={`details-${key}`}>
@@ -62,7 +62,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
               </StyledTextSmall>
               <StyledTextSmall isValue>{displayValue}</StyledTextSmall>
             </DetailsRow>
-          )
+          );
         })
       ) : (
         <StyledTextSmall>
@@ -70,5 +70,5 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         </StyledTextSmall>
       )}
     </Wrapper>
-  )
-}
+  );
+};

@@ -1,22 +1,22 @@
-import React from "react"
-import { useTheme } from "styled-components"
+import React from "react";
+import { useTheme } from "styled-components";
 
-import type { WarningSeverity } from "../../types"
+import type { WarningSeverity } from "../../types";
 
 interface BlowfishWarningIconProps {
-  className?: string
-  style?: React.CSSProperties
-  severity: WarningSeverity
+  className?: string;
+  style?: React.CSSProperties;
+  severity: WarningSeverity;
 }
 
 const BlowfishWarningIcon: React.FC<BlowfishWarningIconProps> = ({
   className,
   style,
-  severity
+  severity,
 }) => {
-  const theme = useTheme()
+  const theme = useTheme();
   const color =
-    severity === "WARNING" ? theme.palette.yellow : theme.palette.red
+    severity === "WARNING" ? theme.palette.yellow : theme.palette.red;
   return (
     <svg
       style={style}
@@ -25,7 +25,8 @@ const BlowfishWarningIcon: React.FC<BlowfishWarningIconProps> = ({
       height="48"
       viewBox="0 0 48 48"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg">
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <path
         d="M22.537 17.1618H25.3537V26.5705H22.537V17.1618ZM22.4392 28.0767H25.4124V30.8543H22.4392V28.0767Z"
         fill={color}
@@ -71,12 +72,12 @@ const BlowfishWarningIcon: React.FC<BlowfishWarningIconProps> = ({
         strokeWidth="3.69777"
       />
     </svg>
-  )
-}
+  );
+};
 
 interface BlowfishInvertedWarningIconProps {
-  className?: string
-  style?: React.CSSProperties
+  className?: string;
+  style?: React.CSSProperties;
 }
 const BlowfishInvertedWarningIcon: React.FC<
   BlowfishInvertedWarningIconProps
@@ -89,7 +90,8 @@ const BlowfishInvertedWarningIcon: React.FC<
       height="104"
       viewBox="0 0 104 104"
       fill="none"
-      xmlns="http://www.w3.org/2000/svg">
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g opacity="0.4">
         <path
           d="M48.8031 36.0625L55.5059 36.0625L55.5059 58.452L48.8031 58.452L48.8031 36.0625ZM48.5703 62.0362L55.6456 62.0362L55.6456 68.646L48.5703 68.646L48.5703 62.0362Z"
@@ -105,12 +107,12 @@ const BlowfishInvertedWarningIcon: React.FC<
         />
       </g>
     </svg>
-  )
-}
+  );
+};
 
-const BlowfishWarningIconMemo = React.memo(BlowfishWarningIcon)
-const BlowfishInvertedWarningIconMemo = React.memo(BlowfishInvertedWarningIcon)
+const BlowfishWarningIconMemo = React.memo(BlowfishWarningIcon);
+const BlowfishInvertedWarningIconMemo = React.memo(BlowfishInvertedWarningIcon);
 export {
   BlowfishWarningIconMemo as BlowfishWarningIcon,
-  BlowfishInvertedWarningIconMemo as BlowfishInvertedWarningIcon
-}
+  BlowfishInvertedWarningIconMemo as BlowfishInvertedWarningIcon,
+};

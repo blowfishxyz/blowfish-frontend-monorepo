@@ -1,12 +1,12 @@
 import {
   RequestType,
   SignTypedDataRequest,
-  TransactionRequest
-} from "../../types"
+  TransactionRequest,
+} from "../../types";
 import type {
   EvmMessageScanResult,
-  EvmTransactionScanResult
-} from "../../utils/BlowfishApiClient"
+  EvmTransactionScanResult,
+} from "../../utils/BlowfishApiClient";
 
 export const exampleTransactionRequest: TransactionRequest = {
   type: RequestType.Transaction,
@@ -16,9 +16,9 @@ export const exampleTransactionRequest: TransactionRequest = {
     from: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     to: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     data: "0xa9059cbb00000000000000000000000013890a1dbfee3b7debc2b2dfeb9fef2fbf81bd50000000000000000000000000000000000000000000000000000000174876e800",
-    value: null
-  }
-}
+    value: null,
+  },
+};
 
 export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
   type: RequestType.SignTypedData,
@@ -30,7 +30,7 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
         { name: "name", type: "string" },
         { name: "version", type: "string" },
         { name: "chainId", type: "uint256" },
-        { name: "verifyingContract", type: "address" }
+        { name: "verifyingContract", type: "address" },
       ],
       OrderComponents: [
         { name: "offerer", type: "address" },
@@ -43,14 +43,14 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
         { name: "zoneHash", type: "bytes32" },
         { name: "salt", type: "uint256" },
         { name: "conduitKey", type: "bytes32" },
-        { name: "counter", type: "uint256" }
+        { name: "counter", type: "uint256" },
       ],
       OfferItem: [
         { name: "itemType", type: "uint8" },
         { name: "token", type: "address" },
         { name: "identifierOrCriteria", type: "uint256" },
         { name: "startAmount", type: "uint256" },
-        { name: "endAmount", type: "uint256" }
+        { name: "endAmount", type: "uint256" },
       ],
       ConsiderationItem: [
         { name: "itemType", type: "uint8" },
@@ -58,15 +58,15 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
         { name: "identifierOrCriteria", type: "uint256" },
         { name: "startAmount", type: "uint256" },
         { name: "endAmount", type: "uint256" },
-        { name: "recipient", type: "address" }
-      ]
+        { name: "recipient", type: "address" },
+      ],
     },
     primaryType: "OrderComponents",
     domain: {
       name: "Seaport",
       version: "1.1",
       chainId: "1",
-      verifyingContract: "0x00000000006c3852cbEf3e08E8dF289169EdE581"
+      verifyingContract: "0x00000000006c3852cbEf3e08E8dF289169EdE581",
     },
     message: {
       offerer: "0xed2ab4948bA6A909a7751DEc4F34f303eB8c7236",
@@ -76,8 +76,8 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
           token: "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D",
           identifierOrCriteria: "1726",
           startAmount: "1",
-          endAmount: "1"
-        }
+          endAmount: "1",
+        },
       ],
       consideration: [
         {
@@ -86,7 +86,7 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
           identifierOrCriteria: "0",
           startAmount: "94050000000000000000",
           endAmount: "94050000000000000000",
-          recipient: "0xed2ab4948bA6A909a7751DEc4F34f303eB8c7236"
+          recipient: "0xed2ab4948bA6A909a7751DEc4F34f303eB8c7236",
         },
         {
           itemType: "0",
@@ -94,7 +94,7 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
           identifierOrCriteria: "0",
           startAmount: "2475000000000000000",
           endAmount: "2475000000000000000",
-          recipient: "0x0000a26b00c1F0DF003000390027140000fAa719"
+          recipient: "0x0000a26b00c1F0DF003000390027140000fAa719",
         },
         {
           itemType: "0",
@@ -102,8 +102,8 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
           identifierOrCriteria: "0",
           startAmount: "2475000000000000000",
           endAmount: "2475000000000000000",
-          recipient: "0xA858DDc0445d8131daC4d1DE01f834ffcbA52Ef1"
-        }
+          recipient: "0xA858DDc0445d8131daC4d1DE01f834ffcbA52Ef1",
+        },
       ],
       startTime: "1664436437",
       endTime: "1667028437",
@@ -115,10 +115,10 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
       conduitKey:
         "0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000",
       totalOriginalConsiderationItems: "3",
-      counter: "53"
-    }
-  }
-}
+      counter: "53",
+    },
+  },
+};
 
 export const examplePermitSignTypeDataRequest: SignTypedDataRequest = {
   type: RequestType.SignTypedData,
@@ -130,21 +130,21 @@ export const examplePermitSignTypeDataRequest: SignTypedDataRequest = {
         { name: "name", type: "string" },
         { name: "version", type: "string" },
         { name: "chainId", type: "uint256" },
-        { name: "verifyingContract", type: "address" }
+        { name: "verifyingContract", type: "address" },
       ],
       Permit: [
         { name: "owner", type: "address" },
         { name: "spender", type: "address" },
         { name: "value", type: "uint256" },
         { name: "nonce", type: "uint256" },
-        { name: "deadline", type: "uint256" }
-      ]
+        { name: "deadline", type: "uint256" },
+      ],
     },
     domain: {
       name: "USD Coin",
       version: "2",
       verifyingContract: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-      chainId: "1"
+      chainId: "1",
     },
     primaryType: "Permit",
     message: {
@@ -153,10 +153,10 @@ export const examplePermitSignTypeDataRequest: SignTypedDataRequest = {
       value: "123000000000",
       nonce: "7",
       deadline:
-        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-    }
-  }
-}
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+    },
+  },
+};
 
 export const transactionNoActionScanResult: EvmTransactionScanResult = {
   action: "NONE",
@@ -169,22 +169,22 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
           data: {
             amount: {
               after: "1",
-              before: "0"
+              before: "0",
             },
             contract: {
               address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             metadata: {
               rawImageUrl:
-                "https://ipfs.io/ipfs/QmNf1UsmdGaMbpatQ6toXSkzDpizaGmC9zfunCyoz1enD5/penguin/7238.png"
+                "https://ipfs.io/ipfs/QmNf1UsmdGaMbpatQ6toXSkzDpizaGmC9zfunCyoz1enD5/penguin/7238.png",
             },
             name: "PudgyPenguins",
             symbol: "PPG",
-            tokenId: "7238"
+            tokenId: "7238",
           },
-          kind: "ERC721_TRANSFER"
-        }
+          kind: "ERC721_TRANSFER",
+        },
       },
       {
         humanReadableDiff: "Send 3.181 ETH",
@@ -192,23 +192,23 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
           data: {
             amount: {
               after: "998426264937289938488",
-              before: "1001607264937289938488"
+              before: "1001607264937289938488",
             },
             contract: {
               address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             decimals: 18,
             name: "Ether",
-            symbol: "ETH"
+            symbol: "ETH",
           },
-          kind: "NATIVE_ASSET_TRANSFER"
-        }
-      }
-    ]
+          kind: "NATIVE_ASSET_TRANSFER",
+        },
+      },
+    ],
   },
-  warnings: []
-}
+  warnings: [],
+};
 
 export const transactionWarningScanResult: EvmTransactionScanResult = {
   action: "WARN",
@@ -222,37 +222,37 @@ export const transactionWarningScanResult: EvmTransactionScanResult = {
             amount: {
               after:
                 "115792089237316195423570985008687907853269984665640564039457584007913129639935",
-              before: "0"
+              before: "0",
             },
             contract: {
               address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             name: "BoredApeYachtClub",
             owner: {
               address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             spender: {
               address: "0x00000000006c3852cbef3e08e8df289169ede581",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
-            symbol: "BAYC"
+            symbol: "BAYC",
           },
-          kind: "ERC721_APPROVAL_FOR_ALL"
-        }
-      }
-    ]
+          kind: "ERC721_APPROVAL_FOR_ALL",
+        },
+      },
+    ],
   },
   warnings: [
     {
       kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
-      severity: "WARNING"
-    }
-  ]
-}
+      severity: "WARNING",
+    },
+  ],
+};
 export const transactionBlockScanResult: EvmTransactionScanResult = {
   action: "BLOCK",
   simulationResults: {
@@ -265,37 +265,37 @@ export const transactionBlockScanResult: EvmTransactionScanResult = {
             amount: {
               after:
                 "115792089237316195423570985008687907853269984665640564039457584007913129639935",
-              before: "0"
+              before: "0",
             },
             contract: {
               address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             name: "BoredApeYachtClub",
             owner: {
               address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             spender: {
               address: "0x00000000006c3852cbef3e08e8df289169ede581",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
-            symbol: "BAYC"
+            symbol: "BAYC",
           },
-          kind: "ERC721_APPROVAL_FOR_ALL"
-        }
-      }
-    ]
+          kind: "ERC721_APPROVAL_FOR_ALL",
+        },
+      },
+    ],
   },
   warnings: [
     {
       kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
-      severity: "WARNING"
-    }
-  ]
-}
+      severity: "WARNING",
+    },
+  ],
+};
 
 export const messageNoActionScanResult: EvmMessageScanResult = {
   action: "NONE",
@@ -308,18 +308,18 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
           data: {
             amount: {
               after: "97543955540688454378",
-              before: "3493955540688454378"
+              before: "3493955540688454378",
             },
             contract: {
               address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             decimals: 18,
             name: "Ether",
-            symbol: "ETH"
+            symbol: "ETH",
           },
-          kind: "NATIVE_ASSET_TRANSFER"
-        }
+          kind: "NATIVE_ASSET_TRANSFER",
+        },
       },
       {
         humanReadableDiff: "Send BoredApeYachtClub #1726",
@@ -327,27 +327,27 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
           data: {
             amount: {
               after: "0",
-              before: "1"
+              before: "1",
             },
             contract: {
               address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-              kind: "ACCOUNT"
+              kind: "ACCOUNT",
             },
             metadata: {
               rawImageUrl:
-                "ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP"
+                "ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
             },
             name: "BoredApeYachtClub",
             symbol: "BAYC",
-            tokenId: "1726"
+            tokenId: "1726",
           },
-          kind: "ERC721_TRANSFER"
-        }
-      }
-    ]
+          kind: "ERC721_TRANSFER",
+        },
+      },
+    ],
   },
-  warnings: []
-}
+  warnings: [],
+};
 
 export const messageWarnResultScanResult: EvmMessageScanResult = {
   action: "WARN",
@@ -356,8 +356,8 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
       kind: "PERMIT_NO_EXPIRATION",
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
-      severity: "WARNING"
-    }
+      severity: "WARNING",
+    },
   ],
   simulationResults: {
     expectedStateChanges: [
@@ -369,28 +369,28 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
           data: {
             contract: {
               kind: "ACCOUNT",
-              address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+              address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             },
             name: "USD Coin",
             symbol: "USDC",
             decimals: 6,
             owner: {
               kind: "ACCOUNT",
-              address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+              address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
             },
             spender: {
               kind: "ACCOUNT",
-              address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
+              address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
             },
             amount: "123000000000",
             nonce: "7",
-            deadline: null
-          }
-        }
-      }
+            deadline: null,
+          },
+        },
+      },
     ],
-    error: null
-  }
-}
+    error: null,
+  },
+};
 
-export const exampleDappUrl = "https://app.uniswap.org/#/swap"
+export const exampleDappUrl = "https://app.uniswap.org/#/swap";

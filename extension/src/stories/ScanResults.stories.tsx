@@ -1,15 +1,15 @@
-import type { ComponentMeta, ComponentStory } from "@storybook/react"
-import React, { useState } from "react"
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
+import React, { useState } from "react";
 
-import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus"
-import { TransactionBlockedScreen } from "../components/InformationScreens"
+import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
+import { TransactionBlockedScreen } from "../components/InformationScreens";
 import {
   PopupContainer,
-  PopupContainerProps
-} from "../components/PopupContainer"
-import { Providers } from "../components/Providers"
-import { ScanResults, ScanResultsProps } from "../components/ScanResults"
-import { Severity, actionToSeverity } from "../types"
+  PopupContainerProps,
+} from "../components/PopupContainer";
+import { Providers } from "../components/Providers";
+import { ScanResults, ScanResultsProps } from "../components/ScanResults";
+import { Severity, actionToSeverity } from "../types";
 import {
   exampleDappUrl,
   exampleNftSignTypedDataRequest,
@@ -19,8 +19,8 @@ import {
   messageWarnResultScanResult,
   transactionBlockScanResult,
   transactionNoActionScanResult,
-  transactionWarningScanResult
-} from "./fixtures/scan"
+  transactionWarningScanResult,
+} from "./fixtures/scan";
 
 export default {
   title: "ScanResults",
@@ -30,27 +30,27 @@ export default {
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
     request: exampleTransactionRequest,
-    scanResults: transactionNoActionScanResult
-  }
-} as ComponentMeta<typeof PopupContainer>
+    scanResults: transactionNoActionScanResult,
+  },
+} as ComponentMeta<typeof PopupContainer>;
 
 export const TransactionNoAction: ComponentStory<
   React.FC<PopupContainerProps & ScanResultsProps>
 > = (props) => {
   const [hasDismissedWarningScreen, setHasDismissedWarningScreen] =
-    useState<boolean>(false)
-  const { scanResults, request } = props
-  let severity: Severity
+    useState<boolean>(false);
+  const { scanResults, request } = props;
+  let severity: Severity;
   // If the story has manually set something other than info allow that override
   if (props.severity && props.severity !== "INFO") {
-    severity = props.severity!
+    severity = props.severity!;
   } else {
     // Otherwise use the context derived from the action
-    severity = actionToSeverity(scanResults.action)
+    severity = actionToSeverity(scanResults.action);
   }
 
   const shouldShowWarningScreen =
-    scanResults.action === "BLOCK" && !hasDismissedWarningScreen
+    scanResults.action === "BLOCK" && !hasDismissedWarningScreen;
 
   return (
     <div style={{ width: "392px", minHeight: "748px" }}>
@@ -59,11 +59,12 @@ export const TransactionNoAction: ComponentStory<
           style={{
             /* NOTE This is only for the story,
              * normally we want this to take up all the available window height */
-            minHeight: "748px"
+            minHeight: "748px",
           }}
           {...props}
           severity={severity}
-          bottomMenuType={shouldShowWarningScreen ? "SLIM" : "NONE"}>
+          bottomMenuType={shouldShowWarningScreen ? "SLIM" : "NONE"}
+        >
           {shouldShowWarningScreen ? (
             <>
               <TransactionBlockedScreen
@@ -73,7 +74,7 @@ export const TransactionNoAction: ComponentStory<
                 style={{
                   /* NOTE: This is only applicable in the context of the storybook,
                    * in the extension we want this fixed to to bottom of the window */
-                  position: "absolute"
+                  position: "absolute",
                 }}
                 onClick={() => alert("ABORTED...")}
                 buttonLabel="Close"
@@ -92,7 +93,7 @@ export const TransactionNoAction: ComponentStory<
                 style={{
                   /* NOTE: This is only applicable in the context of the storybook,
                    * in the extension we want this fixed to to bottom of the window */
-                  position: "absolute"
+                  position: "absolute",
                 }}
                 onContinue={() => alert("PROCEEDING...")}
                 onCancel={() => alert("CANCEL")}
@@ -102,27 +103,27 @@ export const TransactionNoAction: ComponentStory<
         </PopupContainer>
       </Providers>
     </div>
-  )
-}
+  );
+};
 
-export const TransactionWarn = TransactionNoAction.bind({})
+export const TransactionWarn = TransactionNoAction.bind({});
 TransactionWarn.args = {
-  scanResults: transactionWarningScanResult
-}
+  scanResults: transactionWarningScanResult,
+};
 
-export const TransactionBlock = TransactionWarn.bind({})
+export const TransactionBlock = TransactionWarn.bind({});
 TransactionBlock.args = {
-  scanResults: transactionBlockScanResult
-}
+  scanResults: transactionBlockScanResult,
+};
 
-export const MessageNoAction = TransactionNoAction.bind({})
+export const MessageNoAction = TransactionNoAction.bind({});
 MessageNoAction.args = {
   request: exampleNftSignTypedDataRequest,
-  scanResults: messageNoActionScanResult
-}
+  scanResults: messageNoActionScanResult,
+};
 
-export const MessageWarn = TransactionNoAction.bind({})
+export const MessageWarn = TransactionNoAction.bind({});
 MessageWarn.args = {
   request: examplePermitSignTypeDataRequest,
-  scanResults: messageWarnResultScanResult
-}
+  scanResults: messageWarnResultScanResult,
+};

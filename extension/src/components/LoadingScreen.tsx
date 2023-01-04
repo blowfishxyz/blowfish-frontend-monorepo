@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import { useInterval } from "react-use"
-import styled from "styled-components"
+import React, { useState } from "react";
+import { useInterval } from "react-use";
+import styled from "styled-components";
 
-import { Text, TextSmall } from ".//Typography"
-import { UnstyledA } from "./Links"
-import { LoadingAnimation } from "./LoadingAnimation"
-import { BlowfishIconFull } from "./icons/BlowfishIcon"
+import { Text, TextSmall } from ".//Typography";
+import { UnstyledA } from "./Links";
+import { LoadingAnimation } from "./LoadingAnimation";
+import { BlowfishIconFull } from "./icons/BlowfishIcon";
 
 // TODO(kimpers): Actual copy
 const LOADING_STATES = {
@@ -13,32 +13,32 @@ const LOADING_STATES = {
     "Simulating transaction",
     "Analyzing smart contract",
     "Verifying accounts",
-    "Checking for malicious code"
+    "Checking for malicious code",
   ],
   message: [
     "Simulating message",
     "Checking for malicious code",
     "Verifying accounts",
-    "Analyzing signature request"
-  ]
-}
-const STATE_CHANGE_DELAY = 2000
+    "Analyzing signature request",
+  ],
+};
+const STATE_CHANGE_DELAY = 2000;
 
 const StyledLoadingAnimation = styled(LoadingAnimation)`
   width: 48px;
   height: auto;
-`
+`;
 
 const FixedBottomLink = styled(UnstyledA)`
   position: fixed;
   bottom: 24px;
-`
+`;
 
 const StyledBlowfishIcon = styled(BlowfishIconFull)`
   height: 27px;
   width: auto;
   opacity: 0.4;
-`
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -51,24 +51,24 @@ const Wrapper = styled.div`
   > * + * {
     margin-top: 16px;
   }
-`
+`;
 export interface LoadingScreenProps {
-  type?: "transaction" | "message"
-  style?: React.CSSProperties
-  className?: string
+  type?: "transaction" | "message";
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   style,
   type = "transaction",
-  className
+  className,
 }) => {
-  const loadingStatesLength = LOADING_STATES[type].length
-  const [stateTextIndex, setStateTextIndex] = useState<number>(0)
+  const loadingStatesLength = LOADING_STATES[type].length;
+  const [stateTextIndex, setStateTextIndex] = useState<number>(0);
   useInterval(
     () => setStateTextIndex((stateTextIndex + 1) % loadingStatesLength),
     STATE_CHANGE_DELAY
-  )
+  );
   return (
     <Wrapper style={style} className={className}>
       <StyledLoadingAnimation />
@@ -79,9 +79,10 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
       <FixedBottomLink
         href="https://blowfish.xyz"
         target="_blank"
-        rel="noopener">
+        rel="noopener"
+      >
         <StyledBlowfishIcon />
       </FixedBottomLink>
     </Wrapper>
-  )
-}
+  );
+};

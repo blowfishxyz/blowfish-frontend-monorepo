@@ -1,6 +1,6 @@
-import objectHash, { NotUndefined } from "object-hash"
-import type { Duplex } from "readable-stream"
-import type Browser from "webextension-polyfill"
+import objectHash, { NotUndefined } from "object-hash";
+import type { Duplex } from "readable-stream";
+import type Browser from "webextension-polyfill";
 
 import {
   Message,
@@ -11,100 +11,100 @@ import {
   SignTypedDataRequest,
   TransactionPayload,
   TransactionRequest,
-  UntypedMessageData
-} from "../types"
+  UntypedMessageData,
+} from "../types";
 
 const createRawMessage = <T extends object>(
   type: RequestType,
   data: T
 ): Message<T> => {
-  const id = objectHash(data as NotUndefined)
-  return { id, data, type }
-}
+  const id = objectHash(data as NotUndefined);
+  return { id, data, type };
+};
 
 export const createTransactionRequestMessage = (
   payload: TransactionPayload,
   chainId: number,
   userAccount: string
 ): Message<TransactionRequest> => {
-  const type = RequestType.Transaction
+  const type = RequestType.Transaction;
   const transactionRequest: TransactionRequest = {
     type,
     payload,
     chainId: chainId.toString(),
-    userAccount
-  }
-  return createRawMessage(type, transactionRequest)
-}
+    userAccount,
+  };
+  return createRawMessage(type, transactionRequest);
+};
 
 export const createSignTypedDataRequestMessage = (
   payload: SignTypedDataPayload,
   chainId: number,
   userAccount: string
 ): Message<SignTypedDataRequest> => {
-  const type = RequestType.SignTypedData
+  const type = RequestType.SignTypedData;
   const signTypedDataRequest: SignTypedDataRequest = {
     type,
     payload,
     chainId: chainId.toString(),
-    userAccount
-  }
-  return createRawMessage(type, signTypedDataRequest)
-}
+    userAccount,
+  };
+  return createRawMessage(type, signTypedDataRequest);
+};
 
 export const createSignMessageRequestMessage = (
   payload: SignMessagePayload,
   chainId: number,
   userAccount: string
 ): Message<SignMessageRequest> => {
-  const type = RequestType.SignMessage
+  const type = RequestType.SignMessage;
   const messageRequest: SignMessageRequest = {
     type,
     payload,
     chainId: chainId.toString(),
-    userAccount
-  }
-  return createRawMessage(type, messageRequest)
-}
+    userAccount,
+  };
+  return createRawMessage(type, messageRequest);
+};
 
 export const sendAndAwaitResponseFromStream = <T extends object>(
   stream: Duplex,
   request: Message<T>
 ): Promise<Message<UntypedMessageData>> => {
-  stream.write(request)
+  stream.write(request);
 
   return new Promise((resolve) => {
     const callback = (response: Message<UntypedMessageData>): void => {
       if (response.id === request.id) {
-        stream.off("data", callback)
-        resolve(response)
+        stream.off("data", callback);
+        resolve(response);
       }
-    }
+    };
 
-    stream.on("data", callback)
-  })
-}
+    stream.on("data", callback);
+  });
+};
 
 export const sendAndAwaitResponseFromPort = (
   stream: Browser.Runtime.Port,
   request: Message<UntypedMessageData>
 ): Promise<Message<UntypedMessageData>> => {
-  stream.postMessage(request)
+  stream.postMessage(request);
 
   return new Promise((resolve) => {
     const callback = (response: Message<UntypedMessageData>): void => {
       if (response.id === request.id) {
-        stream.onMessage.removeListener(callback)
-        resolve(response)
+        stream.onMessage.removeListener(callback);
+        resolve(response);
       }
-    }
+    };
 
-    stream.onMessage.addListener(callback)
-  })
-}
+    stream.onMessage.addListener(callback);
+  });
+};
 
 export interface UserDecisionData {
-  isOk: boolean
+  isOk: boolean;
 }
 
 export const postResponseToPort = (
@@ -114,9 +114,9 @@ export const postResponseToPort = (
 ): Message<UntypedMessageData> => {
   const response: Message<UntypedMessageData> = {
     ...originalMessage,
-    data: responseData
-  }
+    data: responseData,
+  };
 
-  remotePort.postMessage(response)
-  return response
-}
+  remotePort.postMessage(response);
+  return response;
+};

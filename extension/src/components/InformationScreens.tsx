@@ -1,41 +1,41 @@
-import React, { useState } from "react"
-import styled from "styled-components"
+import React, { useState } from "react";
+import styled from "styled-components";
 
-import { logger } from "../utils/logger"
-import { TextButton } from "./Buttons"
-import { ContentToggle } from "./ContentToggle"
-import { Text, TextXL } from "./Typography"
+import { logger } from "../utils/logger";
+import { TextButton } from "./Buttons";
+import { ContentToggle } from "./ContentToggle";
+import { Text, TextXL } from "./Typography";
 import {
   BlowfishInvertedWarningIcon,
-  BlowfishWarningIcon
-} from "./icons/BlowfishWarningIcons"
+  BlowfishWarningIcon,
+} from "./icons/BlowfishWarningIcons";
 
 interface SharedProps {
-  darkMode?: boolean
+  darkMode?: boolean;
 }
 const StyledTextXL = styled(TextXL)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   color: ${({ darkMode, theme }) =>
     darkMode ? theme.palette.warningText : theme.palette.black};
-`
+`;
 const StyledText = styled(Text)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   line-height: 22px;
   color: ${({ darkMode, theme }) =>
     darkMode ? theme.palette.warningText : theme.palette.black};
-`
+`;
 
 const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
   width: 81px;
   height: auto;
   margin-bottom: 40px;
-`
+`;
 
 const StyledBlowfishInvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
   margin-bottom: 48px;
-`
+`;
 
 const Wrapper = styled.div<SharedProps>`
   width: 100%;
@@ -48,7 +48,7 @@ const Wrapper = styled.div<SharedProps>`
   padding: 120px 32px 32px 32px;
   align-items: center;
   box-sizing: border-box;
-`
+`;
 
 const WarningMessageWrapper = styled.div`
   background: rgba(245, 180, 159, 0.2);
@@ -59,10 +59,10 @@ const WarningMessageWrapper = styled.div`
   ${Text} {
     color: ${({ theme }) => theme.palette.warningText};
   }
-`
+`;
 
 export interface TransactionBlockedScreenProps {
-  onContinue: () => void
+  onContinue: () => void;
 }
 export const TransactionBlockedScreen: React.FC<
   TransactionBlockedScreenProps
@@ -80,28 +80,29 @@ export const TransactionBlockedScreen: React.FC<
           darkMode
           style={{
             fontWeight: 400,
-            opacity: 0.6
-          }}>
+            opacity: 0.6,
+          }}
+        >
           Ignore warning, proceed anyway
         </StyledText>
       </StyledTextButton>
     </Wrapper>
-  )
-}
+  );
+};
 
 export interface SimulationErrorScreenProps {
-  style?: React.CSSProperties
-  className?: string
-  headline: string
-  message: string
-  errorMessage?: string
+  style?: React.CSSProperties;
+  className?: string;
+  headline: string;
+  message: string;
+  errorMessage?: string;
 }
 export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
   style,
   className,
   headline,
   message,
-  errorMessage
+  errorMessage,
 }) => {
   return (
     <Wrapper style={style} className={className}>
@@ -116,31 +117,31 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
         </ContentToggle>
       )}
     </Wrapper>
-  )
-}
+  );
+};
 
 // TODO(kimpers): Checkbox styling
 const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
   margin-right: 13px;
-`
+`;
 
 const StyledTextButton = styled(TextButton)`
   display: flex;
   align-items: center;
-`
+`;
 
 export interface UnsupportedChainScreenProps {
-  style?: React.CSSProperties
-  className?: string
-  onDismissUnsupportedChain: (isDismissed: boolean) => Promise<void>
+  style?: React.CSSProperties;
+  className?: string;
+  onDismissUnsupportedChain: (isDismissed: boolean) => Promise<void>;
 }
 
 export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
   style,
   className,
-  onDismissUnsupportedChain
+  onDismissUnsupportedChain,
 }) => {
-  const [shouldShowScreen, setShouldShowScreen] = useState<boolean>(true)
+  const [shouldShowScreen, setShouldShowScreen] = useState<boolean>(true);
   // TODO(kimpers): Actual copy
   return (
     <Wrapper style={style} className={className}>
@@ -151,31 +152,32 @@ export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
       </StyledText>
       <StyledTextButton
         onClick={() => {
-          setShouldShowScreen(!shouldShowScreen)
+          setShouldShowScreen(!shouldShowScreen);
           // NOTE: we invert the boolean because we store whether it's been dismissed
           onDismissUnsupportedChain(shouldShowScreen).catch((err) =>
             logger.error(err)
-          )
-        }}>
+          );
+        }}
+      >
         <StyledCheckbox checked={!shouldShowScreen} />
         <StyledText style={{ marginBottom: "unset" }}>
           Don&apos;t show this again
         </StyledText>
       </StyledTextButton>
     </Wrapper>
-  )
-}
+  );
+};
 
 export interface UnknownErrorScreenProps {
-  style?: React.CSSProperties
-  className?: string
-  onRetry: () => void
+  style?: React.CSSProperties;
+  className?: string;
+  onRetry: () => void;
 }
 
 export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
   style,
   className,
-  onRetry
+  onRetry,
 }) => {
   return (
     <Wrapper style={style} className={className}>
@@ -188,5 +190,5 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
         <StyledText style={{ opacity: 0.5 }}>Retry this transaction</StyledText>
       </TextButton>
     </Wrapper>
-  )
-}
+  );
+};

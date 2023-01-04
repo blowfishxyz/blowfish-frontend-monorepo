@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
 // Button w/ full CSS resets
 const BaseButton = styled.button`
@@ -18,6 +18,6 @@ const BaseButton = styled.button`
     border: 0;
     padding: 0;
   }
-`
+`;
 
-export { BaseButton }
+export { BaseButton };

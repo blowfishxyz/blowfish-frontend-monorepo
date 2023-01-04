@@ -1,9 +1,9 @@
-import React, { useState } from "react"
-import styled from "styled-components"
+import React, { useState } from "react";
+import styled from "styled-components";
 
-import { BaseButton } from "./BaseButton"
-import { Text } from "./Typography"
-import { ExpandIcon } from "./icons/ExpandArrow"
+import { BaseButton } from "./BaseButton";
+import { Text } from "./Typography";
+import { ExpandIcon } from "./icons/ExpandArrow";
 
 const ToggleButton = styled(BaseButton)`
   /* Increase clickable area slightly without messing with alignment */
@@ -21,31 +21,33 @@ const ToggleButton = styled(BaseButton)`
   ${Text} {
     color: rgba(0, 0, 0, 0.5);
   }
-`
+`;
 
 interface ContentToggleProps extends React.PropsWithChildren {
-  className?: string
-  style?: React.CSSProperties
-  message: string
+  className?: string;
+  style?: React.CSSProperties;
+  message: string;
 }
 export const ContentToggle: React.FC<ContentToggleProps> = ({
   children,
   message,
   className,
-  style
+  style,
 }) => {
   // TODO(kimpers): Animation for toggling content
-  const [showAdvancedDetails, setShowAdvancedDetails] = useState<boolean>(false)
+  const [showAdvancedDetails, setShowAdvancedDetails] =
+    useState<boolean>(false);
   return (
     <>
       <ToggleButton
         onClick={() => setShowAdvancedDetails((prev) => !prev)}
         style={style}
-        className={className}>
+        className={className}
+      >
         <Text>{message}</Text>
         <ExpandIcon expanded={showAdvancedDetails} />
       </ToggleButton>
       {showAdvancedDetails && children}
     </>
-  )
-}
+  );
+};

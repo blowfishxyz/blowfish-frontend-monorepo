@@ -1,20 +1,20 @@
-import type { ChainFamily, ChainNetwork } from "./BlowfishApiClient"
+import type { ChainFamily, ChainNetwork } from "./BlowfishApiClient";
 
 interface ChainInfo {
-  chainFamily: ChainFamily
-  chainNetwork: ChainNetwork
+  chainFamily: ChainFamily;
+  chainNetwork: ChainNetwork;
 }
 export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
   1: {
     chainFamily: "ethereum",
-    chainNetwork: "mainnet"
+    chainNetwork: "mainnet",
   },
   5: {
     chainFamily: "ethereum",
-    chainNetwork: "goerli"
+    chainNetwork: "goerli",
   },
   137: {
     chainFamily: "polygon",
-    chainNetwork: "mainnet"
-  }
-}
+    chainNetwork: "mainnet",
+  },
+};

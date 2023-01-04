@@ -1,20 +1,20 @@
-import type { ComponentMeta, ComponentStory } from "@storybook/react"
-import React from "react"
+import type { ComponentMeta, ComponentStory } from "@storybook/react";
+import React from "react";
 
-import { LoadingScreen as LoadingScreenComponent } from "../components/LoadingScreen"
-import { Providers } from "../components/Providers"
-import { PopupContainer } from "./../components/PopupContainer"
+import { LoadingScreen as LoadingScreenComponent } from "../components/LoadingScreen";
+import { Providers } from "../components/Providers";
+import { PopupContainer } from "./../components/PopupContainer";
 
 export default {
   title: "FullPageScreens",
-  component: LoadingScreenComponent
-} as ComponentMeta<typeof LoadingScreenComponent>
+  component: LoadingScreenComponent,
+} as ComponentMeta<typeof LoadingScreenComponent>;
 
 const fullScreenStyleOverrides = {
   /* NOTE This is only for the story,
    * normally we want this to take up all the available window height */
-  minHeight: "748px"
-}
+  minHeight: "748px",
+};
 export const LoadingScreen: ComponentStory<
   typeof LoadingScreenComponent
 > = () => (
@@ -25,4 +25,4 @@ export const LoadingScreen: ComponentStory<
       </PopupContainer>
     </Providers>
   </div>
-)
+);

@@ -1,30 +1,30 @@
-import { LottieOptions, useLottie } from "lottie-react"
-import React from "react"
+import { LottieOptions, useLottie } from "lottie-react";
+import React from "react";
 
-import loadingAnimation from "./loader.json"
+import loadingAnimation from "./loader.json";
 
 const animationOptions: LottieOptions = {
   animationData: loadingAnimation,
-  loop: true
-}
+  loop: true,
+};
 
 interface LoadingAnimationProps {
-  className?: string
-  style?: React.CSSProperties
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   className,
-  style
+  style,
 }) => {
-  const { View } = useLottie(animationOptions)
+  const { View } = useLottie(animationOptions);
 
   return (
     <div className={className} style={style}>
       {View}
     </div>
-  )
-}
+  );
+};
 
-const LoadingAnimationMemo = React.memo(LoadingAnimation)
-export { LoadingAnimationMemo as LoadingAnimation }
+const LoadingAnimationMemo = React.memo(LoadingAnimation);
+export { LoadingAnimationMemo as LoadingAnimation };

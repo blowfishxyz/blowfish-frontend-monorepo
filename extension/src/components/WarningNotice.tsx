@@ -1,9 +1,9 @@
-import React from "react"
-import styled, { css } from "styled-components"
+import React from "react";
+import styled, { css } from "styled-components";
 
-import type { WarningSeverity } from "../types"
-import { Text } from "./Typography"
-import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcons"
+import type { WarningSeverity } from "../types";
+import { Text } from "./Typography";
+import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcons";
 
 const Wrapper = styled.div<{ severity: WarningSeverity }>`
   box-sizing: border-box;
@@ -27,7 +27,7 @@ const Wrapper = styled.div<{ severity: WarningSeverity }>`
           box-shadow: 0px 4px 25px rgba(255, 61, 0, 0.2);
         `};
   border-radius: 12px;
-`
+`;
 
 const WarningHeadline = styled(Text)<{ severity: WarningSeverity }>`
   font-weight: 900;
@@ -36,23 +36,23 @@ const WarningHeadline = styled(Text)<{ severity: WarningSeverity }>`
   margin-bottom: 8px;
   color: ${({ theme, severity }) =>
     severity === "WARNING" ? theme.palette.yellow : theme.palette.red};
-`
+`;
 const MessageContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
   margin-left: 25px;
-`
+`;
 
 interface WarningNoticeProps {
-  severity: WarningSeverity
-  message: string
+  severity: WarningSeverity;
+  message: string;
 }
 export const WarningNotice: React.FC<WarningNoticeProps> = ({
   severity,
-  message
+  message,
 }) => {
-  const headline = severity === "WARNING" ? "WARNING" : "CRITICAL WARNING"
+  const headline = severity === "WARNING" ? "WARNING" : "CRITICAL WARNING";
   return (
     <Wrapper severity={severity}>
       <BlowfishWarningIcon severity={severity} />
@@ -61,5 +61,5 @@ export const WarningNotice: React.FC<WarningNoticeProps> = ({
         <Text>{message}</Text>
       </MessageContainer>
     </Wrapper>
-  )
-}
+  );
+};

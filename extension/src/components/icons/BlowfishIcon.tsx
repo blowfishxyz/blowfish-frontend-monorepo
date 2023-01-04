@@ -1,13 +1,13 @@
-import React from "react"
+import React from "react";
 
 interface BlowfishIconProps {
-  className?: string
-  style?: React.CSSProperties
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 const BlowfishIconFull: React.FC<BlowfishIconProps> = ({
   className,
-  style
+  style,
 }) => (
   <svg
     className={className}
@@ -16,7 +16,8 @@ const BlowfishIconFull: React.FC<BlowfishIconProps> = ({
     height="504"
     viewBox="0 0 1949 504"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg">
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -56,7 +57,7 @@ const BlowfishIconFull: React.FC<BlowfishIconProps> = ({
       fill="black"
     />
   </svg>
-)
+);
 
 const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
   <svg
@@ -66,7 +67,8 @@ const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
     height="47"
     viewBox="0 0 48 47"
     fill="none"
-    xmlns="http://www.w3.org/2000/svg">
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <path
       fillRule="evenodd"
       clipRule="evenodd"
@@ -74,11 +76,11 @@ const BlowfishIcon: React.FC<BlowfishIconProps> = ({ className, style }) => (
       fill="black"
     />
   </svg>
-)
+);
 
-const BlowfishIconFullMemo = React.memo(BlowfishIconFull)
-const BlowfishIconMemo = React.memo(BlowfishIcon)
+const BlowfishIconFullMemo = React.memo(BlowfishIconFull);
+const BlowfishIconMemo = React.memo(BlowfishIcon);
 export {
   BlowfishIconFullMemo as BlowfishIconFull,
-  BlowfishIconMemo as BlowfishIcon
-}
+  BlowfishIconMemo as BlowfishIcon,
+};

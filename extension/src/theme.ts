@@ -1,6 +1,6 @@
-import { lighten } from "polished"
+import { lighten } from "polished";
 
-import type { Severity } from "./types"
+import type { Severity } from "./types";
 
 const palette = {
   warningBackground: "#FFFCF2",
@@ -11,26 +11,26 @@ const palette = {
   gray: "#00000080",
   red: "#FF3D00",
   yellow: "#FFB800",
-  green: "#00BF36"
-}
+  green: "#00BF36",
+};
 
 // Based on webflow's breakpoints
 const breakpoints = {
   sm: "480px",
   md: "768px",
   lg: "992px",
-  xl: "1200px"
-}
+  xl: "1200px",
+};
 
-type BreakPointType = typeof breakpoints
+type BreakPointType = typeof breakpoints;
 
 const generateMediaQueries = (points: BreakPointType) => ({
   sm: `(min-width: ${points.sm})`,
   md: `(min-width: ${points.md})`,
   lg: `(min-width: ${points.lg})`,
   xl: `(min-width: ${points.xl})`,
-  hover: "(hover: hover)"
-})
+  hover: "(hover: hover)",
+});
 
 // Based on Bootstrap z-indexes
 const zIndices = {
@@ -39,24 +39,24 @@ const zIndices = {
   overlay: 1040,
   modal: 1050,
   popover: 1060,
-  tooltip: 1070
-}
+  tooltip: 1070,
+};
 
 const fontWeights = {
   h1: 500,
   normal: 400,
-  semiBold: 500
-}
+  semiBold: 500,
+};
 
 const opacities = {
-  secondaryText: 0.5
-}
+  secondaryText: 0.5,
+};
 
 const contextBackgroundColors: { [key in Severity]: string } = {
   CRITICAL: "#FFC1AD",
   WARNING: "#FFD567",
-  INFO: "#EFF2F0"
-}
+  INFO: "#EFF2F0",
+};
 
 const lightTheme = {
   zIndices,
@@ -66,15 +66,15 @@ const lightTheme = {
   contextBackgroundColors,
   colors: {
     primaryText: palette.black,
-    secondaryText: lighten(opacities.secondaryText, palette.black)
+    secondaryText: lighten(opacities.secondaryText, palette.black),
   },
-  mediaQueries: generateMediaQueries(breakpoints)
-}
+  mediaQueries: generateMediaQueries(breakpoints),
+};
 
-export type ITheme = typeof lightTheme
+export type ITheme = typeof lightTheme;
 
 const themes = {
-  light: lightTheme
-}
+  light: lightTheme,
+};
 
-export { themes }
+export { themes };

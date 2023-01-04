@@ -1,13 +1,13 @@
-import React from "react"
-import styled, { css } from "styled-components"
+import React from "react";
+import styled, { css } from "styled-components";
 
-import { PrimaryButton, SecondaryButton } from "./Buttons"
-import { Text } from "./Typography"
+import { PrimaryButton, SecondaryButton } from "./Buttons";
+import { Text } from "./Typography";
 
-export const SLIM_BOTTOM_MENU_HEIGHT = 96
-export const REGULAR_BOTTOM_MENU_HEIGHT = 154
+export const SLIM_BOTTOM_MENU_HEIGHT = 96;
+export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
 interface BottomMenuWrapperProps {
-  slim?: boolean
+  slim?: boolean;
 }
 export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   position: fixed;
@@ -33,45 +33,45 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
             margin-top: 24px;
           }
         `}
-`
+`;
 export interface SlimBottomMenuProps {
-  buttonLabel: string
-  onClick: () => void
-  style?: React.CSSProperties
-  className?: string
+  buttonLabel: string;
+  onClick: () => void;
+  style?: React.CSSProperties;
+  className?: string;
 }
 export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
   onClick,
   buttonLabel,
   style,
-  className
+  className,
 }) => {
   return (
     <BottomMenuWrapper style={style} className={className} slim>
       <PrimaryButton onClick={onClick}>{buttonLabel}</PrimaryButton>
     </BottomMenuWrapper>
-  )
-}
+  );
+};
 
 const GrayText = styled(Text)`
   color: rgba(0, 0, 0, 0.5);
-`
+`;
 const Row = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-evenly;
-`
+`;
 export interface ApproveBottomMenuProps {
-  onContinue: () => void
-  onCancel: () => void
-  style?: React.CSSProperties
-  className?: string
+  onContinue: () => void;
+  onCancel: () => void;
+  style?: React.CSSProperties;
+  className?: string;
 }
 export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   onContinue,
   onCancel,
   style,
-  className
+  className,
 }) => {
   return (
     <BottomMenuWrapper style={style} className={className}>
@@ -85,5 +85,5 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
         </PrimaryButton>
       </Row>
     </BottomMenuWrapper>
-  )
-}
+  );
+};

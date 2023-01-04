@@ -1,6 +1,6 @@
-import styled from "styled-components"
+import styled from "styled-components";
 
-import { BaseButton } from "./BaseButton"
+import { BaseButton } from "./BaseButton";
 
 const PrimaryButton = styled(BaseButton)`
   width: 100%;
@@ -41,7 +41,7 @@ const PrimaryButton = styled(BaseButton)`
     transform: scale(0.98), translateY(-2px);
   }
   */
-`
+`;
 
 const SecondaryButton = styled(BaseButton)`
   width: 100%;
@@ -68,13 +68,13 @@ const SecondaryButton = styled(BaseButton)`
   font-size: 20px;
   line-height: 23px;
   color: #010101;
-`
+`;
 
 const TextButton = styled(BaseButton)`
   cursor: pointer;
   /* Increase clickable area slightly for better UX */
   padding: 3px;
   margin: -3px;
-`
+`;
 
-export { PrimaryButton, SecondaryButton, TextButton }
+export { PrimaryButton, SecondaryButton, TextButton };

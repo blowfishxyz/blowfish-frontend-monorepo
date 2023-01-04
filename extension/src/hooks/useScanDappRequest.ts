@@ -1,23 +1,23 @@
-import useSWR, { SWRResponse } from "swr"
+import useSWR, { SWRResponse } from "swr";
 
 import {
   DappRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
-  isTransactionRequest
-} from "../types"
+  isTransactionRequest,
+} from "../types";
 import {
   BlowfishApiClient,
   ChainFamily,
   ChainNetwork,
   EvmMessageScanResult,
-  EvmTransactionScanResult
-} from "../utils/BlowfishApiClient"
+  EvmTransactionScanResult,
+} from "../utils/BlowfishApiClient";
 
 export const BLOWFISH_API_BASE_URL = process.env
-  .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string
+  .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string;
 
-const SCAN_REFRESH_INTERVAL_MS = 15_000
+const SCAN_REFRESH_INTERVAL_MS = 15_000;
 
 export const getCacheKey = (
   chainFamily: ChainFamily | undefined,
@@ -26,11 +26,11 @@ export const getCacheKey = (
   origin: string | undefined
 ): [ChainFamily, ChainNetwork, DappRequest, string] | null => {
   if (!chainFamily || !chainNetwork || !request || !origin) {
-    return null
+    return null;
   }
 
-  return [chainFamily, chainNetwork, request, origin]
-}
+  return [chainFamily, chainNetwork, request, origin];
+};
 
 const fetcher = async (
   chainFamily: ChainFamily,
@@ -43,25 +43,25 @@ const fetcher = async (
     chainNetwork,
     undefined,
     BLOWFISH_API_BASE_URL
-  )
+  );
 
   if (isTransactionRequest(request)) {
     return client.scanTransaction(request.payload, request.userAccount, {
-      origin
-    })
+      origin,
+    });
   } else if (isSignTypedDataRequest(request)) {
     return client.scanSignTypedData(request.payload, request.userAccount, {
-      origin
-    })
+      origin,
+    });
   } else if (isSignMessageRequest(request)) {
     return client.scanSignMessage(
       request.payload.message,
       request.userAccount,
       { origin }
-    )
+    );
   }
-  throw new Error(`Unsupported request: ${(request as DappRequest).type}`)
-}
+  throw new Error(`Unsupported request: ${(request as DappRequest).type}`);
+};
 
 export const useScanDappRequest = (
   chainFamily: ChainFamily | undefined,
@@ -73,7 +73,7 @@ export const useScanDappRequest = (
     getCacheKey(chainFamily, chainNetwork, request, origin),
     (params) => fetcher(...params),
     {
-      refreshInterval: SCAN_REFRESH_INTERVAL_MS
+      refreshInterval: SCAN_REFRESH_INTERVAL_MS,
     }
-  )
-}
+  );
+};

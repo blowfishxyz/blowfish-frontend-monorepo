@@ -1,4 +1,4 @@
-const NODE_ENV = process.env.NODE_ENV
+const NODE_ENV = process.env.NODE_ENV;
 
 export const logger = {
   /**
@@ -6,19 +6,19 @@ export const logger = {
    */
   debug: (...args: unknown[]) => {
     if (NODE_ENV === "development") {
-      console.log("[DEBUG]: ", ...args)
+      console.log("[DEBUG]: ", ...args);
     }
   },
   /*
    * Logs a message to the console in all modes
    */
   info: (...args: unknown[]) => {
-    console.log("[INFO]: ", ...args)
+    console.log("[INFO]: ", ...args);
   },
   /*
    * Logs a message to console.error in all modes
    */
   error: (...args: unknown[]) => {
-    console.error("[ERROR]: ", ...args)
-  }
-}
+    console.error("[ERROR]: ", ...args);
+  },
+};
