@@ -21,6 +21,7 @@ import type {
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";
+import { REGULAR_BOTTOM_MENU_HEIGHT } from "./BottomMenus";
 import { JsonViewer } from "./JsonViewer";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
@@ -109,9 +110,12 @@ const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
   const content = useMemo(() => {
     if (isTransactionRequest(request)) {
       // NOTE: For display purposes we want to show 0 when value is null
+      const { to, from, value, data } = request.payload;
       const displayTransaction: TransactionPayload = {
-        ...request.payload,
-        value: request.payload.value || "0",
+        to,
+        from,
+        value: new Decimal(request.payload.value || 0).toString(),
+        data,
       };
       return displayTransaction;
     } else if (isSignTypedDataRequest(request)) {
@@ -130,7 +134,14 @@ const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
   return (
     <Section
       borderTop
-      style={{ padding: "25px", flex: 1, justifyContent: "unset" }}
+      style={{
+        padding: "25px",
+        paddingBottom: showAdvancedDetails
+          ? `${REGULAR_BOTTOM_MENU_HEIGHT}px`
+          : "25px",
+        flex: 1,
+        justifyContent: "unset",
+      }}
     >
       <Row>
         <AdvancedDetailsToggleButton
