@@ -114,7 +114,7 @@ const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
       const displayTransaction: TransactionPayload = {
         to,
         from,
-        value: new Decimal(request.payload.value || 0).toString(),
+        value: new Decimal(value || 0).toString(),
         data,
       };
       return displayTransaction;
@@ -210,6 +210,22 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     return "Message";
   }, [request]);
 
+  const parsedMessageContent = useMemo(() => {
+    if (
+      isSignMessageRequest(request) &&
+      request.payload.method == "personal_sign"
+    ) {
+      const messageWithoutPrefix = request.payload.message.slice(2);
+      const decodedMessage = Buffer.from(messageWithoutPrefix, "hex").toString(
+        "utf8"
+      );
+
+      return decodedMessage;
+    }
+
+    return undefined;
+  }, [request]);
+
   const warning:
     | { message: string; severity: "WARNING" | "CRITICAL" }
     | undefined = useMemo(() => {
@@ -265,12 +281,12 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         )}
       </Header>
       <SimulationResults>
-        <Section borderBottom>
-          <TextSmall secondary style={{ marginBottom: "8px" }}>
-            To Address
-          </TextSmall>
-          <Text>
-            {toAddress && (
+        {toAddress && (
+          <Section borderBottom>
+            <TextSmall secondary style={{ marginBottom: "8px" }}>
+              To Address
+            </TextSmall>
+            <Text>
               <BlockExplorerLink
                 address={toAddress}
                 chainFamily={chainFamily}
@@ -278,9 +294,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               >
                 {shortenHex(toAddress)}
               </BlockExplorerLink>
-            )}
-          </Text>
-        </Section>
+            </Text>
+          </Section>
+        )}
         {expectedStateChangesProcessed &&
           expectedStateChangesProcessed?.length > 0 && (
             <Section borderBottom>
@@ -327,6 +343,18 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               })}
             </Section>
           )}
+        {parsedMessageContent && (
+          <Section borderBottom>
+            <TextSmall secondary style={{ marginBottom: "8px" }}>
+              Message contents
+            </TextSmall>
+            <TextSmall
+              style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
+            >
+              {parsedMessageContent}
+            </TextSmall>
+          </Section>
+        )}
         <Section>
           <TextSmall secondary style={{ marginBottom: "8px" }}>
             Request by
