@@ -94,7 +94,9 @@ export const isSignTypedDataRequest = (
   req: DappRequest
 ): req is SignTypedDataRequest => req.type === RequestType.SignTypedData;
 
+export type SignMessageMethod = "eth_sign" | "personal_sign";
 export interface SignMessagePayload {
+  method: SignMessageMethod;
   message: string;
 }
 export interface SignMessageRequest extends BaseRequest {

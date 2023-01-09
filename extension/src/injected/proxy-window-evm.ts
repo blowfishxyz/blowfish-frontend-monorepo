@@ -5,7 +5,7 @@ import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
-import { Identifier } from "../types";
+import { Identifier, SignMessageMethod } from "../types";
 import { logger } from "../utils/logger";
 import {
   createSignMessageRequestMessage,
@@ -162,6 +162,7 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_sign" ||
         request?.method === "personal_sign"
       ) {
+        const method: SignMessageMethod = request.method;
         const [first, second] = request?.params ?? [];
         if (!first || !second)
           return Reflect.apply(target, thisArg, argumentsList);
@@ -174,7 +175,11 @@ const overrideWindowEthereum = () => {
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream(
               stream,
-              createSignMessageRequestMessage({ message }, chainId, userAccount)
+              createSignMessageRequestMessage(
+                { method, message },
+                chainId,
+                userAccount
+              )
             )
           )
           .then((response) => {
@@ -250,6 +255,7 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_sign" ||
         request?.method === "personal_sign"
       ) {
+        const method: SignMessageMethod = request?.method;
         const [first, second] = request?.params ?? [];
         if (!first || !second)
           return Reflect.apply(target, thisArg, argumentsList);
@@ -261,7 +267,11 @@ const overrideWindowEthereum = () => {
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream(
           stream,
-          createSignMessageRequestMessage({ message }, chainId, userAccount)
+          createSignMessageRequestMessage(
+            { method, message },
+            chainId,
+            userAccount
+          )
         );
 
         logger.debug(response);
