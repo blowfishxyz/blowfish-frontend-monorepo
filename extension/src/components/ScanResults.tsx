@@ -1,5 +1,5 @@
 import { Decimal } from "decimal.js";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -104,9 +104,16 @@ const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   line-height: 16px;
 `;
 
-const AdvancedDetails: React.FC<{ request: DappRequest }> = ({ request }) => {
-  const [showAdvancedDetails, setShowAdvancedDetails] =
-    useState<boolean>(false);
+interface AdvancedDetailsProps {
+  request: DappRequest;
+  showAdvancedDetails: boolean;
+  setShowAdvancedDetails: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
+  request,
+  showAdvancedDetails,
+  setShowAdvancedDetails,
+}) => {
   const content = useMemo(() => {
     if (isTransactionRequest(request)) {
       // NOTE: For display purposes we want to show 0 when value is null
@@ -171,6 +178,8 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   ...props
 }) => {
   const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
+  const [showAdvancedDetails, setShowAdvancedDetails] =
+    useState<boolean>(false);
 
   const expectedStateChangesProcessed = useMemo(
     () =>
@@ -192,6 +201,14 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
       ),
     [scanResults?.simulationResults?.expectedStateChanges]
   );
+
+  useEffect(() => {
+    if (scanResults.simulationResults == null) {
+      logger.debug("Received no simulationResults");
+      setShowAdvancedDetails(true);
+    }
+  }, [scanResults?.simulationResults]);
+
   const toAddress = useMemo(() => {
     if (isTransactionRequest(request)) {
       return request.payload?.to;
@@ -266,8 +283,16 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
           };
       }
+    } else if (
+      (isSignTypedDataRequest(request) || isSignMessageRequest(request)) &&
+      !simulationResults
+    ) {
+      return {
+        severity: "WARNING",
+        message: `We are unable to simulate this message. Proceed with caution`,
+      };
     }
-  }, [scanResults, requestTypeStr]);
+  }, [scanResults, requestTypeStr, request]);
 
   return (
     <Wrapper>
@@ -364,7 +389,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           </LinkWithArrow>
         </Section>
       </SimulationResults>
-      <AdvancedDetails request={request} />
+      <AdvancedDetails
+        request={request}
+        showAdvancedDetails={showAdvancedDetails}
+        setShowAdvancedDetails={setShowAdvancedDetails}
+      />
     </Wrapper>
   );
 };
