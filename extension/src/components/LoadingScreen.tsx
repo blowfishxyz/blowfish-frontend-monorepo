@@ -56,22 +56,26 @@ export interface LoadingScreenProps {
   type?: "transaction" | "message";
   style?: React.CSSProperties;
   className?: string;
+  animate?: boolean;
 }
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({
   style,
   type = "transaction",
   className,
+  // For better visual diffing we don't want to animate in stories
+  animate = true,
 }) => {
   const loadingStatesLength = LOADING_STATES[type].length;
   const [stateTextIndex, setStateTextIndex] = useState<number>(0);
   useInterval(
-    () => setStateTextIndex((stateTextIndex + 1) % loadingStatesLength),
+    () =>
+      animate && setStateTextIndex((stateTextIndex + 1) % loadingStatesLength),
     STATE_CHANGE_DELAY
   );
   return (
     <Wrapper style={style} className={className}>
-      <StyledLoadingAnimation />
+      <StyledLoadingAnimation animate={animate} />
       <Text>Simulating {type}...</Text>
       <TextSmall style={{ opacity: 0.3 }}>
         {LOADING_STATES[type][stateTextIndex]}

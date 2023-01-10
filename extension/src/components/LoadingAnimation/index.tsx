@@ -1,5 +1,5 @@
 import { LottieOptions, useLottie } from "lottie-react";
-import React from "react";
+import React, { useEffect } from "react";
 
 import loadingAnimation from "./loader.json";
 
@@ -11,13 +11,22 @@ const animationOptions: LottieOptions = {
 interface LoadingAnimationProps {
   className?: string;
   style?: React.CSSProperties;
+  animate?: boolean;
 }
 
 const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
   className,
   style,
+  animate = true,
 }) => {
-  const { View } = useLottie(animationOptions);
+  const { View, play, pause } = useLottie(animationOptions);
+  useEffect(() => {
+    if (animate) {
+      play();
+    } else {
+      pause();
+    }
+  }, [animate, play, pause]);
 
   return (
     <div className={className} style={style}>

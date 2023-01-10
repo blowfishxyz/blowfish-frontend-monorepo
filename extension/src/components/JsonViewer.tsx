@@ -1,4 +1,5 @@
 import { getAddress, isAddress } from "@ethersproject/address";
+import { JsonViewer as PrettyJsonViewer } from "@textea/json-viewer";
 import React, { useMemo } from "react";
 import styled, { css } from "styled-components";
 
@@ -42,33 +43,88 @@ const DetailsRow = styled.div`
 const isFlatObject = (obj: object) =>
   Object.values(obj).every((v) => !(typeof v === "object" && v !== null));
 
+const FlatSectionContainer = styled.div`
+  & + & {
+    margin-top: 16px;
+  }
+`;
+
+interface FlatSectionProps {
+  title?: string;
+  data: object;
+}
+const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
+  return (
+    <FlatSectionContainer>
+      {title && (
+        <StyledTextSmall
+          capitalize
+          semiBold
+          as="div"
+          style={{ marginBottom: "4px" }}
+        >
+          {title}
+        </StyledTextSmall>
+      )}
+      {Object.entries(data).map(([key, value]) => {
+        const displayValue = isAddress(value) ? getAddress(value) : value;
+
+        return (
+          <DetailsRow key={`details-${key}`}>
+            <StyledTextSmall capitalize secondary>
+              {key}
+            </StyledTextSmall>
+            <StyledTextSmall isValue>{displayValue}</StyledTextSmall>
+          </DetailsRow>
+        );
+      })}
+    </FlatSectionContainer>
+  );
+};
+
 interface JsonViewerProps {
   data: object;
 }
+
 export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
-  const isFlat = useMemo(() => isFlatObject(data), [data]);
+  const FlattenedData = useMemo(() => {
+    if (isFlatObject(data)) {
+      return <FlatSection data={data} />;
+    } else {
+      const entries = Object.entries(data);
+      const isSectionedFlatObject = entries.every(([, value]) =>
+        isFlatObject(value)
+      );
 
-  // TODO(kimpers): A prettier way to display arbitrary json
-  return (
-    <Wrapper>
-      {isFlat ? (
-        Object.entries(data).map(([key, value]) => {
-          const displayValue = isAddress(value) ? getAddress(value) : value;
+      if (isSectionedFlatObject) {
+        return (
+          <>
+            {entries.map(([key, value]) => (
+              <FlatSection
+                key={`flat-section-${key}`}
+                title={key}
+                data={value}
+              />
+            ))}
+          </>
+        );
+      }
+    }
 
-          return (
-            <DetailsRow key={`details-${key}`}>
-              <StyledTextSmall capitalize secondary>
-                {key}
-              </StyledTextSmall>
-              <StyledTextSmall isValue>{displayValue}</StyledTextSmall>
-            </DetailsRow>
-          );
-        })
-      ) : (
-        <StyledTextSmall>
-          <pre>{JSON.stringify(data, undefined, 2)}</pre>
-        </StyledTextSmall>
-      )}
-    </Wrapper>
-  );
+    return (
+      <PrettyJsonViewer
+        value={data}
+        enableClipboard={false}
+        displayDataTypes={false}
+        displayObjectSize={false}
+        quotesOnKeys={false}
+        collapseStringsAfterLength={false}
+        rootName={false}
+        indentWidth={2}
+        defaultInspectDepth={4}
+      />
+    );
+  }, [data]);
+
+  return <Wrapper>{FlattenedData}</Wrapper>;
 };
