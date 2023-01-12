@@ -1,6 +1,6 @@
 import { getAddress, isAddress } from "@ethersproject/address";
-import { JsonViewer as PrettyJsonViewer } from "@textea/json-viewer";
 import React, { useMemo } from "react";
+import ReactJson from "react-json-view";
 import styled, { css } from "styled-components";
 
 import { TextSmall } from "./Typography";
@@ -112,16 +112,15 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
     }
 
     return (
-      <PrettyJsonViewer
-        value={data}
-        enableClipboard={false}
-        displayDataTypes={false}
-        displayObjectSize={false}
-        quotesOnKeys={false}
-        collapseStringsAfterLength={false}
-        rootName={false}
+      <ReactJson
+        style={{ wordBreak: "break-all" }}
+        src={data}
         indentWidth={2}
-        defaultInspectDepth={4}
+        enableClipboard={false}
+        displayObjectSize={false}
+        displayDataTypes={false}
+        quotesOnKeys={false}
+        name={false}
       />
     );
   }, [data]);
