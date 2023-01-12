@@ -24,7 +24,6 @@
   "dependencies": {
     "@ethersproject/address": "^5.7.0",
     "@metamask/post-message-stream": "^6.1.0",
-    "@textea/json-viewer": "^2.12.4",
     "decimal.js": "^10.4.3",
     "eth-rpc-errors": "^4.0.3",
     "ethers": "^5.7.2",
@@ -36,6 +35,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-is": "^18.2.0",
+    "react-json-view": "^1.21.3",
     "react-use": "^17.4.0",
     "readable-stream": "^4.3.0",
     "styled-components": "^5.3.6",
