@@ -1,17 +1,17 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: build-extension-backend
+name: build-extension-landing-page
 
 on:
   push:
     branches: [ main ]
     paths:
-      - "packages/extension-backend/**"
+      - "packages/extension-landing-page/**"
   pull_request:
     branches: [ main ]
     paths:
-      - "packages/extension-backend/**"
+      - "packages/extension-landing-page/**"
 
 jobs:
   build-lint-test:
@@ -27,10 +27,12 @@ jobs:
       with:
         version: 7
     - run: pnpm install
-      working-directory: ./packages/extension-backend
+      working-directory: ./packages/extension-landing-page
     - run: pnpm typecheck
-      working-directory: ./packages/extension-backend
+      working-directory: ./packages/extension-landing-page
     - run: pnpm lint
-      working-directory: ./packages/extension-backend
+      working-directory: ./packages/extension-landing-page
     - run: pnpm test
-      working-directory: ./packages/extension-backend
+      working-directory: ./packages/extension-landing-page
+    - run: pnpm build
+      working-directory: ./packages/extension-landing-page
