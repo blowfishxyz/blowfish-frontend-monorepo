@@ -20,6 +20,6 @@ jobs:
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
         with:
-          workingDir: ./extension
+          workingDir: ./packages/extension
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: true
