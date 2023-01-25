@@ -23,12 +23,12 @@ jobs:
       with:
         version: 7
     - run: pnpm install
-      working-directory: ./extension
+      working-directory: ./packages/extension
     - run: pnpm typecheck
-      working-directory: ./extension
+      working-directory: ./packages/extension
     - run: pnpm lint
-      working-directory: ./extension
+      working-directory: ./packages/extension
     - run: pnpm test
-      working-directory: ./extension
+      working-directory: ./packages/extension
     - run: pnpm build
-      working-directory: ./extension
+      working-directory: ./packages/extension
