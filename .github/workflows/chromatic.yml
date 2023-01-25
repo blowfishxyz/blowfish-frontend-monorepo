@@ -1,6 +1,7 @@
 name: 'Chromatic'
 
-on: push
+on:
+  push:
 
 jobs:
   chromatic-deployment:
@@ -13,12 +14,12 @@ jobs:
         with:
           version: 7
       - name: Install dependencies
-        working-directory: ./extension
+        working-directory: ./packages/extension
         run: pnpm install
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
         with:
-          workingDir: ./extension
+          workingDir: ./packages/extension
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: true
