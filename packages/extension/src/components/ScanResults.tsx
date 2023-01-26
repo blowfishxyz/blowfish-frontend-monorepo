@@ -273,11 +273,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           };
         case "UNSUPPORTED_ORDER_TYPE":
           return {
-            severity: "CRITICAL",
+            severity: "WARNING",
             message:
               "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
           };
-        case "UNKNOWN_ERROR":
+        default:
           return {
             severity: "CRITICAL",
             message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,

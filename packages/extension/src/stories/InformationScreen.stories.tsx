@@ -25,6 +25,8 @@ const DEFAULT_ARGS = {
   chainNetwork: "mainnet" as ChainNetwork,
   onContinue: () => alert("Proceeding..."),
   onClose: () => alert("Closing..."),
+  onRetry: () => alert("Retrying..."),
+  isRetrying: false,
 };
 export default {
   title: "InformationScreens",
@@ -86,6 +88,8 @@ export const SimulationError: ComponentStory<
           <SimulationErrorScreen
             headline={props.headline}
             message={props.message}
+            onRetry={props.onRetry}
+            isRetrying={props.isRetrying}
           />
           <SlimBottomMenu
             style={{
@@ -209,9 +213,8 @@ export const UnknownError: ComponentStory<
           bottomMenuType="SLIM"
         >
           <UnknownErrorScreen
-            onRetry={() => {
-              console.log("Retrying...");
-            }}
+            onRetry={props.onRetry}
+            isRetrying={props.isRetrying}
           />
           <SlimBottomMenu
             style={{

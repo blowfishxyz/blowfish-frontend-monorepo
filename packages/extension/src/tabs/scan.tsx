@@ -43,6 +43,7 @@ const ScanResult: React.FC = () => {
   >(undefined);
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
+  const [isRetrying, setIsRetrying] = useState<boolean>(false);
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -72,7 +73,15 @@ const ScanResult: React.FC = () => {
     data: scanResults,
     error: scanError,
     mutate,
+    isValidating,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message?.origin);
+
+  // Reset-retry state when we are no longer validating
+  useEffect(() => {
+    if (isRetrying && !isValidating) {
+      setIsRetrying(false);
+    }
+  }, [isValidating, isRetrying]);
 
   const closeWindow = useCallback(() => window.close(), []);
 
@@ -127,6 +136,11 @@ const ScanResult: React.FC = () => {
     // currently this holds true but it may not be the case in the future
     const onContinue = () => setHasDismissedScreen(true);
 
+    const onRetry = () => {
+      setIsRetrying(true);
+      mutate();
+    };
+
     if (isUnsupportedChain && message) {
       const onToggleShowUnsupportedChain = async (value: boolean) => {
         const chainId = message?.data?.chainId as string | undefined;
@@ -158,7 +172,7 @@ const ScanResult: React.FC = () => {
       // TODO(kimpers): Error message propagation from the API
       return (
         <>
-          <UnknownErrorScreen onRetry={() => mutate()} />;
+          <UnknownErrorScreen onRetry={onRetry} isRetrying={isRetrying} />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
       );
@@ -187,6 +201,8 @@ const ScanResult: React.FC = () => {
             <SimulationErrorScreen
               headline="Simulation Failed"
               message="We are unable to simulate this transaction. Approving may lead to loss of funds"
+              onRetry={onRetry}
+              isRetrying={isRetrying}
             />
             <SlimBottomMenu onClick={onContinue} buttonLabel="Continue" />
           </>
@@ -204,6 +220,7 @@ const ScanResult: React.FC = () => {
     chainNetwork,
     message,
     handleUserDecision,
+    isRetrying,
   ]);
 
   return (
