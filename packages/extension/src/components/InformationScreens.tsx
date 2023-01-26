@@ -90,12 +90,28 @@ export const TransactionBlockedScreen: React.FC<
   );
 };
 
+interface RetryButtonProps {
+  onRetry: () => void;
+  isRetrying: boolean;
+}
+const RetryButton: React.FC<RetryButtonProps> = ({ onRetry, isRetrying }) => {
+  return isRetrying ? (
+    <StyledText style={{ opacity: 0.5 }}>Loading...</StyledText>
+  ) : (
+    <TextButton onClick={onRetry}>
+      <StyledText style={{ opacity: 0.5 }}>Retry this transaction</StyledText>
+    </TextButton>
+  );
+};
+
 export interface SimulationErrorScreenProps {
   style?: React.CSSProperties;
   className?: string;
   headline: string;
   message: string;
   errorMessage?: string;
+  onRetry?: () => void;
+  isRetrying?: boolean;
 }
 export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
   style,
@@ -103,6 +119,8 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
   headline,
   message,
   errorMessage,
+  onRetry,
+  isRetrying,
 }) => {
   return (
     <Wrapper style={style} className={className}>
@@ -115,6 +133,9 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
             <Text>{errorMessage}</Text>
           </WarningMessageWrapper>
         </ContentToggle>
+      )}
+      {onRetry && (
+        <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false} />
       )}
     </Wrapper>
   );
@@ -172,12 +193,14 @@ export interface UnknownErrorScreenProps {
   style?: React.CSSProperties;
   className?: string;
   onRetry: () => void;
+  isRetrying: boolean;
 }
 
 export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
   style,
   className,
   onRetry,
+  isRetrying,
 }) => {
   return (
     <Wrapper style={style} className={className}>
@@ -186,9 +209,7 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
       <StyledText>
         Something unexpected happened. Please try again later.
       </StyledText>
-      <TextButton onClick={onRetry}>
-        <StyledText style={{ opacity: 0.5 }}>Retry this transaction</StyledText>
-      </TextButton>
+      <RetryButton onRetry={onRetry} isRetrying={isRetrying} />
     </Wrapper>
   );
 };
