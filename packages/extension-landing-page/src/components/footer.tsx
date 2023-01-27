@@ -2,26 +2,50 @@ import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
+import breakpoint from "../utils/breakpoints";
 
 const Logo = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 200px;
+  height: 50px;
+
+  position: relative;
+
+  @media only screen and ${breakpoint.device.md} {
+    width: 200px;
+    height: 50px;
+  }
+  @media only screen and ${breakpoint.device.lg} {
+    width: 238px;
+    height: 60px;
+  }
 `;
 const FooterContainer = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: min-content;
-  display: flex;
-  flex-direction: row;
+  padding: 200px 30px 220px 30px;
+
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 120px 0px 370px 0px;
   overflow: hidden;
   align-content: flex-start;
   flex-wrap: nowrap;
   gap: 20;
   border-radius: 0px 0px 0px 0px;
+
+  @media only screen and ${breakpoint.device.md} {
+    display: flex;
+    flex-direction: row;
+    padding: 120px 0px 370px 0px;
+  }
+  @media only screen and ${breakpoint.device.lg} {
+    display: flex;
+    flex-direction: row;
+    padding: 120px 0px 370px 0px;
+  }
 `;
 const LinkColumn = styled.div`
   flex: 1;
@@ -39,7 +63,7 @@ const LinkColumn = styled.div`
   margin-right: 20px;
 `;
 const FooterLink = styled.div`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
   color: black;
   box-sizing: border-box;
@@ -62,10 +86,29 @@ const FooterLink = styled.div`
   border-bottom-width: 1px;
   border-left-width: 0px;
   border-right-width: 0px;
+
+  @media only screen and ${breakpoint.device.md} {
+    font-size: 24px;
+  }
+  @media only screen and ${breakpoint.device.lg} {
+    font-size: 24px;
+  }
 `;
 const LogoSide = styled.div`
   display: flex;
   flex: 16;
+  padding-bottom: 40px;
+
+  @media only screen and ${breakpoint.device.md} {
+    width: 200px;
+    height: 50px;
+    padding-bottom: 0px;
+  }
+  @media only screen and ${breakpoint.device.lg} {
+    width: 238px;
+    height: 60px;
+    padding-bottom: 0px;
+  }
 `;
 const MenuSide = styled.div`
   display: flex;
@@ -80,7 +123,12 @@ export const Footer: React.FC = () => {
           href={`https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`}
           target="_blank"
         >
-          <Image src="/logo.svg" width="238" height="62" alt="Logo" />
+          <Image
+            src="/logo.svg"
+            alt="Logo"
+            fill
+            style={{ objectFit: "contain" }}
+          />
         </Logo>
       </LogoSide>
       <MenuSide>
