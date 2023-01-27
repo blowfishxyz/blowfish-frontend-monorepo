@@ -14,6 +14,7 @@ export const GlobalStyle = createGlobalStyle`
     text-rendering: optimizeSpeed;
     position: relative;
     scroll-behavior: smooth;
+    background-color: #F2F4F1;
   }
   a {
     color: inherit;

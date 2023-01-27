@@ -34,7 +34,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang={"en"} dir={"ltr"}>
         <Head>
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/favicon.webp" />
         </Head>
         <body>
           <Main />

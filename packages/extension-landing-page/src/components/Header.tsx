@@ -1,30 +1,48 @@
 import React from "react";
 import styled from "styled-components";
+import Image from "next/image";
+import Link from "next/link";
 
-import { BlowfishIcon } from "./icons/BlowfishIcon";
-import { Text } from "./Typography";
-
-const StyledBlowfishIcon = styled(BlowfishIcon)`
-  height: 16px;
-  width: auto;
-`;
-
-const HeaderText = styled(Text)`
-  font-size: 18px;
-  line-height: 24px;
+const Logo = styled(Link)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const HeaderContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
+  padding: 23px 23px 24px 24px;
+  max-width: 1280px;
+  margin: auto;
+`;
+
+const Sides = styled.div`
+  display: flex;
   align-items: center;
+`;
+
+const MenuItems = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  gap: 32px;
 `;
 
 export const Header: React.FC = () => {
   return (
     <HeaderContainer>
-      <StyledBlowfishIcon />
-      <HeaderText>Blowfish</HeaderText>
+      <Sides>
+        <Logo href={`https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`}>
+          <Image src="/logo.svg" width="135" height="35" alt="Logo" />
+        </Logo>
+      </Sides>
+      <Sides>
+        <MenuItems>
+          <Link href="/login">API Docs</Link>
+          <Link href="/login">Join us</Link>
+        </MenuItems>
+      </Sides>
     </HeaderContainer>
   );
 };
