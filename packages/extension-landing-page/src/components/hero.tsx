@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { Signup } from "../components/Signup";
-import breakpoint from "../utils/breakpoints";
+import { breakpoint } from "../utils/breakpoints";
 
 const H1 = styled.h1`
   font-size: 40px;

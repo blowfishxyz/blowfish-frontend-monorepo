@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import breakpoint from "../utils/breakpoints";
+import { breakpoint } from "../utils/breakpoints";
 
 const StatsSection = styled.div`
   margin-top: 50px;
   box-sizing: border-box;
   width: 100%;
-  
+
   padding: 35px 24px 35px 24px;
   overflow: hidden;
   border-radius: 0px 0px 0px 0px;
@@ -113,7 +113,8 @@ export const Stats: React.FC = () => {
         </StatsGroup>
       </StatsSection>
       <Disclaimer>
-        *These stats are cumulative across multiple wallets that have integrated directly with our security engine{" "}
+        *These stats are cumulative across multiple wallets that have integrated
+        directly with our security engine{" "}
       </Disclaimer>
     </>
   );

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { EMAIL_REGEX } from "../utils/constants";
-import breakpoint from "../utils/breakpoints";
+import { breakpoint } from "../utils/breakpoints";
 
 const SignupContainer = styled.div`
   flex-direction: row;
