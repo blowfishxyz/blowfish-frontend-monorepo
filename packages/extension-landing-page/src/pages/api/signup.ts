@@ -23,21 +23,16 @@ export default async function handler(
   );
 
   try {
-    base(AIRTABLE_BASE_NAME)
+    let records = await base(AIRTABLE_BASE_NAME)
       .select({
         filterByFormula: `IF(Email = "${email}", 1, 0)`,
       })
-      .firstPage(function (err, records) {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ error: "Something went wrong" });
-        }
-        console.log("records", records);
-        if (records && records.length !== 0) {
-          res.status(400).json({ error: "Email already exists" });
-          return;
-        }
-      });
+      .firstPage();
+
+    if (records && records.length !== 0) {
+      res.status(400).json({ error: "email already exists" });
+      return;
+    }
 
     await base(AIRTABLE_BASE_NAME).create([
       {
