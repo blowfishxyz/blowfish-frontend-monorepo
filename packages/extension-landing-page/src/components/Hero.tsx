@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Image from "next/image";
 import { Signup } from "../components/Signup";
 import { breakpoint } from "../utils/breakpoints";
+import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
+import { ChromeIcon, BraveIcon } from "./icons/Browsers";
 
 const H1 = styled.h1`
   font-size: 40px;
@@ -84,17 +86,27 @@ const MobileImage = styled.div`
     display: none;
   }
 `;
-const Browsers = styled(Image)`
-  width: 65px;
-  height: 23px;
 
-  @media only screen and ${breakpoint.device.md} {
-    width: 113px;
-    height: 43px;
+const IconRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const IconGroup = styled.div`
+  > * {
+    width: auto;
+    height: 23px;
+
+    @media only screen and ${breakpoint.device.md} {
+      height: 43px;
+    }
+    @media only screen and ${breakpoint.device.lg} {
+      height: 43px;
+    }
   }
-  @media only screen and ${breakpoint.device.lg} {
-    width: 113px;
-    height: 43px;
+  * + * {
+    margin-left: 51px;
   }
 `;
 
@@ -112,7 +124,17 @@ export const Hero: React.FC = () => {
       </LeftSide>
       <RightSide>
         <HeroSide>
-          <Browsers src="/browsers.svg" alt="browsers" width="0" height="0" />
+          <IconRow>
+            <IconGroup>
+              <ChromeIcon />
+              <BraveIcon />
+            </IconGroup>
+            <IconGroup>
+              <EthereumIcon />
+              <PolygonIcon />
+            </IconGroup>
+          </IconRow>
+
           <H1>
             Proactive defense for <i>your wallet.</i>
           </H1>
