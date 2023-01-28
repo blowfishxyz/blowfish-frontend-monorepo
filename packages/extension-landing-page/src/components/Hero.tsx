@@ -36,7 +36,6 @@ const HeroContainer = styled.div`
   }
 `;
 const HeroSide = styled.div`
-  padding: 0px 24px;
   display: flex;
   flex-direction: column;
 

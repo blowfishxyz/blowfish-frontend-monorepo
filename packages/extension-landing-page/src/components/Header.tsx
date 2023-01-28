@@ -12,7 +12,7 @@ const Logo = styled(Link)`
 const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 23px 23px 24px 24px;
+  padding: 24px;
   max-width: 1280px;
   margin: auto;
 `;

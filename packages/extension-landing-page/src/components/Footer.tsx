@@ -73,7 +73,6 @@ const FooterLink = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  padding: 24px 0px 24px 0px;
   max-width: 1280px;
   overflow: hidden;
   align-content: flex-start;

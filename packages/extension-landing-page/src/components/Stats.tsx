@@ -6,8 +6,7 @@ const StatsSection = styled.div`
   margin-top: 50px;
   box-sizing: border-box;
   width: 100%;
-
-  padding: 35px 24px 35px 24px;
+  margin: 35px 0;
   overflow: hidden;
   border-radius: 0px 0px 0px 0px;
   border-color: #d5dbd7;
@@ -71,16 +70,6 @@ const Disclaimer = styled.div`
   padding-top: 10px;
   font-size: 11px;
   width: 330px;
-  padding-left: 24px;
-
-  @media only screen and ${breakpoint.device.md} {
-    padding-left: 0px;
-    width: 280px;
-  }
-  @media only screen and ${breakpoint.device.lg} {
-    padding-left: 0px;
-    width: 280px;
-  }
 `;
 const Date = styled.span`
   color: black;
