@@ -4,17 +4,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { EMAIL_REGEX } from "../utils/constants";
 import { breakpoint } from "../utils/breakpoints";
 
-const SignupContainer = styled.div`
-  flex-direction: row;
-  padding-top: 20px;
-
-  @media only screen and ${breakpoint.device.md} {
-    display: flex;
-  }
-  @media only screen and ${breakpoint.device.lg} {
-    display: flex;
-  }
-`;
 const Button = styled.input`
   height: 45px;
   width: 184px;
@@ -27,12 +16,10 @@ const Button = styled.input`
   line-height: 34px;
   letter-spacing: 0em;
   border: none;
-  margin-right: 10px;
   cursor: pointer;
   &:hover {
     background: gray;
   }
-  margin-top: 20px;
 
   @media only screen and ${breakpoint.device.md} {
     font-size: 22px;
@@ -60,8 +47,6 @@ const EmailInput = styled.input`
   font-weight: 400;
   line-height: 34px;
   letter-spacing: 0em;
-  padding-left: 20px;
-  margin-right: 20px;
 
   @media only screen and ${breakpoint.device.md} {
     font-size: 22px;
@@ -70,16 +55,19 @@ const EmailInput = styled.input`
     font-size: 22px;
   }
 `;
-const Message = styled.div`
-  margin-bottom: 5px;
-  padding-left: 20px;
-  height: 24px;
-`;
+const Message = styled.div``;
+
 const Error = styled.div`
   color: #c40f0f;
 `;
 const Success = styled.div`
   color: green;
+`;
+
+const SignupForm = styled.form`
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
 `;
 
 const SUBMIT_BUTTON_TEXT = "Access the beta";
@@ -141,27 +129,25 @@ export const Signup: React.FC = () => {
   let has_error = error_msg.length !== 0;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <SignupContainer>
-        <InputSection>
-          <Message>
-            {has_error && <Error>{error_msg}</Error>}
-            {success && !has_error && (
-              <Success>Success! Expect an email from us soon.</Success>
-            )}
-          </Message>
-          <EmailInput
-            placeholder="Email Address"
-            {...register("email", {
-              required: true,
-              pattern: EMAIL_REGEX,
-            })}
-          />
-        </InputSection>
-        <>
-          <Button type="submit" value={submitButtonText} />
-        </>
-      </SignupContainer>
-    </form>
+    <SignupForm onSubmit={handleSubmit(onSubmit)}>
+      <InputSection>
+        <Message>
+          {has_error && <Error>{error_msg}</Error>}
+          {success && !has_error && (
+            <Success>Success! Expect an email from us soon.</Success>
+          )}
+        </Message>
+        <EmailInput
+          placeholder="Email Address"
+          {...register("email", {
+            required: true,
+            pattern: EMAIL_REGEX,
+          })}
+        />
+      </InputSection>
+      <>
+        <Button type="submit" value={submitButtonText} />
+      </>
+    </SignupForm>
   );
 };
