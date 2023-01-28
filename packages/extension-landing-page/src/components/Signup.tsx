@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { EMAIL_REGEX } from "../utils/constants";
@@ -80,6 +80,7 @@ const SignupForm = styled.form`
 `;
 
 const SUBMIT_BUTTON_TEXT = "Access the beta";
+const SUBMIT_BUTTON_LOADING_TEXT = "Submitting...";
 
 type Inputs = {
   email: string;
@@ -88,8 +89,7 @@ type Inputs = {
 export const Signup: React.FC = () => {
   const [err, setErr] = React.useState("");
   const [success, setSuccess] = React.useState(false);
-  const [submitButtonText, setSubmitButtonText] =
-    React.useState(SUBMIT_BUTTON_TEXT);
+  const [isLoading, setIsLoading] = React.useState(false);
   const {
     register,
     handleSubmit,
@@ -104,34 +104,43 @@ export const Signup: React.FC = () => {
   }, [errors.email]);
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setSubmitButtonText("Submitting...");
-    const headers = new Headers();
-    headers.append("Content-Type", "application/json");
-    const params = {
-      email: data.email,
-    };
-    const init = {
-      method: "POST",
-      headers: headers,
-      body: JSON.stringify(params),
-    };
+    try {
+      setIsLoading(true);
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      const params = {
+        email: data.email,
+      };
+      const init = {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(params),
+      };
 
-    const request = new Request("/api/signup", init);
-    const r = await fetch(request);
-    const resp = await r.json();
-    if (r.status !== 200) {
-      if (resp.error === "email already exists") {
+      const request = new Request("/api/signup", init);
+      const r = await fetch(request);
+      const resp = await r.json();
+      if (r.status !== 200) {
+        if (resp.error === "email already exists") {
+          setSuccess(true);
+          setErr("");
+        } else {
+          const { error } = resp;
+          console.error(error);
+          setErr(error);
+          setSuccess(false);
+        }
+      } else {
         setSuccess(true);
         setErr("");
-      } else {
-        setErr(resp.error);
-        setSuccess(false);
       }
-    } else {
-      setSuccess(true);
-      setErr("");
+    } catch (err) {
+      setErr("Something went wrong. Please try again");
+      console.error(err);
+      setSuccess(false);
+    } finally {
+      setIsLoading(false);
     }
-    setSubmitButtonText(SUBMIT_BUTTON_TEXT);
   };
 
   let error_msg = errors.email ? "Invalid email" : err;
@@ -153,7 +162,10 @@ export const Signup: React.FC = () => {
             pattern: EMAIL_REGEX,
           })}
         />
-        <Button type="submit" value={submitButtonText} />
+        <Button
+          type="submit"
+          value={isLoading ? SUBMIT_BUTTON_LOADING_TEXT : SUBMIT_BUTTON_TEXT}
+        />
       </InputContainer>
     </SignupForm>
   );
