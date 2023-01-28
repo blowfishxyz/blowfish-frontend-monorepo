@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import styled from "styled-components";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { EMAIL_REGEX } from "../utils/constants";
 import { breakpoint } from "../utils/breakpoints";
+import { Text } from "./Typography";
 
-const Button = styled.input`
+const Button = styled(motion.button).attrs({
+  whileHover: {
+    scale: 1.02,
+  },
+  whileTap: { scale: 0.98 },
+})`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -13,21 +20,16 @@ const Button = styled.input`
   height: 45px;
   width: 184px;
   background: #000000;
-  color: white;
-  font-family: GT Planar;
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 34px;
-  letter-spacing: 0em;
   border: none;
   cursor: pointer;
-  &:hover {
-    background: gray;
-  }
   box-shadow: 0px 7.88244px 19.1089px rgb(0 0 0 / 14%),
     0px 3.27396px 7.93687px rgb(0 0 0 / 11%),
     0px 1.18413px 2.87061px rgb(0 0 0 / 7%);
   border-radius: 9.50786px;
+
+  :hover {
+    outline: 3px solid rgba(0, 0, 0, 0.1);
+  }
 
   @media (max-width: ${breakpoint.size.lg}) {
     position: unset;
@@ -162,10 +164,11 @@ export const Signup: React.FC = () => {
             pattern: EMAIL_REGEX,
           })}
         />
-        <Button
-          type="submit"
-          value={isLoading ? SUBMIT_BUTTON_LOADING_TEXT : SUBMIT_BUTTON_TEXT}
-        />
+        <Button type="submit">
+          <Text color="white">
+            {isLoading ? SUBMIT_BUTTON_LOADING_TEXT : SUBMIT_BUTTON_TEXT}
+          </Text>
+        </Button>
       </InputContainer>
     </SignupForm>
   );
