@@ -5,9 +5,13 @@ import { EMAIL_REGEX } from "../utils/constants";
 import { breakpoint } from "../utils/breakpoints";
 
 const Button = styled.input`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 10px;
+  margin: auto;
   height: 45px;
   width: 184px;
-  border-radius: 40px;
   background: #000000;
   color: white;
   font-family: GT Planar;
@@ -20,32 +24,27 @@ const Button = styled.input`
   &:hover {
     background: gray;
   }
+  box-shadow: 0px 7.88244px 19.1089px rgb(0 0 0 / 14%),
+    0px 3.27396px 7.93687px rgb(0 0 0 / 11%),
+    0px 1.18413px 2.87061px rgb(0 0 0 / 7%);
+  border-radius: 9.50786px;
 
-  @media only screen and ${breakpoint.device.md} {
-    font-size: 22px;
-    height: 55px;
-    width: 214px;
-  }
-  @media only screen and ${breakpoint.device.lg} {
-    font-size: 22px;
-    height: 55px;
-    width: 214px;
+  @media (max-width: ${breakpoint.size.lg}) {
+    position: unset;
+    margin-top: 20px;
   }
 `;
-const InputSection = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
+
 const EmailInput = styled.input`
-  height: 55px;
-  width: 350px;
+  height: 71px;
+  width: 100%;
+  padding: 0 20px;
   color: #6c6c6c;
   border-radius: 12px;
   border: none;
   font-family: GT Planar;
   font-size: 18px;
   font-weight: 400;
-  line-height: 34px;
   letter-spacing: 0em;
 
   @media only screen and ${breakpoint.device.md} {
@@ -55,7 +54,17 @@ const EmailInput = styled.input`
     font-size: 22px;
   }
 `;
-const Message = styled.div``;
+const Message = styled.div`
+  position: absolute;
+  top: -25px;
+  left: 20px;
+  font-size: 18px;
+`;
+
+const InputContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
 
 const Error = styled.div`
   color: #c40f0f;
@@ -67,7 +76,7 @@ const Success = styled.div`
 const SignupForm = styled.form`
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  padding-top: 40px;
 `;
 
 const SUBMIT_BUTTON_TEXT = "Access the beta";
@@ -130,7 +139,7 @@ export const Signup: React.FC = () => {
 
   return (
     <SignupForm onSubmit={handleSubmit(onSubmit)}>
-      <InputSection>
+      <InputContainer>
         <Message>
           {has_error && <Error>{error_msg}</Error>}
           {success && !has_error && (
@@ -144,10 +153,8 @@ export const Signup: React.FC = () => {
             pattern: EMAIL_REGEX,
           })}
         />
-      </InputSection>
-      <>
         <Button type="submit" value={submitButtonText} />
-      </>
+      </InputContainer>
     </SignupForm>
   );
 };
