@@ -6,7 +6,7 @@ const StatsSection = styled.div`
   margin-top: 50px;
   box-sizing: border-box;
   width: 100%;
-  margin: 35px 0;
+  padding: 24px 35px;
   overflow: hidden;
   border-radius: 0px 0px 0px 0px;
   border-color: #d5dbd7;
