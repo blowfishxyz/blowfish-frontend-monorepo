@@ -16,7 +16,7 @@ const ChromeIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <title>Chrome browser</title>
-    <g clip-path="url(#clip0_98_935)">
+    <g clipPath="url(#clip0_98_935)">
       <path
         d="M19.2986 29.4445C24.6278 29.4445 28.9479 25.1244 28.9479 19.7952C28.9479 14.4661 24.6278 10.146 19.2986 10.146C13.9695 10.146 9.64941 14.4661 9.64941 19.7952C9.64941 25.1244 13.9695 29.4445 19.2986 29.4445Z"
         fill="white"
@@ -47,8 +47,8 @@ const ChromeIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
         y2="12.563"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#D93025" />
-        <stop offset="1" stop-color="#EA4335" />
+        <stop stopColor="#D93025" />
+        <stop offset="1" stopColor="#EA4335" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_98_935"
@@ -58,8 +58,8 @@ const ChromeIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
         y2="9.89649"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#FCC934" />
-        <stop offset="1" stop-color="#FBBC04" />
+        <stop stopColor="#FCC934" />
+        <stop offset="1" stopColor="#FBBC04" />
       </linearGradient>
       <linearGradient
         id="paint2_linear_98_935"
@@ -69,8 +69,8 @@ const ChromeIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
         y2="8.94912"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#1E8E3E" />
-        <stop offset="1" stop-color="#34A853" />
+        <stop stopColor="#1E8E3E" />
+        <stop offset="1" stopColor="#34A853" />
       </linearGradient>
       <clipPath id="clip0_98_935">
         <rect
@@ -95,7 +95,7 @@ const BraveIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <title>Brave browser</title>
-    <g clip-path="url(#clip0_98_955)">
+    <g clipPath="url(#clip0_98_955)">
       <path
         fillRule="evenodd"
         clipRule="evenodd"
@@ -137,10 +137,10 @@ const BraveIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
         y2="21.0422"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#FF5500" />
-        <stop offset="0.409877" stop-color="#FF5500" />
-        <stop offset="0.581981" stop-color="#FF2000" />
-        <stop offset="1" stop-color="#FF2000" />
+        <stop stopColor="#FF5500" />
+        <stop offset="0.409877" stopColor="#FF5500" />
+        <stop offset="0.581981" stopColor="#FF2000" />
+        <stop offset="1" stopColor="#FF2000" />
       </linearGradient>
       <linearGradient
         id="paint1_linear_98_955"
@@ -150,8 +150,8 @@ const BraveIcon: React.FC<BrowsersIconProps> = ({ className, style }) => (
         y2="4.34041"
         gradientUnits="userSpaceOnUse"
       >
-        <stop stop-color="#FF452A" />
-        <stop offset="1" stop-color="#FF2000" />
+        <stop stopColor="#FF452A" />
+        <stop offset="1" stopColor="#FF2000" />
       </linearGradient>
       <clipPath id="clip0_98_955">
         <rect

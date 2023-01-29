@@ -89,9 +89,9 @@ type Inputs = {
 };
 
 export const Signup: React.FC = () => {
-  const [err, setErr] = React.useState("");
-  const [success, setSuccess] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [err, setErr] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,

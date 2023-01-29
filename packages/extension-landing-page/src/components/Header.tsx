@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import Link from "next/link";
 
-const Logo = styled(Link)`
+const Logo = styled.a`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,18 +28,30 @@ const MenuItems = styled.div`
   gap: 32px;
 `;
 
+const BLOWFISH_ROOT_DOMAIN = `https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`;
+const BLOWFISH_JOBS_PAGE = `https://jobs.${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`;
+const BLOWFISH_DOCS = `https://docs.${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`;
+
 export const Header: React.FC = () => {
   return (
     <HeaderContainer>
       <Sides>
-        <Logo href={`https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`}>
+        <Logo href={BLOWFISH_ROOT_DOMAIN} rel="noopener">
           <Image src="/logo.svg" width="135" height="35" alt="Logo" />
         </Logo>
       </Sides>
       <Sides>
         <MenuItems>
-          <Link href="/login">API Docs</Link>
-          <Link href="/login">Join us</Link>
+          <a href={BLOWFISH_DOCS} rel="noopener noreferrer" target="_blank">
+            API Docs
+          </a>
+          <a
+            href={BLOWFISH_JOBS_PAGE}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Join us
+          </a>
         </MenuItems>
       </Sides>
     </HeaderContainer>
