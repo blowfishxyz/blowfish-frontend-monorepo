@@ -2,6 +2,9 @@ name: 'Chromatic'
 
 on:
   push:
+    paths:
+      - "packages/extension/**"
+
 
 jobs:
   chromatic-deployment:

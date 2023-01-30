@@ -6,8 +6,12 @@ name: build-extension
 on:
   push:
     branches: [ main ]
+    paths:
+      - "packages/extension/**"
   pull_request:
     branches: [ main ]
+    paths:
+      - "packages/extension/**"
 
 jobs:
   build-lint-test:
