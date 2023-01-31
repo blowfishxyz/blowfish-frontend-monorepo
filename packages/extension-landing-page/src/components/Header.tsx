@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
+import Link from "next/link";
 
 const Logo = styled.a`
   display: flex;
@@ -24,8 +25,12 @@ const Sides = styled.div`
 const MenuItems = styled.div`
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
+  font-weight: 500;
   gap: 32px;
+
+  > a:hover {
+    color: rgba(0, 0, 0, 0.2);
+  }
 `;
 
 const BLOWFISH_ROOT_DOMAIN = `https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`;
@@ -42,6 +47,7 @@ export const Header: React.FC = () => {
       </Sides>
       <Sides>
         <MenuItems>
+          <Link href="/">Browser Extension</Link>
           <a href={BLOWFISH_DOCS} rel="noopener noreferrer" target="_blank">
             API Docs
           </a>
