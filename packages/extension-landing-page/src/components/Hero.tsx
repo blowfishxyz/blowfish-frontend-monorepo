@@ -3,8 +3,13 @@ import styled from "styled-components";
 import Image from "next/image";
 import { Signup } from "../components/Signup";
 import { breakpoint } from "../utils/breakpoints";
-import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
-import { ChromeIcon, BraveIcon } from "./icons/Browsers";
+import {
+  EthereumIcon,
+  PolygonIcon,
+  ArbitrumIcon,
+  OptimismIcon,
+} from "./icons/ChainIcons";
+import { TextSmall } from "./Typography";
 
 const H1 = styled.h1`
   font-size: 40px;
@@ -87,16 +92,21 @@ const MobileImage = styled.div`
   }
 `;
 
-const IconRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+const FadedArbitrumIcon = styled(ArbitrumIcon)`
+  opacity: 0.3;
+`;
+
+const FadedOptimismIcon = styled(OptimismIcon)`
+  opacity: 0.3;
 `;
 
 const IconGroup = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 18px;
   > * {
     width: auto;
-    height: 23px;
+    height: 16px;
 
     @media only screen and ${breakpoint.device.md} {
       height: 43px;
@@ -105,9 +115,11 @@ const IconGroup = styled.div`
       height: 43px;
     }
   }
-  * + * {
-    margin-left: 51px;
-  }
+`;
+
+const TextXS = styled(TextSmall)`
+  font-size: 14px;
+  line-height: 16px;
 `;
 
 export const Hero: React.FC = () => {
@@ -124,20 +136,7 @@ export const Hero: React.FC = () => {
       </LeftSide>
       <RightSide>
         <HeroSide>
-          <IconRow>
-            <IconGroup>
-              <ChromeIcon />
-              <BraveIcon />
-            </IconGroup>
-            <IconGroup>
-              <EthereumIcon />
-              <PolygonIcon />
-            </IconGroup>
-          </IconRow>
-
-          <H1>
-            Proactive defense for <i>your wallet.</i>
-          </H1>
+          <H1>Proactive defense for your wallet.</H1>
           <MobileImage>
             <Image
               src="/hero_image.svg"
@@ -152,7 +151,16 @@ export const Hero: React.FC = () => {
             protect you from fraud & theft. Mint, transfer, swap and stake
             without fear because we’ve got your back.
           </Description>
+          <IconGroup>
+            <EthereumIcon />
+            <PolygonIcon />
+            <FadedArbitrumIcon />
+            <FadedOptimismIcon />
+          </IconGroup>
           <Signup />
+          <TextXS style={{ marginTop: "10px", textAlign: "center" }}>
+            Available on Chrome, Brave, Arc and other Chromium-based browsers.
+          </TextXS>
         </HeroSide>
       </RightSide>
     </HeroContainer>
