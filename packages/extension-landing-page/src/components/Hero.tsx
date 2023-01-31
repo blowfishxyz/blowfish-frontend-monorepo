@@ -117,9 +117,14 @@ const IconGroup = styled.div`
   }
 `;
 
-const TextXS = styled(TextSmall)`
+const BrowserSupportNotice = styled(TextSmall)`
+  margin-top: 10px;
   font-size: 14px;
   line-height: 16px;
+
+  @media only screen and ${breakpoint.device.lg} {
+    text-align: center;
+  }
 `;
 
 export const Hero: React.FC = () => {
@@ -158,9 +163,9 @@ export const Hero: React.FC = () => {
             <FadedOptimismIcon />
           </IconGroup>
           <Signup />
-          <TextXS style={{ marginTop: "10px", textAlign: "center" }}>
+          <BrowserSupportNotice>
             Available on Chrome, Brave, Arc and other Chromium-based browsers.
-          </TextXS>
+          </BrowserSupportNotice>
         </HeroSide>
       </RightSide>
     </HeroContainer>

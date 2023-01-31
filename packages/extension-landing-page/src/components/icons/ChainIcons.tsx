@@ -111,7 +111,7 @@ const OptimismIcon: React.FC<ChainIconProps> = ({ className, style }) => (
     style={style}
   >
     <title>Coming soon: Optimism</title>
-    <g clip-path="url(#clip0_1139_294)">
+    <g clipPath="url(#clip0_1139_294)">
       <path
         d="M42 84C65.196 84 84 65.196 84 42C84 18.804 65.196 0 42 0C18.804 0 0 18.804 0 42C0 65.196 18.804 84 42 84Z"
         fill="#FF0420"
