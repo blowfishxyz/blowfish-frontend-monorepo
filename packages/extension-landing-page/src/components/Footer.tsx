@@ -64,6 +64,7 @@ const LinkColumn = styled.div`
 `;
 const FooterLink = styled.div`
   font-size: 20px;
+  padding: 18px 0;
   font-weight: 400;
   color: black;
   box-sizing: border-box;
@@ -112,6 +113,10 @@ const LogoSide = styled.div`
 const MenuSide = styled.div`
   display: flex;
   flex: 21;
+
+  @media only screen and (max-width: ${breakpoint.size.md}) {
+    flex-direction: column;
+  }
 `;
 
 export const Footer: React.FC = () => {
