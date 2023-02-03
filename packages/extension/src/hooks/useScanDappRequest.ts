@@ -23,26 +23,32 @@ export const getCacheKey = (
   chainFamily: ChainFamily | undefined,
   chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
-  origin: string | undefined
-): [ChainFamily, ChainNetwork, DappRequest, string] | null => {
+  origin: string | undefined,
+  apiBaseUrl = BLOWFISH_API_BASE_URL,
+  apiKey?: string
+):
+  | [ChainFamily, ChainNetwork, DappRequest, string, string, string | undefined]
+  | null => {
   if (!chainFamily || !chainNetwork || !request || !origin) {
     return null;
   }
 
-  return [chainFamily, chainNetwork, request, origin];
+  return [chainFamily, chainNetwork, request, origin, apiBaseUrl, apiKey];
 };
 
 const fetcher = async (
   chainFamily: ChainFamily,
   chainNetwork: ChainNetwork,
   request: DappRequest,
-  origin: string
+  origin: string,
+  apiBaseUrl = BLOWFISH_API_BASE_URL,
+  apiKey?: string
 ): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
   const client = new BlowfishApiClient(
     chainFamily,
     chainNetwork,
-    undefined,
-    BLOWFISH_API_BASE_URL
+    apiKey,
+    apiBaseUrl
   );
 
   if (isTransactionRequest(request)) {
@@ -67,10 +73,12 @@ export const useScanDappRequest = (
   chainFamily: ChainFamily | undefined,
   chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
-  origin: string | undefined
+  origin: string | undefined,
+  apiBaseUrl = BLOWFISH_API_BASE_URL,
+  apiKey?: string
 ): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
   return useSWR(
-    getCacheKey(chainFamily, chainNetwork, request, origin),
+    getCacheKey(chainFamily, chainNetwork, request, origin, apiBaseUrl, apiKey),
     (params) => fetcher(...params),
     {
       refreshInterval: SCAN_REFRESH_INTERVAL_MS,
