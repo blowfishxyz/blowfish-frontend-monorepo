@@ -349,6 +349,81 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
   warnings: [],
 };
 
+export const messageNewSimulationResults: EvmMessageScanResult = {
+  action: "NONE",
+  simulationResults: {
+    error: null,
+    expectedStateChanges: [
+      {
+        humanReadableDiff: "Receive 94.05 USDT",
+        templateDiff: "Receive {amount} {asset}",
+        rawInfo: {
+          data: {
+            amount: {
+              after: "97543955540688454378",
+              before: "3493955540688454378",
+            },
+            contract: {
+              address: "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+              kind: "ACCOUNT",
+            },
+            decimals: 18,
+            name: "Tether USD",
+            symbol: "USDT",
+            assetPrice: {
+              source: "Coingecko",
+              last_updated_at: 1676024928,
+              dollar_value_per_token: 1.0,
+            },
+            asset: {
+              address: "0xdac17f958d2ee523a2206206994597c13d831ec7",
+              symbol: "USDT",
+              name: "Tether USD",
+              decimals: 6,
+              verified: true,
+              lists: [
+                "COINGECKO",
+                "ZERION",
+                "ONE_INCH",
+                "UNISWAP",
+                "MY_CRYPTO_API",
+                "KLEROS_TOKENS",
+              ],
+              imageUrl:
+                "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png",
+            },
+          },
+          kind: "ERC20_TRANSFER",
+        },
+      },
+      {
+        humanReadableDiff: "Send BoredApeYachtClub #1726",
+        rawInfo: {
+          data: {
+            amount: {
+              after: "0",
+              before: "1",
+            },
+            contract: {
+              address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+              kind: "ACCOUNT",
+            },
+            metadata: {
+              rawImageUrl:
+                "ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
+            },
+            name: "BoredApeYachtClub",
+            symbol: "BAYC",
+            tokenId: "1726",
+          },
+          kind: "ERC721_TRANSFER",
+        },
+      },
+    ],
+  },
+  warnings: [],
+};
+
 export const messageWarnResultScanResult: EvmMessageScanResult = {
   action: "WARN",
   warnings: [

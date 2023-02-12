@@ -15,6 +15,7 @@ import {
   exampleNftSignTypedDataRequest,
   examplePermitSignTypeDataRequest,
   exampleTransactionRequest,
+  messageNewSimulationResults,
   messageNoActionScanResult,
   messageWarnResultScanResult,
   transactionBlockScanResult,
@@ -120,6 +121,12 @@ export const MessageNoAction = TransactionNoAction.bind({});
 MessageNoAction.args = {
   request: exampleNftSignTypedDataRequest,
   scanResults: messageNoActionScanResult,
+};
+
+export const MessageNewSimulation = TransactionNoAction.bind({});
+MessageNewSimulation.args = {
+  request: exampleNftSignTypedDataRequest,
+  scanResults: messageNewSimulationResults,
 };
 
 export const MessageWarn = TransactionNoAction.bind({});

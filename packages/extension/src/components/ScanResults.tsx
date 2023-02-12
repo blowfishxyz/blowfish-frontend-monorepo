@@ -12,26 +12,19 @@ import {
 import type {
   ChainFamily,
   ChainNetwork,
-  Erc721ApprovalData,
-  Erc721TransferData,
-  Erc1155TransferData,
   EvmMessageScanResult,
   EvmTransactionScanResult,
 } from "../utils/BlowfishApiClient";
-import { isNativeAsset, shortenHex } from "../utils/hex";
+import { shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";
 import { REGULAR_BOTTOM_MENU_HEIGHT } from "./BottomMenus";
 import { JsonViewer } from "./JsonViewer";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
+import { SimulationResult } from "./SimulationResult";
 import { Text, TextSmall } from "./Typography";
 import { WarningNotice } from "./WarningNotice";
 import { ExpandIcon } from "./icons/ExpandArrow";
-
-type NftStateChangeWithTokenId =
-  | Erc721TransferData
-  | Erc1155TransferData
-  | Erc721ApprovalData;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -76,12 +69,6 @@ const Row = styled.div`
   align-items: center;
 `;
 
-const StateChangeRow = styled(Row)`
-  & + & {
-    margin-top: 11px;
-  }
-`;
-
 const AdvancedDetailsToggleButton = styled(BaseButton)`
   /* Increase clickable area slightly without messing with alignment */
   padding: 3px;
@@ -96,12 +83,6 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
 const TitleText = styled(Text)`
   font-weight: 500;
   text-transform: titlecase;
-`;
-
-const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
-  color: ${({ isPositiveEffect, theme }) =>
-    isPositiveEffect ? theme.palette.green : theme.palette.red};
-  line-height: 16px;
 `;
 
 interface AdvancedDetailsProps {
@@ -329,41 +310,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                 Simulation Results
               </TextSmall>
               {expectedStateChangesProcessed?.map((stateChange, i) => {
-                const address = stateChange.rawInfo.data.contract.address;
-                const { kind } = stateChange.rawInfo;
-                const isApproval = kind.includes("APPROVAL");
-                const isNft =
-                  kind.includes("ERC721") || kind.includes("ERC1155");
-                let nftTokenId: string | undefined;
-                if (isNft) {
-                  const nftData = stateChange.rawInfo
-                    .data as NftStateChangeWithTokenId;
-                  nftTokenId = nftData.tokenId || undefined;
-                }
-                // NOTE(kimpers): We define positive as decreased approval or increased balance
-                const isPositiveEffect =
-                  (isApproval && stateChange.diff.gt(0)) ||
-                  (!isApproval && stateChange.diff.lt(0));
-                // TODO(kimpers): What to link to for native assets?
                 return (
-                  <StateChangeRow key={`state-change-${i}`}>
-                    {isNativeAsset(address) ? (
-                      <StateChangeText isPositiveEffect={isPositiveEffect}>
-                        {stateChange.humanReadableDiff}
-                      </StateChangeText>
-                    ) : (
-                      <BlockExplorerLink
-                        address={address}
-                        chainFamily={chainFamily}
-                        chainNetwork={chainNetwork}
-                        nftTokenId={nftTokenId}
-                      >
-                        <StateChangeText isPositiveEffect={isPositiveEffect}>
-                          {stateChange.humanReadableDiff}
-                        </StateChangeText>
-                      </BlockExplorerLink>
-                    )}
-                  </StateChangeRow>
+                  <SimulationResult
+                    key={`state-change-${i || 0}`}
+                    stateChange={stateChange}
+                    chainFamily={chainFamily}
+                    chainNetwork={chainNetwork}
+                  />
                 );
               })}
             </Section>

@@ -3,5 +3,6 @@ import type { EvmStateChange } from "./EvmStateChange";
 
 export interface EvmExpectedStateChange {
   humanReadableDiff: string;
+  templateDiff?: string;
   rawInfo: EvmStateChange;
 }
