@@ -28,6 +28,7 @@ export const blowfishProxyHandler = async (req: Request, res: Response) => {
       headers: {
         "Content-Type": "application/json",
         "X-Api-Key": BLOWFISH_API_KEY,
+        "X-Simulator-Version": "2",
       },
       body: JSON.stringify(body),
     });
