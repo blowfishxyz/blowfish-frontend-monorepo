@@ -1,5 +1,5 @@
 import Airtable from "airtable";
-import { EMAIL_REGEX } from "../../utils/constants";
+import { EMAIL_REGEX } from "../utils/constants";
 
 const AIRTABLE_BASE_ID = "appm87MGvX3frydFL";
 const AIRTABLE_BASE_NAME = "Private Beta";
