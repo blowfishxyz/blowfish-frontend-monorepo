@@ -2,6 +2,7 @@ import { Decimal } from "decimal.js";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
+import { BLOWFISH_FEEDBACK_URL } from "../constants";
 import {
   DappRequest,
   TransactionPayload,
@@ -74,6 +75,7 @@ const Header = styled(Section)`
 const Row = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
 `;
 
 const StateChangeRow = styled(Row)`
@@ -157,6 +159,9 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
           <Text semiBold>Advanced Details</Text>
           <ExpandIcon expanded={showAdvancedDetails} />
         </AdvancedDetailsToggleButton>
+        <LinkWithArrow href={BLOWFISH_FEEDBACK_URL}>
+          <Text>Feedback</Text>
+        </LinkWithArrow>
       </Row>
       {showAdvancedDetails && content && <JsonViewer data={content} />}
     </Section>
