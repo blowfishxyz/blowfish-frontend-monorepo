@@ -189,6 +189,9 @@ export const Footer: React.FC = () => {
               Contact Us
             </Link>
           </FooterLink>
+          <FooterLink>
+            <Link href="/terms">Terms of Service</Link>
+          </FooterLink>
         </LinkColumn>
       </MenuSide>
     </FooterContainer>
