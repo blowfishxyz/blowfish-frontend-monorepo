@@ -10,7 +10,19 @@ const Main = styled.main`
 
 const P = styled(Text).attrs({ as: "p" })``;
 const Ol = styled.ol``;
-const Li = styled.li``;
+const Li = styled.li`
+  & + & {
+    margin-top: 7px;
+  }
+`;
+const MainLi = styled(Li)`
+  &::marker,
+  & > h2 {
+    font-size: 21px;
+    line-height: 24px;
+    font-weight: 500;
+  }
+`;
 
 const TosContainer = styled.div``;
 
@@ -53,7 +65,7 @@ const Home = () => {
             continue using the Service.
           </P>
           <Ol>
-            <Li>
+            <MainLi>
               <Text as="h2">Definitions</Text>
               <P>
                 <strong>Customer Data</strong> means any data submitted, posted,
@@ -90,12 +102,12 @@ const Home = () => {
                 these Customer Terms.
               </P>
               <P>
-                Under these Customer Terms, the words <strong>include </strong>
-                and <strong>including</strong>mean &quot;including but not
+                Under these Customer Terms, the words <strong>include</strong>{" "}
+                and <strong>including</strong> mean &quot;including but not
                 limited to&quot;.
               </P>
-            </Li>
-            <Li>
+            </MainLi>
+            <MainLi>
               <Text as="h2">The service</Text>
               <Ol>
                 <Li>
@@ -154,7 +166,11 @@ const Home = () => {
                     of the Service, you will not, and will not authorize or
                     encourage any third party to, directly or indirectly:
                   </Text>
-                  <Ol>
+                  <Ol
+                    style={{
+                      listStyleType: "lower-alpha",
+                    }}
+                  >
                     <Li>
                       rent, lease, loan, sell, sublicense, assign, or otherwise
                       transfer any rights in or to the Service; and
@@ -224,13 +240,13 @@ const Home = () => {
                   purpose, including to improve its products and services.
                 </Li>
               </Ol>
-            </Li>
-            <Li>
-              <Text>Charges</Text>
+            </MainLi>
+            <MainLi>
+              <Text as="h2">Charges</Text>
               <Ol>
                 <Li>
                   <strong>General</strong>. In order to use the Service, you
-                  will be charged Ninja Security&qpos;s current pricing that can
+                  will be charged Ninja Security&apos;s current pricing that can
                   be found on its website or is communicated to you by Ninja
                   Security. These fees may change at any time at Ninja
                   Security&apos;s sole discretion. If Ninja Security has agreed
@@ -257,8 +273,8 @@ const Home = () => {
                   payment).
                 </Li>
               </Ol>
-            </Li>
-            <Li>
+            </MainLi>
+            <MainLi>
               <Text as="h2">Intellectual Property Rights</Text>
               <Ol>
                 <Li>
@@ -300,8 +316,8 @@ const Home = () => {
                   develop new products and services.
                 </Li>
               </Ol>
-            </Li>
-            <Li>
+            </MainLi>
+            <MainLi>
               <Text as="h2">Indemnification</Text>
               <Ol>
                 <Li>
@@ -330,8 +346,8 @@ const Home = () => {
                   matter subject to indemnification by you.
                 </Li>
               </Ol>
-            </Li>
-            <Li>
+            </MainLi>
+            <MainLi>
               <Text as="h2">
                 Disclaimer of Warranties and Limitation of Liability
               </Text>
@@ -370,8 +386,8 @@ const Home = () => {
                   these Customer Terms.
                 </Li>
               </Ol>
-            </Li>
-            <Li>
+            </MainLi>
+            <MainLi>
               <Text as="h2">Termination</Text>
               <Ol>
                 <Li>
@@ -396,9 +412,8 @@ const Home = () => {
                   required to comply with applicable laws.
                 </Li>
               </Ol>
-            </Li>
-
-            <Li>
+            </MainLi>
+            <MainLi>
               <Text as="h2">General</Text>
               <Ol>
                 <Li>
@@ -488,7 +503,7 @@ const Home = () => {
                   .
                 </Li>
               </Ol>
-            </Li>
+            </MainLi>
           </Ol>
         </TosContainer>
         <Footer />
