@@ -2,7 +2,7 @@ import Airtable from "airtable";
 import { EMAIL_REGEX } from "../../utils/constants";
 
 const AIRTABLE_BASE_ID = "appm87MGvX3frydFL";
-const AIRTABLE_BASE_NAME = "Private Beta";
+const AIRTABLE_TABLE_NAME = "Private Beta";
 
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
@@ -23,7 +23,7 @@ export default async function handler(
   );
 
   try {
-    let records = await base(AIRTABLE_BASE_NAME)
+    let records = await base(AIRTABLE_TABLE_NAME)
       .select({
         filterByFormula: `IF(Email = "${email}", 1, 0)`,
       })
@@ -34,7 +34,7 @@ export default async function handler(
       return;
     }
 
-    await base(AIRTABLE_BASE_NAME).create([
+    await base(AIRTABLE_TABLE_NAME).create([
       {
         fields: {
           Email: email,
