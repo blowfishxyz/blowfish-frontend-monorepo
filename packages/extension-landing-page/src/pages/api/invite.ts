@@ -20,7 +20,8 @@ export default async function handler(
   const code = (req.query.code as string | undefined)?.trim();
 
   if (!code) {
-    res.status(400).send("No invite code provided. Please check your link");
+    console.log("Redirecting without invite code");
+    res.redirect(CHROME_EXTENSION_STORE_URL);
     return;
   }
 
