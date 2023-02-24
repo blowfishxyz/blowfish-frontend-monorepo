@@ -43,10 +43,23 @@ export default async function handler(
       return;
     }
 
+    const record = records[0];
+    const numClicks = (record.get("NumClicks") ?? 0) as number;
+    const maxClicks = (record.get("MaxClicks") ?? 1) as number;
+    if (numClicks >= maxClicks) {
+      res
+        .status(400)
+        .send(
+          "No more invites available for this code. Please look out for a new code"
+        );
+      return;
+    }
+
     await base(AIRTABLE_BASE_NAME).update([
       {
         id: records[0].id,
         fields: {
+          NumClicks: numClicks + 1,
           Downloaded: true,
         },
       },
