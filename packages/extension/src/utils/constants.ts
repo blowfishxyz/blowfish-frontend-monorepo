@@ -17,4 +17,8 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
     chainFamily: "polygon",
     chainNetwork: "mainnet",
   },
+  42161: {
+    chainFamily: "arbitrum",
+    chainNetwork: "one",
+  },
 };
