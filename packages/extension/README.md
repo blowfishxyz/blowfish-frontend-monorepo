@@ -23,7 +23,7 @@ You can either develop UI components separately with [Storybook](https://storybo
 1. Copy `default.env` to `.env.development` and `.env.production`
 1. Install dependencies with `pnpm install`
 1. Run the local development environment with `pnpm dev`
-1. Install `Metamask` into your Crhome browser. You can import our testing wallet seed phrase which is available in 1Password under `Seedphrase Development & Scam evaluation EVM`
+1. Install `Metamask` into your Chrome browser. You can import our testing wallet seed phrase which is available in 1Password under `Seedphrase Development & Scam evaluation EVM`
 1. Open `chrome://extensions`
 1. Enable `Development Mode`
 1. Click `Load unpacked`
