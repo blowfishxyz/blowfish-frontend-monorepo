@@ -5,6 +5,8 @@ import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
+import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
+
 import { Identifier, SignMessageMethod } from "../types";
 import { logger } from "../utils/logger";
 import {
@@ -209,6 +211,18 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
       const [request] = argumentsList;
+      if (
+        request.method === "eth_requestAccounts" ||
+        request.method === "eth_accounts"
+      ) {
+        const impersonatingWallet = localStorage.getItem(
+          PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+        );
+
+        if (impersonatingWallet) {
+          return [impersonatingWallet];
+        }
+      }
 
       if (request?.method === "eth_sendTransaction") {
         const [transaction] = request?.params ?? [];

@@ -8,6 +8,7 @@ importers:
       '@ethersproject/address': ^5.7.0
       '@metamask/post-message-stream': ^6.1.0
       '@plasmohq/prettier-plugin-sort-imports': 3.6.1
+      '@plasmohq/storage': ^1.2.0
       '@storybook/addon-actions': ^6.5.15
       '@storybook/addon-essentials': ^6.5.15
       '@storybook/addon-interactions': ^6.5.15
@@ -62,6 +63,7 @@ importers:
     dependencies:
       '@ethersproject/address': 5.7.0
       '@metamask/post-message-stream': 6.1.0
+      '@plasmohq/storage': 1.2.0_react@18.2.0
       decimal.js: 10.4.3
       eth-rpc-errors: 4.0.3
       ethers: 5.7.2
@@ -4235,6 +4237,17 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /@plasmohq/storage/1.2.0_react@18.2.0:
+    resolution: {integrity: sha512-rkYPL2kPW9RLnPbjUHOp5uDmWQj5uXfMcOXZWtX4rE3s25DH26nkD5GMaA6VzlYjZWUQ5eB24slk+NDIK2XZSA==}
+    peerDependencies:
+      react: ^16.8.6 || ^17 || ^18
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /@pmmmwh/react-refresh-webpack-plugin/0.5.10_ohj47mxwagpoxvu7nhhwxzphqm:
     resolution: {integrity: sha512-j0Ya0hCFZPd4x40qLzbhGsh9TMtdb+CJQiso+WxLOPNasohq9cc5SNUcwsZaRH6++Xh91Xkm/xHCkuIiIu0LUA==}

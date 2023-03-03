@@ -2,6 +2,11 @@ import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
 
+import {
+  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
+  storage,
+} from "~utils/storage";
+
 import { Identifier, Message, UntypedMessageData } from "../types";
 import { sendAndAwaitResponseFromPort } from "../utils/messages";
 
@@ -32,6 +37,15 @@ stream.on("data", (message: Message<UntypedMessageData>) => {
       stream.write(response);
     }
   );
+});
+
+storage.watch({
+  [PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]: (change) => {
+    localStorage.setItem(
+      PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
+      JSON.parse(change.newValue)
+    );
+  },
 });
 
 export default {};
