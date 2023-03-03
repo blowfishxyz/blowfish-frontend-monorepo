@@ -1,7 +1,7 @@
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
 
-export function opacify(amount: number, hexColor: string): string {
+export const opacify = (amount: number, hexColor: string) => {
   if (!hexColor.startsWith("#")) {
     return hexColor;
   }
@@ -20,4 +20,7 @@ export function opacify(amount: number, hexColor: string): string {
   const opacifySuffix = opacityHex.length < 2 ? `0${opacityHex}` : opacityHex;
 
   return `${hexColor.slice(0, 7)}${opacifySuffix}`;
-}
+};
+
+export const isENS = (address = "") =>
+  address.endsWith(".eth") || address.endsWith(".xyz");

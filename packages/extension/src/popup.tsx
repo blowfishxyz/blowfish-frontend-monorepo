@@ -12,6 +12,7 @@ import {
   getBlowfishImpersonationWallet,
   setBlowfishImpersonationWallet,
 } from "~utils/storage";
+import { isENS } from "~utils/utils";
 
 import { LinkWithArrow, UnstyledA } from "./components/Links";
 import { PopupContainer } from "./components/PopupContainer";
@@ -157,8 +158,10 @@ const Impersonator: React.FC = () => {
   const [isEnabled, setIsEnabled] = useState(true);
   const [impersonationWalletAddress, setImpersonationWalletAddress] =
     useState("");
+  const isAddressValid =
+    ethers.utils.isAddress(impersonationWalletAddress) ||
+    isENS(impersonationWalletAddress);
 
-  const isAddressValid = ethers.utils.isAddress(impersonationWalletAddress);
   useEffect(() => {
     (async () => {
       const storedWallet = await getBlowfishImpersonationWallet();

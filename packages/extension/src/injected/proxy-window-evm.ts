@@ -6,6 +6,7 @@ import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
 import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
+import { isENS } from "~utils/utils";
 
 import { Identifier, SignMessageMethod } from "../types";
 import { logger } from "../utils/logger";
@@ -30,11 +31,12 @@ let requestProxy: undefined | typeof Proxy;
 let sendProxy: undefined | typeof Proxy;
 let sendAsyncProxy: undefined | typeof Proxy;
 
+const provider = new providers.Web3Provider(window.ethereum);
+
 const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
   userAccount: string;
 }> => {
-  const provider = new providers.Web3Provider(window.ethereum);
   const [chainId, accounts] = await Promise.all([
     provider.getNetwork().then(({ chainId }) => chainId),
     provider.listAccounts(),
@@ -220,7 +222,11 @@ const overrideWindowEthereum = () => {
         );
 
         if (impersonatingWallet) {
-          return [impersonatingWallet];
+          let address = impersonatingWallet;
+          if (isENS(impersonatingWallet)) {
+            address = (await provider.resolveName(impersonatingWallet)) || "";
+          }
+          return [address];
         }
       }
 
