@@ -5,7 +5,6 @@ export const Input = styled.input<{ error?: boolean; fontSize?: string }>`
   outline: none;
   flex: 1 1 auto;
   background-color: white;
-  transition: color 300ms ${({ error }) => (error ? "step-end" : "step-start")};
   color: ${({ theme }) => theme.palette.black};
   border: 1px solid
     ${({ theme, error }) => (error ? theme.palette.red : theme.palette.border)};
