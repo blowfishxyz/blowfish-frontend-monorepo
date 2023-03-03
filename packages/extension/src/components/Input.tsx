@@ -8,12 +8,13 @@ export const Input = styled.input<{ error?: boolean; fontSize?: string }>`
   transition: color 300ms ${({ error }) => (error ? "step-end" : "step-start")};
   color: ${({ theme }) => theme.palette.black};
   border: 1px solid
-    ${({ theme, error }) => (error ? theme.palette.red : theme.palette.gray)};
+    ${({ theme, error }) => (error ? theme.palette.red : theme.palette.border)};
+  border-radius: 8px;
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
-  width: 100%;
-  padding: 0px;
+  padding: 0 16px;
+  width: calc(100% - 32px);
   -webkit-appearance: textfield;
   ::-webkit-search-decoration {
     -webkit-appearance: none;

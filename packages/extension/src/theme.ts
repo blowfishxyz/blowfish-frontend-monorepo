@@ -7,6 +7,7 @@ import type { Severity } from "./types";
 const palette = {
   warningBackground: "#FFFCF2",
   blockBackground: "#FFFAFA",
+  border: "#D9D9D9",
   warningText: "#FF6332",
   white: "#FFF",
   black: "#000",
