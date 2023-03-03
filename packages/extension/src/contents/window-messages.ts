@@ -39,13 +39,14 @@ stream.on("data", (message: Message<UntypedMessageData>) => {
   );
 });
 
-storage.watch({
-  [PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]: (change) => {
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (changes[PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]) {
+    const { newValue } = changes[PREFERENCES_BLOWFISH_IMPERSONATION_WALLET];
     localStorage.setItem(
       PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
-      JSON.parse(change.newValue)
+      JSON.parse(newValue)
     );
-  },
+  }
 });
 
 export default {};
