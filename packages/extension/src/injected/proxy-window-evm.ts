@@ -11,6 +11,7 @@ import { isENS } from "~utils/utils";
 import { Identifier, SignMessageMethod } from "../types";
 import { logger } from "../utils/logger";
 import {
+  createBlowfishOptionRequestMessage,
   createSignMessageRequestMessage,
   createSignTypedDataRequestMessage,
   createTransactionRequestMessage,
@@ -217,9 +218,13 @@ const overrideWindowEthereum = () => {
         request.method === "eth_requestAccounts" ||
         request.method === "eth_accounts"
       ) {
-        const impersonatingWallet = localStorage.getItem(
-          PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+        const response = await sendAndAwaitResponseFromStream(
+          stream,
+          createBlowfishOptionRequestMessage(
+            PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+          )
         );
+        const impersonatingWallet = String(response.data);
 
         if (impersonatingWallet) {
           let address = impersonatingWallet;

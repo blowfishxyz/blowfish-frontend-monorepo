@@ -8,6 +8,7 @@ import { ethers } from "ethers";
 import { SmallButtonPrimary } from "~components/Buttons";
 import { Input } from "~components/Input";
 import Toggle from "~components/Toggle";
+import { IS_IMPERSONATION_AVAILABLE } from "~config";
 import {
   getBlowfishImpersonationWallet,
   setBlowfishImpersonationWallet,
@@ -23,7 +24,6 @@ import {
   BLOWFISH_FEEDBACK_URL,
   BLOWFISH_TWITTER_URL,
   BLOWFISH_WEBSITE_URL,
-  IS_IMPERSONATION_AVAILABLE,
 } from "./constants";
 
 const WebsiteIcon = () => {

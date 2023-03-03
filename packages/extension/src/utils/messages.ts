@@ -3,6 +3,7 @@ import type { Duplex } from "readable-stream";
 import type Browser from "webextension-polyfill";
 
 import {
+  BlowfishOptionRequest,
   Message,
   RequestType,
   SignMessagePayload,
@@ -63,6 +64,17 @@ export const createSignMessageRequestMessage = (
     payload,
     chainId: chainId.toString(),
     userAccount,
+  };
+  return createRawMessage(type, messageRequest);
+};
+
+export const createBlowfishOptionRequestMessage = (
+  option: string
+): Message<BlowfishOptionRequest> => {
+  const type = RequestType.BlowfishOptions;
+  const messageRequest: BlowfishOptionRequest = {
+    type,
+    option,
   };
   return createRawMessage(type, messageRequest);
 };

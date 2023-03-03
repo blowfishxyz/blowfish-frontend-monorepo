@@ -37,6 +37,7 @@ export enum RequestType {
   SignTypedData = "SIGN_TYPED_DATA",
   SignMessage = "SIGN_MESSAGE",
   UserDecision = "USER_DECISION",
+  BlowfishOptions = "BLOWFISH_OPTIONS",
 }
 
 // TODO(kimpers): Type message
@@ -103,6 +104,12 @@ export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
 }
+
+export interface BlowfishOptionRequest {
+  type: RequestType.BlowfishOptions;
+  option: string;
+}
+
 export const isSignMessageRequest = (
   req: DappRequest
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
