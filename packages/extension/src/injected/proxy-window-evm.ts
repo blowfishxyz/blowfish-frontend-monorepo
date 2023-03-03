@@ -5,9 +5,13 @@ import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
+import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
+import { isENS } from "~utils/utils";
+
 import { Identifier, SignMessageMethod } from "../types";
 import { logger } from "../utils/logger";
 import {
+  createBlowfishOptionRequestMessage,
   createSignMessageRequestMessage,
   createSignTypedDataRequestMessage,
   createTransactionRequestMessage,
@@ -28,11 +32,12 @@ let requestProxy: undefined | typeof Proxy;
 let sendProxy: undefined | typeof Proxy;
 let sendAsyncProxy: undefined | typeof Proxy;
 
+const provider = new providers.Web3Provider(window.ethereum);
+
 const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
   userAccount: string;
 }> => {
-  const provider = new providers.Web3Provider(window.ethereum);
   const [chainId, accounts] = await Promise.all([
     provider.getNetwork().then(({ chainId }) => chainId),
     provider.listAccounts(),
@@ -209,6 +214,26 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
       const [request] = argumentsList;
+      if (
+        request.method === "eth_requestAccounts" ||
+        request.method === "eth_accounts"
+      ) {
+        const response = await sendAndAwaitResponseFromStream(
+          stream,
+          createBlowfishOptionRequestMessage(
+            PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+          )
+        );
+        const impersonatingWallet = String(response.data);
+
+        if (impersonatingWallet) {
+          let address = impersonatingWallet;
+          if (isENS(impersonatingWallet)) {
+            address = (await provider.resolveName(impersonatingWallet)) || "";
+          }
+          return [address];
+        }
+      }
 
       if (request?.method === "eth_sendTransaction") {
         const [transaction] = request?.params ?? [];

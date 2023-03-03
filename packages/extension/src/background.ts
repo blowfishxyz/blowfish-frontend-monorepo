@@ -1,6 +1,7 @@
 import Browser from "webextension-polyfill";
 
 import {
+  BlowfishOptionRequest,
   Message,
   RequestType,
   SignMessageRequest,
@@ -12,7 +13,7 @@ import {
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
-import { isUnsupportedChainDismissed } from "./utils/storage";
+import { isUnsupportedChainDismissed, storage } from "./utils/storage";
 import { createTabPopup } from "./utils/window";
 
 const DIMENSIONS = { width: 392, height: 768 };
@@ -37,6 +38,11 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
     } else if (message.type === RequestType.SignMessage) {
       return processSignMessageRequest(
         message as Message<SignMessageRequest>,
+        remotePort
+      );
+    } else if (message.type === RequestType.BlowfishOptions) {
+      return processBlowfishOptionsRequest(
+        message as Message<BlowfishOptionRequest>,
         remotePort
       );
     }
@@ -122,4 +128,12 @@ const processSignMessageRequest = async (
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
+};
+
+const processBlowfishOptionsRequest = async (
+  message: Message<BlowfishOptionRequest>,
+  remotePort: Browser.Runtime.Port
+): Promise<void> => {
+  const data = await storage.get(message.data.option);
+  remotePort.postMessage({ ...message, data });
 };

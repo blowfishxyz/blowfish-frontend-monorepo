@@ -1,10 +1,13 @@
 import { lighten } from "polished";
 
+import { opacify } from "~utils/utils";
+
 import type { Severity } from "./types";
 
 const palette = {
   warningBackground: "#FFFCF2",
   blockBackground: "#FFFAFA",
+  border: "#D9D9D9",
   warningText: "#FF6332",
   white: "#FFF",
   black: "#000",
@@ -62,7 +65,10 @@ const lightTheme = {
   zIndices,
   fontWeights,
   breakpoints,
-  palette,
+  palette: {
+    ...palette,
+    lightGreen: opacify(24, palette.green),
+  },
   contextBackgroundColors,
   colors: {
     primaryText: palette.black,

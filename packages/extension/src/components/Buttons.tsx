@@ -26,6 +26,11 @@ const PrimaryButton = styled(BaseButton)`
   line-height: 23px;
   color: #ffffff;
 
+  &:disabled {
+    background: rgba(0, 0, 0, 0.3);
+    cursor: not-allowed;
+  }
+
   /* TODO(kimpers) REMOVE SOME OF THESE
   transition: all 0.15s ease-in;
   will-change: transform, background-color, box-shadow;
@@ -77,4 +82,10 @@ const TextButton = styled(BaseButton)`
   margin: -3px;
 `;
 
-export { PrimaryButton, SecondaryButton, TextButton };
+const SmallButtonPrimary = styled(PrimaryButton)`
+  height: 32px;
+  font-size: 14px;
+  padding: 8px;
+`;
+
+export { PrimaryButton, SecondaryButton, TextButton, SmallButtonPrimary };
