@@ -23,6 +23,7 @@ import {
   BLOWFISH_FEEDBACK_URL,
   BLOWFISH_TWITTER_URL,
   BLOWFISH_WEBSITE_URL,
+  IS_IMPERSONATION_AVAILABLE,
 } from "./constants";
 
 const WebsiteIcon = () => {
@@ -150,9 +151,6 @@ const WalletInformationContainer = styled.div`
   grid-template-columns: 2fr 1fr;
   gap: 1em;
 `;
-
-const IS_IMPERSONATION_AVAILABLE =
-  process.env.PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE === "true";
 
 const Impersonator: React.FC = () => {
   const [isEnabled, setIsEnabled] = useState(true);
