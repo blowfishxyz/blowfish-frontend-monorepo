@@ -168,14 +168,10 @@ const Impersonator: React.FC = () => {
       setImpersonationWalletAddress(storedWallet);
       setIsEnabled(!!storedWallet);
       if (!storedWallet) {
-        updateWalletAddress("");
+        setBlowfishImpersonationWallet("");
       }
     })();
   }, []);
-
-  const updateWalletAddress = (address: string) => {
-    setBlowfishImpersonationWallet(address);
-  };
 
   return (
     <ImpersonatorWrapper>
@@ -187,7 +183,7 @@ const Impersonator: React.FC = () => {
           toggle={() => {
             if (isEnabled) {
               setImpersonationWalletAddress("");
-              updateWalletAddress("");
+              setBlowfishImpersonationWallet("");
             }
             setIsEnabled(!isEnabled);
           }}
@@ -203,7 +199,9 @@ const Impersonator: React.FC = () => {
           />
           <SmallButtonPrimary
             disabled={!isAddressValid}
-            onClick={() => updateWalletAddress(impersonationWalletAddress)}
+            onClick={() =>
+              setBlowfishImpersonationWallet(impersonationWalletAddress)
+            }
           >
             Update
           </SmallButtonPrimary>
