@@ -9,6 +9,7 @@ import { SmallButtonPrimary } from "~components/Buttons";
 import { Input } from "~components/Input";
 import Toggle from "~components/Toggle";
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
+import { shortenHex } from "~utils/hex";
 import {
   getBlowfishImpersonationWallet,
   setBlowfishImpersonationWallet,
@@ -152,9 +153,15 @@ const WalletInformationContainer = styled.div`
   gap: 1em;
 `;
 
+const GreenText = styled(Text)`
+  color: ${({ theme }) => theme.palette.green};
+`;
+
 const Impersonator: React.FC = () => {
   const [isEnabled, setIsEnabled] = useState(true);
   const [impersonationWalletAddress, setImpersonationWalletAddress] =
+    useState("");
+  const [currentImpersonationWallet, setCurrentImpersonationWallet] =
     useState("");
   const isAddressValid =
     ethers.utils.isAddress(impersonationWalletAddress) ||
@@ -163,25 +170,40 @@ const Impersonator: React.FC = () => {
   useEffect(() => {
     (async () => {
       const storedWallet = await getBlowfishImpersonationWallet();
+      setCurrentImpersonationWallet(storedWallet);
       setImpersonationWalletAddress(storedWallet);
       setIsEnabled(!!storedWallet);
       if (!storedWallet) {
-        setBlowfishImpersonationWallet("");
+        updateImpersonationWallet("");
       }
     })();
   }, []);
 
+  const updateImpersonationWallet = (address: string) => {
+    setCurrentImpersonationWallet(address);
+    setBlowfishImpersonationWallet(address);
+  };
+
   return (
     <ImpersonatorWrapper>
       <Row>
-        <Text semiBold>Impersonate Account</Text>
+        {currentImpersonationWallet ? (
+          <GreenText semiBold>
+            Impersonating:{" "}
+            {isENS(currentImpersonationWallet)
+              ? currentImpersonationWallet
+              : shortenHex(currentImpersonationWallet)}
+          </GreenText>
+        ) : (
+          <Text semiBold>Impersonate Account</Text>
+        )}
         <Toggle
           initialState={isEnabled}
           isActive={isEnabled}
           toggle={() => {
             if (isEnabled) {
               setImpersonationWalletAddress("");
-              setBlowfishImpersonationWallet("");
+              updateImpersonationWallet("");
             }
             setIsEnabled(!isEnabled);
           }}
@@ -198,7 +220,7 @@ const Impersonator: React.FC = () => {
           <SmallButtonPrimary
             disabled={!isAddressValid}
             onClick={() =>
-              setBlowfishImpersonationWallet(impersonationWalletAddress)
+              updateImpersonationWallet(impersonationWalletAddress)
             }
           >
             Update

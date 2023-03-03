@@ -13,11 +13,7 @@ import {
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
-import {
-  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
-  isUnsupportedChainDismissed,
-  storage,
-} from "./utils/storage";
+import { isUnsupportedChainDismissed, storage } from "./utils/storage";
 import { createTabPopup } from "./utils/window";
 
 const DIMENSIONS = { width: 392, height: 768 };
