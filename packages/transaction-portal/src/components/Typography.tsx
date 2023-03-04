@@ -1,3 +1,4 @@
+import type React from "react";
 import styled from "styled-components";
 
 interface TypographyProps {
@@ -5,7 +6,6 @@ interface TypographyProps {
   style?: React.CSSProperties;
   secondary?: boolean;
   semiBold?: boolean;
-  color?: string;
 }
 
 export const TextXL = styled.span<TypographyProps>`
@@ -20,7 +20,9 @@ export const Text = styled.span<TypographyProps>`
   font-weight: ${({ semiBold }) => (semiBold ? 500 : 400)};
   font-size: 16px;
   line-height: 18px;
-  color: ${({ color }) => color ?? "#1D1C30"};
+
+  color: ${({ theme, secondary }) =>
+    secondary ? theme.colors.secondaryText : theme.colors.primaryText};
 `;
 
 export const TextSmall = styled(Text)<TypographyProps>`

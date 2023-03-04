@@ -2,28 +2,24 @@ import { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
   html,
+  body,
+  div#root {
+    min-height: 100vh;
+    width: 100%;
+  }
+
   body {
-    color: ${({ theme }) => theme.colors.primary};
-    padding: 0;
     margin: 0;
     font-family: "GT-Planar", -apple-system, BlinkMacSystemFont, "Segoe UI",
-        "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
-        "Helvetica Neue", sans-serif;
+      "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+      "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeSpeed;
     position: relative;
+    min-height: 100vh;
     scroll-behavior: smooth;
-    background-color: #F2F4F1;
   }
-  a {
-    color: inherit;
-    text-decoration: none;
-  }
-  * {
-    box-sizing: border-box;
-  }
-
 
   @font-face {
     font-family: "GT-Planar";
@@ -31,7 +27,6 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: normal;
     font-style: normal;
   }
-
   @font-face {
     font-family: "GT-Planar";
     src: url("/fonts/GT-Planar-Italic-15-Regular.woff2") format("woff2");
