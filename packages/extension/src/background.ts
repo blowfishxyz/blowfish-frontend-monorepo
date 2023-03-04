@@ -10,13 +10,11 @@ import {
   UntypedMessageData,
   UserDecisionData,
 } from "./types";
+import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
 import { isUnsupportedChainDismissed, storage } from "./utils/storage";
-import { createTabPopup } from "./utils/window";
-
-const DIMENSIONS = { width: 392, height: 768 };
 
 logger.debug("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
@@ -90,12 +88,12 @@ const processRequestBase = async (
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
-  const windowPromise = createTabPopup("scan.html", message, DIMENSIONS);
+  const tabPromise = createTransactionPortalTab(message);
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
-  const win = await windowPromise;
-  const tabId = win.tabs?.[0]?.id;
+  const tab = await tabPromise;
+  const tabId = tab.id!;
   Browser.tabs.onRemoved.addListener((removedTabId) => {
     // If the window is closed before we received a response we assume cancel
     // as the user probably just closed the window
