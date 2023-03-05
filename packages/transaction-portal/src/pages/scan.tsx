@@ -24,7 +24,7 @@ import {
   parseRequestFromMessage,
 } from "../types";
 import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
-import { chainIdToSupportedChainMapping } from "../utils/constants";
+import { chainIdToSupportedChainMapping } from "../utils/chains";
 import { logger } from "../utils/logger";
 
 const ScanResult: React.FC = () => {

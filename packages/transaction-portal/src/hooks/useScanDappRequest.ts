@@ -15,7 +15,7 @@ import {
 } from "../utils/BlowfishApiClient";
 
 export const BLOWFISH_API_BASE_URL = process.env
-  .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string;
+  .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
 
 const SCAN_REFRESH_INTERVAL_MS = 15_000;
 
