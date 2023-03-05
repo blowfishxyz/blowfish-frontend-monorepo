@@ -12,7 +12,9 @@ interface BottomMenuWrapperProps {
 }
 
 export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
-  position: fixed;
+  position: absolute;
+  max-width: 576px;
+  margin: 0 auto;
   left: 0;
   right: 0;
   bottom: 0;

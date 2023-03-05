@@ -79,6 +79,8 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   min-height: 100vh;
   height: 100%;
   width: 100%;
+  max-width: 600px;
+  margin: auto;
   box-sizing: border-box;
   ${({ bottomMenuType }) =>
     bottomMenuType === "SLIM"

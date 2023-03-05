@@ -1,5 +1,6 @@
 import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import styled from "styled-components";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {
@@ -22,10 +23,19 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   parseRequestFromMessage,
+  Severity,
 } from "../types";
 import type { ChainFamily, ChainNetwork } from "../utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/chains";
 import { logger } from "../utils/logger";
+
+const ScanPageContainer = styled.div<{ severity?: Severity }>`
+  width: 100%;
+  height: 100%;
+  min-heigh: 100vh;
+  background-color: ${({ severity, theme }) =>
+    theme.contextBackgroundColors[severity ?? "INFO"]};
+`;
 
 const ScanResult: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
@@ -53,7 +63,6 @@ const ScanResult: React.FC = () => {
     setMessage(_message);
     setRequest(_request);
     setUserAccount(_request.userAccount);
-    debugger;
 
     // NOTE: This should never happen since we verify
     // that the chain is supported before we create this page
@@ -223,31 +232,33 @@ const ScanResult: React.FC = () => {
   ]);
 
   return (
-    <PopupContainer
-      userAccount={userAccount}
-      chainNetwork={chainNetwork}
-      chainFamily={chainFamily}
-      severity={severity}
-      bottomMenuType={maybeInformationScreen ? "SLIM" : "NONE"}
-    >
-      {maybeInformationScreen
-        ? maybeInformationScreen
-        : hasAllData && (
-            <>
-              <ScanResults
-                request={request}
-                scanResults={scanResults}
-                dappUrl={message.origin!}
-                chainFamily={chainFamily}
-                chainNetwork={chainNetwork}
-              />
-              <ApproveBottomMenu
-                onContinue={() => handleUserDecision(true)}
-                onCancel={() => handleUserDecision(false)}
-              />
-            </>
-          )}
-    </PopupContainer>
+    <ScanPageContainer severity={severity}>
+      <PopupContainer
+        userAccount={userAccount}
+        chainNetwork={chainNetwork}
+        chainFamily={chainFamily}
+        severity={severity}
+        bottomMenuType={maybeInformationScreen ? "SLIM" : "NONE"}
+      >
+        {maybeInformationScreen
+          ? maybeInformationScreen
+          : hasAllData && (
+              <>
+                <ScanResults
+                  request={request}
+                  scanResults={scanResults}
+                  dappUrl={message.origin!}
+                  chainFamily={chainFamily}
+                  chainNetwork={chainNetwork}
+                />
+                <ApproveBottomMenu
+                  onContinue={() => handleUserDecision(true)}
+                  onCancel={() => handleUserDecision(false)}
+                />
+              </>
+            )}
+      </PopupContainer>
+    </ScanPageContainer>
   );
 };
 
