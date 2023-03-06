@@ -14,6 +14,10 @@ export const Input = styled.input<{ error?: boolean; fontSize?: string }>`
   font-weight: 500;
   padding: 0 16px;
   width: calc(100% - 32px);
+  ::placeholder {
+    color: ${({ theme }) => theme.palette.black};
+    opacity: 0.3;
+  }
   -webkit-appearance: textfield;
   ::-webkit-search-decoration {
     -webkit-appearance: none;

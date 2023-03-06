@@ -351,7 +351,10 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                   (!isApproval && stateChange.diff.lt(0));
                 // TODO(kimpers): What to link to for native assets?
                 return (
-                  <StateChangeRow key={`state-change-${i}`}>
+                  <StateChangeRow
+                    key={`state-change-${i}`}
+                    data-testid="simulation-results"
+                  >
                     {isNativeAsset(address) ? (
                       <StateChangeText isPositiveEffect={isPositiveEffect}>
                         {stateChange.humanReadableDiff}

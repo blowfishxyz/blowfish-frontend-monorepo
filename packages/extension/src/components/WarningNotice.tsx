@@ -57,8 +57,13 @@ export const WarningNotice: React.FC<WarningNoticeProps> = ({
     <Wrapper severity={severity}>
       <BlowfishWarningIcon severity={severity} />
       <MessageContainer>
-        <WarningHeadline severity={severity}>{headline}</WarningHeadline>
-        <Text>{message}</Text>
+        <WarningHeadline
+          severity={severity}
+          data-testId="warning-notice-headline"
+        >
+          {headline}
+        </WarningHeadline>
+        <Text data-testId="warning-notice-message">{message}</Text>
       </MessageContainer>
     </Wrapper>
   );

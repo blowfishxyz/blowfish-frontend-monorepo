@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import "./style.css";
@@ -147,7 +147,7 @@ const ImpersonatorWrapper = styled.div`
   width: 100%;
 `;
 
-const WalletInformationContainer = styled.div`
+const WalletInformationContainer = styled.form`
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1em;
@@ -163,6 +163,7 @@ const Impersonator: React.FC = () => {
     useState("");
   const [currentImpersonationWallet, setCurrentImpersonationWallet] =
     useState("");
+  const walletImpersonatorInputRef = useRef<HTMLInputElement>(null);
   const isAddressValid =
     ethers.utils.isAddress(impersonationWalletAddress) ||
     isENS(impersonationWalletAddress);
@@ -178,6 +179,12 @@ const Impersonator: React.FC = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (isEnabled && walletImpersonatorInputRef.current) {
+      walletImpersonatorInputRef.current.focus();
+    }
+  }, [isEnabled]);
 
   const updateImpersonationWallet = (address: string) => {
     setCurrentImpersonationWallet(address);
@@ -200,6 +207,7 @@ const Impersonator: React.FC = () => {
         <Toggle
           initialState={isEnabled}
           isActive={isEnabled}
+          dataTestId="impersonator-toggle"
           toggle={() => {
             if (isEnabled) {
               setImpersonationWalletAddress("");
@@ -210,18 +218,25 @@ const Impersonator: React.FC = () => {
         />
       </Row>
       {isEnabled && (
-        <WalletInformationContainer>
+        <WalletInformationContainer
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateImpersonationWallet(impersonationWalletAddress);
+          }}
+        >
           <Input
+            placeholder="Wallet address or ENS"
+            data-testid="impersonator-input"
             error={!isAddressValid}
             type="text"
             value={impersonationWalletAddress || ""}
             onChange={(e) => setImpersonationWalletAddress(e.target.value)}
+            ref={walletImpersonatorInputRef}
           />
           <SmallButtonPrimary
+            type="submit"
             disabled={!isAddressValid}
-            onClick={() =>
-              updateImpersonationWallet(impersonationWalletAddress)
-            }
+            data-testid="update-button"
           >
             Update
           </SmallButtonPrimary>

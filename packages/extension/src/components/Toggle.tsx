@@ -47,6 +47,7 @@ const ToggleElement = styled.span<{
     ease-in;
   background: ${({ theme, isActive }) =>
     isActive ? `${theme.palette.green}` : `${theme.palette.gray}`};
+
   :hover {
     ${({ theme, isActive }) =>
       isActive ? "none" : `1px solid ${theme.palette.gray}`};
@@ -61,6 +62,7 @@ const ToggleElement = styled.span<{
 
 interface ToggleProps {
   id?: string;
+  dataTestId?: string;
   isActive: boolean;
   toggle: () => void;
   initialState: boolean;
@@ -68,6 +70,7 @@ interface ToggleProps {
 
 export default function Toggle({
   id,
+  dataTestId,
   isActive,
   toggle,
   initialState = false,
@@ -82,7 +85,12 @@ export default function Toggle({
   };
 
   return (
-    <Wrapper id={id} isActive={isActive} onClick={switchToggle}>
+    <Wrapper
+      id={id}
+      isActive={isActive}
+      onClick={switchToggle}
+      data-testid={dataTestId}
+    >
       <ToggleElement
         isActive={isActive}
         isInitialToggleLoad={isInitialToggleLoad}
