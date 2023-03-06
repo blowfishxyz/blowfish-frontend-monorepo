@@ -32,7 +32,7 @@ import { logger } from "../utils/logger";
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
   height: 100%;
-  min-heigh: 100vh;
+  min-height: 100vh;
   background-color: ${({ severity, theme }) =>
     theme.contextBackgroundColors[severity ?? "INFO"]};
 `;
@@ -93,7 +93,8 @@ const ScanResult: React.FC = () => {
   const closeWindow = useCallback(() => window.close(), []);
 
   const handleUserDecision = useCallback(
-    async (shouldProceed: boolean) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_shouldProceed: boolean) => {
       if (!message) {
         logger.error("Error: Cannot proceed, no message to respond to ");
         return;
@@ -150,7 +151,8 @@ const ScanResult: React.FC = () => {
     };
 
     if (isUnsupportedChain && message) {
-      const onToggleShowUnsupportedChain = async (value: boolean) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const onToggleShowUnsupportedChain = async (_value: boolean) => {
         const chainId = message?.data?.chainId as string | undefined;
         if (!chainId) {
           logger.error(`No chainId found in message ${message}`);
@@ -247,7 +249,7 @@ const ScanResult: React.FC = () => {
                 <ScanResults
                   request={request}
                   scanResults={scanResults}
-                  dappUrl={message.origin!}
+                  dappUrl={message.origin || ""}
                   chainFamily={chainFamily}
                   chainNetwork={chainNetwork}
                 />
