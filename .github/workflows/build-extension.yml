@@ -34,5 +34,7 @@ jobs:
       working-directory: ./packages/extension
     - run: pnpm test
       working-directory: ./packages/extension
+    - run: pnpm e2e
+      working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension
