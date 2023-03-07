@@ -15,7 +15,7 @@ export const test = base.extend<{
   context: async ({}, use) => {
     const pathToBlowfishExtension = path.join(
       __dirname,
-      "../build/chrome-mv3-dev"
+      "../build/chrome-mv3-prod"
     );
     const pathToToMetamask = path.join(
       __dirname,
