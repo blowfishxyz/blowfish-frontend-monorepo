@@ -48,6 +48,25 @@ export const test = base.extend<{
 
 export const expect = test.expect;
 
+const waitToBeHidden = async (selector: string, page: Page) => {
+  let retries = 0;
+  // info: waits for 60 seconds
+  const locator = page.locator(selector);
+  for (const element of await locator.all()) {
+    if ((await element.isVisible()) && retries < 300) {
+      retries++;
+      await page.waitForTimeout(200);
+      await waitToBeHidden(selector, page);
+    } else if (retries >= 300) {
+      retries = 0;
+      throw new Error(
+        `[waitToBeHidden] Max amount of retries reached while waiting for ${selector} to disappear.`
+      );
+    }
+    retries = 0;
+  }
+};
+
 export const impersonateAccount = async (
   page: Page,
   extensionId: string,
@@ -63,4 +82,10 @@ export const waitUntilStable = async (page: Page) => {
   await page.waitForLoadState("load");
   await page.waitForLoadState("domcontentloaded");
   await page.waitForLoadState("networkidle");
+};
+
+export const waitUntilStableMetamask = async (page: Page) => {
+  await waitUntilStable(page);
+  await waitToBeHidden(".loading-logo", page);
+  await waitToBeHidden(".loading-spinner", page);
 };
