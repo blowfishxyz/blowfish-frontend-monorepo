@@ -6,6 +6,8 @@ import {
 } from "@playwright/test";
 import path from "path";
 
+import { IS_CI } from "~config";
+
 import prepareMetamask from "./metamask-setup";
 
 export const test = base.extend<{
@@ -15,7 +17,7 @@ export const test = base.extend<{
   context: async ({}, use) => {
     const pathToBlowfishExtension = path.join(
       __dirname,
-      "../build/chrome-mv3-prod"
+      `../build/chrome-mv3-${IS_CI ? "prod" : "dev"}`
     );
     const pathToToMetamask = path.join(
       __dirname,
@@ -26,7 +28,7 @@ export const test = base.extend<{
     const context = await chromium.launchPersistentContext("", {
       headless: false,
       args: [
-        `--headless=new`,
+        ...(IS_CI ? [`--headless=new`] : []),
         `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
         `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
       ],

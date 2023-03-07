@@ -10,6 +10,7 @@
     "build:ci": "cross-env PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE=true PLASMO_PUBLIC_BLOWFISH_API_BASE_URL=https://frontend.blowfish.xyz/proxy/api plasmo build",
     "package": "plasmo package",
     "test": "pnpm jest --passWithNoTests",
+    "e2e:ci": "cross-env PLASMO_PUBLIC_IS_CI=true pnpm playwright test",
     "e2e": "pnpm playwright test",
     "e2e:debug": "pnpm playwright test --debug",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
