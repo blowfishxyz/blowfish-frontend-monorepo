@@ -43,8 +43,3 @@ jobs:
       working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension
-    if: always()
-    uses: actions/upload-artifact@v2
-    with:
-      name: playwright-report
-      path: test-results
