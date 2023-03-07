@@ -15,8 +15,7 @@ on:
 
 jobs:
   build-lint-test:
-
-    runs-on: ubuntu-latest
+    container: mcr.microsoft.com/playwright:latest
 
     steps:
     - uses: actions/checkout@v2
@@ -34,7 +33,12 @@ jobs:
       working-directory: ./packages/extension
     - run: pnpm test
       working-directory: ./packages/extension
-    - run: pnpm e2e
+    - run: |
+        pnpm build
+        xvfb-run pnpm e2e
+      with:
+        PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE: true
       working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension
+
