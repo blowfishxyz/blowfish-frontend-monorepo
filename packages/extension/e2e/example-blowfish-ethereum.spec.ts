@@ -23,6 +23,7 @@ test.describe("Ethereum Blowfish Examples Page", () => {
       await waitUntilStableMetamask(metamaskPage);
     }
     await impersonateAccount(page, extensionId, "vitalik.eth");
+    await page.goto("https://examples.blowfish.tools");
     await page.bringToFront();
   });
 
@@ -83,5 +84,33 @@ test.describe("Ethereum Blowfish Examples Page", () => {
     expect(
       await blowfishExtensionPage.getByTestId("simulation-results").innerText()
     ).toBe("Approve to transfer all your BoredApeYachtClub");
+  });
+
+  test("Send ERC20 tokens to the token contract", async ({ page, context }) => {
+    await page.goto(
+      "https://examples.blowfish.tools/ethereum/transfer_erc20_to_contract",
+      {
+        waitUntil: "domcontentloaded",
+      }
+    );
+    await initiateTransaction(page);
+
+    const blowfishExtensionPage = await context.waitForEvent("page");
+
+    expect(
+      await blowfishExtensionPage
+        .getByTestId("warning-notice-headline")
+        .innerText()
+    ).toBe("WARNING");
+    expect(
+      await blowfishExtensionPage
+        .getByTestId("warning-notice-message")
+        .innerText()
+    ).toBe(
+      "You are transferring ER20 tokens directly to their own token contract. In most cases this will lead to you losing them forever."
+    );
+    expect(
+      await blowfishExtensionPage.getByTestId("simulation-results").innerText()
+    ).toBe("Send 0.01 WETH");
   });
 });
