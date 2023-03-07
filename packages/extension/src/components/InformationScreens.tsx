@@ -205,7 +205,9 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
   return (
     <Wrapper style={style} className={className}>
       <StyledBlowfishInvertedWarningIcon />
-      <StyledTextXL>Something went wrong</StyledTextXL>
+      <StyledTextXL data-testid="unknown-error-title">
+        Something went wrong
+      </StyledTextXL>
       <StyledText>
         Something unexpected happened. Please try again later.
       </StyledText>

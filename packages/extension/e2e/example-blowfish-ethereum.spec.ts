@@ -14,7 +14,6 @@ const initiateTransaction = async (page: Page) => {
     await page.getByText("Connect MetaMask").click();
   }
   await page.getByText("Initiate transaction").click();
-  console.log("initiate finish");
 };
 
 test.describe("Ethereum Blowfish Examples Page", () => {
@@ -30,7 +29,10 @@ test.describe("Ethereum Blowfish Examples Page", () => {
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
-    console.log(blowfishExtensionPage, await blowfishExtensionPage.content());
+
+    console.log(
+      await blowfishExtensionPage.getByTestId("unknown-error-title").innerText()
+    );
     expect(
       await blowfishExtensionPage
         .getByTestId("warning-notice-headline")
