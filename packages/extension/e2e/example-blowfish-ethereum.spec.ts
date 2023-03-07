@@ -26,10 +26,16 @@ test.describe("Ethereum Blowfish Examples Page", () => {
 
   test("Malicious Permit2", async ({ page, context }) => {
     await page.goto("https://examples.blowfish.tools/ethereum/permit2");
+    await page.reload();
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
 
+    console.log(
+      await blowfishExtensionPage
+        .getByTestId("warning-notice-headline")
+        .innerText()
+    );
     expect(
       await blowfishExtensionPage
         .getByTestId("warning-notice-headline")
