@@ -27,18 +27,18 @@ export const test = base.extend<{
       headless: false,
       args: [
         `--headless=new`,
-        `--disable-extensions-except=${pathToBlowfishExtension},${pathToToMetamask}`,
-        `--load-extension=${pathToBlowfishExtension},${pathToToMetamask}`,
+        `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
+        `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
       ],
     });
-    console.log("context", context);
+
     await use(context);
     await context.close();
   },
   extensionId: async ({ context }, use) => {
     let [background] = context.serviceWorkers();
     if (!background) background = await context.waitForEvent("serviceworker");
-    console.log(background.url);
+
     const extensionId = background.url().split("/")[2];
     await use(extensionId);
   },
