@@ -9,6 +9,7 @@ import {
 } from "./test-utils";
 
 const initiateTransaction = async (page: Page) => {
+  // await waitUntilStable(page);
   const connectWalletButton = page.getByText("Connect Wallet");
   if (connectWalletButton) {
     await connectWalletButton.click();
@@ -27,7 +28,6 @@ test.describe("Ethereum Blowfish Examples Page", () => {
 
   test("Malicious Permit2", async ({ page, context }) => {
     await page.goto("https://examples.blowfish.tools/ethereum/permit2");
-    await waitUntilStable(page);
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
@@ -59,7 +59,6 @@ test.describe("Ethereum Blowfish Examples Page", () => {
     await page.goto(
       "https://examples.blowfish.tools/ethereum/set_approval_for_all"
     );
-    await waitUntilStable(page);
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
