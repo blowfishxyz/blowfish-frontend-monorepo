@@ -11,7 +11,6 @@ const initiateTransaction = async (page: Page) => {
   const connectWalletButton = page.getByText("Connect Wallet");
   if (connectWalletButton) {
     await connectWalletButton.click();
-    page.reload();
     await page.getByText("Connect MetaMask").click();
   }
   await page.getByText("Initiate transaction").click();
@@ -20,6 +19,7 @@ const initiateTransaction = async (page: Page) => {
 
 test.describe("Ethereum Blowfish Examples Page", () => {
   test.beforeAll(async ({ context, page, extensionId }) => {
+    console.log("page", page);
     const metamaskPage = context.backgroundPages()[0];
     await waitUntilStable(metamaskPage);
     // TODO(Andrei) - make the account configurable
@@ -29,8 +29,9 @@ test.describe("Ethereum Blowfish Examples Page", () => {
   test("Malicious Permit2", async ({ page, context }) => {
     await page.goto("https://examples.blowfish.tools/ethereum/permit2");
     await initiateTransaction(page);
-
+    console.log("context", context);
     const blowfishExtensionPage = await context.waitForEvent("page");
+    console.log("blowfishExtensionPage", blowfishExtensionPage);
     expect(
       await blowfishExtensionPage
         .getByTestId("warning-notice-headline")
