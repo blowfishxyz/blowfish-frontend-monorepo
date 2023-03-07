@@ -37,7 +37,7 @@ jobs:
       working-directory: ./packages/extension
     - run: |
         pnpm build:ci
-        xvfb-run pnpm e2e
+        xvfb-run pnpm e2e:ci
       working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension
