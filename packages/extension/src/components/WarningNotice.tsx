@@ -59,11 +59,11 @@ export const WarningNotice: React.FC<WarningNoticeProps> = ({
       <MessageContainer>
         <WarningHeadline
           severity={severity}
-          data-testId="warning-notice-headline"
+          data-testid="warning-notice-headline"
         >
           {headline}
         </WarningHeadline>
-        <Text data-testId="warning-notice-message">{message}</Text>
+        <Text data-testid="warning-notice-message">{message}</Text>
       </MessageContainer>
     </Wrapper>
   );
