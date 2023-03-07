@@ -13,7 +13,6 @@ const initiateTransaction = async (page: Page) => {
     await connectWalletButton.click();
     await page.getByText("Connect MetaMask").click();
   }
-  console.log("xxxx", page.getByText("Initiate transaction"));
   await page.getByText("Initiate transaction").click();
 };
 
@@ -28,10 +27,11 @@ test.describe("Ethereum Blowfish Examples Page", () => {
   });
 
   test("Malicious Permit2", async ({ page, context }) => {
-    await page.goto("https://examples.blowfish.tools/ethereum/permit2", {
+    const newPage = await context.newPage();
+    await newPage.goto("https://examples.blowfish.tools/ethereum/permit2", {
       waitUntil: "domcontentloaded",
     });
-    await initiateTransaction(page);
+    await initiateTransaction(newPage);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
 
@@ -59,13 +59,14 @@ test.describe("Ethereum Blowfish Examples Page", () => {
   });
 
   test("Malicious NFT SetApprovalForAll", async ({ page, context }) => {
-    await page.goto(
+    const newPage = await context.newPage();
+    await newPage.goto(
       "https://examples.blowfish.tools/ethereum/set_approval_for_all",
       {
         waitUntil: "domcontentloaded",
       }
     );
-    await initiateTransaction(page);
+    await initiateTransaction(newPage);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
 
