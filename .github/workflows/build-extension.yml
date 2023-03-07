@@ -15,7 +15,9 @@ on:
 
 jobs:
   build-lint-test:
-    container: mcr.microsoft.com/playwright:latest
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:latest
 
     steps:
     - uses: actions/checkout@v2
