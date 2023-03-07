@@ -9,6 +9,9 @@ import {
 
 const initiateTransaction = async (page: Page) => {
   const connectWalletButton = page.getByText("Connect Wallet");
+
+  console.log(connectWalletButton);
+  console.log(await page.content());
   if (connectWalletButton) {
     await connectWalletButton.click();
     await page.getByText("Connect MetaMask").click();
