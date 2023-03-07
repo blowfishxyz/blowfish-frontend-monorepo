@@ -21,10 +21,13 @@ test.describe("Ethereum Blowfish Examples Page", () => {
     const metamaskPage = context.backgroundPages()[0];
     await waitUntilStableMetamask(metamaskPage);
     await impersonateAccount(page, extensionId, "vitalik.eth");
+    await page.bringToFront();
   });
 
   test("Malicious Permit2", async ({ page, context }) => {
-    await page.goto("https://examples.blowfish.tools/ethereum/permit2");
+    await page.goto("https://examples.blowfish.tools/ethereum/permit2", {
+      waitUntil: "domcontentloaded",
+    });
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
@@ -54,7 +57,10 @@ test.describe("Ethereum Blowfish Examples Page", () => {
 
   test("Malicious NFT SetApprovalForAll", async ({ page, context }) => {
     await page.goto(
-      "https://examples.blowfish.tools/ethereum/set_approval_for_all"
+      "https://examples.blowfish.tools/ethereum/set_approval_for_all",
+      {
+        waitUntil: "domcontentloaded",
+      }
     );
     await initiateTransaction(page);
 
