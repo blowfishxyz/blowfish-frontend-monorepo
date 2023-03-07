@@ -38,8 +38,6 @@ jobs:
     - run: |
         pnpm build:ci
         xvfb-run pnpm e2e:ci
-      env:
-        DEBUG: pw
       working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension

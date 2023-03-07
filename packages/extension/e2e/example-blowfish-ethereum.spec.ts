@@ -13,6 +13,7 @@ const initiateTransaction = async (page: Page) => {
     await connectWalletButton.click();
     await page.getByText("Connect MetaMask").click();
   }
+  console.log(await page.content());
   await page.getByText("Initiate transaction").click();
 };
 
