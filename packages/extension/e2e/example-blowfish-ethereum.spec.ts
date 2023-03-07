@@ -23,7 +23,6 @@ test.describe("Ethereum Blowfish Examples Page", () => {
       await waitUntilStableMetamask(metamaskPage);
     }
     await impersonateAccount(page, extensionId, "vitalik.eth");
-    await page.goto("https://examples.blowfish.tools");
     await page.bringToFront();
   });
 

@@ -29,6 +29,7 @@ export const test = base.extend<{
       headless: false,
       args: [
         ...(IS_CI ? [`--headless=new`] : []),
+        "--disable-dev-shm-usage",
         `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
         `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
       ],
