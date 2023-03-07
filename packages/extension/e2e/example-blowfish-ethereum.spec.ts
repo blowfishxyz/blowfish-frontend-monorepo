@@ -10,6 +10,7 @@ import {
 const initiateTransaction = async (page: Page) => {
   const connectWalletButton = page.getByText("Connect Wallet");
   if (connectWalletButton) {
+    console.log("click on metmask button");
     await connectWalletButton.click();
     await page.getByText("Connect MetaMask").click();
   }
@@ -18,9 +19,9 @@ const initiateTransaction = async (page: Page) => {
 
 test.describe("Ethereum Blowfish Examples Page", () => {
   test.beforeAll(async ({ context, page, extensionId }) => {
-    console.log("extensionId", extensionId);
     const metamaskPage = context.backgroundPages()[0];
     await waitUntilStable(metamaskPage);
+    console.log("metamaskPage", metamaskPage);
     // TODO(Andrei) - make the account configurable
     await impersonateAccount(page, extensionId, "vitalik.eth");
   });
@@ -30,6 +31,7 @@ test.describe("Ethereum Blowfish Examples Page", () => {
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
+    console.log(blowfishExtensionPage);
     expect(
       await blowfishExtensionPage
         .getByTestId("warning-notice-headline")
