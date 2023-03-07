@@ -9,9 +9,6 @@ import {
 
 const initiateTransaction = async (page: Page) => {
   const connectWalletButton = page.getByText("Connect Wallet");
-
-  console.log(connectWalletButton);
-  console.log(await page.content());
   if (connectWalletButton) {
     await connectWalletButton.click();
     await page.getByText("Connect MetaMask").click();
@@ -22,7 +19,9 @@ const initiateTransaction = async (page: Page) => {
 test.describe("Ethereum Blowfish Examples Page", () => {
   test.beforeAll(async ({ context, page, extensionId }) => {
     const metamaskPage = context.backgroundPages()[0];
-    await waitUntilStableMetamask(metamaskPage);
+    if (metamaskPage) {
+      await waitUntilStableMetamask(metamaskPage);
+    }
     await impersonateAccount(page, extensionId, "vitalik.eth");
     await page.bringToFront();
   });

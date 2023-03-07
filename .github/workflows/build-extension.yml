@@ -38,6 +38,11 @@ jobs:
     - run: |
         pnpm build:ci
         xvfb-run pnpm e2e:ci
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: playwright-report
+        path: test-results
       working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension
