@@ -22,6 +22,7 @@ export const test = base.extend<{
       "../build/metamask/",
       await prepareMetamask()
     );
+    console.log(pathToToMetamask);
     const context = await chromium.launchPersistentContext("", {
       headless: false,
       args: [
@@ -29,7 +30,7 @@ export const test = base.extend<{
         `--load-extension=${pathToBlowfishExtension},${pathToToMetamask}`,
       ],
     });
-
+    console.log(context);
     await use(context);
     await context.close();
   },
