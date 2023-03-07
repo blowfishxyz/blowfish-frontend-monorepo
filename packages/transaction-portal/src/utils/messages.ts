@@ -1,5 +1,3 @@
-import { WindowPostMessageStream } from "@metamask/post-message-stream";
-
 // TODO(kimpers): Share types between packages
 
 export interface UserDecisionData {

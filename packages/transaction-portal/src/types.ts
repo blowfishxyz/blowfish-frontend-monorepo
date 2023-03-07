@@ -7,6 +7,7 @@ export interface TransactionPayload {
   from: string;
   value: string | null;
   data: string | null;
+  gas?: string | null;
 }
 
 export type WarningSeverity = "WARNING" | "CRITICAL";

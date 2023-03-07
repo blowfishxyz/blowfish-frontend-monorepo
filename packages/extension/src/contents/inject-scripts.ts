@@ -16,6 +16,9 @@ const addScript = (url: string) => {
   scriptTag.onload = () => scriptTag.remove();
 };
 
-addScript(evmProxyScript);
+// TODO(kimpers): Properly solve this
+if (window.location.hostname !== "localhost") {
+  addScript(evmProxyScript);
+}
 
 export default {};

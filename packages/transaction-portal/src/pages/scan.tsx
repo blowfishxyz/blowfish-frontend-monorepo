@@ -1,6 +1,13 @@
 import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+import {
+  sendTransaction,
+  prepareSendTransaction,
+  waitForTransaction,
+} from "@wagmi/core";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {
@@ -14,7 +21,7 @@ import { PopupContainer } from "../components/PopupContainer";
 import { Providers } from "../components/Providers";
 import { ScanResults } from "../components/ScanResults";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
-import { sendUserDecision } from "../utils/messages";
+//import { sendUserDecision } from "../utils/messages";
 import {
   DappRequest,
   Message,
@@ -22,6 +29,7 @@ import {
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
+  isTransactionRequest,
   parseRequestFromMessage,
   Severity,
 } from "../types";
@@ -45,6 +53,7 @@ const ScanResult: React.FC = () => {
     undefined
   );
   const [userAccount, setUserAccount] = useState<string | undefined>(undefined);
+  const [chainId, setChainId] = useState<number | undefined>(undefined);
   const [message, setMessage] = useState<
     Message<UntypedMessageData> | undefined
   >(undefined);
@@ -52,26 +61,33 @@ const ScanResult: React.FC = () => {
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
 
+  const { address } = useAccount();
+  const { connectAsync } = useConnect({
+    connector: new InjectedConnector(),
+  });
+  const { disconnectAsync } = useDisconnect();
+
   useEffect(() => {
     const windowQs = window.location.search;
     const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
     // NOTE: We only pass Message through the query params
     const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
     const _request = parseRequestFromMessage(_message);
-    const chainId = _message.data.chainId.toString();
+    const _chainId = _message.data.chainId.toString();
 
+    setChainId(parseInt(_chainId));
     setMessage(_message);
     setRequest(_request);
     setUserAccount(_request.userAccount);
 
     // NOTE: This should never happen since we verify
     // that the chain is supported before we create this page
-    if (!chainIdToSupportedChainMapping[chainId]) {
-      logger.debug(`Blowfish unsupported chainId ${chainId}`);
+    if (!chainIdToSupportedChainMapping[_chainId]) {
+      logger.debug(`Blowfish unsupported chainId ${_chainId}`);
       return;
     }
     const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
-      chainIdToSupportedChainMapping[chainId];
+      chainIdToSupportedChainMapping[_chainId];
     setChainFamily(_chainFamily);
     setChainNetwork(_chainNetwork);
   }, []);
@@ -99,12 +115,38 @@ const ScanResult: React.FC = () => {
         logger.error("Error: Cannot proceed, no message to respond to ");
         return;
       }
+
+      if (shouldProceed && request) {
+        if (isTransactionRequest(request)) {
+          console.log(request.payload);
+          const { payload } = request;
+          const { from, to, data, value, gas } = payload;
+          const config = await prepareSendTransaction({
+            request: {
+              from,
+              to,
+              data: data ?? undefined,
+              value: value || undefined,
+              gasLimit: gas || undefined,
+            },
+            chainId,
+          });
+          const { hash } = await sendTransaction(config);
+          await waitForTransaction({ chainId, hash });
+          // TODO return to extension
+          console.log(hash);
+        } else {
+          // TODO(kimpers): Implement sign messages
+          alert("UNSUPPORTED OPERATION");
+        }
+      } else {
+        //await sendUserDecision(message.id, shouldProceed);
+      }
       // TODO(kimpers): Implement communcation back to extension
-      await sendUserDecision(message.id, shouldProceed);
-      closeWindow();
+      //closeWindow();
     },
 
-    [message, closeWindow]
+    [message, request, chainId]
   );
 
   logger.debug(message);
@@ -136,6 +178,7 @@ const ScanResult: React.FC = () => {
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
     const isUnsupportedChain = !chainFamily || !chainNetwork;
+    const isWrongAccount = address && userAccount && address !== userAccount;
 
     if (isError) {
       logger.error(scanError);
@@ -150,7 +193,35 @@ const ScanResult: React.FC = () => {
       mutate();
     };
 
-    if (isUnsupportedChain && message) {
+    // TODO(kimpers): Actual screens HERE
+    // FIXME: Proper info screens
+    // TODO: handle chainId mismatch
+    if (!address) {
+      return (
+        <>
+          <UnknownErrorScreen
+            onRetry={async () => {
+              await connectAsync();
+            }}
+            isRetrying={isRetrying}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
+    } else if (isWrongAccount) {
+      return (
+        <>
+          <UnknownErrorScreen
+            onRetry={async () => {
+              await disconnectAsync();
+              await connectAsync();
+            }}
+            isRetrying={isRetrying}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
+    } else if (isUnsupportedChain && message) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const onToggleShowUnsupportedChain = async (_value: boolean) => {
         const chainId = message?.data?.chainId as string | undefined;
@@ -231,6 +302,10 @@ const ScanResult: React.FC = () => {
     message,
     handleUserDecision,
     isRetrying,
+    connectAsync,
+    disconnectAsync,
+    userAccount,
+    address,
   ]);
 
   return (
