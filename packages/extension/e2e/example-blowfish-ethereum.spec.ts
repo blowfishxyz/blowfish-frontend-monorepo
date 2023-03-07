@@ -17,7 +17,7 @@ const initiateTransaction = async (page: Page) => {
 };
 
 test.describe("Ethereum Blowfish Examples Page", () => {
-  test.beforeAll(async ({ context, page, extensionId }) => {
+  test.beforeEach(async ({ context, page, extensionId }) => {
     const metamaskPage = context.backgroundPages()[0];
     if (metamaskPage) {
       await waitUntilStableMetamask(metamaskPage);
