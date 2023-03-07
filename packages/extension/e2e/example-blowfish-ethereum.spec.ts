@@ -27,11 +27,10 @@ test.describe("Ethereum Blowfish Examples Page", () => {
   });
 
   test("Malicious Permit2", async ({ page, context }) => {
-    const newPage = await context.newPage();
-    await newPage.goto("https://examples.blowfish.tools/ethereum/permit2", {
+    await page.goto("https://examples.blowfish.tools/ethereum/permit2", {
       waitUntil: "domcontentloaded",
     });
-    await initiateTransaction(newPage);
+    await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
 
@@ -59,14 +58,13 @@ test.describe("Ethereum Blowfish Examples Page", () => {
   });
 
   test("Malicious NFT SetApprovalForAll", async ({ page, context }) => {
-    const newPage = await context.newPage();
-    await newPage.goto(
+    await page.goto(
       "https://examples.blowfish.tools/ethereum/set_approval_for_all",
       {
         waitUntil: "domcontentloaded",
       }
     );
-    await initiateTransaction(newPage);
+    await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
 

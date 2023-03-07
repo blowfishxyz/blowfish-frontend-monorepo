@@ -37,6 +37,10 @@ You can either develop UI components separately with [Storybook](https://storybo
    - At times the auto-reload can break and you will need to manually reload the Extension in `chrome://extensions`
 1. For more information refer to the [Plasmo docs](https://docs.plasmo.com/)
 
+## Running e2e tests locally
+1. Start the application in development mode with `pnpm dev`
+2. Run the e2e tests with `pnpm e2e`
+
 ## Making production build
 
 Run the following:
