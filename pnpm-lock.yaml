@@ -34,6 +34,7 @@ importers:
       babel-loader: ^9.1.0
       chromatic: ^6.14.0
       copy-webpack-plugin: ^11.0.0
+      cross-env: ^7.0.3
       decimal.js: ^10.4.3
       download: ^8.0.0
       eslint: ^8.31.0
@@ -112,6 +113,7 @@ importers:
       babel-loader: 9.1.2_la66t7xldg4uecmyawueag5wkm
       chromatic: 6.15.0
       copy-webpack-plugin: 11.0.0_webpack@5.75.0
+      cross-env: 7.0.3
       download: 8.0.0
       eslint: 8.32.0
       eslint-plugin-react: 7.32.1_eslint@8.32.0
@@ -8812,6 +8814,14 @@ packages:
 
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+    dev: true
+
+  /cross-env/7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
     dev: true
 
   /cross-fetch/3.1.5:
