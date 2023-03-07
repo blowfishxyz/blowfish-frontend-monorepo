@@ -14,7 +14,7 @@ import { PopupContainer } from "../components/PopupContainer";
 import { Providers } from "../components/Providers";
 import { ScanResults } from "../components/ScanResults";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
-//import { respondWithUserDecision } from "../page-utils";
+import { sendUserDecision } from "../utils/messages";
 import {
   DappRequest,
   Message,
@@ -94,13 +94,13 @@ const ScanResult: React.FC = () => {
 
   const handleUserDecision = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async (_shouldProceed: boolean) => {
+    async (shouldProceed: boolean) => {
       if (!message) {
         logger.error("Error: Cannot proceed, no message to respond to ");
         return;
       }
       // TODO(kimpers): Implement communcation back to extension
-      //await respondWithUserDecision(message.id, shouldProceed);
+      await sendUserDecision(message.id, shouldProceed);
       closeWindow();
     },
 
