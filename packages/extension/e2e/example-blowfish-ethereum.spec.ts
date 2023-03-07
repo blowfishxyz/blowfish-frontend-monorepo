@@ -8,10 +8,10 @@ import {
 } from "./test-utils";
 
 const initiateTransaction = async (page: Page) => {
+  await page.reload();
   const connectWalletButton = page.getByText("Connect Wallet");
   if (connectWalletButton) {
     await connectWalletButton.click();
-    await page.reload();
     await page.getByText("Connect MetaMask").click();
   }
   await page.getByText("Initiate transaction").click();
