@@ -4,12 +4,10 @@ import {
   expect,
   impersonateAccount,
   test,
-  waitUntilStable,
   waitUntilStableMetamask,
 } from "./test-utils";
 
 const initiateTransaction = async (page: Page) => {
-  // await waitUntilStable(page);
   const connectWalletButton = page.getByText("Connect Wallet");
   if (connectWalletButton) {
     await connectWalletButton.click();
@@ -22,7 +20,6 @@ test.describe("Ethereum Blowfish Examples Page", () => {
   test.beforeAll(async ({ context, page, extensionId }) => {
     const metamaskPage = context.backgroundPages()[0];
     await waitUntilStableMetamask(metamaskPage);
-    // TODO(Andrei) - make the account configurable
     await impersonateAccount(page, extensionId, "vitalik.eth");
   });
 
