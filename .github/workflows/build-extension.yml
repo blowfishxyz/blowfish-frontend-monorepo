@@ -38,8 +38,6 @@ jobs:
     - run: |
         pnpm build
         xvfb-run pnpm e2e
-      with:
-        PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE: true
       working-directory: ./packages/extension
     - run: pnpm build
       working-directory: ./packages/extension
