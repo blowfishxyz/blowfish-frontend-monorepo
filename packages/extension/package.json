@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "build:ci": "cross-env PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE=true plasmo build",
+    "build:ci": "cross-env PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE=true PLASMO_PUBLIC_BLOWFISH_API_BASE_URL=https://frontend.blowfish.xyz/proxy/api plasmo build",
     "package": "plasmo package",
     "test": "pnpm jest --passWithNoTests",
     "e2e": "pnpm playwright test",
