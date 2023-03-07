@@ -18,6 +18,7 @@ const initiateTransaction = async (page: Page) => {
 
 test.describe("Ethereum Blowfish Examples Page", () => {
   test.beforeAll(async ({ context, page, extensionId }) => {
+    console.log("extensionId", extensionId);
     const metamaskPage = context.backgroundPages()[0];
     await waitUntilStable(metamaskPage);
     // TODO(Andrei) - make the account configurable

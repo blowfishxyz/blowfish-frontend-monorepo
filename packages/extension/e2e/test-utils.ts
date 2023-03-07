@@ -31,14 +31,14 @@ export const test = base.extend<{
         `--load-extension=${pathToBlowfishExtension},${pathToToMetamask}`,
       ],
     });
-
+    console.log("context", context);
     await use(context);
     await context.close();
   },
   extensionId: async ({ context }, use) => {
     let [background] = context.serviceWorkers();
     if (!background) background = await context.waitForEvent("serviceworker");
-
+    console.log(background.url);
     const extensionId = background.url().split("/")[2];
     await use(extensionId);
   },
