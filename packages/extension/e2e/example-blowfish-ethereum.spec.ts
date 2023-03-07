@@ -29,7 +29,7 @@ test.describe("Ethereum Blowfish Examples Page", () => {
     await initiateTransaction(page);
 
     const blowfishExtensionPage = await context.waitForEvent("page");
-
+    console.log(process.env.PLASMO_PUBLIC_BLOWFISH_API_BASE_URL);
     console.log(
       await blowfishExtensionPage.getByTestId("unknown-error-title").innerText()
     );
