@@ -1,7 +1,7 @@
 packages:
   # executable/launchable applications
   - 'apps/*'
-  # all packages in subdirs of packages/ and components/
+  # all packages in subdirs of packages/
   - 'packages/*'
   # exclude packages that are inside test directories
   - '!**/e2e/**'

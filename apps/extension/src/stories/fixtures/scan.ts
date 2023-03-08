@@ -1,7 +1,7 @@
 import type {
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+} from "@blowfish/utils";
 
 import {
   RequestType,

@@ -1,10 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
 import { ArrowIcon } from "./icons/ArrowIcon";
 
 const SyledArrowIcon = styled(ArrowIcon)`

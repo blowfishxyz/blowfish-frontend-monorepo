@@ -4,7 +4,7 @@ import {
   ChainNetwork,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+} from "@blowfish/utils";
 import useSWR, { SWRResponse } from "swr";
 
 import {

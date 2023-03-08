@@ -12,7 +12,7 @@ import {
   ChainNetwork,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+} from "@blowfish/utils";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;

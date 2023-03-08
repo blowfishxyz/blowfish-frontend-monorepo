@@ -1,13 +1,24 @@
 {
   "name": "@blowfish/utils",
   "version": "0.0.1",
-  "main": "dist/index.js",
+  "main": "build/index.js",
+  "module": "./build/index.mjs",
+  "types": "build/index.d.ts",
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "rm -rf dist && tsc"
+    "build": "rm -rf build && tsup"
   },
   "devDependencies": {
-    "@blowfish/tsconfig": "workspace:*"
+    "@blowfish/tsconfig": "*",
+    "tsup": "^6.6.3",
+    "typescript": "4.9.5"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.mjs",
+      "require": "./build/index.js"
+    }
   }
 }

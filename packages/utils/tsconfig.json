@@ -1,13 +1,10 @@
 {
-  "extends": "@blowfish/tsconfig/base.json",
+  "extends": "@blowfish/tsconfig/base",
   "compilerOptions": {
     "outDir": "./build"
   },
   "include": [
     "."
   ],
-  "exclude": [
-    "build",
-    "node_modules",
-  ]
+  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
 }

@@ -3,10 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import "../style.css";
 
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {

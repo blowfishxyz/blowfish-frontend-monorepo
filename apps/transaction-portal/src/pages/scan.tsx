@@ -33,10 +33,7 @@ import {
   parseRequestFromMessage,
   Severity,
 } from "../types";
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
 import { chainIdToSupportedChainMapping } from "../utils/chains";
 import { logger } from "../utils/logger";
 

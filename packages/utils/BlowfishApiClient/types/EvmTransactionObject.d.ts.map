@@ -1,1 +1,0 @@
-{"version":3,"file":"EvmTransactionObject.d.ts","sourceRoot":"","sources":["EvmTransactionObject.ts"],"names":[],"mappings":"AAEA,MAAM,WAAW,oBAAoB;IACnC,EAAE,EAAE,MAAM,GAAG,IAAI,CAAC;IAClB,IAAI,EAAE,MAAM,GAAG,IAAI,CAAC;IACpB,KAAK,EAAE,MAAM,GAAG,IAAI,CAAC;IACrB,IAAI,EAAE,MAAM,GAAG,IAAI,CAAC;CACrB"}

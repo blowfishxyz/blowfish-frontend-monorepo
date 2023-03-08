@@ -6,7 +6,7 @@ import type {
   Erc1155TransferData,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+} from "@blowfish/utils";
 import { Decimal } from "decimal.js";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";

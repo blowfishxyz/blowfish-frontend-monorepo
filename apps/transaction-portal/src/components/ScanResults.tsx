@@ -18,7 +18,7 @@ import type {
   Erc1155TransferData,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+} from "@blowfish/utils";
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";
