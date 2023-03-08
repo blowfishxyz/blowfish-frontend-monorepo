@@ -1,0 +1,3 @@
+{
+  "extends": "@blowfish/tsconfig/base.json",
+}

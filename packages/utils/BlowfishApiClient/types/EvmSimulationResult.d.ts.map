@@ -1,0 +1,1 @@
+{"version":3,"file":"EvmSimulationResult.d.ts","sourceRoot":"","sources":["EvmSimulationResult.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,sBAAsB,EAAE,MAAM,0BAA0B,CAAC;AACvE,OAAO,KAAK,EAAE,kBAAkB,EAAE,MAAM,sBAAsB,CAAC;AAE/D,MAAM,WAAW,mBAAmB;IAClC,oBAAoB,EAAE,KAAK,CAAC,sBAAsB,CAAC,CAAC;IACpD,KAAK,EAAE,kBAAkB,GAAG,IAAI,CAAC;CAClC"}
