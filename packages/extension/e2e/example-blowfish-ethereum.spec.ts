@@ -1,11 +1,6 @@
 import type { Page } from "@playwright/test";
 
-import {
-  expect,
-  impersonateAccount,
-  test,
-  waitUntilStableMetamask,
-} from "./test-utils";
+import { expect, test } from "./test-utils";
 
 const initiateTransaction = async (page: Page) => {
   const connectWalletButton = page.getByText("Connect Wallet");
@@ -17,15 +12,6 @@ const initiateTransaction = async (page: Page) => {
 };
 
 test.describe("Ethereum Blowfish Examples Page", () => {
-  test.beforeEach(async ({ context, page, extensionId }) => {
-    const metamaskPage = context.backgroundPages()[0];
-    if (metamaskPage) {
-      await waitUntilStableMetamask(metamaskPage);
-    }
-    await impersonateAccount(page, extensionId, "vitalik.eth");
-    await page.bringToFront();
-  });
-
   test("Malicious Permit2", async ({ page, context }) => {
     await page.goto("https://examples.blowfish.tools/ethereum/permit2", {
       waitUntil: "domcontentloaded",

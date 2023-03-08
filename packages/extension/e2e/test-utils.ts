@@ -14,7 +14,7 @@ export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
 }>({
-  context: async ({}, use) => {
+  context: async ({ browserName }, use) => {
     const pathToBlowfishExtension = path.join(
       __dirname,
       `../build/chrome-mv3-${IS_CI ? "prod" : "dev"}`
@@ -38,34 +38,32 @@ export const test = base.extend<{
     await use(context);
     await context.close();
   },
-  extensionId: async ({ context }, use) => {
-    let [background] = context.serviceWorkers();
-    if (!background) background = await context.waitForEvent("serviceworker");
+  page: async ({ context, page }, use) => {
+    const metamaskPage = context.backgroundPages()[0];
+    if (metamaskPage) {
+      await waitUntilStableMetamask(metamaskPage);
+    }
+    await impersonateAccount(
+      page,
+      await getBlowfishExtensionId(context),
+      "vitalik.eth"
+    );
 
-    const extensionId = background.url().split("/")[2];
-    await use(extensionId);
+    await use(page);
+    await page.close();
+  },
+  extensionId: async ({ context }, use) => {
+    const id = await getBlowfishExtensionId(context);
+    await use(id);
   },
 });
 
 export const expect = test.expect;
 
-const waitToBeHidden = async (selector: string, page: Page) => {
-  let retries = 0;
-  // info: waits for 60 seconds
-  const locator = page.locator(selector);
-  for (const element of await locator.all()) {
-    if ((await element.isVisible()) && retries < 300) {
-      retries++;
-      await page.waitForTimeout(200);
-      await waitToBeHidden(selector, page);
-    } else if (retries >= 300) {
-      retries = 0;
-      throw new Error(
-        `[waitToBeHidden] Max amount of retries reached while waiting for ${selector} to disappear.`
-      );
-    }
-    retries = 0;
-  }
+const getBlowfishExtensionId = async (context: BrowserContext) => {
+  let [background] = context.serviceWorkers();
+  if (!background) background = await context.waitForEvent("serviceworker");
+  return background.url().split("/")[2];
 };
 
 export const impersonateAccount = async (
@@ -89,4 +87,23 @@ export const waitUntilStableMetamask = async (page: Page) => {
   await waitUntilStable(page);
   await waitToBeHidden(".loading-logo", page);
   await waitToBeHidden(".loading-spinner", page);
+};
+
+const waitToBeHidden = async (selector: string, page: Page) => {
+  let retries = 0;
+  // info: waits for 60 seconds
+  const locator = page.locator(selector);
+  for (const element of await locator.all()) {
+    if ((await element.isVisible()) && retries < 300) {
+      retries++;
+      await page.waitForTimeout(200);
+      await waitToBeHidden(selector, page);
+    } else if (retries >= 300) {
+      retries = 0;
+      throw new Error(
+        `[waitToBeHidden] Max amount of retries reached while waiting for ${selector} to disappear.`
+      );
+    }
+    retries = 0;
+  }
 };
