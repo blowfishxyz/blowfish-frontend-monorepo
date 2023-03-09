@@ -14,7 +14,7 @@ import { PlayIcon } from "~components/icons/PlayIcon";
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
 import useTransactionScannerPauseResume, {
   PauseDuration,
-} from "~hooks/useTransactionScanner";
+} from "~hooks/useTransactionScannerPauseResume";
 import { opacify, transformDate } from "~utils/utils";
 
 import { PopupContainer } from "./components/PopupContainer";
