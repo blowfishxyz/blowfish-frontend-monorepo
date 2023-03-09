@@ -1,4 +1,7 @@
-import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
+import type {
+  ChainFamily,
+  ChainNetwork,
+} from "@blowfish/utils/BlowfishApiClient";
 import type { ComponentStory } from "@storybook/react";
 import React from "react";
 

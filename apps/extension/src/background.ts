@@ -1,5 +1,3 @@
-import Browser from "webextension-polyfill";
-
 import {
   BlowfishOptionRequest,
   Message,
@@ -9,7 +7,9 @@ import {
   TransactionRequest,
   UntypedMessageData,
   UserDecisionData,
-} from "./types";
+} from "@blowfish/utils/types";
+import Browser from "webextension-polyfill";
+
 import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";

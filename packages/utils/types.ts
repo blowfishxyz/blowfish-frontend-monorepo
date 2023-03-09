@@ -1,4 +1,4 @@
-import type { Action, SignTypedDataPayload } from "@blowfish/utils";
+import type { Action, SignTypedDataPayload } from "./BlowfishApiClient";
 
 export { SignTypedDataPayload };
 
@@ -39,6 +39,7 @@ export enum RequestType {
   SignMessage = "SIGN_MESSAGE",
   UserDecision = "USER_DECISION",
   BlowfishOptions = "BLOWFISH_OPTIONS",
+  MessageAck = "BLOWFISH_MESSAGE_ACK",
 }
 
 // TODO(kimpers): Type message

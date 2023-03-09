@@ -1,8 +1,8 @@
+import { Identifier, Message, UntypedMessageData } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
 
-import { Identifier, Message, UntypedMessageData } from "../types";
 import { sendAndAwaitResponseFromPort } from "../utils/messages";
 
 export const config: PlasmoContentScript = {

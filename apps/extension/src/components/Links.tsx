@@ -1,4 +1,7 @@
-import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
+import type {
+  ChainFamily,
+  ChainNetwork,
+} from "@blowfish/utils/BlowfishApiClient";
 import React from "react";
 import styled from "styled-components";
 

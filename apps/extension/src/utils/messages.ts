@@ -1,7 +1,3 @@
-import objectHash, { NotUndefined } from "object-hash";
-import type { Duplex } from "readable-stream";
-import type Browser from "webextension-polyfill";
-
 import {
   BlowfishOptionRequest,
   Message,
@@ -13,7 +9,10 @@ import {
   TransactionPayload,
   TransactionRequest,
   UntypedMessageData,
-} from "../types";
+} from "@blowfish/utils/types";
+import objectHash, { NotUndefined } from "object-hash";
+import type { Duplex } from "readable-stream";
+import type Browser from "webextension-polyfill";
 
 const createRawMessage = <T extends object>(
   type: RequestType,

@@ -6,19 +6,19 @@ import type {
   Erc1155TransferData,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils";
-import { Decimal } from "decimal.js";
-import React, { useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
-
-import { BLOWFISH_FEEDBACK_URL } from "../constants";
+} from "@blowfish/utils/BlowfishApiClient";
 import {
   DappRequest,
   TransactionPayload,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-} from "../types";
+} from "@blowfish/utils/types";
+import { Decimal } from "decimal.js";
+import React, { useEffect, useMemo, useState } from "react";
+import styled from "styled-components";
+
+import { BLOWFISH_FEEDBACK_URL } from "../constants";
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";

@@ -9,7 +9,7 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-} from "../types";
+} from "@blowfish/utils/types";
 import type {
   ChainFamily,
   ChainNetwork,
@@ -18,7 +18,7 @@ import type {
   Erc1155TransferData,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils";
+} from "@blowfish/utils/BlowfishApiClient";
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";

@@ -1,3 +1,4 @@
+import { Severity, actionToSeverity } from "@blowfish/utils/types";
 import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React, { useState } from "react";
 
@@ -9,7 +10,6 @@ import {
 } from "../components/PopupContainer";
 import { Providers } from "../components/Providers";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
-import { Severity, actionToSeverity } from "../types";
 import {
   exampleDappUrl,
   exampleNftSignTypedDataRequest,

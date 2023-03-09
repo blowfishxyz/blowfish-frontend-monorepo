@@ -32,8 +32,8 @@ import {
   isTransactionRequest,
   parseRequestFromMessage,
   Severity,
-} from "../types";
-import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
+} from "@blowfish/utils/types";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "../utils/chains";
 import { logger } from "../utils/logger";
 
@@ -134,6 +134,7 @@ const ScanResult: React.FC = () => {
           const { hash } = await sendTransaction(config);
           await waitForTransaction({ chainId, hash });
           // TODO return to extension
+          console.log("TX DONE ", hash);
           console.log(hash);
         } else {
           // TODO(kimpers): Implement sign messages

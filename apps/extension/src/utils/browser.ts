@@ -1,8 +1,8 @@
+import type { RequestType } from "@blowfish/utils/types";
 import qs from "qs";
 import Browser from "webextension-polyfill";
 
 import { BLOWFISH_TRANSACTION_PORTAL_URL } from "../config";
-import type { RequestType } from "../types";
 
 export interface QueryParams {
   type: RequestType;

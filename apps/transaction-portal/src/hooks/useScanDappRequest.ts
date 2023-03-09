@@ -5,14 +5,14 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-} from "../types";
+} from "@blowfish/utils/types";
 import {
   BlowfishApiClient,
   ChainFamily,
   ChainNetwork,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils";
+} from "@blowfish/utils/BlowfishApiClient";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;

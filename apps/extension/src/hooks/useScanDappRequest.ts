@@ -4,15 +4,14 @@ import {
   ChainNetwork,
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/utils";
-import useSWR, { SWRResponse } from "swr";
-
+} from "@blowfish/utils/BlowfishApiClient";
 import {
   DappRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-} from "../types";
+} from "@blowfish/utils/types";
+import useSWR, { SWRResponse } from "swr";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string;

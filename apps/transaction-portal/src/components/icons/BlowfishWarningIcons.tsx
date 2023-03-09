@@ -1,7 +1,7 @@
 import React from "react";
 import { useTheme } from "styled-components";
 
-import type { WarningSeverity } from "../../types";
+import type { WarningSeverity } from "@blowfish/utils/types";
 
 interface BlowfishWarningIconProps {
   className?: string;

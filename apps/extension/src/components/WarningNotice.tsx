@@ -1,7 +1,7 @@
+import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import type { WarningSeverity } from "../types";
 import { Text } from "./Typography";
 import { BlowfishWarningIcon } from "./icons/BlowfishWarningIcons";
 

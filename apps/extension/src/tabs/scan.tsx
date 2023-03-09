@@ -3,7 +3,19 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import "../style.css";
 
-import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
+import type {
+  ChainFamily,
+  ChainNetwork,
+} from "@blowfish/utils/BlowfishApiClient";
+import {
+  DappRequest,
+  Message,
+  UntypedMessageData,
+  actionToSeverity,
+  isSignMessageRequest,
+  isSignTypedDataRequest,
+  parseRequestFromMessage,
+} from "@blowfish/utils/types";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {
@@ -18,15 +30,6 @@ import { Providers } from "../components/Providers";
 import { ScanResults } from "../components/ScanResults";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
 import { respondWithUserDecision } from "../page-utils";
-import {
-  DappRequest,
-  Message,
-  UntypedMessageData,
-  actionToSeverity,
-  isSignMessageRequest,
-  isSignTypedDataRequest,
-  parseRequestFromMessage,
-} from "../types";
 import { chainIdToSupportedChainMapping } from "../utils/constants";
 import { logger } from "../utils/logger";
 import { setUnsupportedChainDismissed } from "../utils/storage";

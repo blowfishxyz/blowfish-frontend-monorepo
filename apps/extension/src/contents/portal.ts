@@ -1,7 +1,10 @@
+import {
+  Message,
+  RequestType,
+  UntypedMessageData,
+} from "@blowfish/utils/types";
 import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
-
-import { Message, RequestType, UntypedMessageData } from "../types";
 
 const SAFE_ORIGINS = ["http://localhost:3001", "https://protect.blowfish.xyz"];
 

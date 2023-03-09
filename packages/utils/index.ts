@@ -1,1 +1,2 @@
-export * from "./BlowfishApiClient";
+export * as client from "./BlowfishApiClient";
+export * as types from "./types";

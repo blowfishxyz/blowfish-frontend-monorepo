@@ -1,8 +1,11 @@
-import type { ChainFamily, ChainNetwork } from "@blowfish/utils";
+import type {
+  ChainFamily,
+  ChainNetwork,
+} from "@blowfish/utils/BlowfishApiClient";
+import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import type { Severity } from "../types";
 import { shortenHex } from "../utils/hex";
 import {
   REGULAR_BOTTOM_MENU_HEIGHT,

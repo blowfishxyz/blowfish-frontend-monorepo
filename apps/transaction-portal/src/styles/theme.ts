@@ -1,6 +1,6 @@
 import { lighten } from "polished";
 
-import type { Severity } from "../types";
+import type { Severity } from "@blowfish/utils/types";
 import { opacify } from "../utils/utils";
 
 const palette = {
