@@ -1,6 +1,6 @@
 import Browser from "webextension-polyfill";
 
-import type { BlowfishPausedOptionType } from "~hooks/useTransactionScanner";
+import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
 
 import {
   BlowfishOptionRequest,
