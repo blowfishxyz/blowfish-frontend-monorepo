@@ -217,20 +217,33 @@ const overrideWindowEthereum = () => {
         request.method === "eth_requestAccounts" ||
         request.method === "eth_accounts"
       ) {
-        const response = await sendAndAwaitResponseFromStream(
-          stream,
-          createBlowfishOptionRequestMessage(
-            PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
-          )
-        );
-        const impersonatingWallet = String(response.data);
+        try {
+          const response = await Promise.race([
+            sendAndAwaitResponseFromStream(
+              stream,
+              createBlowfishOptionRequestMessage(
+                PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+              )
+            ),
+            new Promise<never>((_, reject) =>
+              setTimeout(
+                () => reject(new Error("BlowfishOptions request timeout")),
+                50
+              )
+            ),
+          ]);
 
-        if (impersonatingWallet) {
-          let address = impersonatingWallet;
-          if (isENS(impersonatingWallet)) {
-            address = (await provider.resolveName(impersonatingWallet)) || "";
+          const impersonatingWallet = String(response.data);
+
+          if (impersonatingWallet) {
+            let address = impersonatingWallet;
+            if (isENS(impersonatingWallet)) {
+              address = (await provider.resolveName(impersonatingWallet)) || "";
+            }
+            return [address];
           }
-          return [address];
+        } catch (err) {
+          logger.error(err);
         }
       }
 
