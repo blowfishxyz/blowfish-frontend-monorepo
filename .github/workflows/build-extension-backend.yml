@@ -7,11 +7,11 @@ on:
   push:
     branches: [ main ]
     paths:
-      - "packages/extension-backend/**"
+      - "apps/extension-backend/**"
   pull_request:
     branches: [ main ]
     paths:
-      - "packages/extension-backend/**"
+      - "apps/extension-backend/**"
 
 jobs:
   build-lint-test:
@@ -27,10 +27,10 @@ jobs:
       with:
         version: 7
     - run: pnpm install
-      working-directory: ./packages/extension-backend
+      working-directory: ./apps/extension-backend
     - run: pnpm typecheck
-      working-directory: ./packages/extension-backend
+      working-directory: ./apps/extension-backend
     - run: pnpm lint
-      working-directory: ./packages/extension-backend
+      working-directory: ./apps/extension-backend
     - run: pnpm test
-      working-directory: ./packages/extension-backend
+      working-directory: ./apps/extension-backend
