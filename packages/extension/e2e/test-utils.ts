@@ -4,53 +4,26 @@ import {
   test as base,
   chromium,
 } from "@playwright/test";
+import os from "os";
 import path from "path";
 
 import { IS_CI } from "~config";
 
 import prepareMetamask from "./metamask-setup";
 
+export const sessionPath = path.resolve(os.tmpdir(), "blowfish", "session");
+
 export const test = base.extend<{
   context: BrowserContext;
   extensionId: string;
+  metamaskPage: any;
 }>({
   context: async ({ browserName }, use) => {
-    const pathToBlowfishExtension = path.join(
-      __dirname,
-      `../build/chrome-mv3-${IS_CI ? "prod" : "dev"}`
-    );
-    const pathToToMetamask = path.join(
-      __dirname,
-      "../build/metamask/",
-      await prepareMetamask()
-    );
-
-    const context = await chromium.launchPersistentContext("", {
-      headless: false,
-      args: [
-        ...(IS_CI ? [`--headless=new`] : []),
-        "--disable-dev-shm-usage",
-        `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
-        `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
-      ],
-    });
+    const { context, metamaskPage } = await launch();
+    await waitUntilStableMetamask(metamaskPage);
 
     await use(context);
     await context.close();
-  },
-  page: async ({ context, page }, use) => {
-    const metamaskPage = context.backgroundPages()[0];
-    if (metamaskPage) {
-      await waitUntilStableMetamask(metamaskPage);
-    }
-    await impersonateAccount(
-      page,
-      await getBlowfishExtensionId(context),
-      "vitalik.eth"
-    );
-
-    await use(page);
-    await page.close();
   },
   extensionId: async ({ context }, use) => {
     const id = await getBlowfishExtensionId(context);
@@ -60,7 +33,7 @@ export const test = base.extend<{
 
 export const expect = test.expect;
 
-const getBlowfishExtensionId = async (context: BrowserContext) => {
+export const getBlowfishExtensionId = async (context: BrowserContext) => {
   let [background] = context.serviceWorkers();
   if (!background) background = await context.waitForEvent("serviceworker");
   return background.url().split("/")[2];
@@ -72,12 +45,44 @@ export const impersonateAccount = async (
   account: string
 ) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
-  await page.getByTestId("impersonator-toggle").click();
-  await page.getByTestId("impersonator-input").fill(account);
-  await page.getByTestId("update-button").click();
+  const isImpersonated = await page
+    .getByTestId("impersonator-input")
+    .isVisible();
+
+  if (!isImpersonated) {
+    await page.getByTestId("impersonator-toggle").click();
+    await page.getByTestId("impersonator-input").fill(account);
+    await page.getByTestId("update-button").click();
+  }
 };
 
-export const waitUntilStable = async (page: Page) => {
+export const launch = async () => {
+  const pathToBlowfishExtension = path.join(
+    __dirname,
+    `../build/chrome-mv3-${IS_CI ? "prod" : "dev"}`
+  );
+  const pathToToMetamask = path.join(
+    __dirname,
+    "../build/metamask/",
+    await prepareMetamask()
+  );
+
+  const context = await chromium.launchPersistentContext(sessionPath, {
+    headless: false,
+    args: [
+      ...(IS_CI ? [`--headless=new`] : []),
+      "--disable-dev-shm-usage",
+      `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
+      `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
+    ],
+  });
+  const [page] = await context.pages();
+  const metamaskPage = await context.waitForEvent("page", { timeout: 2000 });
+
+  return { context, page, metamaskPage };
+};
+
+const waitUntilStable = async (page: Page) => {
   await page.waitForLoadState("load");
   await page.waitForLoadState("domcontentloaded");
   await page.waitForLoadState("networkidle");
