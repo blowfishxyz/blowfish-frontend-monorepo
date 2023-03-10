@@ -92,6 +92,7 @@ const PauseScanningButton = styled(BaseButton)`
   color: rgba(0, 0, 0, 0.3);
   padding: 4px 8px;
   border-radius: 12px;
+  font-size: 12px;
 `;
 
 const StateChangeRow = styled(Row)`
