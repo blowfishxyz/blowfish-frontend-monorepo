@@ -77,7 +77,7 @@ export const launch = async () => {
     ],
   });
   const [page] = await context.pages();
-  const metamaskPage = await context.waitForEvent("page", { timeout: 2000 });
+  const metamaskPage = await context.waitForEvent("page");
 
   return { context, page, metamaskPage };
 };
