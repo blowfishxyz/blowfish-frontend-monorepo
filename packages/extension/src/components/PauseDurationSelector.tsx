@@ -11,7 +11,7 @@ const fadeIn = keyframes`
   }
 `;
 
-const PeriodDurationContainer = styled(Row)`
+export const PeriodDurationContainer = styled(Row)`
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
   height: 30px;

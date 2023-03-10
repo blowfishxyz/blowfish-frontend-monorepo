@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 import PauseDurationSelector, {
   DurationButton,
+  PeriodDurationContainer,
 } from "~components/PauseDurationSelector";
 import Row from "~components/common/Row";
 import useTransactionScannerPauseResume, {
@@ -50,10 +51,12 @@ const Wrapper = styled.div`
   border-radius: 12px;
 `;
 
-const SimulationResults = styled.div``;
+const SimulationResults = styled.div`
+  padding: 0 25px;
+`;
 
 const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
-  padding: 25px;
+  padding: 25px 0 25px 0;
   border-bottom: ${(props) => props.borderBottom && "1px solid #0000001a"};
   border-top: ${(props) => props.borderTop && "1px solid #0000001a"};
   display: flex;
@@ -62,22 +65,28 @@ const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
 `;
 
 const Header = styled(Section)`
+  min-height: 56px;
   /* Overwrite section styles */
-  justify-content: unset;
   flex-direction: column;
   align-items: center;
   padding: 0 12px;
+  justify-content: center;
 
-  & > h1 {
+  & > ${Row} {
     padding-left: 13px;
-    margin-top: 19px;
+    padding-right: 13px;
+    width: calc(100% - 26px);
     align-self: flex-start;
   }
 `;
 
 const HeaderRow = styled(Row)`
   justify-content: space-between;
-  height: 40px;
+  height: 56px;
+
+  ${PeriodDurationContainer} {
+    padding: 0 20px 0 0;
+  }
 
   ${DurationButton} {
     padding: 4px 8px;
@@ -338,7 +347,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     pauseScan(period);
     setShowDurationSelector(false);
   };
-  console.log(scanResults);
+
   return (
     <Wrapper>
       <Header
@@ -371,7 +380,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
       </Header>
       <SimulationResults>
         {toAddress && (
-          <Section borderBottom style={{ padding: "25px" }}>
+          <Section borderBottom>
             <TextSmall secondary style={{ marginBottom: "8px" }}>
               To Address
             </TextSmall>
