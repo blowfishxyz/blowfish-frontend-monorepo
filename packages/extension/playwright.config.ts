@@ -14,7 +14,6 @@ export default defineConfig({
   retries: process.env.CI ? 0 : 0,
   workers: 1,
   reporter: "html",
-  globalSetup: "./e2e/global-setup.ts",
   use: {
     actionTimeout: 0,
     trace: "on-first-retry",

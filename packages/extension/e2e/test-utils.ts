@@ -19,8 +19,14 @@ export const test = base.extend<{
   metamaskPage: any;
 }>({
   context: async ({ browserName }, use) => {
-    const { context, metamaskPage } = await launch();
+    const { context, page, metamaskPage } = await launch();
     await waitUntilStableMetamask(metamaskPage);
+
+    await impersonateAccount(
+      page,
+      await getBlowfishExtensionId(context),
+      "vitalik.eth"
+    );
 
     await use(context);
     await context.close();
@@ -70,7 +76,7 @@ export const launch = async () => {
   const context = await chromium.launchPersistentContext(sessionPath, {
     headless: false,
     args: [
-      ...(IS_CI ? [`--headless=new`] : []),
+      // ...(IS_CI ? [`--headless=new`] : []),
       "--disable-dev-shm-usage",
       `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
       `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
