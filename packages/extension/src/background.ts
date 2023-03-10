@@ -1,5 +1,7 @@
 import Browser from "webextension-polyfill";
 
+import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
+
 import {
   BlowfishOptionRequest,
   Message,
@@ -13,7 +15,11 @@ import {
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
-import { isUnsupportedChainDismissed, storage } from "./utils/storage";
+import {
+  PREFERENCES_BLOWFISH_PAUSED,
+  isUnsupportedChainDismissed,
+  storage,
+} from "./utils/storage";
 import { createTabPopup } from "./utils/window";
 
 const DIMENSIONS = { width: 392, height: 768 };
@@ -74,6 +80,15 @@ const processRequestBase = async (
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
+  const pausedOption = await storage.get<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
+
+  if (pausedOption && pausedOption.isPaused) {
+    postResponseToPort(remotePort, message, { isOk: true });
+    return;
+  }
+
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   // and the user dismissed the notice
