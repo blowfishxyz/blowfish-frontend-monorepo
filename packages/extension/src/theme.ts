@@ -55,6 +55,14 @@ const opacities = {
   secondaryText: 0.5,
 };
 
+const grids = {
+  xs: "4px",
+  sm: "8px",
+  md: "12px",
+  lg: "24px",
+  xl: "32px",
+};
+
 const contextBackgroundColors: { [key in Severity]: string } = {
   CRITICAL: "#FFC1AD",
   WARNING: "#FFD567",
@@ -65,6 +73,7 @@ const lightTheme = {
   zIndices,
   fontWeights,
   breakpoints,
+  grids,
   palette: {
     ...palette,
     lightGreen: opacify(24, palette.green),
