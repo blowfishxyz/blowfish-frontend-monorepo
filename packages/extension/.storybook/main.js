@@ -16,6 +16,8 @@ module.exports = {
   webpackFinal: async (config) => {
     config.resolve.alias = {
       ...config.resolve?.alias,
+      "~hooks": path.resolve(__dirname, "../src/hooks"),
+      "~components": path.resolve(__dirname, "../src/components"),
       "~utils": path.resolve(__dirname, "../src/utils"),
     };
 
