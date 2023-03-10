@@ -11,6 +11,7 @@ const BaseButton = styled.button`
   color: inherit;
   font: inherit;
   line-height: normal;
+  cursor: pointer;
   -webkit-font-smoothing: inherit;
   -moz-osx-font-smoothing: inherit;
   -webkit-appearance: none;

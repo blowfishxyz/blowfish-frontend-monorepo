@@ -24,3 +24,23 @@ export const opacify = (amount: number, hexColor: string) => {
 
 export const isENS = (address = "") =>
   address.endsWith(".eth") || address.endsWith(".xyz");
+
+export const transformDate = (timestamp: number) => {
+  const date = new Date(timestamp);
+  const today = new Date();
+  const tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
+  if (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  ) {
+    return date.toLocaleTimeString();
+  } else if (
+    date.getDate() === tomorrow.getDate() &&
+    date.getMonth() === tomorrow.getMonth() &&
+    date.getFullYear() === tomorrow.getFullYear()
+  ) {
+    return `Tomorrow at ${date.toLocaleTimeString()}`;
+  }
+};

@@ -7,6 +7,7 @@ import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
+import { IS_IMPERSONATION_AVAILABLE } from "~config";
 import { logger } from "~utils/logger";
 import {
   createBlowfishOptionRequestMessage,
@@ -215,8 +216,9 @@ const overrideWindowEthereum = () => {
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
       const [request] = argumentsList;
       if (
-        request.method === "eth_requestAccounts" ||
-        request.method === "eth_accounts"
+        (request.method === "eth_requestAccounts" ||
+          request.method === "eth_accounts") &&
+        IS_IMPERSONATION_AVAILABLE
       ) {
         try {
           const response = await Promise.race([
@@ -229,7 +231,7 @@ const overrideWindowEthereum = () => {
             new Promise<never>((_, reject) =>
               setTimeout(
                 () => reject(new Error("BlowfishOptions request timeout")),
-                50
+                300
               )
             ),
           ]);
