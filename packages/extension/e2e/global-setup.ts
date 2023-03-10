@@ -14,6 +14,7 @@ async function globalSetup(config: FullConfig): Promise<void> {
     await getBlowfishExtensionId(context),
     "vitalik.eth"
   );
+
   await context.close();
 }
 

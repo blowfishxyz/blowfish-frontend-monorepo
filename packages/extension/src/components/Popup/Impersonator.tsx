@@ -87,6 +87,7 @@ const Impersonator: React.FC = () => {
         <Toggle
           initialState={isEnabled}
           isActive={isEnabled}
+          dataTestId="impersonator-toggle"
           toggle={() => {
             if (isEnabled) {
               setImpersonationWalletAddress("");
