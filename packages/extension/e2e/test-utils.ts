@@ -76,7 +76,8 @@ export const launch = async () => {
   const context = await chromium.launchPersistentContext(sessionPath, {
     headless: false,
     args: [
-      // ...(IS_CI ? [`--headless=new`] : []),
+      ...(IS_CI ? [`--headless=new`] : []),
+      "--disable-gpu",
       "--disable-dev-shm-usage",
       `--disable-extensions-except=${pathToToMetamask},${pathToBlowfishExtension}`,
       `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
