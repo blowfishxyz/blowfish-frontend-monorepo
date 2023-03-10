@@ -12,8 +12,6 @@ import prepareMetamask from "./metamask-setup";
 
 export const test = base.extend<{
   context: BrowserContext;
-  extensionId: string;
-  metamaskPage: any;
 }>({
   context: async ({ browserName }, use) => {
     const { page, context, metamaskPage } = await launch();
@@ -24,10 +22,6 @@ export const test = base.extend<{
       "vitalik.eth"
     );
     await use(context);
-  },
-  extensionId: async ({ context }, use) => {
-    const id = await getBlowfishExtensionId(context);
-    await use(id);
   },
 });
 
