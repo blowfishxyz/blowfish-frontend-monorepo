@@ -4,7 +4,8 @@ import styled from "styled-components";
 
 import "./style.css";
 
-import { PrimaryButton, SmallButtonPrimary } from "~components/Buttons";
+import { PrimaryButton } from "~components/Buttons";
+import PauseDurationSelector from "~components/PauseDurationSelector";
 import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
 import { Column } from "~components/common/Column";
@@ -34,7 +35,7 @@ const StyledPopupContainer = styled(PopupContainer)`
 `;
 
 const WalletHeroImage = styled.img<{ isScanPaused: boolean }>`
-  padding: 30px 0;
+  padding: 20px 0;
   transition: all 0.2s linear;
   filter: ${({ isScanPaused }) => (isScanPaused ? `grayscale(1)` : `none`)};
 `;
@@ -86,30 +87,6 @@ const ScannerActionButton = styled(PrimaryButton)<{ paused: boolean }>`
   }
 `;
 
-const PeriodSelectorContainer = styled(Row)`
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
-  height: 30px;
-  justify-content: space-between;
-  color: white;
-  padding: 0 20px;
-  gap: 20px;
-`;
-
-const PeriodButton = styled(SmallButtonPrimary)<{ index: number }>`
-  opacity: 0;
-  animation-name: fadeIn;
-  animation-delay: ${({ index }) => `${index * 0.2}s`};
-  animation-duration: 0.2s;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-}
-
-@keyframes fadeIn {
-  to {
-    opacity: 1;
-  }`;
-
 const Indicator = styled.div<{ paused: boolean }>`
   width: 18px;
   height: 18px;
@@ -158,7 +135,7 @@ const StatusIndicator = ({
 const Popup: React.FC = () => {
   const { pauseScan, resumeScan, isScanPaused, scanPausedUntil } =
     useTransactionScannerPauseResume();
-  const [showPeriodSelector, setShowPeriodSelector] = useState(false);
+  const [showDurationSelector, setShowDurationSelector] = useState(false);
 
   const onActionClick = () => {
     if (isScanPaused) {
@@ -166,11 +143,11 @@ const Popup: React.FC = () => {
       return;
     }
 
-    setShowPeriodSelector(true);
+    setShowDurationSelector(true);
   };
 
-  const onPeriodSelect = (duration: PauseDuration) => {
-    setShowPeriodSelector(false);
+  const onDurationSelect = (duration: PauseDuration) => {
+    setShowDurationSelector(false);
     pauseScan(duration);
   };
 
@@ -180,8 +157,8 @@ const Popup: React.FC = () => {
       <WalletHeroImage
         src={walletHero}
         alt="wallet"
-        width={180}
-        height={180}
+        width={160}
+        height={160}
         isScanPaused={isScanPaused}
       />
       <Row gap="sm">
@@ -198,28 +175,20 @@ const Popup: React.FC = () => {
           <ScannerActionButton
             paused={isScanPaused}
             onClick={onActionClick}
-            disabled={showPeriodSelector}
+            disabled={showDurationSelector}
           >
             {isScanPaused ? <PlayIcon /> : <PauseIcon />}
           </ScannerActionButton>
-          {!showPeriodSelector && (
+          {!showDurationSelector && (
             <InfoContainer>
               {isScanPaused && <Text>Click to start scanning</Text>}
               {!isScanPaused && <Text>Click to pause scanning</Text>}
             </InfoContainer>
           )}
-          {showPeriodSelector && (
-            <PeriodSelectorContainer>
-              {Object.entries(PauseDuration).map(([key, value], index) => (
-                <PeriodButton
-                  index={index}
-                  onClick={() => onPeriodSelect(value)}
-                  key={key}
-                >
-                  {value}
-                </PeriodButton>
-              ))}
-            </PeriodSelectorContainer>
+          {showDurationSelector && (
+            <PauseDurationSelector
+              onClick={(period) => onDurationSelect(period)}
+            />
           )}
         </ScannerActionsContainer>
       </Column>

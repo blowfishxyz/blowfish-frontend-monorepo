@@ -229,7 +229,7 @@ const ScanResult: React.FC = () => {
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
       severity={severity}
-      bottomMenuType={maybeInformationScreen ? "SLIM" : "NONE"}
+      bottomMenuType={maybeInformationScreen ? "SLIM" : "FULL"}
     >
       {maybeInformationScreen
         ? maybeInformationScreen

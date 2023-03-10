@@ -2,6 +2,14 @@ import { Decimal } from "decimal.js";
 import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
+import PauseDurationSelector, {
+  DurationButton,
+} from "~components/PauseDurationSelector";
+import Row from "~components/common/Row";
+import useTransactionScannerPauseResume, {
+  PauseDuration,
+} from "~hooks/useTransactionScannerPauseResume";
+
 import { BLOWFISH_FEEDBACK_URL } from "../constants";
 import {
   DappRequest,
@@ -22,7 +30,6 @@ import type {
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";
-import { REGULAR_BOTTOM_MENU_HEIGHT } from "./BottomMenus";
 import { JsonViewer } from "./JsonViewer";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
@@ -43,12 +50,10 @@ const Wrapper = styled.div`
   border-radius: 12px;
 `;
 
-const SimulationResults = styled.div`
-  padding: 0 25px;
-`;
+const SimulationResults = styled.div``;
 
 const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
-  padding: 25px 0 25px 0;
+  padding: 25px;
   border-bottom: ${(props) => props.borderBottom && "1px solid #0000001a"};
   border-top: ${(props) => props.borderTop && "1px solid #0000001a"};
   display: flex;
@@ -57,14 +62,12 @@ const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
 `;
 
 const Header = styled(Section)`
-  min-height: 56px;
   /* Overwrite section styles */
   justify-content: unset;
   flex-direction: column;
   align-items: center;
-  justify-content: unset;
-
   padding: 0 12px;
+
   & > h1 {
     padding-left: 13px;
     margin-top: 19px;
@@ -72,13 +75,28 @@ const Header = styled(Section)`
   }
 `;
 
-const Row = styled.div`
-  display: flex;
-  align-items: center;
+const HeaderRow = styled(Row)`
   justify-content: space-between;
+  height: 40px;
+
+  ${DurationButton} {
+    padding: 4px 8px;
+    font-size: 12px;
+    line-height: 12px;
+    height: 24px;
+  }
+`;
+
+const PauseScanningButton = styled(BaseButton)`
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  border-radius: 12px;
 `;
 
 const StateChangeRow = styled(Row)`
+  justify-content: space-between;
+
   & + & {
     margin-top: 11px;
   }
@@ -89,6 +107,7 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   padding: 3px;
   margin: -3px;
   cursor: pointer;
+
   ${Text} {
     font-weight: 500;
     margin-right: 5px;
@@ -97,7 +116,7 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
 
 const TitleText = styled(Text)`
   font-weight: 500;
-  text-transform: titlecase;
+  text-transform: capitalize;
 `;
 
 const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
@@ -111,6 +130,7 @@ interface AdvancedDetailsProps {
   showAdvancedDetails: boolean;
   setShowAdvancedDetails: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
   request,
   showAdvancedDetails,
@@ -145,14 +165,11 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       borderTop
       style={{
         padding: "25px",
-        paddingBottom: showAdvancedDetails
-          ? `${REGULAR_BOTTOM_MENU_HEIGHT}px`
-          : "25px",
         flex: 1,
         justifyContent: "unset",
       }}
     >
-      <Row>
+      <Row justify="space-between">
         <AdvancedDetailsToggleButton
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >
@@ -175,6 +192,7 @@ export interface ScanResultsProps {
   chainNetwork: ChainNetwork;
   dappUrl: string;
 }
+
 export const ScanResults: React.FC<ScanResultsProps> = ({
   request,
   scanResults,
@@ -185,6 +203,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
   const [showAdvancedDetails, setShowAdvancedDetails] =
     useState<boolean>(false);
+  const { pauseScan, resumeScan, isScanPaused } =
+    useTransactionScannerPauseResume();
+  const [showDurationSelector, setShowDurationSelector] = useState(false);
 
   const expectedStateChangesProcessed = useMemo(
     () =>
@@ -299,10 +320,47 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     }
   }, [scanResults, requestTypeStr, request]);
 
+  const onActionClick = () => {
+    if (showDurationSelector) {
+      setShowDurationSelector(false);
+      return;
+    }
+
+    if (isScanPaused) {
+      resumeScan();
+      return;
+    }
+
+    setShowDurationSelector(true);
+  };
+  const onDurationSelect = (period: PauseDuration) => {
+    pauseScan(period);
+    setShowDurationSelector(false);
+  };
+  console.log(scanResults);
   return (
     <Wrapper>
-      <Header borderBottom={scanResults.action === "NONE"}>
-        <TitleText as="h1">{requestTypeStr} Details</TitleText>
+      <Header
+        borderBottom={
+          scanResults.action === "NONE" && !!scanResults.simulationResults
+        }
+      >
+        <HeaderRow>
+          {showDurationSelector ? (
+            <PauseDurationSelector
+              onClick={(period) => onDurationSelect(period)}
+            />
+          ) : (
+            <TitleText as="h1">{requestTypeStr} Details</TitleText>
+          )}
+          <PauseScanningButton onClick={onActionClick}>
+            {isScanPaused ? (
+              <>Resume</>
+            ) : (
+              <>{showDurationSelector ? <>Cancel</> : <>Pause Scanning</>}</>
+            )}
+          </PauseScanningButton>
+        </HeaderRow>
         {warning && (
           <WarningNotice
             severity={warning.severity}
@@ -312,7 +370,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
       </Header>
       <SimulationResults>
         {toAddress && (
-          <Section borderBottom>
+          <Section borderBottom style={{ padding: "25px" }}>
             <TextSmall secondary style={{ marginBottom: "8px" }}>
               To Address
             </TextSmall>
