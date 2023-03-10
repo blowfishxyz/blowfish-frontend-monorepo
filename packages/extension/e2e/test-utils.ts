@@ -4,14 +4,11 @@ import {
   test as base,
   chromium,
 } from "@playwright/test";
-import os from "os";
 import path from "path";
 
 import { IS_CI } from "~config";
 
 import prepareMetamask from "./metamask-setup";
-
-export const sessionPath = path.resolve(os.tmpdir(), "blowfish", "session");
 
 export const test = base.extend<{
   context: BrowserContext;
@@ -19,17 +16,14 @@ export const test = base.extend<{
   metamaskPage: any;
 }>({
   context: async ({ browserName }, use) => {
-    const { context, page, metamaskPage } = await launch();
+    const { page, context, metamaskPage } = await launch();
     await waitUntilStableMetamask(metamaskPage);
-
     await impersonateAccount(
       page,
       await getBlowfishExtensionId(context),
       "vitalik.eth"
     );
-
     await use(context);
-    await context.close();
   },
   extensionId: async ({ context }, use) => {
     const id = await getBlowfishExtensionId(context);
@@ -51,15 +45,9 @@ export const impersonateAccount = async (
   account: string
 ) => {
   await page.goto(`chrome-extension://${extensionId}/popup.html`);
-  const isImpersonated = await page
-    .getByTestId("impersonator-input")
-    .isVisible();
-
-  if (!isImpersonated) {
-    await page.getByTestId("impersonator-toggle").click();
-    await page.getByTestId("impersonator-input").fill(account);
-    await page.getByTestId("update-button").click();
-  }
+  await page.getByTestId("impersonator-toggle").click();
+  await page.getByTestId("impersonator-input").fill(account);
+  await page.getByTestId("update-button").click();
 };
 
 export const launch = async () => {
@@ -73,7 +61,7 @@ export const launch = async () => {
     await prepareMetamask()
   );
 
-  const context = await chromium.launchPersistentContext(sessionPath, {
+  const context = await chromium.launchPersistentContext("", {
     headless: false,
     args: [
       ...(IS_CI ? [`--headless=new`] : []),
@@ -84,8 +72,10 @@ export const launch = async () => {
     ],
   });
 
+  await context.pages()[0].waitForTimeout(3000);
   const [page] = await context.pages();
-  const metamaskPage = await context.waitForEvent("page");
+
+  const metamaskPage = await context.backgroundPages()[0];
 
   return { context, page, metamaskPage };
 };
