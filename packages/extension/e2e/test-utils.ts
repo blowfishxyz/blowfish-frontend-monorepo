@@ -76,8 +76,11 @@ export const launch = async () => {
       `--load-extension=${pathToToMetamask},${pathToBlowfishExtension}`,
     ],
   });
+  console.log("context", context);
   const [page] = await context.pages();
-  const metamaskPage = await context.waitForEvent("page");
+  console.log("page", page);
+  const metamaskPage = await context.waitForEvent("page", { timeout: 2000 });
+  console.log("metamaskPage", metamaskPage);
 
   return { context, page, metamaskPage };
 };
