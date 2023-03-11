@@ -13,12 +13,19 @@ export type ChainNetwork = "mainnet" | "goerli";
 
 export interface SignTypedDataPayload {
   domain: {
-    name: string;
-    version: string | number;
-    chainId: string | number;
-    verifyingContract: string;
+    chainId?: string | number | bigint;
+    name?: string;
+    salt?: `0x${string}`;
+    verifyingContract: `0x${string}`;
+    version?: string;
   };
-  message: object;
+  message: { [key: string]: unknown };
+
+  types: {
+    // TODO(kimpers): Proper typing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
+  };
   // TODO(kimpers): Proper typing
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;

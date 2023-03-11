@@ -2,7 +2,13 @@ import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { sendTransaction, prepareSendTransaction } from "@wagmi/core";
+import { ethers } from "ethers";
+import {
+  sendTransaction,
+  prepareSendTransaction,
+  signTypedData,
+  signMessage,
+} from "@wagmi/core";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
@@ -116,9 +122,10 @@ const ScanResult: React.FC = () => {
         return;
       }
 
+      logger.debug(request);
+
       if (shouldProceed) {
         if (isTransactionRequest(request)) {
-          console.log(request.payload);
           const { payload } = request;
           const { from, to, data, value, gas } = payload;
           const config = await prepareSendTransaction({
@@ -134,16 +141,39 @@ const ScanResult: React.FC = () => {
           const { hash } = await sendTransaction(config);
           // TODO(kimpers): We need UI affordances for waiting for the tx to confirm
           //await waitForTransaction({ chainId, hash, confirmations: 1 });
-          console.log("TX DONE ", hash);
+          logger.debug("tx hash", hash);
+
           await sendResult(message.id, hash);
+        } else if (isSignTypedDataRequest(request)) {
+          const { payload } = request;
+          const signedTypedMessage = await signTypedData({
+            domain: payload.domain,
+            types: payload.types,
+            value: payload.message,
+          });
+          logger.debug("signTypedMessage", signedTypedMessage);
+          await sendResult(message.id, signedTypedMessage);
+        } else if (isSignMessageRequest(request)) {
+          const { payload } = request;
+          if (payload.method === "personal_sign") {
+            const decoded = ethers.utils.toUtf8String(payload.message);
+            const signedMessage = await signMessage({
+              message: decoded,
+            });
+            logger.debug("signedMessage", signedMessage);
+            await sendResult(message.id, signedMessage);
+          } else {
+            // TODO(kimpers): Handle this is we want to support it or inform the user
+            alert("ETH_SIGN IS DANGEROUS AND THEREFORE NOT SUPPORTED");
+          }
         } else {
-          // TODO(kimpers): Implement sign messages
+          // TODO(kimpers): This should never happen
+          logger.error("Unsupported operation ", request);
           alert("UNSUPPORTED OPERATION");
         }
       } else {
         await sendAbort(message.id);
       }
-      // TODO(kimpers): Implement communcation back to extension
       closeWindow();
     },
 
