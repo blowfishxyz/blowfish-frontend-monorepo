@@ -132,10 +132,12 @@ const ScanResult: React.FC = () => {
             chainId,
           });
           const { hash } = await sendTransaction(config);
-          await waitForTransaction({ chainId, hash });
+          debugger;
+          await waitForTransaction({ chainId, hash, confirmations: 1 });
           // TODO return to extension
           console.log("TX DONE ", hash);
           console.log(hash);
+          debugger;
         } else {
           // TODO(kimpers): Implement sign messages
           alert("UNSUPPORTED OPERATION");

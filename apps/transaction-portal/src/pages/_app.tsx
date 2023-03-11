@@ -1,16 +1,11 @@
 import React from "react";
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { WagmiConfig, createClient } from "wagmi";
-import { getDefaultProvider } from "ethers";
+import { WagmiConfig } from "wagmi";
 import { GlobalStyle } from "../styles/global";
 import { themes } from "../styles/theme";
+import { wagmiClient } from "../utils/wagmi";
 import Head from "next/head";
-
-const client = createClient({
-  autoConnect: true,
-  provider: getDefaultProvider(),
-});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -20,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeProvider theme={themes.light}>
         <GlobalStyle />
-        <WagmiConfig client={client}>
+        <WagmiConfig client={wagmiClient}>
           <Component {...pageProps} />
         </WagmiConfig>
       </ThemeProvider>

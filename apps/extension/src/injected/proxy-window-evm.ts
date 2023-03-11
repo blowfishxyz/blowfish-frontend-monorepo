@@ -348,7 +348,11 @@ const overrideWindowEthereum = () => {
   });
 };
 
-const overrideInterval: NodeJS.Timer = setInterval(overrideWindowEthereum, 100);
-overrideWindowEthereum();
+// TODO(kimpers): Proper solution for this
+let overrideInterval: NodeJS.Timer;
+if (window.location.hostname !== "localhost") {
+  overrideInterval = setInterval(overrideWindowEthereum, 100);
+  overrideWindowEthereum();
+}
 
 export default {};
