@@ -138,30 +138,59 @@ const ScanResult: React.FC = () => {
             },
             chainId,
           });
-          const { hash } = await sendTransaction(config);
-          // TODO(kimpers): We need UI affordances for waiting for the tx to confirm
-          //await waitForTransaction({ chainId, hash, confirmations: 1 });
-          logger.debug("tx hash", hash);
-
-          await sendResult(message.id, hash);
+          try {
+            const { hash } = await sendTransaction(config);
+            // TODO(kimpers): We need UI affordances for waiting for the tx to confirm
+            //await waitForTransaction({ chainId, hash, confirmations: 1 });
+            logger.debug("tx hash", hash);
+            await sendResult(message.id, hash);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (err: any) {
+            const errMessage = err.message || err.toString();
+            if (/rejected request/i.test(errMessage)) {
+              await sendAbort(message.id);
+            } else {
+              throw err;
+            }
+          }
         } else if (isSignTypedDataRequest(request)) {
           const { payload } = request;
-          const signedTypedMessage = await signTypedData({
-            domain: payload.domain,
-            types: payload.types,
-            value: payload.message,
-          });
-          logger.debug("signTypedMessage", signedTypedMessage);
-          await sendResult(message.id, signedTypedMessage);
+          try {
+            const signedTypedMessage = await signTypedData({
+              domain: payload.domain,
+              types: payload.types,
+              value: payload.message,
+            });
+            logger.debug("signTypedMessage", signedTypedMessage);
+            await sendResult(message.id, signedTypedMessage);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } catch (err: any) {
+            const errMessage = err.message || err.toString();
+            if (/rejected request/i.test(errMessage)) {
+              await sendAbort(message.id);
+            } else {
+              throw err;
+            }
+          }
         } else if (isSignMessageRequest(request)) {
           const { payload } = request;
           if (payload.method === "personal_sign") {
             const decoded = ethers.utils.toUtf8String(payload.message);
-            const signedMessage = await signMessage({
-              message: decoded,
-            });
-            logger.debug("signedMessage", signedMessage);
-            await sendResult(message.id, signedMessage);
+            try {
+              const signedMessage = await signMessage({
+                message: decoded,
+              });
+              logger.debug("signedMessage", signedMessage);
+              await sendResult(message.id, signedMessage);
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            } catch (err: any) {
+              const errMessage = err.message || err.toString();
+              if (/rejected request/i.test(errMessage)) {
+                await sendAbort(message.id);
+              } else {
+                throw err;
+              }
+            }
           } else {
             // TODO(kimpers): Handle this is we want to support it or inform the user
             alert("ETH_SIGN IS DANGEROUS AND THEREFORE NOT SUPPORTED");
