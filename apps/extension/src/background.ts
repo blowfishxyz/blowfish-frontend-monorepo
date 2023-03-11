@@ -10,15 +10,15 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
+//import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
 
 import { createTransactionPortalTab } from "./utils/browser";
-import { chainIdToSupportedChainMapping } from "./utils/constants";
+//import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
 import {
-  PREFERENCES_BLOWFISH_PAUSED,
-  isUnsupportedChainDismissed,
+  //PREFERENCES_BLOWFISH_PAUSED,
+  //isUnsupportedChainDismissed,
   storage,
 } from "./utils/storage";
 
@@ -78,27 +78,30 @@ const processRequestBase = async (
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
-  const pausedOption = await storage.get<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
-  );
+  //const pausedOption = await storage.get<BlowfishPausedOptionType>(
+  //PREFERENCES_BLOWFISH_PAUSED
+  //);
 
-  if (pausedOption && pausedOption.isPaused) {
-    postResponseToPort(remotePort, message, { isOk: true });
-    return;
-  }
+  // TODO(kimepers): HANDLE THIS
+  //if (pausedOption && pausedOption.isPaused) {
+  //const responseData: UserDecisionData = { isOk: true };
+  //postResponseToPort(remotePort, message, { isOk: true });
+  //return;
+  //}
 
-  const { chainId } = message.data;
+  //const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   // and the user dismissed the notice
-  if (!chainIdToSupportedChainMapping[chainId]) {
-    const isDismissed = await isUnsupportedChainDismissed(chainId);
-    if (isDismissed) {
-      logger.info(`Unsupported chain id ${chainId}`);
-      const responseData: UserDecisionData = { isOk: true };
-      postResponseToPort(remotePort, message, responseData);
-      return;
-    }
-  }
+  // TODO(kimpers): HANDLE THIS
+  //if (!chainIdToSupportedChainMapping[chainId]) {
+  //const isDismissed = await isUnsupportedChainDismissed(chainId);
+  //if (isDismissed) {
+  //logger.info(`Unsupported chain id ${chainId}`);
+  //const responseData: UserDecisionData = { isOk: true };
+  //postResponseToPort(remotePort, message, responseData);
+  //return;
+  //}
+  //}
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience

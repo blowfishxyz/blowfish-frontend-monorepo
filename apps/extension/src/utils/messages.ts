@@ -78,14 +78,17 @@ export const createBlowfishOptionRequestMessage = (
   return createRawMessage(type, messageRequest);
 };
 
-export const sendAndAwaitResponseFromStream = <T extends object>(
+export const sendAndAwaitResponseFromStream = <
+  T extends object,
+  R extends object
+>(
   stream: Duplex,
   request: Message<T>
-): Promise<Message<UntypedMessageData>> => {
+): Promise<Message<R>> => {
   stream.write(request);
 
   return new Promise((resolve) => {
-    const callback = (response: Message<UntypedMessageData>): void => {
+    const callback = (response: Message<R>): void => {
       if (response.id === request.id) {
         stream.off("data", callback);
         resolve(response);

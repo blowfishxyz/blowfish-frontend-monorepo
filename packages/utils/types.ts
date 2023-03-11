@@ -116,6 +116,11 @@ export const isSignMessageRequest = (
   req: DappRequest
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
 
-export interface UserDecisionData {
-  isOk: boolean;
-}
+export type UserDecisionData =
+  | {
+      isOk: false;
+    }
+  | {
+      isOk: true;
+      result: string;
+    };

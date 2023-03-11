@@ -2,9 +2,16 @@
 // See https://github.com/RevokeCash/browser-extension/blob/d49f1de92003681b9e768782f54e734a52a5d975/src/injected/proxy-window-ethereum.tsx
 // The RevokeCash/browser-extension code is MIT licensed
 
-import { Identifier, SignMessageMethod } from "@blowfish/utils/types";
+import {
+  Identifier,
+  SignMessageMethod,
+  SignMessageRequest,
+  SignTypedDataRequest,
+  TransactionRequest,
+  UserDecisionData,
+} from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
-import { ethErrors } from "eth-rpc-errors";
+import { EthereumProviderError, ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
@@ -18,6 +25,17 @@ import {
 } from "~utils/messages";
 import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
 import { isENS } from "~utils/utils";
+
+interface JsonRpcResponse {
+  id: number;
+  jsonrpc: "2.0";
+  result: string;
+}
+interface JsonRpcError {
+  id: number;
+  jsonrpc: "2.0";
+  error: EthereumProviderError<unknown>;
+}
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -34,6 +52,8 @@ let sendProxy: undefined | typeof Proxy;
 let sendAsyncProxy: undefined | typeof Proxy;
 
 const provider = new providers.Web3Provider(window.ethereum);
+
+const randomId = () => Math.floor(Math.random() * 1_000_000);
 
 const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
@@ -107,27 +127,36 @@ const overrideWindowEthereum = () => {
 
         getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
-            sendAndAwaitResponseFromStream(
+            sendAndAwaitResponseFromStream<
+              TransactionRequest,
+              UserDecisionData
+            >(
               stream,
               createTransactionRequestMessage(transaction, chainId, userAccount)
             )
           )
           .then((response) => {
-            getChainIdAndUserAccount();
             logger.debug(response);
             const { isOk } = response.data;
             if (isOk) {
-              return Reflect.apply(target, thisArg, argumentsList);
+              const rpcResponse: JsonRpcResponse = {
+                id: request?.id ?? randomId(),
+                jsonrpc: "2.0",
+                result: response.data.result,
+              };
+              callback(null, rpcResponse);
+              return;
             } else {
               const error = ethErrors.provider.userRejectedRequest(
                 "User denied transaction signature."
               );
-              const response = {
-                id: request?.id,
+              const response: JsonRpcError = {
+                id: request?.id ?? randomId(),
                 jsonrpc: "2.0",
                 error,
               };
               callback(error, response);
+              return;
             }
           });
       } else if (
@@ -142,7 +171,10 @@ const overrideWindowEthereum = () => {
 
         getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
-            sendAndAwaitResponseFromStream(
+            sendAndAwaitResponseFromStream<
+              SignTypedDataRequest,
+              UserDecisionData
+            >(
               stream,
               createSignTypedDataRequestMessage(typedData, chainId, userAccount)
             )
@@ -151,17 +183,25 @@ const overrideWindowEthereum = () => {
             logger.debug(response);
             const isOk = response.data.isOk;
             if (isOk) {
-              return Reflect.apply(target, thisArg, argumentsList);
+              const rpcResponse: JsonRpcResponse = {
+                id: request?.id ?? randomId(),
+                jsonrpc: "2.0",
+                result: response.data.result,
+              };
+
+              callback(null, rpcResponse);
+              return;
             } else {
               const error = ethErrors.provider.userRejectedRequest(
                 "User denied message signature."
               );
-              const response = {
-                id: request?.id,
+              const response: JsonRpcError = {
+                id: request?.id ?? randomId(),
                 jsonrpc: "2.0",
                 error,
               };
               callback(error, response);
+              return;
             }
           });
       } else if (
@@ -179,7 +219,10 @@ const overrideWindowEthereum = () => {
 
         getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
-            sendAndAwaitResponseFromStream(
+            sendAndAwaitResponseFromStream<
+              SignMessageRequest,
+              UserDecisionData
+            >(
               stream,
               createSignMessageRequestMessage(
                 { method, message },
@@ -192,17 +235,25 @@ const overrideWindowEthereum = () => {
             logger.debug(response);
             const { isOk } = response.data;
             if (isOk) {
-              return Reflect.apply(target, thisArg, argumentsList);
+              const rpcResponse: JsonRpcResponse = {
+                id: request?.id ?? randomId(),
+                jsonrpc: "2.0",
+                result: response.data.result,
+              };
+
+              callback(null, rpcResponse);
+              return;
             } else {
               const error = ethErrors.provider.userRejectedRequest(
                 "User denied message signature."
               );
-              const response = {
-                id: request?.id,
+              const response: JsonRpcError = {
+                id: request?.id ?? randomId(),
                 jsonrpc: "2.0",
                 error,
               };
               callback(error, response);
+              return;
             }
           });
       } else {
@@ -255,7 +306,10 @@ const overrideWindowEthereum = () => {
         if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
-        const response = await sendAndAwaitResponseFromStream(
+        const response = await sendAndAwaitResponseFromStream<
+          TransactionRequest,
+          UserDecisionData
+        >(
           stream,
           createTransactionRequestMessage(transaction, chainId, userAccount)
         );
@@ -263,7 +317,9 @@ const overrideWindowEthereum = () => {
         logger.debug(response);
         const { isOk } = response.data;
 
-        if (!isOk) {
+        if (isOk) {
+          return response.data.result;
+        } else {
           throw ethErrors.provider.userRejectedRequest(
             "User denied transaction signature."
           );
@@ -279,14 +335,19 @@ const overrideWindowEthereum = () => {
         const typedData = JSON.parse(typedDataStr);
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
-        const response = await sendAndAwaitResponseFromStream(
+        const response = await sendAndAwaitResponseFromStream<
+          SignTypedDataRequest,
+          UserDecisionData
+        >(
           stream,
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
         );
         logger.debug(response);
         const { isOk } = response.data;
 
-        if (!isOk) {
+        if (isOk) {
+          return response.data.result;
+        } else {
           throw ethErrors.provider.userRejectedRequest(
             "User denied message signature."
           );
@@ -305,7 +366,10 @@ const overrideWindowEthereum = () => {
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
-        const response = await sendAndAwaitResponseFromStream(
+        const response = await sendAndAwaitResponseFromStream<
+          SignMessageRequest,
+          UserDecisionData
+        >(
           stream,
           createSignMessageRequestMessage(
             { method, message },
@@ -317,14 +381,16 @@ const overrideWindowEthereum = () => {
         logger.debug(response);
         const { isOk } = response.data;
 
-        if (!isOk) {
+        if (isOk) {
+          return response.data.result;
+        } else {
           throw ethErrors.provider.userRejectedRequest(
             "User denied message signature."
           );
         }
+      } else {
+        return Reflect.apply(target, thisArg, argumentsList);
       }
-
-      return Reflect.apply(target, thisArg, argumentsList);
     },
   };
 

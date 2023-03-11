@@ -2,11 +2,7 @@ import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import {
-  sendTransaction,
-  prepareSendTransaction,
-  waitForTransaction,
-} from "@wagmi/core";
+import { sendTransaction, prepareSendTransaction } from "@wagmi/core";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
@@ -21,7 +17,7 @@ import { PopupContainer } from "../components/PopupContainer";
 import { Providers } from "../components/Providers";
 import { ScanResults } from "../components/ScanResults";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
-//import { sendUserDecision } from "../utils/messages";
+import { sendResult, sendAbort } from "../utils/messages";
 import {
   DappRequest,
   Message,
@@ -115,8 +111,12 @@ const ScanResult: React.FC = () => {
         logger.error("Error: Cannot proceed, no message to respond to ");
         return;
       }
+      if (!request) {
+        logger.error("Error: Cannot proceed, no request to respond to ");
+        return;
+      }
 
-      if (shouldProceed && request) {
+      if (shouldProceed) {
         if (isTransactionRequest(request)) {
           console.log(request.payload);
           const { payload } = request;
@@ -132,24 +132,22 @@ const ScanResult: React.FC = () => {
             chainId,
           });
           const { hash } = await sendTransaction(config);
-          debugger;
-          await waitForTransaction({ chainId, hash, confirmations: 1 });
-          // TODO return to extension
+          // TODO(kimpers): We need UI affordances for waiting for the tx to confirm
+          //await waitForTransaction({ chainId, hash, confirmations: 1 });
           console.log("TX DONE ", hash);
-          console.log(hash);
-          debugger;
+          await sendResult(message.id, hash);
         } else {
           // TODO(kimpers): Implement sign messages
           alert("UNSUPPORTED OPERATION");
         }
       } else {
-        //await sendUserDecision(message.id, shouldProceed);
+        await sendAbort(message.id);
       }
       // TODO(kimpers): Implement communcation back to extension
-      //closeWindow();
+      closeWindow();
     },
 
-    [message, request, chainId]
+    [message, request, chainId, closeWindow]
   );
 
   logger.debug(message);
