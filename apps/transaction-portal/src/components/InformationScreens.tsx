@@ -6,6 +6,7 @@ import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
 import { shortenHex } from "../utils/hex";
+import { chainIdToName } from "../utils/chains";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
@@ -243,6 +244,50 @@ export const AccountNotConnectedScreen: React.FC<
           )}
         </>
       )}
+    </Wrapper>
+  );
+};
+
+export interface WrongChainScreenProps {
+  style?: React.CSSProperties;
+  className?: string;
+  currentChainId: string;
+  chainIdToConnect: string;
+  onRetry: () => void;
+  isRetrying?: boolean;
+}
+
+export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
+  style,
+  className,
+  currentChainId,
+  chainIdToConnect,
+  onRetry,
+  isRetrying,
+}) => {
+  return (
+    <Wrapper style={style} className={className}>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Wallet connected to the wrong chain</StyledTextXL>
+      <StyledText>
+        Your are connected to{" "}
+        <StyledText semiBold style={{ textTransform: "capitalize" }}>
+          {chainIdToName(currentChainId)}
+        </StyledText>
+        but trying to perform an action on{" "}
+        <StyledText semiBold style={{ textTransform: "capitalize" }}>
+          {chainIdToName(chainIdToConnect)}
+        </StyledText>
+        .
+      </StyledText>
+      <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+        <StyledText>
+          Change to{" "}
+          <StyledText style={{ textTransform: "capitalize" }}>
+            {chainIdToName(chainIdToConnect)}
+          </StyledText>
+        </StyledText>
+      </RetryButton>
     </Wrapper>
   );
 };
