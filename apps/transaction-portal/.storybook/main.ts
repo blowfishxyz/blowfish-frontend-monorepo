@@ -1,4 +1,4 @@
-const path = require("path");
+import path from "path";
 
 module.exports = {
   stories: ["../src/**/*.stories.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -6,14 +6,16 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
+    "@storybook/addon-styling",
   ],
-  //staticDirs: ["../public"],
+  staticDirs: ["../public"],
   framework: "@storybook/react",
   core: {
     builder: "@storybook/builder-webpack5",
     disableTelemetry: true,
   },
-  webpackFinal: async (config) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  webpackFinal: async (config: any) => {
     config.resolve.alias = {
       ...config.resolve?.alias,
       "~hooks": path.resolve(__dirname, "../src/hooks"),
