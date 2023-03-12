@@ -17,6 +17,7 @@ import {
   TransactionBlockedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
+  AccountNotConnectedScreen,
 } from "../components/InformationScreens";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { PopupContainer } from "../components/PopupContainer";
@@ -62,6 +63,7 @@ const ScanResult: React.FC = () => {
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
   const { address } = useAccount();
   const { connectAsync } = useConnect({
@@ -253,17 +255,24 @@ const ScanResult: React.FC = () => {
       mutate();
     };
 
-    // TODO(kimpers): Actual screens HERE
     // FIXME: Proper info screens
     // TODO: handle chainId mismatch
     if (!address) {
       return (
         <>
-          <UnknownErrorScreen
+          <AccountNotConnectedScreen
+            accountToConnect={userAccount ?? ""}
+            isRetrying={isConnecting}
             onRetry={async () => {
-              await connectAsync();
+              setIsConnecting(true);
+              try {
+                await connectAsync();
+              } catch (err) {
+                logger.error(err);
+              } finally {
+                setIsConnecting(false);
+              }
             }}
-            isRetrying={isRetrying}
           />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
@@ -271,12 +280,21 @@ const ScanResult: React.FC = () => {
     } else if (isWrongAccount) {
       return (
         <>
-          <UnknownErrorScreen
+          <AccountNotConnectedScreen
+            accountToConnect={userAccount ?? ""}
+            connectedAccount={address}
+            isRetrying={isConnecting}
             onRetry={async () => {
-              await disconnectAsync();
-              await connectAsync();
+              setIsConnecting(true);
+              try {
+                await disconnectAsync();
+                await connectAsync();
+              } catch (err) {
+                logger.error(err);
+              } finally {
+                setIsConnecting(false);
+              }
             }}
-            isRetrying={isRetrying}
           />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
@@ -362,6 +380,7 @@ const ScanResult: React.FC = () => {
     message,
     handleUserDecision,
     isRetrying,
+    isConnecting,
     connectAsync,
     disconnectAsync,
     userAccount,

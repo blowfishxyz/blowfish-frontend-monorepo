@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, PropsWithChildren } from "react";
 import styled from "styled-components";
 
 import { logger } from "../utils/logger";
 import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
+import { shortenHex } from "../utils/hex";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
@@ -90,16 +91,20 @@ export const TransactionBlockedScreen: React.FC<
   );
 };
 
-interface RetryButtonProps {
+interface RetryButtonProps extends PropsWithChildren {
   onRetry: () => void;
   isRetrying: boolean;
 }
-const RetryButton: React.FC<RetryButtonProps> = ({ onRetry, isRetrying }) => {
+const RetryButton: React.FC<RetryButtonProps> = ({
+  onRetry,
+  isRetrying,
+  children,
+}) => {
   return isRetrying ? (
     <StyledText style={{ opacity: 0.5 }}>Loading...</StyledText>
   ) : (
     <TextButton onClick={onRetry}>
-      <StyledText style={{ opacity: 0.5 }}>Retry this transaction</StyledText>
+      <StyledText style={{ opacity: 0.5 }}>{children}</StyledText>
     </TextButton>
   );
 };
@@ -135,7 +140,9 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
         </ContentToggle>
       )}
       {onRetry && (
-        <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false} />
+        <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+          <StyledText>Retry this transaction</StyledText>
+        </RetryButton>
       )}
     </Wrapper>
   );
@@ -189,6 +196,57 @@ export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
   );
 };
 
+export interface AccountNotConnectedScreenProps {
+  style?: React.CSSProperties;
+  className?: string;
+  accountToConnect: string;
+  connectedAccount?: string;
+  onRetry?: () => void;
+  isRetrying?: boolean;
+}
+
+export const AccountNotConnectedScreen: React.FC<
+  AccountNotConnectedScreenProps
+> = ({
+  style,
+  className,
+  accountToConnect,
+  connectedAccount,
+  onRetry,
+  isRetrying,
+}) => {
+  return (
+    <Wrapper style={style} className={className}>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>
+        {connectedAccount ? "Wrong account connected" : "Account not connected"}
+      </StyledTextXL>
+
+      {connectedAccount ? (
+        <StyledText>
+          You are connected with{" "}
+          <StyledText semiBold>{shortenHex(connectedAccount, 5)}</StyledText>,
+          but are trying to perform an action for{" "}
+          <StyledText semiBold>{accountToConnect}</StyledText>. Please switch to
+          the correct account in your wallet
+        </StyledText>
+      ) : (
+        <>
+          <StyledText>
+            Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
+            to Blowfish&nbsp;Protect in order to proceed with the action
+          </StyledText>
+          {onRetry && (
+            <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+              <StyledText>Connect account</StyledText>
+            </RetryButton>
+          )}
+        </>
+      )}
+    </Wrapper>
+  );
+};
+
 export interface UnknownErrorScreenProps {
   style?: React.CSSProperties;
   className?: string;
@@ -209,7 +267,9 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
       <StyledText>
         Something unexpected happened. Please try again later.
       </StyledText>
-      <RetryButton onRetry={onRetry} isRetrying={isRetrying} />
+      <RetryButton onRetry={onRetry} isRetrying={isRetrying}>
+        <StyledText>Retry this transaction</StyledText>
+      </RetryButton>
     </Wrapper>
   );
 };

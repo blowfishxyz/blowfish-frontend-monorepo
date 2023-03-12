@@ -43,7 +43,7 @@ export const TransactionNoAction: ComponentStory<
   let severity: Severity;
   // If the story has manually set something other than info allow that override
   if (props.severity && props.severity !== "INFO") {
-    severity = props.severity!;
+    severity = props.severity;
   } else {
     // Otherwise use the context derived from the action
     severity = actionToSeverity(scanResults.action);

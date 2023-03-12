@@ -15,6 +15,8 @@ import {
   UnknownErrorScreenProps,
   UnsupportedChainScreen,
   UnsupportedChainScreenProps,
+  AccountNotConnectedScreenProps,
+  AccountNotConnectedScreen,
 } from "../components/InformationScreens";
 import {
   PopupContainer,
@@ -31,10 +33,12 @@ const DEFAULT_ARGS = {
   onRetry: () => alert("Retrying..."),
   isRetrying: false,
 };
-export default {
+const storyDetails = {
   title: "InformationScreens",
   args: DEFAULT_ARGS,
 };
+
+export default storyDetails;
 
 export const TransactionBlocked: ComponentStory<
   React.FC<
@@ -42,7 +46,7 @@ export const TransactionBlocked: ComponentStory<
   >
 > = (props) => {
   return (
-    <div style={{ width: "392px", minHeight: "768px" }}>
+    <div style={{ width: "600", minHeight: "768px" }}>
       <Providers>
         <PopupContainer
           style={{
@@ -76,7 +80,7 @@ export const SimulationError: ComponentStory<
   >
 > = (props) => {
   return (
-    <div style={{ width: "392px", minHeight: "768px" }}>
+    <div style={{ width: "600", minHeight: "768px" }}>
       <Providers>
         <PopupContainer
           style={{
@@ -122,7 +126,7 @@ export const TransactionReverted: ComponentStory<
   >
 > = (props) => {
   return (
-    <div style={{ width: "392px", minHeight: "768px" }}>
+    <div style={{ width: "600", minHeight: "768px" }}>
       <Providers>
         <PopupContainer
           style={{
@@ -167,7 +171,7 @@ export const UnsupportedChain: ComponentStory<
   >
 > = (props) => {
   return (
-    <div style={{ width: "392px", minHeight: "768px" }}>
+    <div style={{ width: "600", minHeight: "768px" }}>
       <Providers>
         <PopupContainer
           style={{
@@ -203,7 +207,7 @@ export const UnknownError: ComponentStory<
   React.FC<PopupContainerProps & UnknownErrorScreenProps & SlimBottomMenuProps>
 > = (props) => {
   return (
-    <div style={{ width: "392px", minHeight: "768px" }}>
+    <div style={{ width: "600", minHeight: "768px" }}>
       <Providers>
         <PopupContainer
           style={{
@@ -236,4 +240,48 @@ export const UnknownError: ComponentStory<
 
 UnknownError.args = {
   ...DEFAULT_ARGS,
+};
+
+export const AccountNotConnected: ComponentStory<
+  React.FC<
+    PopupContainerProps & AccountNotConnectedScreenProps & SlimBottomMenuProps
+  >
+> = (props) => {
+  return (
+    <div style={{ width: "600px", minHeight: "768px" }}>
+      <Providers>
+        <PopupContainer
+          style={{
+            /* NOTE This is only for the story,
+             * normally we want this to take up all the available window height */
+            minHeight: "748px",
+          }}
+          {...props}
+          severity="INFO"
+          bottomMenuType="SLIM"
+        >
+          <AccountNotConnectedScreen
+            accountToConnect={props.accountToConnect}
+            connectedAccount={props.connectedAccount}
+            onRetry={props.onRetry}
+            isRetrying={props.isRetrying}
+          />
+          <SlimBottomMenu
+            style={{
+              /* NOTE: This is only applicable in the context of the storybook,
+               * in the extension we want this fixed to to bottom of the window */
+              position: "absolute",
+            }}
+            onClick={props.onClick}
+            buttonLabel="Close"
+          />
+        </PopupContainer>
+      </Providers>
+    </div>
+  );
+};
+AccountNotConnected.args = {
+  ...DEFAULT_ARGS,
+  accountToConnect: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+  connectedAccount: "",
 };
