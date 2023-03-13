@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from "react";
-import { useLocalStorage } from "react-use";
 
-export const PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED";
+import { useStorage } from "@plasmohq/storage/hook";
+
+import { PREFERENCES_BLOWFISH_PAUSED } from "~utils/storage";
 
 export enum PauseDuration {
   OneHour = "1h",
@@ -21,7 +22,7 @@ export type BlowfishPausedOptionType = {
 };
 
 const useTransactionScannerPauseResume = () => {
-  const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
+  const [scanPaused, setScanPaused] = useStorage<BlowfishPausedOptionType>(
     PREFERENCES_BLOWFISH_PAUSED
   );
 
