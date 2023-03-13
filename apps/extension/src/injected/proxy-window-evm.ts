@@ -2,6 +2,7 @@
 // See https://github.com/RevokeCash/browser-extension/blob/d49f1de92003681b9e768782f54e734a52a5d975/src/injected/proxy-window-ethereum.tsx
 // The RevokeCash/browser-extension code is MIT licensed
 
+import { isSupportedChainId, normalizeChainId } from "@blowfish/utils/chains";
 import {
   Identifier,
   SignMessageMethod,
@@ -92,6 +93,8 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
       const [payloadOrMethod, callbackOrParams] = argumentsList;
+      const forwardToWallet = () =>
+        Reflect.apply(target, thisArg, argumentsList);
 
       // ethereum.send has three overloads:
 
@@ -107,7 +110,7 @@ const overrideWindowEthereum = () => {
       // ethereum.send(payload: JsonRpcRequest): unknown;
       // > cannot contain signature requests
       if (!callbackOrParams) {
-        return Reflect.apply(target, thisArg, argumentsList);
+        return forwardToWallet();
       }
 
       // ethereum.send(payload: JsonRpcRequest, callback: JsonRpcCallback): void;
@@ -120,10 +123,12 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
       const [request, callback] = argumentsList;
+      const forwardToWallet = () =>
+        Reflect.apply(target, thisArg, argumentsList);
 
       if (request?.method === "eth_sendTransaction") {
         const [transaction] = request?.params ?? [];
-        if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
+        if (!transaction) return forwardToWallet();
 
         getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
@@ -133,9 +138,16 @@ const overrideWindowEthereum = () => {
             >(
               stream,
               createTransactionRequestMessage(transaction, chainId, userAccount)
-            )
+            ).then((response) => ({ response, chainId, userAccount }))
           )
-          .then((response) => {
+          .then(({ response, chainId }) => {
+            // NOTE: If the chain is not supported we cannot scan the request
+            // So just show a warning and proceed to the wallet
+            if (!isSupportedChainId(chainId)) {
+              logger.debug("Unsupported chain", chainId);
+              return forwardToWallet();
+            }
+
             logger.debug(response);
             const { isOk } = response.data;
             if (isOk) {
@@ -164,8 +176,7 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_signTypedData_v4"
       ) {
         const [address, typedDataStr] = request?.params ?? [];
-        if (!address || !typedDataStr)
-          return Reflect.apply(target, thisArg, argumentsList);
+        if (!address || !typedDataStr) return forwardToWallet();
 
         const typedData = JSON.parse(typedDataStr);
 
@@ -177,9 +188,16 @@ const overrideWindowEthereum = () => {
             >(
               stream,
               createSignTypedDataRequestMessage(typedData, chainId, userAccount)
-            )
+            ).then((response) => ({ response, chainId, userAccount }))
           )
-          .then((response) => {
+          .then(({ response, chainId }) => {
+            // NOTE: If the chain is not supported we cannot scan the request
+            // So just show a warning and proceed to the wallet
+            if (!isSupportedChainId(chainId)) {
+              logger.debug("Unsupported chain", chainId);
+              return forwardToWallet();
+            }
+
             logger.debug(response);
             const isOk = response.data.isOk;
             if (isOk) {
@@ -210,8 +228,7 @@ const overrideWindowEthereum = () => {
       ) {
         const method: SignMessageMethod = request.method;
         const [first, second] = request?.params ?? [];
-        if (!first || !second)
-          return Reflect.apply(target, thisArg, argumentsList);
+        if (!first || !second) return forwardToWallet();
 
         // if the first parameter is the address, the second is the message, otherwise the first is the message
         const message =
@@ -229,9 +246,16 @@ const overrideWindowEthereum = () => {
                 chainId,
                 userAccount
               )
-            )
+            ).then((response) => ({ response, chainId, userAccount }))
           )
-          .then((response) => {
+          .then(({ response, chainId }) => {
+            // NOTE: If the chain is not supported we cannot scan the request
+            // So just show a warning and proceed to the wallet
+            if (!isSupportedChainId(chainId)) {
+              logger.debug("Unsupported chain", chainId);
+              return forwardToWallet();
+            }
+
             logger.debug(response);
             const { isOk } = response.data;
             if (isOk) {
@@ -257,7 +281,7 @@ const overrideWindowEthereum = () => {
             }
           });
       } else {
-        return Reflect.apply(target, thisArg, argumentsList);
+        return forwardToWallet();
       }
     },
   };
@@ -266,6 +290,9 @@ const overrideWindowEthereum = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
       const [request] = argumentsList;
+      const forwardToWallet = () =>
+        Reflect.apply(target, thisArg, argumentsList);
+
       if (
         (request.method === "eth_requestAccounts" ||
           request.method === "eth_accounts") &&
@@ -303,7 +330,7 @@ const overrideWindowEthereum = () => {
 
       if (request?.method === "eth_sendTransaction") {
         const [transaction] = request?.params ?? [];
-        if (!transaction) return Reflect.apply(target, thisArg, argumentsList);
+        if (!transaction) return forwardToWallet();
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream<
@@ -313,6 +340,13 @@ const overrideWindowEthereum = () => {
           stream,
           createTransactionRequestMessage(transaction, chainId, userAccount)
         );
+
+        // NOTE: If the chain is not supported we cannot scan the request
+        // So just show a warning and proceed to the wallet
+        if (!isSupportedChainId(chainId)) {
+          logger.debug("Unsupported chain", chainId);
+          return forwardToWallet();
+        }
 
         logger.debug(response);
         const { isOk } = response.data;
@@ -329,8 +363,7 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_signTypedData_v4"
       ) {
         const [address, typedDataStr] = request?.params ?? [];
-        if (!address || !typedDataStr)
-          return Reflect.apply(target, thisArg, argumentsList);
+        if (!address || !typedDataStr) return forwardToWallet();
 
         const typedData = JSON.parse(typedDataStr);
 
@@ -342,6 +375,14 @@ const overrideWindowEthereum = () => {
           stream,
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
         );
+
+        // NOTE: If the chain is not supported we cannot scan the request
+        // So just show a warning and proceed to the wallet
+        if (!isSupportedChainId(chainId)) {
+          logger.debug("Unsupported chain", chainId);
+          return forwardToWallet();
+        }
+
         logger.debug(response);
         const { isOk } = response.data;
 
@@ -358,8 +399,7 @@ const overrideWindowEthereum = () => {
       ) {
         const method: SignMessageMethod = request?.method;
         const [first, second] = request?.params ?? [];
-        if (!first || !second)
-          return Reflect.apply(target, thisArg, argumentsList);
+        if (!first || !second) return forwardToWallet();
 
         // if the first parameter is the address, the second is the message, otherwise the first is the message
         const message =
@@ -378,6 +418,13 @@ const overrideWindowEthereum = () => {
           )
         );
 
+        // NOTE: If the chain is not supported we cannot scan the request
+        // So just show a warning and proceed to the wallet
+        if (!isSupportedChainId(chainId)) {
+          logger.debug("Unsupported chain", chainId);
+          return forwardToWallet();
+        }
+
         logger.debug(response);
         const { isOk } = response.data;
 
@@ -389,7 +436,7 @@ const overrideWindowEthereum = () => {
           );
         }
       } else {
-        return Reflect.apply(target, thisArg, argumentsList);
+        return forwardToWallet();
       }
     },
   };

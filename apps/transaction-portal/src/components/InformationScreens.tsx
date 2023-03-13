@@ -6,7 +6,7 @@ import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
 import { shortenHex } from "../utils/hex";
-import { chainIdToName } from "../utils/chains";
+import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,

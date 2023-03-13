@@ -44,7 +44,7 @@ import {
   Severity,
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-import { chainIdToSupportedChainMapping } from "../utils/chains";
+import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "../utils/logger";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`

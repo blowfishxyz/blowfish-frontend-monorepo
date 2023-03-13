@@ -1,9 +1,6 @@
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "./BlowfishApiClient";
 
-interface ChainInfo {
+export interface ChainInfo {
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }
@@ -22,8 +19,21 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
   },
 };
 
+/**
+  ChainId can either be a number, a decimal string "1" or a hex string "0x1"
+  this function normalizes it to a number
+*/
+export const normalizeChainId = (chainId: number | string): number =>
+  parseInt(chainId.toString());
+
+export const isSupportedChainId = (chainId: number | string): boolean => {
+  const parsedChainId = normalizeChainId(chainId).toString(10);
+
+  return !!chainIdToSupportedChainMapping[parsedChainId];
+};
+
 export const chainIdToName = (chainId: number | string) => {
-  const parsedChainId = parseInt(chainId.toString()).toString(10);
+  const parsedChainId = normalizeChainId(chainId).toString(10);
   const chainInfo = chainIdToSupportedChainMapping[parsedChainId];
   if (!chainInfo) {
     return `Chain id ${chainId}`;
