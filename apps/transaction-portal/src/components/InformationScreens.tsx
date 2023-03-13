@@ -251,8 +251,8 @@ export const AccountNotConnectedScreen: React.FC<
 export interface WrongChainScreenProps {
   style?: React.CSSProperties;
   className?: string;
-  currentChainId: string;
-  chainIdToConnect: string;
+  currentChainId: number;
+  chainIdToConnect: number;
   onRetry: () => void;
   isRetrying?: boolean;
 }
@@ -273,8 +273,8 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
         Your are connected to{" "}
         <StyledText semiBold style={{ textTransform: "capitalize" }}>
           {chainIdToName(currentChainId)}
-        </StyledText>
-        but trying to perform an action on{" "}
+        </StyledText>{" "}
+        but attempting to perform an action on{" "}
         <StyledText semiBold style={{ textTransform: "capitalize" }}>
           {chainIdToName(chainIdToConnect)}
         </StyledText>
@@ -282,7 +282,7 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
       </StyledText>
       <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
         <StyledText>
-          Change to{" "}
+          Switch to{" "}
           <StyledText style={{ textTransform: "capitalize" }}>
             {chainIdToName(chainIdToConnect)}
           </StyledText>

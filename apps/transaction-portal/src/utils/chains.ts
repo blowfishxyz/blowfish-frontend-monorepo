@@ -22,8 +22,9 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
   },
 };
 
-export const chainIdToName = (chainId: string) => {
-  const chainInfo = chainIdToSupportedChainMapping[chainId];
+export const chainIdToName = (chainId: number | string) => {
+  const parsedChainId = parseInt(chainId.toString()).toString(10);
+  const chainInfo = chainIdToSupportedChainMapping[parsedChainId];
   if (!chainInfo) {
     return `Chain id ${chainId}`;
   }

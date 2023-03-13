@@ -1,7 +1,13 @@
 import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useChainId,
+  useSwitchNetwork,
+} from "wagmi";
 import { ethers } from "ethers";
 import {
   sendTransaction,
@@ -18,6 +24,7 @@ import {
   UnknownErrorScreen,
   UnsupportedChainScreen,
   AccountNotConnectedScreen,
+  WrongChainScreen,
 } from "../components/InformationScreens";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { PopupContainer } from "../components/PopupContainer";
@@ -66,6 +73,9 @@ const ScanResult: React.FC = () => {
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
   const { address } = useAccount();
+  const connectedChainId = useChainId();
+  const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
+    useSwitchNetwork({ throwForSwitchChainNotSupported: true });
   const { connectAsync } = useConnect({
     connector: new InjectedConnector(),
   });
@@ -241,6 +251,8 @@ const ScanResult: React.FC = () => {
     const simulationError = scanResults && scanResults.simulationResults?.error;
     const isUnsupportedChain = !chainFamily || !chainNetwork;
     const isWrongAccount = address && userAccount && address !== userAccount;
+    const isWrongChainId =
+      !!(chainId && connectedChainId) && chainId !== connectedChainId;
 
     if (isError) {
       logger.error(scanError);
@@ -293,6 +305,24 @@ const ScanResult: React.FC = () => {
                 logger.error(err);
               } finally {
                 setIsConnecting(false);
+              }
+            }}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
+    } else if (isWrongChainId && chainId) {
+      return (
+        <>
+          <WrongChainScreen
+            currentChainId={connectedChainId}
+            chainIdToConnect={chainId}
+            isRetrying={isSwitchingNetworks}
+            onRetry={async () => {
+              try {
+                await switchNetworkAsync?.(chainId);
+              } catch (err) {
+                logger.error(err);
               }
             }}
           />
@@ -381,6 +411,10 @@ const ScanResult: React.FC = () => {
     handleUserDecision,
     isRetrying,
     isConnecting,
+    isSwitchingNetworks,
+    chainId,
+    connectedChainId,
+    switchNetworkAsync,
     connectAsync,
     disconnectAsync,
     userAccount,
