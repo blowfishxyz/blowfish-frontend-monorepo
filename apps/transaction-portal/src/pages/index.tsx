@@ -1,18 +1,13 @@
-import React from "react";
-import styled from "styled-components";
-
-const Main = styled.main`
-  max-width: 1280px;
-  margin: auto;
-  padding: 0 24px;
-`;
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const Home = () => {
-  return (
-    <>
-      <Main>{"Hello World"}</Main>
-    </>
-  );
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("https://extension.blowfish.xyz");
+  }, [router]);
+
+  return <></>;
 };
 
 export default Home;
