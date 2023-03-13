@@ -19,6 +19,9 @@ jobs:
       - name: Install dependencies
         working-directory: ./apps/transaction-portal
         run: pnpm install
+      - name: Build internal dependencies
+        run:   pnpm run --parallel --filter "../../packages/**" build
+        working-directory: ./apps/transaction-portal
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
