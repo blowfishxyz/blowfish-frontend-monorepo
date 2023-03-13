@@ -3,7 +3,7 @@ name: 'Chromatic'
 on:
   push:
     paths:
-      - "packages/extension/**"
+      - "apps/transaction-portal/**"
 
 
 jobs:
@@ -17,12 +17,15 @@ jobs:
         with:
           version: 7
       - name: Install dependencies
-        working-directory: ./packages/extension
+        working-directory: ./apps/transaction-portal
         run: pnpm install
+      - name: Build internal dependencies
+        run:   pnpm run --parallel --filter "../../packages/**" build
+        working-directory: ./apps/transaction-portal
       - name: Publish to Chromatic
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
         with:
-          workingDir: ./packages/extension
+          workingDir: ./apps/transaction-portal
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           autoAcceptChanges: true
