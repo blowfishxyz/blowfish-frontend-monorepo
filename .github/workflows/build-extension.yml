@@ -34,5 +34,5 @@ jobs:
       working-directory: ./apps/extension
     - run: pnpm test
       working-directory: ./apps/extension
-    - run: pnpm build
+    - run: pnpm build-all
       working-directory: ./apps/extension

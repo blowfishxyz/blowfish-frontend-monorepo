@@ -34,5 +34,5 @@ jobs:
       working-directory: ./apps/transaction-portal
     - run: pnpm test
       working-directory: ./apps/transaction-portal
-    - run: pnpm build
+    - run: pnpm build-all
       working-directory: ./apps/transaction-portal
