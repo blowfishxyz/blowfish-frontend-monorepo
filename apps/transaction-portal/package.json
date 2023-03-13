@@ -19,7 +19,6 @@
   "dependencies": {
     "@blowfish/utils": "workspace:*",
     "@ethersproject/address": "^5.7.0",
-    "@next/font": "13.2.3",
     "@wagmi/core": "^0.10.1",
     "decimal.js": "^10.4.3",
     "ethers": "^5",

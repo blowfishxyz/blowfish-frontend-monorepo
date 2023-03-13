@@ -210,7 +210,6 @@ importers:
       '@blowfish/tsconfig': workspace:*
       '@blowfish/utils': workspace:*
       '@ethersproject/address': ^5.7.0
-      '@next/font': 13.2.3
       '@storybook/addon-actions': ^6.5.16
       '@storybook/addon-essentials': ^6.5.16
       '@storybook/addon-interactions': ^6.5.16
@@ -254,7 +253,6 @@ importers:
     dependencies:
       '@blowfish/utils': link:../../packages/utils
       '@ethersproject/address': 5.7.0
-      '@next/font': 13.2.3
       '@wagmi/core': 0.10.1_zmk24a2mwwhp3applwdoty33qy
       decimal.js: 10.4.3
       ethers: 5.7.2
@@ -4193,10 +4191,6 @@ packages:
 
   /@next/font/13.1.5:
     resolution: {integrity: sha512-6M5R6yC3JkdJiqo/YJxDp6+0vDn0smXOAzl8uHt4qmDS2u53ji/19K0HM51d+5kg8xntDi+N2hw7YjaU9inkNA==}
-    dev: false
-
-  /@next/font/13.2.3:
-    resolution: {integrity: sha512-7EHzk0f7FVYICLUZTpyPk93IfcTUao++Xt1Sgb+Zk5dVOCYHabqLtlF5ywSoXIqyFlo0qlshEBxsrzHAGTWkDw==}
     dev: false
 
   /@next/swc-android-arm-eabi/13.1.5:
