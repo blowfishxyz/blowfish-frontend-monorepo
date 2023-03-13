@@ -1,7 +1,6 @@
 import React, { useState, PropsWithChildren } from "react";
 import styled from "styled-components";
 
-import { logger } from "../utils/logger";
 import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
@@ -162,7 +161,7 @@ const StyledTextButton = styled(TextButton)`
 export interface UnsupportedChainScreenProps {
   style?: React.CSSProperties;
   className?: string;
-  onDismissUnsupportedChain: (isDismissed: boolean) => Promise<void>;
+  onDismissUnsupportedChain: (isDismissed: boolean) => void;
 }
 
 export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
@@ -183,9 +182,7 @@ export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
         onClick={() => {
           setShouldShowScreen(!shouldShowScreen);
           // NOTE: we invert the boolean because we store whether it's been dismissed
-          onDismissUnsupportedChain(shouldShowScreen).catch((err) =>
-            logger.error(err)
-          );
+          onDismissUnsupportedChain(shouldShowScreen);
         }}
       >
         <StyledCheckbox checked={!shouldShowScreen} />

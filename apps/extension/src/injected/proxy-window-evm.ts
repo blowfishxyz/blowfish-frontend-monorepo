@@ -2,14 +2,14 @@
 // See https://github.com/RevokeCash/browser-extension/blob/d49f1de92003681b9e768782f54e734a52a5d975/src/injected/proxy-window-ethereum.tsx
 // The RevokeCash/browser-extension code is MIT licensed
 
-import { isSupportedChainId, normalizeChainId } from "@blowfish/utils/chains";
+import { isSupportedChainId } from "@blowfish/utils/chains";
 import {
   Identifier,
   SignMessageMethod,
   SignMessageRequest,
   SignTypedDataRequest,
   TransactionRequest,
-  UserDecisionData,
+  UserDecisionResponse,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import { EthereumProviderError, ethErrors } from "eth-rpc-errors";
@@ -134,7 +134,7 @@ const overrideWindowEthereum = () => {
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream<
               TransactionRequest,
-              UserDecisionData
+              UserDecisionResponse
             >(
               stream,
               createTransactionRequestMessage(transaction, chainId, userAccount)
@@ -184,7 +184,7 @@ const overrideWindowEthereum = () => {
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream<
               SignTypedDataRequest,
-              UserDecisionData
+              UserDecisionResponse
             >(
               stream,
               createSignTypedDataRequestMessage(typedData, chainId, userAccount)
@@ -238,7 +238,7 @@ const overrideWindowEthereum = () => {
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream<
               SignMessageRequest,
-              UserDecisionData
+              UserDecisionResponse
             >(
               stream,
               createSignMessageRequestMessage(
@@ -335,7 +335,7 @@ const overrideWindowEthereum = () => {
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream<
           TransactionRequest,
-          UserDecisionData
+          UserDecisionResponse
         >(
           stream,
           createTransactionRequestMessage(transaction, chainId, userAccount)
@@ -370,7 +370,7 @@ const overrideWindowEthereum = () => {
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream<
           SignTypedDataRequest,
-          UserDecisionData
+          UserDecisionResponse
         >(
           stream,
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
@@ -408,7 +408,7 @@ const overrideWindowEthereum = () => {
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream<
           SignMessageRequest,
-          UserDecisionData
+          UserDecisionResponse
         >(
           stream,
           createSignMessageRequestMessage(

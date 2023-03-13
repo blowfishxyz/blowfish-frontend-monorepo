@@ -71,6 +71,8 @@ const ScanResult: React.FC = () => {
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [skipUnsupportedChainWarning, setSkipUnsupportedChainWarning] =
+    useState<boolean>(false);
 
   const { address } = useAccount();
   const connectedChainId = useChainId();
@@ -252,13 +254,15 @@ const ScanResult: React.FC = () => {
     const isUnsupportedChain = !chainFamily || !chainNetwork;
     const isWrongAccount = address && userAccount && address !== userAccount;
     const isWrongChainId =
-      !!(chainId && connectedChainId) && chainId !== connectedChainId;
+      !!(chainId && connectedChainId) &&
+      !isUnsupportedChain &&
+      chainId !== connectedChainId;
 
     if (isError) {
       logger.error(scanError);
     }
 
-    // NOTE(kimpers): We make th assumption that one tx can only generate one error screen
+    // NOTE(kimpers): We make the assumption that one tx can only generate one error screen
     // currently this holds true but it may not be the case in the future
     const onContinue = () => setHasDismissedScreen(true);
 
@@ -267,8 +271,6 @@ const ScanResult: React.FC = () => {
       mutate();
     };
 
-    // FIXME: Proper info screens
-    // TODO: handle chainId mismatch
     if (!address) {
       return (
         <>
@@ -330,23 +332,25 @@ const ScanResult: React.FC = () => {
         </>
       );
     } else if (isUnsupportedChain && message) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const onToggleShowUnsupportedChain = async (_value: boolean) => {
-        const chainId = message?.data?.chainId as string | undefined;
-        if (!chainId) {
-          logger.error(`No chainId found in message ${message}`);
-          return;
-        }
-        // await setUnsupportedChainDismissed(chainId, value);
+      const onToggleShowUnsupportedChain = (value: boolean) => {
+        setSkipUnsupportedChainWarning(value);
       };
 
+      const chainId = message?.data?.chainId as string | undefined;
       return (
         <>
           <UnsupportedChainScreen
             onDismissUnsupportedChain={onToggleShowUnsupportedChain}
           />
           <SlimBottomMenu
-            onClick={() => handleUserDecision(true)}
+            onClick={async () => {
+              const opts = chainId
+                ? { skipUnsupportedChainWarning, chainId }
+                : undefined;
+              // NOTE: For unsupported chains we don't differentiate between proceed and abort
+              await sendAbort(message.id, opts);
+              closeWindow();
+            }}
             buttonLabel="Close"
           />
         </>
@@ -408,10 +412,10 @@ const ScanResult: React.FC = () => {
     chainFamily,
     chainNetwork,
     message,
-    handleUserDecision,
     isRetrying,
     isConnecting,
     isSwitchingNetworks,
+    skipUnsupportedChainWarning,
     chainId,
     connectedChainId,
     switchNetworkAsync,
