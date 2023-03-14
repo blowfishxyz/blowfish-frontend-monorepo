@@ -77,8 +77,7 @@ Browser.runtime.onMessage.addListener(
       return true;
     }
     if (message.type === RequestType.BlowfishOptions) {
-      const data = await storage.get(message.data.option);
-      return Promise.resolve(data);
+      return await storage.get(message.data.option);
     }
 
     const responseRemotePort = messageToPortMapping.get(message.id);
