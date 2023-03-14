@@ -66,12 +66,6 @@ const responseProcessingMiddleware = async (
   }
 };
 
-const setExtensionOptionFromTransactionPortal = (
-  message: Message<UntypedMessageData>
-) => {
-  storage.set(message.data.key, message.data.value);
-};
-
 const getExtensionOptionFromTransactionPortal = async (
   message: Message<UntypedMessageData>
 ) => {
@@ -81,16 +75,18 @@ const getExtensionOptionFromTransactionPortal = async (
   return createRawMessage(message.type, pausedOptions || null);
 };
 
-const onBrowserMessageListener = (
+// HACK(kimpers): If we don't returna Promise of something here the sender will be stuck waiting for a response indefinitely
+// see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
+const onBrowserMessageListener = async (
   message: Message<UntypedMessageData>
-): Promise<Message<UntypedMessageData>> | void => {
+): Promise<Message<UntypedMessageData> | true> => {
   if (message.type === RequestType.BlowfishOptions) {
     return getExtensionOptionFromTransactionPortal(message);
   }
 
   if (message.type === RequestType.SetBlowfishOptions) {
-    setExtensionOptionFromTransactionPortal(message);
-    return undefined;
+    storage.set(message.data.key, message.data.value);
+    return true;
   }
 
   const responseRemotePort = messageToPortMapping.get(message.id);
@@ -106,7 +102,7 @@ const onBrowserMessageListener = (
       `Missing remote port for message ${message.id}: ${message.type}`
     );
   }
-  return undefined;
+  return true;
 };
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
