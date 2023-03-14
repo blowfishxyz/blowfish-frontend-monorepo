@@ -326,6 +326,6 @@ export const WrongChain: ComponentStory<
 };
 WrongChain.args = {
   ...DEFAULT_ARGS,
-  currentChainId: "1",
-  chainIdToConnect: "137",
+  currentChainId: 1,
+  chainIdToConnect: 137,
 };

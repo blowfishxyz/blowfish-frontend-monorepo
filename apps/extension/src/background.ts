@@ -6,19 +6,21 @@ import {
   SignTypedDataRequest,
   TransactionRequest,
   UntypedMessageData,
-  UserDecisionData,
+  UserDecisionResponse,
+  isUserDecisionResponseMessage,
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
 //import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
 
 import { createTransactionPortalTab } from "./utils/browser";
-//import { chainIdToSupportedChainMapping } from "./utils/constants";
+import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
 import {
   //PREFERENCES_BLOWFISH_PAUSED,
-  //isUnsupportedChainDismissed,
+  isUnsupportedChainDismissed,
+  setUnsupportedChainDismissed,
   storage,
 } from "./utils/storage";
 
@@ -53,14 +55,30 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   });
 };
 
+const responseProcessingMiddleware = async (
+  message: Message<UntypedMessageData>
+) => {
+  if (isUserDecisionResponseMessage(message)) {
+    if (message.data.opts?.skipUnsupportedChainWarning) {
+      const { chainId } = message.data.opts;
+      await setUnsupportedChainDismissed(chainId, true);
+    }
+  }
+};
+
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
 Browser.runtime.onMessage.addListener(
-  (message: Message<UntypedMessageData>) => {
+  async (message: Message<UntypedMessageData>) => {
     const responseRemotePort = messageToPortMapping.get(message.id);
 
     if (responseRemotePort) {
       responseRemotePort.postMessage(message);
       messageToPortMapping.delete(message.id);
+      try {
+        await responseProcessingMiddleware(message);
+      } catch (err) {
+        logger.error(err);
+      }
     } else {
       logger.error(
         `Missing remote port for message ${message.id}: ${message.type}`
@@ -68,7 +86,7 @@ Browser.runtime.onMessage.addListener(
     }
     // HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
     // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
-    return Promise.resolve(true);
+    return true;
   }
 );
 
@@ -89,19 +107,20 @@ const processRequestBase = async (
   //return;
   //}
 
-  //const { chainId } = message.data;
+  const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   // and the user dismissed the notice
-  // TODO(kimpers): HANDLE THIS
-  //if (!chainIdToSupportedChainMapping[chainId]) {
-  //const isDismissed = await isUnsupportedChainDismissed(chainId);
-  //if (isDismissed) {
-  //logger.info(`Unsupported chain id ${chainId}`);
-  //const responseData: UserDecisionData = { isOk: true };
-  //postResponseToPort(remotePort, message, responseData);
-  //return;
-  //}
-  //}
+  const isUnsupportedChain = !chainIdToSupportedChainMapping[chainId];
+  if (isUnsupportedChain) {
+    logger.info(`Unsupported chain id ${chainId}`);
+    const isDismissed = await isUnsupportedChainDismissed(chainId);
+    if (isDismissed) {
+      // NOTE: The responseData is ignored for unsupported chains
+      const responseData: UserDecisionResponse = { isOk: false };
+      postResponseToPort(remotePort, message, responseData);
+      return;
+    }
+  }
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
@@ -119,7 +138,7 @@ const processRequestBase = async (
       logger.debug(
         "Window closed without response, assuming the user wants to cancel"
       );
-      const responseData: UserDecisionData = { isOk: false };
+      const responseData: UserDecisionResponse = { isOk: false };
       postResponseToPort(remotePort, message, responseData);
     }
   });
