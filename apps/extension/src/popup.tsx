@@ -10,7 +10,6 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import Browser from "webextension-polyfill";
 
 import { useStorage } from "@plasmohq/storage/dist/hook";
 
