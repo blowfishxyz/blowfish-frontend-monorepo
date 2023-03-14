@@ -118,11 +118,23 @@ export const isSignMessageRequest = (
   req: DappRequest
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
 
-export type UserDecisionData =
+export type UserDecisionOpts = {
+  skipUnsupportedChainWarning?: boolean;
+  chainId: string;
+};
+
+export type UserDecisionResponse =
   | {
       isOk: false;
+      opts?: UserDecisionOpts;
     }
   | {
       isOk: true;
       result: string;
+      opts?: UserDecisionOpts;
     };
+
+export const isUserDecisionResponseMessage = (
+  message: Message<UntypedMessageData>
+): message is Message<UserDecisionResponse> =>
+  message.type === RequestType.UserDecision;

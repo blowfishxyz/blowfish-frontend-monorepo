@@ -8,15 +8,21 @@ import {
   SignTypedDataRequest,
   TransactionRequest,
   UntypedMessageData,
-  UserDecisionData,
+  UserDecisionResponse,
+  isUserDecisionResponseMessage,
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
 import { createTransactionPortalTab } from "./utils/browser";
-//import { chainIdToSupportedChainMapping } from "./utils/constants";
+import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
-import { getBlowfishImpersonationWallet, storage } from "./utils/storage";
+import {
+  getBlowfishImpersonationWallet,
+  isUnsupportedChainDismissed,
+  setUnsupportedChainDismissed,
+  storage,
+} from "./utils/storage";
 
 logger.debug("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
@@ -49,6 +55,17 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   });
 };
 
+const responseProcessingMiddleware = async (
+  message: Message<UntypedMessageData>
+) => {
+  if (isUserDecisionResponseMessage(message)) {
+    if (message.data.opts?.skipUnsupportedChainWarning) {
+      const { chainId } = message.data.opts;
+      await setUnsupportedChainDismissed(chainId, true);
+    }
+  }
+};
+
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
 
 Browser.runtime.onMessage.addListener(
@@ -61,10 +78,17 @@ Browser.runtime.onMessage.addListener(
       const data = await storage.get(message.data.option);
       return Promise.resolve(data);
     }
+
     const responseRemotePort = messageToPortMapping.get(message.id);
+
     if (responseRemotePort) {
       responseRemotePort.postMessage(message);
       messageToPortMapping.delete(message.id);
+      try {
+        await responseProcessingMiddleware(message);
+      } catch (err) {
+        logger.error(err);
+      }
     } else {
       logger.error(
         `Missing remote port for message ${message.id}: ${message.type}`
@@ -91,19 +115,20 @@ const processRequestBase = async (
     return;
   }
 
-  //const { chainId } = message.data;
+  const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   // and the user dismissed the notice
-  // TODO(kimpers): HANDLE THIS
-  //if (!chainIdToSupportedChainMapping[chainId]) {
-  //const isDismissed = await isUnsupportedChainDismissed(chainId);
-  //if (isDismissed) {
-  //logger.info(`Unsupported chain id ${chainId}`);
-  //const responseData: UserDecisionData = { isOk: true };
-  //postResponseToPort(remotePort, message, responseData);
-  //return;
-  //}
-  //}
+  const isUnsupportedChain = !chainIdToSupportedChainMapping[chainId];
+  if (isUnsupportedChain) {
+    logger.info(`Unsupported chain id ${chainId}`);
+    const isDismissed = await isUnsupportedChainDismissed(chainId);
+    if (isDismissed) {
+      // NOTE: The responseData is ignored for unsupported chains
+      const responseData: UserDecisionResponse = { isOk: false };
+      postResponseToPort(remotePort, message, responseData);
+      return;
+    }
+  }
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
@@ -124,7 +149,7 @@ const processRequestBase = async (
       logger.debug(
         "Window closed without response, assuming the user wants to cancel"
       );
-      const responseData: UserDecisionData = { isOk: false };
+      const responseData: UserDecisionResponse = { isOk: false };
       postResponseToPort(remotePort, message, responseData);
     }
   });

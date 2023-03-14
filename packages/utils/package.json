@@ -33,6 +33,11 @@
       "types": "./build/BlowfishApiClient.d.ts",
       "import": "./build/BlowfishApiClient.mjs",
       "require": "./build/BlowfishApiClient.js"
+    },
+    "./chains": {
+      "types": "./build/chains.d.ts",
+      "import": "./build/chains.mjs",
+      "require": "./build/chains.js"
     }
   }
 }

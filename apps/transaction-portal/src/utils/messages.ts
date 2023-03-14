@@ -3,16 +3,17 @@ import {
   PREFERENCES_BLOWFISH_PAUSED,
 } from "@blowfish/hooks";
 import {
-  Message,
-  RequestType,
+  UserDecisionResponse,
+  UserDecisionOpts,
   UntypedMessageData,
-  UserDecisionData,
+  RequestType,
+  Message,
 } from "@blowfish/utils/types";
 
 const sendAndAwaitAck = async (
   message: Message<UntypedMessageData>
-): Promise<UntypedMessageData | void> => {
-  const responsePromise = new Promise<UntypedMessageData | void>((resolve) => {
+): Promise<void> => {
+  const responsePromise = new Promise<void>((resolve) => {
     window.addEventListener("message", (event) => {
       const data = event.data as Message<UntypedMessageData>;
       if (data.id === message.id && data.type === RequestType.MessageAck) {
@@ -39,19 +40,23 @@ const sendAndAwaitResponse = async (
   return await responsePromise;
 };
 
-export const sendResult = async (id: string, result: string) => {
-  const message: Message<UserDecisionData> = {
+export const sendResult = async (
+  id: string,
+  result: string,
+  opts?: UserDecisionOpts
+) => {
+  const message: Message<UserDecisionResponse> = {
     id,
-    data: { isOk: true, result },
+    data: { isOk: true, result, opts },
     type: RequestType.UserDecision,
   };
   await sendAndAwaitAck(message);
 };
 
-export const sendAbort = async (id: string) => {
-  const message: Message<UserDecisionData> = {
+export const sendAbort = async (id: string, opts?: UserDecisionOpts) => {
+  const message: Message<UserDecisionResponse> = {
     id,
-    data: { isOk: false },
+    data: { isOk: false, opts },
     type: RequestType.UserDecision,
   };
   await sendAndAwaitAck(message);

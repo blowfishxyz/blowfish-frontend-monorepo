@@ -1,12 +1,11 @@
 import React, { useState, PropsWithChildren } from "react";
 import styled from "styled-components";
 
-import { logger } from "../utils/logger";
 import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
 import { shortenHex } from "../utils/hex";
-import { chainIdToName } from "../utils/chains";
+import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
@@ -162,7 +161,7 @@ const StyledTextButton = styled(TextButton)`
 export interface UnsupportedChainScreenProps {
   style?: React.CSSProperties;
   className?: string;
-  onDismissUnsupportedChain: (isDismissed: boolean) => Promise<void>;
+  onDismissUnsupportedChain: (isDismissed: boolean) => void;
 }
 
 export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
@@ -183,9 +182,7 @@ export const UnsupportedChainScreen: React.FC<UnsupportedChainScreenProps> = ({
         onClick={() => {
           setShouldShowScreen(!shouldShowScreen);
           // NOTE: we invert the boolean because we store whether it's been dismissed
-          onDismissUnsupportedChain(shouldShowScreen).catch((err) =>
-            logger.error(err)
-          );
+          onDismissUnsupportedChain(shouldShowScreen);
         }}
       >
         <StyledCheckbox checked={!shouldShowScreen} />
@@ -251,8 +248,8 @@ export const AccountNotConnectedScreen: React.FC<
 export interface WrongChainScreenProps {
   style?: React.CSSProperties;
   className?: string;
-  currentChainId: string;
-  chainIdToConnect: string;
+  currentChainId: number;
+  chainIdToConnect: number;
   onRetry: () => void;
   isRetrying?: boolean;
 }
@@ -273,8 +270,8 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
         Your are connected to{" "}
         <StyledText semiBold style={{ textTransform: "capitalize" }}>
           {chainIdToName(currentChainId)}
-        </StyledText>
-        but trying to perform an action on{" "}
+        </StyledText>{" "}
+        but attempting to perform an action on{" "}
         <StyledText semiBold style={{ textTransform: "capitalize" }}>
           {chainIdToName(chainIdToConnect)}
         </StyledText>
@@ -282,7 +279,7 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
       </StyledText>
       <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
         <StyledText>
-          Change to{" "}
+          Switch to{" "}
           <StyledText style={{ textTransform: "capitalize" }}>
             {chainIdToName(chainIdToConnect)}
           </StyledText>

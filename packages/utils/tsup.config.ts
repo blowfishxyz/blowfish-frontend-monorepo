@@ -5,6 +5,7 @@ export default defineConfig({
     index: "./index.ts",
     types: "./types.ts",
     BlowfishApiClient: "./BlowfishApiClient/index.ts",
+    chains: "./chains.ts",
   },
   format: ["esm", "cjs"],
   outDir: "build",

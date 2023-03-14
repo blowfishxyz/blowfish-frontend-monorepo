@@ -1,41 +1,50 @@
 import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import {
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useChainId,
+  useSwitchNetwork,
+} from "wagmi";
 import { ethers } from "ethers";
 import {
-  prepareSendTransaction,
   sendTransaction,
-  signMessage,
+  prepareSendTransaction,
   signTypedData,
+  signMessage,
 } from "@wagmi/core";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {
-  AccountNotConnectedScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
+  AccountNotConnectedScreen,
+  WrongChainScreen,
 } from "../components/InformationScreens";
 import { LoadingScreen } from "../components/LoadingScreen";
 import { PopupContainer } from "../components/PopupContainer";
+import { Providers } from "../components/Providers";
 import { ScanResults } from "../components/ScanResults";
 import { useScanDappRequest } from "../hooks/useScanDappRequest";
-import { sendAbort, sendResult } from "../utils/messages";
+import { sendResult, sendAbort } from "../utils/messages";
 import {
-  actionToSeverity,
   DappRequest,
+  Message,
+  UntypedMessageData,
+  actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-  Message,
   parseRequestFromMessage,
   Severity,
-  UntypedMessageData,
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-import { chainIdToSupportedChainMapping } from "../utils/chains";
+import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "../utils/logger";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
@@ -62,15 +71,20 @@ const ScanResult: React.FC = () => {
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [skipUnsupportedChainWarning, setSkipUnsupportedChainWarning] =
+    useState<boolean>(false);
   const [impersonatingWallet, setImpersonatingWallet] = useState<
     string | undefined
   >();
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
 
   const { address } = useAccount();
-
-  const { connectAsync } = useConnect();
-
+  const connectedChainId = useChainId();
+  const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
+    useSwitchNetwork({ throwForSwitchChainNotSupported: true });
+  const { connectAsync } = useConnect({
+    connector: new InjectedConnector(),
+  });
   const { disconnectAsync } = useDisconnect();
 
   useEffect(() => {
@@ -80,10 +94,12 @@ const ScanResult: React.FC = () => {
     const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
     const _request = parseRequestFromMessage(_message);
     const _chainId = _message.data.chainId.toString();
+
     setChainId(parseInt(_chainId));
     setMessage(_message);
     setRequest(_request);
     setUserAccount(_request.userAccount);
+
     if (_message.isImpersonatingWallet) {
       setImpersonatingWallet(_request.userAccount);
     }
@@ -254,12 +270,16 @@ const ScanResult: React.FC = () => {
     const isUnsupportedChain = !chainFamily || !chainNetwork;
     const isWrongAccount =
       connectedAddress && userAccount && connectedAddress !== userAccount;
+    const isWrongChainId =
+      !!(chainId && connectedChainId) &&
+      !isUnsupportedChain &&
+      chainId !== connectedChainId;
 
     if (isError) {
       logger.error(scanError);
     }
 
-    // NOTE(kimpers): We make th assumption that one tx can only generate one error screen
+    // NOTE(kimpers): We make the assumption that one tx can only generate one error screen
     // currently this holds true but it may not be the case in the future
     const onContinue = () => setHasDismissedScreen(true);
 
@@ -268,8 +288,6 @@ const ScanResult: React.FC = () => {
       mutate();
     };
 
-    // FIXME: Proper info screens
-    // TODO: handle chainId mismatch
     if (!connectedAddress) {
       return (
         <>
@@ -313,25 +331,45 @@ const ScanResult: React.FC = () => {
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
       );
+    } else if (isWrongChainId && chainId) {
+      return (
+        <>
+          <WrongChainScreen
+            currentChainId={connectedChainId}
+            chainIdToConnect={chainId}
+            isRetrying={isSwitchingNetworks}
+            onRetry={async () => {
+              try {
+                await switchNetworkAsync?.(chainId);
+              } catch (err) {
+                logger.error(err);
+              }
+            }}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
     } else if (isUnsupportedChain && message) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const onToggleShowUnsupportedChain = async (_value: boolean) => {
-        const chainId = message?.data?.chainId as string | undefined;
-        if (!chainId) {
-          logger.error(`No chainId found in message ${message}`);
-          return;
-        }
-        // await setUnsupportedChainDismissed(chainId, value);
+      const onToggleShowUnsupportedChain = (value: boolean) => {
+        setSkipUnsupportedChainWarning(value);
       };
 
+      const chainId = message?.data?.chainId as string | undefined;
       return (
         <>
           <UnsupportedChainScreen
             onDismissUnsupportedChain={onToggleShowUnsupportedChain}
           />
           <SlimBottomMenu
-            onClick={() => handleUserDecision(true)}
-            buttonLabel="Close"
+            onClick={async () => {
+              const opts = chainId
+                ? { skipUnsupportedChainWarning, chainId }
+                : undefined;
+              // NOTE: For unsupported chains we don't differentiate between proceed and abort
+              await sendAbort(message.id, opts);
+              closeWindow();
+            }}
+            buttonLabel="Continue"
           />
         </>
       );
@@ -385,20 +423,24 @@ const ScanResult: React.FC = () => {
   }, [
     scanResults,
     scanError,
+    hasDismissedScreen,
+    closeWindow,
+    isMessageSignatureRequest,
+    mutate,
+    connectedAddress,
     chainFamily,
     chainNetwork,
-    connectedAddress,
-    userAccount,
     message,
-    hasDismissedScreen,
-    mutate,
+    isRetrying,
     isConnecting,
-    closeWindow,
+    isSwitchingNetworks,
+    skipUnsupportedChainWarning,
+    chainId,
+    connectedChainId,
+    switchNetworkAsync,
     connectAsync,
     disconnectAsync,
-    handleUserDecision,
-    isMessageSignatureRequest,
-    isRetrying,
+    userAccount,
   ]);
 
   return (
@@ -432,4 +474,10 @@ const ScanResult: React.FC = () => {
   );
 };
 
-export default ScanResult;
+const Page: React.FC = () => (
+  <Providers>
+    <ScanResult />
+  </Providers>
+);
+
+export default Page;
