@@ -20,5 +20,12 @@
     "@blowfish/tsconfig": "*",
     "typescript": "4.9.5",
     "tsup": "^6.6.3"
+  },
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.mjs",
+      "require": "./build/index.js"
+    }
   }
 }
