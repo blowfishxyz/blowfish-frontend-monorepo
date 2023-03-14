@@ -1,9 +1,9 @@
 import { getAddress, isAddress } from "@ethersproject/address";
 import React, { useMemo } from "react";
-//import ReactJson from "react-json-view";
+import ReactJson from "react-json-view";
 import styled, { css } from "styled-components";
 
-import { TextSmall } from "./Typography";
+import { TextSmall } from "../Typography";
 
 const Wrapper = styled.div`
   margin: 16px 0;
@@ -111,19 +111,17 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
       }
     }
 
-    // TODO(kimpers): Fix this
     return (
-      <div>Not supported</div>
-      //<ReactJson
-      //style={{ wordBreak: "break-all" }}
-      //src={data}
-      //indentWidth={2}
-      //enableClipboard={false}
-      //displayObjectSize={false}
-      //displayDataTypes={false}
-      //quotesOnKeys={false}
-      //name={false}
-      ///>
+      <ReactJson
+        style={{ wordBreak: "break-all" }}
+        src={data}
+        indentWidth={2}
+        enableClipboard={false}
+        displayObjectSize={false}
+        displayDataTypes={false}
+        quotesOnKeys={false}
+        name={false}
+      />
     );
   }, [data]);
 
