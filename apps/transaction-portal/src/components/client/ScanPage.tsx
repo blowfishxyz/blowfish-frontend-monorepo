@@ -3,49 +3,48 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
   useAccount,
+  useChainId,
   useConnect,
   useDisconnect,
-  useChainId,
   useSwitchNetwork,
 } from "wagmi";
 import { ethers } from "ethers";
 import {
-  sendTransaction,
   prepareSendTransaction,
-  signTypedData,
+  sendTransaction,
   signMessage,
+  signTypedData,
 } from "@wagmi/core";
 import { InjectedConnector } from "wagmi/connectors/injected";
 
-import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
+import { ApproveBottomMenu, SlimBottomMenu } from "../BottomMenus";
 import {
+  AccountNotConnectedScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
-  AccountNotConnectedScreen,
   WrongChainScreen,
-} from "../components/InformationScreens";
-import { LoadingScreen } from "../components/LoadingScreen";
-import { PopupContainer } from "../components/PopupContainer";
-import { Providers } from "../components/Providers";
-import { ScanResults } from "../components/ScanResults";
-import { useScanDappRequest } from "../hooks/useScanDappRequest";
-import { sendResult, sendAbort } from "../utils/messages";
+} from "../InformationScreens";
+import { LoadingScreen } from "../LoadingScreen";
+import { PopupContainer } from "../PopupContainer";
+import { ScanResults } from "../ScanResults";
+import { useScanDappRequest } from "~hooks/useScanDappRequest";
+import { sendAbort, sendResult } from "~utils/messages";
 import {
-  DappRequest,
-  Message,
-  UntypedMessageData,
   actionToSeverity,
+  DappRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
+  Message,
   parseRequestFromMessage,
   Severity,
+  UntypedMessageData,
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
-import { logger } from "../utils/logger";
+import { logger } from "~utils/logger";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -55,7 +54,7 @@ const ScanPageContainer = styled.div<{ severity?: Severity }>`
     theme.contextBackgroundColors[severity ?? "INFO"]};
 `;
 
-const ScanResult: React.FC = () => {
+const ScanPage: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
     undefined
   );
@@ -474,10 +473,4 @@ const ScanResult: React.FC = () => {
   );
 };
 
-const Page: React.FC = () => (
-  <Providers>
-    <ScanResult />
-  </Providers>
-);
-
-export default Page;
+export default ScanPage;
