@@ -1,9 +1,9 @@
+import { PauseDuration } from "@blowfish/hooks";
 import React from "react";
 import styled, { keyframes } from "styled-components";
 
 import { SmallButtonPrimary } from "~components/Buttons";
 import Row from "~components/common/Row";
-import { PauseDuration } from "~hooks/useTransactionScannerPauseResume";
 
 const fadeIn = keyframes`
   to {

@@ -39,6 +39,7 @@ export enum RequestType {
   SignMessage = "SIGN_MESSAGE",
   UserDecision = "USER_DECISION",
   BlowfishOptions = "BLOWFISH_OPTIONS",
+  SetBlowfishOptions = "SET_BLOWFISH_OPTIONS",
   MessageAck = "BLOWFISH_MESSAGE_ACK",
 }
 
@@ -52,6 +53,7 @@ export interface Message<T extends object> {
   data: T;
   type: RequestType;
   origin?: string;
+  isImpersonatingWallet?: boolean;
 }
 
 export type DappRequest =

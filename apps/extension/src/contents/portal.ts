@@ -29,6 +29,26 @@ window.addEventListener("message", async (event) => {
       };
       event.source?.postMessage(ack);
     }
+
+    if (data?.type === RequestType.SetBlowfishOptions) {
+      Browser.runtime.sendMessage(data);
+      const ack: Message<UntypedMessageData> = {
+        type: RequestType.MessageAck,
+        id: data.id,
+        data: {},
+      };
+      event.source?.postMessage(ack);
+    }
+
+    if (data?.type === RequestType.BlowfishOptions) {
+      const response = await Browser.runtime.sendMessage(data);
+      const ack: Message<UntypedMessageData> = {
+        type: RequestType.MessageAck,
+        id: data.id,
+        data: response,
+      };
+      event.source?.postMessage(ack);
+    }
   }
 });
 

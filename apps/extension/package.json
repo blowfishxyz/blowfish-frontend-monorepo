@@ -43,7 +43,8 @@
     "styled-components": "^5.3.6",
     "swr": "^2.0.0",
     "webextension-polyfill": "^0.10.0",
-    "@blowfish/utils": "workspace:*"
+    "@blowfish/utils": "workspace:*",
+    "@blowfish/hooks": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.7",

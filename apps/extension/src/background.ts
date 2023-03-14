@@ -1,3 +1,5 @@
+import type { BlowfishPausedOptionType } from "@blowfish/hooks";
+import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
   BlowfishOptionRequest,
   Message,
@@ -10,17 +12,11 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-//import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
-
 import { createTransactionPortalTab } from "./utils/browser";
 //import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { postResponseToPort } from "./utils/messages";
-import {
-  //PREFERENCES_BLOWFISH_PAUSED,
-  //isUnsupportedChainDismissed,
-  storage,
-} from "./utils/storage";
+import { getBlowfishImpersonationWallet, storage } from "./utils/storage";
 
 logger.debug("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
@@ -54,10 +50,18 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
 };
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
-Browser.runtime.onMessage.addListener(
-  (message: Message<UntypedMessageData>) => {
-    const responseRemotePort = messageToPortMapping.get(message.id);
 
+Browser.runtime.onMessage.addListener(
+  async (message: Message<UntypedMessageData>) => {
+    if (message.type === RequestType.SetBlowfishOptions) {
+      storage.set(PREFERENCES_BLOWFISH_PAUSED, message.data);
+      return Promise.resolve(true);
+    }
+    if (message.type === RequestType.BlowfishOptions) {
+      const data = await storage.get(message.data.option);
+      return Promise.resolve(data);
+    }
+    const responseRemotePort = messageToPortMapping.get(message.id);
     if (responseRemotePort) {
       responseRemotePort.postMessage(message);
       messageToPortMapping.delete(message.id);
@@ -68,7 +72,7 @@ Browser.runtime.onMessage.addListener(
     }
     // HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
     // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
-    return Promise.resolve(true);
+    return true;
   }
 );
 
@@ -78,16 +82,14 @@ const processRequestBase = async (
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
-  //const pausedOption = await storage.get<BlowfishPausedOptionType>(
-  //PREFERENCES_BLOWFISH_PAUSED
-  //);
+  const isImpersonatingWallet = !!(await getBlowfishImpersonationWallet());
+  const pausedOption = await storage.get<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
 
-  // TODO(kimepers): HANDLE THIS
-  //if (pausedOption && pausedOption.isPaused) {
-  //const responseData: UserDecisionData = { isOk: true };
-  //postResponseToPort(remotePort, message, { isOk: true });
-  //return;
-  //}
+  if (pausedOption && pausedOption.isPaused) {
+    return;
+  }
 
   //const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
@@ -106,7 +108,10 @@ const processRequestBase = async (
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
-  const tabPromise = createTransactionPortalTab(message);
+  const tabPromise = createTransactionPortalTab({
+    ...message,
+    isImpersonatingWallet,
+  });
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);
