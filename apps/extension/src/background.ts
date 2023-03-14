@@ -81,7 +81,7 @@ const getExtensionOptionFromTransactionPortal = async (
   return createRawMessage(message.type, pausedOptions || null);
 };
 
-const onMessageListener = (
+const onBrowserMessageListener = (
   message: Message<UntypedMessageData>
 ): Promise<Message<UntypedMessageData>> | void => {
   if (message.type === RequestType.BlowfishOptions) {
@@ -110,7 +110,7 @@ const onMessageListener = (
 };
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
-Browser.runtime.onMessage.addListener(onMessageListener);
+Browser.runtime.onMessage.addListener(onBrowserMessageListener);
 
 const processRequestBase = async (
   message: Message<

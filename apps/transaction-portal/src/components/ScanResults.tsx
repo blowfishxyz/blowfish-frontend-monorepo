@@ -33,7 +33,7 @@ import PauseDurationSelector, {
 } from "~components/PauseDurationSelector";
 import Row from "~components/common/Row";
 
-import { useLocalStorage } from "react-use";
+import { useInterval, useLocalStorage } from "react-use";
 import {
   BlowfishPausedOptionType,
   PauseDuration,
@@ -229,13 +229,10 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     useTransactionScannerPauseResume(scanPaused, setScanPaused);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const data = await getPauseResumeSelection();
-      setScanPaused(data);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [setScanPaused]);
+  useInterval(async () => {
+    const data = await getPauseResumeSelection();
+    setScanPaused(data);
+  }, 3000);
 
   const expectedStateChangesProcessed = useMemo(
     () =>
