@@ -1,6 +1,8 @@
 import type { PlasmoContentScript } from "plasmo";
 import evmProxyScript from "url:~/injected/proxy-window-evm";
 
+import { BLOWFISH_PORTAL_TRUSTED_URLS } from "~constants";
+
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
   all_frames: true,
@@ -16,8 +18,10 @@ const addScript = (url: string) => {
   scriptTag.onload = () => scriptTag.remove();
 };
 
-// TODO(kimpers): Properly solve this
-if (window.location.hostname !== "localhost") {
+// Do not inject the wallet proxy on the Blowfish Protect portal
+// here we want to talk directly to the wallet
+const { hostname } = window.location;
+if (!BLOWFISH_PORTAL_TRUSTED_URLS.some((url) => url.hostname === hostname)) {
   addScript(evmProxyScript);
 }
 
