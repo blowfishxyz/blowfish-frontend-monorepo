@@ -50,18 +50,18 @@ export const sendAbort = async (id: string, opts?: UserDecisionOpts) => {
 export const sendPauseResumeSelection = async (
   pauseOption: BlowfishPausedOptionType
 ) => {
-  const message: Message<BlowfishPausedOptionType> = {
+  const message: Message<{ key: string; value: BlowfishPausedOptionType }> = {
     id: "set-pause-resume-selection",
-    data: pauseOption,
+    data: { key: PREFERENCES_BLOWFISH_PAUSED, value: pauseOption },
     type: RequestType.SetBlowfishOptions,
   };
   await sendAndAwaitAck(message);
 };
 
 export const getPauseResumeSelection = async () => {
-  const message: Message<{ option: string }> = {
+  const message: Message<{ key: string }> = {
     id: "get-pause-resume-selection",
-    data: { option: PREFERENCES_BLOWFISH_PAUSED },
+    data: { key: PREFERENCES_BLOWFISH_PAUSED },
     type: RequestType.BlowfishOptions,
   };
   return (await sendAndAwaitAck(message)) as BlowfishPausedOptionType;

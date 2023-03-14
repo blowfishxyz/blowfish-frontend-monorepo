@@ -16,7 +16,7 @@ import Browser from "webextension-polyfill";
 import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
-import { postResponseToPort } from "./utils/messages";
+import { createRawMessage, postResponseToPort } from "./utils/messages";
 import {
   getBlowfishImpersonationWallet,
   isUnsupportedChainDismissed,
@@ -66,38 +66,49 @@ const responseProcessingMiddleware = async (
   }
 };
 
-Browser.runtime.onConnect.addListener(setupRemoteConnection);
+const setExtensionOptionFromTransactionPortal = (
+  message: Message<UntypedMessageData>
+) => {
+  storage.set(message.data.key, message.data.value);
+};
 
-// HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
-// see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
-Browser.runtime.onMessage.addListener(
-  async (message: Message<UntypedMessageData>): Promise<true | string> => {
-    if (message.type === RequestType.SetBlowfishOptions) {
-      storage.set(PREFERENCES_BLOWFISH_PAUSED, message.data);
-      return true;
-    }
-    if (message.type === RequestType.BlowfishOptions) {
-      return await storage.get(message.data.option);
-    }
+const getExtensionOptionFromTransactionPortal = async (
+  message: Message<UntypedMessageData>
+) => {
+  const pausedOptions = await storage.get<BlowfishPausedOptionType>(
+    message.data.key
+  );
+  return createRawMessage(message.type, pausedOptions || null);
+};
 
-    const responseRemotePort = messageToPortMapping.get(message.id);
-
-    if (responseRemotePort) {
-      responseRemotePort.postMessage(message);
-      messageToPortMapping.delete(message.id);
-      try {
-        await responseProcessingMiddleware(message);
-      } catch (err) {
-        logger.error(err);
-      }
-    } else {
-      logger.error(
-        `Missing remote port for message ${message.id}: ${message.type}`
-      );
-    }
-    return true;
+const onMessageListener = (
+  message: Message<UntypedMessageData>
+): Promise<Message<UntypedMessageData>> | void => {
+  if (message.type === RequestType.BlowfishOptions) {
+    return getExtensionOptionFromTransactionPortal(message);
   }
-);
+
+  if (message.type === RequestType.SetBlowfishOptions) {
+    setExtensionOptionFromTransactionPortal(message);
+  }
+
+  const responseRemotePort = messageToPortMapping.get(message.id);
+
+  if (responseRemotePort) {
+    responseRemotePort.postMessage(message);
+    messageToPortMapping.delete(message.id);
+    responseProcessingMiddleware(message).catch((err) => {
+      logger.error(err);
+    });
+  } else {
+    logger.error(
+      `Missing remote port for message ${message.id}: ${message.type}`
+    );
+  }
+};
+
+Browser.runtime.onConnect.addListener(setupRemoteConnection);
+Browser.runtime.onMessage.addListener(onMessageListener);
 
 const processRequestBase = async (
   message: Message<

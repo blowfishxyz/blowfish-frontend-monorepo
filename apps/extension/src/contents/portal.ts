@@ -35,7 +35,7 @@ window.addEventListener("message", async (event) => {
   const ack: Message<UntypedMessageData> = {
     type: RequestType.MessageAck,
     id: data.id,
-    data: data?.type === RequestType.BlowfishOptions ? response : {},
+    data: data?.type === RequestType.BlowfishOptions ? response.data : {},
   };
   event.source?.postMessage(ack);
 });
