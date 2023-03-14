@@ -142,6 +142,14 @@ const processRequestBase = async (
     }
   }
 
+  const currentTab = await Browser.tabs
+    .query({
+      active: true,
+      currentWindow: true,
+    })
+    .then((tabs) => tabs[0]);
+  const currentTabId = currentTab?.id;
+
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
@@ -157,17 +165,33 @@ const processRequestBase = async (
   messageToPortMapping.set(message.id, remotePort);
   const tab = await tabPromise;
   const tabId = tab.id!;
-  Browser.tabs.onRemoved.addListener((removedTabId) => {
-    // If the window is closed before we received a response we assume cancel
-    // as the user probably just closed the window
-    if (removedTabId === tabId && messageToPortMapping.has(message.id)) {
-      logger.debug(
-        "Window closed without response, assuming the user wants to cancel"
-      );
-      const responseData: UserDecisionResponse = { isOk: false };
-      postResponseToPort(remotePort, message, responseData);
+  const handleRemovedTab = (removedTabId: number) => {
+    if (removedTabId === tabId) {
+      // If the window is closed before we received a response we assume cancel
+      // as the user probably just closed the window
+      if (messageToPortMapping.has(message.id)) {
+        messageToPortMapping.delete(message.id);
+        logger.debug(
+          "Window closed without response, assuming the user wants to cancel"
+        );
+        const responseData: UserDecisionResponse = { isOk: false };
+        postResponseToPort(remotePort, message, responseData);
+      }
+
+      // We want to restore the focus to the tab that the user was on
+      // when they initiated the transaction
+      if (currentTabId) {
+        Browser.tabs
+          .update(currentTabId, { active: true })
+          .catch((err) => logger.error(err));
+      }
+
+      // Clean up listner as it's no longer relevant
+      Browser.tabs.onRemoved.removeListener(handleRemovedTab);
     }
-  });
+  };
+
+  Browser.tabs.onRemoved.addListener(handleRemovedTab);
 };
 
 const processTransactionRequest = async (

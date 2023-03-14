@@ -61,6 +61,10 @@ export const BlockExplorerLink: React.FC<BlockExplorerLinkProps> = ({
   let url: string;
   if (chainFamily === "polygon") {
     url = `https://${prefix}polygonscan.com/address/${address}`;
+  } else if (chainFamily === "arbitrum") {
+    url = `https://arbiscan.io/address/${address}`;
+  } else if (chainFamily === "bsc") {
+    url = `https://bscscan.com/address/${address}`;
   } else {
     // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
     const assetType = nftTokenId ? "nft" : "address";

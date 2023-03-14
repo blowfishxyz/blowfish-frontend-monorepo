@@ -8,8 +8,8 @@ import type {
 
 const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
 
-export type ChainFamily = "ethereum" | "polygon";
-export type ChainNetwork = "mainnet" | "goerli";
+export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bsc";
+export type ChainNetwork = "mainnet" | "goerli" | "one";
 
 export interface SignTypedDataPayload {
   domain: {
