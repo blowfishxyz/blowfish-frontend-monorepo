@@ -7,7 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "rm -rf build && tsup"
+    "build": "rm -rf build && tsup",
+    "prepare": "pnpm run build"
   },
   "devDependencies": {
     "@blowfish/tsconfig": "*",

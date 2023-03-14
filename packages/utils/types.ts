@@ -39,6 +39,7 @@ export enum RequestType {
   SignMessage = "SIGN_MESSAGE",
   UserDecision = "USER_DECISION",
   BlowfishOptions = "BLOWFISH_OPTIONS",
+  SetBlowfishOptions = "SET_BLOWFISH_OPTIONS",
   MessageAck = "BLOWFISH_MESSAGE_ACK",
 }
 
@@ -83,6 +84,7 @@ interface BaseRequest {
 export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;
+  isImpersonatingWallet?: boolean;
 }
 
 export const isTransactionRequest = (
@@ -92,6 +94,7 @@ export const isTransactionRequest = (
 export interface SignTypedDataRequest extends BaseRequest {
   type: RequestType.SignTypedData;
   payload: SignTypedDataPayload;
+  isImpersonatingWallet?: boolean;
 }
 export const isSignTypedDataRequest = (
   req: DappRequest
@@ -105,6 +108,7 @@ export interface SignMessagePayload {
 export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
+  isImpersonatingWallet?: boolean;
 }
 
 export interface BlowfishOptionRequest {

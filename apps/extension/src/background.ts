@@ -1,3 +1,5 @@
+import type { BlowfishPausedOptionType } from "@blowfish/hooks";
+import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
   BlowfishOptionRequest,
   Message,
@@ -11,14 +13,12 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-//import type { BlowfishPausedOptionType } from "~hooks/useTransactionScannerPauseResume";
-
 import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
-import { postResponseToPort } from "./utils/messages";
+import { createRawMessage, postResponseToPort } from "./utils/messages";
 import {
-  //PREFERENCES_BLOWFISH_PAUSED,
+  getBlowfishImpersonationWallet,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
@@ -66,29 +66,51 @@ const responseProcessingMiddleware = async (
   }
 };
 
-Browser.runtime.onConnect.addListener(setupRemoteConnection);
-Browser.runtime.onMessage.addListener(
-  async (message: Message<UntypedMessageData>) => {
-    const responseRemotePort = messageToPortMapping.get(message.id);
+const setExtensionOptionFromTransactionPortal = (
+  message: Message<UntypedMessageData>
+) => {
+  storage.set(message.data.key, message.data.value);
+};
 
-    if (responseRemotePort) {
-      responseRemotePort.postMessage(message);
-      messageToPortMapping.delete(message.id);
-      try {
-        await responseProcessingMiddleware(message);
-      } catch (err) {
-        logger.error(err);
-      }
-    } else {
-      logger.error(
-        `Missing remote port for message ${message.id}: ${message.type}`
-      );
-    }
-    // HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
-    // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
-    return true;
+const getExtensionOptionFromTransactionPortal = async (
+  message: Message<UntypedMessageData>
+) => {
+  const pausedOptions = await storage.get<BlowfishPausedOptionType>(
+    message.data.key
+  );
+  return createRawMessage(message.type, pausedOptions || null);
+};
+
+const onBrowserMessageListener = (
+  message: Message<UntypedMessageData>
+): Promise<Message<UntypedMessageData>> | void => {
+  if (message.type === RequestType.BlowfishOptions) {
+    return getExtensionOptionFromTransactionPortal(message);
   }
-);
+
+  if (message.type === RequestType.SetBlowfishOptions) {
+    setExtensionOptionFromTransactionPortal(message);
+    return undefined;
+  }
+
+  const responseRemotePort = messageToPortMapping.get(message.id);
+
+  if (responseRemotePort) {
+    responseRemotePort.postMessage(message);
+    messageToPortMapping.delete(message.id);
+    responseProcessingMiddleware(message).catch((err) => {
+      logger.error(err);
+    });
+  } else {
+    logger.error(
+      `Missing remote port for message ${message.id}: ${message.type}`
+    );
+  }
+  return undefined;
+};
+
+Browser.runtime.onConnect.addListener(setupRemoteConnection);
+Browser.runtime.onMessage.addListener(onBrowserMessageListener);
 
 const processRequestBase = async (
   message: Message<
@@ -96,16 +118,14 @@ const processRequestBase = async (
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
-  //const pausedOption = await storage.get<BlowfishPausedOptionType>(
-  //PREFERENCES_BLOWFISH_PAUSED
-  //);
+  const isImpersonatingWallet = !!(await getBlowfishImpersonationWallet());
+  const pausedOption = await storage.get<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
 
-  // TODO(kimepers): HANDLE THIS
-  //if (pausedOption && pausedOption.isPaused) {
-  //const responseData: UserDecisionData = { isOk: true };
-  //postResponseToPort(remotePort, message, { isOk: true });
-  //return;
-  //}
+  if (pausedOption && pausedOption.isPaused) {
+    return;
+  }
 
   const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
@@ -125,7 +145,13 @@ const processRequestBase = async (
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
-  const tabPromise = createTransactionPortalTab(message);
+  const tabPromise = createTransactionPortalTab({
+    ...message,
+    data: {
+      ...message.data,
+      isImpersonatingWallet,
+    },
+  });
 
   // Store port to id mapping so we can respond to the message later on
   messageToPortMapping.set(message.id, remotePort);

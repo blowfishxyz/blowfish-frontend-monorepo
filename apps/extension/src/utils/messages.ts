@@ -14,7 +14,7 @@ import objectHash, { NotUndefined } from "object-hash";
 import type { Duplex } from "readable-stream";
 import type Browser from "webextension-polyfill";
 
-const createRawMessage = <T extends object>(
+export const createRawMessage = <T extends object>(
   type: RequestType,
   data: T
 ): Message<T> => {

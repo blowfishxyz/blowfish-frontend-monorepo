@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from "react";
-import { useLocalStorage } from "react-use";
 
 export const PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED";
 
@@ -20,11 +19,10 @@ export type BlowfishPausedOptionType = {
   isPaused: boolean;
 };
 
-const useTransactionScannerPauseResume = () => {
-  const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
-  );
-
+const useTransactionScannerPauseResume = (
+  scanPaused: BlowfishPausedOptionType | undefined,
+  setScanPaused: (pausedOption: BlowfishPausedOptionType) => void
+) => {
   const pauseScan = useCallback(
     (duration: PauseDuration) => {
       setScanPaused({

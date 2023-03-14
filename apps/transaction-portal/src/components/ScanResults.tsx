@@ -32,9 +32,19 @@ import PauseDurationSelector, {
   PeriodDurationContainer,
 } from "~components/PauseDurationSelector";
 import Row from "~components/common/Row";
-import useTransactionScannerPauseResume, {
+
+import { useInterval, useLocalStorage } from "react-use";
+import {
+  BlowfishPausedOptionType,
   PauseDuration,
-} from "~hooks/useTransactionScannerPauseResume";
+  PREFERENCES_BLOWFISH_PAUSED,
+  useTransactionScannerPauseResume,
+  PAUSE_DURATIONS,
+} from "@blowfish/hooks";
+import {
+  getPauseResumeSelection,
+  sendPauseResumeSelection,
+} from "~utils/messages";
 
 type NftStateChangeWithTokenId =
   | Erc721TransferData
@@ -212,9 +222,17 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
   const [showAdvancedDetails, setShowAdvancedDetails] =
     useState<boolean>(false);
+  const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
   const { pauseScan, resumeScan, isScanPaused } =
-    useTransactionScannerPauseResume();
+    useTransactionScannerPauseResume(scanPaused, setScanPaused);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
+
+  useInterval(async () => {
+    const data = await getPauseResumeSelection();
+    setScanPaused(data);
+  }, 3000);
 
   const expectedStateChangesProcessed = useMemo(
     () =>
@@ -337,13 +355,18 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
 
     if (isScanPaused) {
       resumeScan();
+      sendPauseResumeSelection({ isPaused: false, until: null });
       return;
     }
 
     setShowDurationSelector(true);
   };
-  const onDurationSelect = (period: PauseDuration) => {
-    pauseScan(period);
+  const onDurationSelect = (duration: PauseDuration) => {
+    pauseScan(duration);
+    sendPauseResumeSelection({
+      isPaused: true,
+      until: Date.now() + PAUSE_DURATIONS[duration],
+    });
     setShowDurationSelector(false);
   };
 

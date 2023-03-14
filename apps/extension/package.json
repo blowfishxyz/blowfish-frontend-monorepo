@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "build-all": "pnpm run --parallel --filter \"../../packages/**\" --filter \"@blowfish/extension\" --filter \"@blowfish/transaction-portal\" build",
+    "build-all": "pnpm run --parallel --filter \"@blowfish/extension\" --filter \"@blowfish/transaction-portal\" build",
     "package": "plasmo package",
     "test": "pnpm jest --passWithNoTests",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
@@ -43,7 +43,8 @@
     "styled-components": "^5.3.6",
     "swr": "^2.0.0",
     "webextension-polyfill": "^0.10.0",
-    "@blowfish/utils": "workspace:*"
+    "@blowfish/utils": "workspace:*",
+    "@blowfish/hooks": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.20.7",

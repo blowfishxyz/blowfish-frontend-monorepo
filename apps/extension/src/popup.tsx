@@ -4,6 +4,15 @@ import styled from "styled-components";
 
 import "./style.css";
 
+import type { BlowfishPausedOptionType } from "@blowfish/hooks";
+import {
+  PREFERENCES_BLOWFISH_PAUSED,
+  PauseDuration,
+  useTransactionScannerPauseResume,
+} from "@blowfish/hooks";
+
+import { useStorage } from "@plasmohq/storage/hook";
+
 import { PrimaryButton } from "~components/Buttons";
 import PauseDurationSelector from "~components/PauseDurationSelector";
 import PopupFooter from "~components/Popup/IconRow";
@@ -13,9 +22,6 @@ import Row from "~components/common/Row";
 import { PauseIcon } from "~components/icons/PauseIcon";
 import { PlayIcon } from "~components/icons/PlayIcon";
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
-import useTransactionScannerPauseResume, {
-  PauseDuration,
-} from "~hooks/useTransactionScannerPauseResume";
 import { opacify, transformDate } from "~utils/utils";
 
 import { PopupContainer } from "./components/PopupContainer";
@@ -133,8 +139,11 @@ const StatusIndicator = ({
 };
 
 const Popup: React.FC = () => {
+  const [scanPaused, setScanPaused] = useStorage<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
   const { pauseScan, resumeScan, isScanPaused, scanPausedUntil } =
-    useTransactionScannerPauseResume();
+    useTransactionScannerPauseResume(scanPaused, setScanPaused);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
 
   const onActionClick = () => {
