@@ -351,7 +351,7 @@ const ScanResult: React.FC = () => {
               await sendAbort(message.id, opts);
               closeWindow();
             }}
-            buttonLabel="Close"
+            buttonLabel="Continue"
           />
         </>
       );
