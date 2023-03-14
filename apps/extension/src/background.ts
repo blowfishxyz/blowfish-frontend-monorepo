@@ -68,11 +68,13 @@ const responseProcessingMiddleware = async (
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
 
+// HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
+// see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
 Browser.runtime.onMessage.addListener(
-  async (message: Message<UntypedMessageData>) => {
+  async (message: Message<UntypedMessageData>): Promise<true | string> => {
     if (message.type === RequestType.SetBlowfishOptions) {
       storage.set(PREFERENCES_BLOWFISH_PAUSED, message.data);
-      return Promise.resolve(true);
+      return true;
     }
     if (message.type === RequestType.BlowfishOptions) {
       const data = await storage.get(message.data.option);
@@ -94,8 +96,6 @@ Browser.runtime.onMessage.addListener(
         `Missing remote port for message ${message.id}: ${message.type}`
       );
     }
-    // HACK(kimpers): If we don't return true here the sender will be stuck waiting for a response indefinitely
-    // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
     return true;
   }
 );
@@ -135,7 +135,10 @@ const processRequestBase = async (
   logger.debug(message);
   const tabPromise = createTransactionPortalTab({
     ...message,
-    isImpersonatingWallet,
+    data: {
+      ...message.data,
+      isImpersonatingWallet,
+    },
   });
 
   // Store port to id mapping so we can respond to the message later on

@@ -3,29 +3,14 @@ import {
   PREFERENCES_BLOWFISH_PAUSED,
 } from "@blowfish/hooks";
 import {
-  UserDecisionResponse,
-  UserDecisionOpts,
-  UntypedMessageData,
-  RequestType,
   Message,
+  RequestType,
+  UntypedMessageData,
+  UserDecisionOpts,
+  UserDecisionResponse,
 } from "@blowfish/utils/types";
 
 const sendAndAwaitAck = async (
-  message: Message<UntypedMessageData>
-): Promise<void> => {
-  const responsePromise = new Promise<void>((resolve) => {
-    window.addEventListener("message", (event) => {
-      const data = event.data as Message<UntypedMessageData>;
-      if (data.id === message.id && data.type === RequestType.MessageAck) {
-        resolve();
-      }
-    });
-  });
-  window.postMessage(message);
-  await responsePromise;
-};
-
-const sendAndAwaitResponse = async (
   message: Message<UntypedMessageData>
 ): Promise<UntypedMessageData> => {
   const responsePromise = new Promise<UntypedMessageData>((resolve) => {
@@ -79,5 +64,5 @@ export const getPauseResumeSelection = async () => {
     data: { option: PREFERENCES_BLOWFISH_PAUSED },
     type: RequestType.BlowfishOptions,
   };
-  return (await sendAndAwaitResponse(message)) as BlowfishPausedOptionType;
+  return (await sendAndAwaitAck(message)) as BlowfishPausedOptionType;
 };

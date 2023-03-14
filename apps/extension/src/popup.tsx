@@ -11,7 +11,7 @@ import {
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
 
-import { useStorage } from "@plasmohq/storage/dist/hook";
+import { useStorage } from "@plasmohq/storage/hook";
 
 import { PrimaryButton } from "~components/Buttons";
 import PauseDurationSelector from "~components/PauseDurationSelector";

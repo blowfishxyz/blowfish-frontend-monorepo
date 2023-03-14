@@ -100,7 +100,7 @@ const ScanResult: React.FC = () => {
     setRequest(_request);
     setUserAccount(_request.userAccount);
 
-    if (_message.isImpersonatingWallet) {
+    if (_request.isImpersonatingWallet) {
       setImpersonatingWallet(_request.userAccount);
     }
 
