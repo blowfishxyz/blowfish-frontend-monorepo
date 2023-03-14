@@ -8,7 +8,8 @@
   "types": "./build/index.d.ts",
   "private": true,
   "scripts": {
-    "build": "rm -rf build && tsup"
+    "build": "rm -rf build && tsup",
+    "prepare": "pnpm run build"
   },
   "dependencies": {
     "react": "^18.2.0"
