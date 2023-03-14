@@ -90,6 +90,7 @@ const onMessageListener = (
 
   if (message.type === RequestType.SetBlowfishOptions) {
     setExtensionOptionFromTransactionPortal(message);
+    return undefined;
   }
 
   const responseRemotePort = messageToPortMapping.get(message.id);
@@ -105,6 +106,7 @@ const onMessageListener = (
       `Missing remote port for message ${message.id}: ${message.type}`
     );
   }
+  return undefined;
 };
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
