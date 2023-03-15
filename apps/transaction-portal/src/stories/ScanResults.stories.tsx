@@ -95,6 +95,7 @@ export const TransactionNoAction: ComponentStory<
                    * in the extension we want this fixed to to bottom of the window */
                   position: "absolute",
                 }}
+                isImpersonatingWallet={false}
                 onContinue={() => alert("PROCEEDING...")}
                 onCancel={() => alert("CANCEL")}
               />

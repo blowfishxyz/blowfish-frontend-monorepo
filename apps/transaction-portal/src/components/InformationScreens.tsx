@@ -1,5 +1,5 @@
-import React, { useState, PropsWithChildren } from "react";
-import styled from "styled-components";
+import React, { PropsWithChildren, useState } from "react";
+import styled, { keyframes } from "styled-components";
 
 import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
@@ -14,6 +14,7 @@ import {
 interface SharedProps {
   darkMode?: boolean;
 }
+
 const StyledTextXL = styled(TextXL)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
@@ -62,31 +63,80 @@ const WarningMessageWrapper = styled.div`
   }
 `;
 
+const StyledTextButton = styled(TextButton)`
+  display: flex;
+  align-items: center;
+`;
+const ellipsis = keyframes`
+  to {
+    width: 16px;
+  }
+`;
+const StyledTextWithEllipsisAnimation = styled(StyledText)`
+  display: flex;
+  width: 190px;
+  font-weight: 400;
+  opacity: 0.6;
+
+  &:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    animation: ${ellipsis} steps(4, end) 1200ms infinite;
+    content: "\\2026"; /* ascii code for the ellipsis character */
+    width: 0;
+  }
+`;
+
 export interface TransactionBlockedScreenProps {
   onContinue: () => void;
+  headline?: string;
+  message?: string;
+  continueButtonLabel?: string;
+  confirmationText?: string;
 }
+
 export const TransactionBlockedScreen: React.FC<
   TransactionBlockedScreenProps
-> = ({ onContinue }) => {
+> = ({
+  onContinue,
+  headline = "Transaction Flagged",
+  message = "We believe this transaction is malicious and unsafe to sign. Approving may lead to loss of funds",
+  continueButtonLabel = "Ignore warning, proceed anyway",
+  confirmationText,
+}) => {
+  const [showConfirmationText, setShowConfirmationText] =
+    useState<boolean>(false);
+
+  const continueClicked = () => {
+    if (confirmationText) {
+      setShowConfirmationText(true);
+    }
+    onContinue();
+  };
+
   return (
     <Wrapper darkMode>
       <StyledBlowfishWarningIcon severity="CRITICAL" />
-      <StyledTextXL darkMode>Transaction Flagged</StyledTextXL>
-      <StyledText darkMode>
-        We believe this transaction is malicious and unsafe to sign. Approving
-        may lead to loss of funds
-      </StyledText>
-      <StyledTextButton onClick={onContinue}>
-        <StyledText
-          darkMode
-          style={{
-            fontWeight: 400,
-            opacity: 0.6,
-          }}
-        >
-          Ignore warning, proceed anyway
-        </StyledText>
-      </StyledTextButton>
+      <StyledTextXL darkMode>{headline}</StyledTextXL>
+      <StyledText darkMode>{message}</StyledText>
+      {showConfirmationText ? (
+        <StyledTextWithEllipsisAnimation darkMode>
+          {confirmationText}
+        </StyledTextWithEllipsisAnimation>
+      ) : (
+        <StyledTextButton onClick={continueClicked}>
+          <StyledText
+            darkMode
+            style={{
+              fontWeight: 400,
+              opacity: 0.6,
+            }}
+          >
+            {continueButtonLabel}
+          </StyledText>
+        </StyledTextButton>
+      )}
     </Wrapper>
   );
 };
@@ -95,6 +145,7 @@ interface RetryButtonProps extends PropsWithChildren {
   onRetry: () => void;
   isRetrying: boolean;
 }
+
 const RetryButton: React.FC<RetryButtonProps> = ({
   onRetry,
   isRetrying,
@@ -118,6 +169,7 @@ export interface SimulationErrorScreenProps {
   onRetry?: () => void;
   isRetrying?: boolean;
 }
+
 export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
   style,
   className,
@@ -151,11 +203,6 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
 // TODO(kimpers): Checkbox styling
 const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
   margin-right: 13px;
-`;
-
-const StyledTextButton = styled(TextButton)`
-  display: flex;
-  align-items: center;
 `;
 
 export interface UnsupportedChainScreenProps {

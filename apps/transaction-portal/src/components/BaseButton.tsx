@@ -8,6 +8,7 @@ const BaseButton = styled.button`
   width: auto;
   overflow: visible;
   background: transparent;
+  cursor: pointer;
   color: inherit;
   font: inherit;
   line-height: normal;

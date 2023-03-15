@@ -14,6 +14,7 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
+  ExcludedDangerousRequestResult,
 } from "@blowfish/utils/types";
 import { Decimal } from "decimal.js";
 import React, { useEffect, useMemo, useState } from "react";
@@ -206,7 +207,10 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
 
 export interface ScanResultsProps {
   request: DappRequest;
-  scanResults: EvmTransactionScanResult | EvmMessageScanResult;
+  scanResults:
+    | EvmTransactionScanResult
+    | EvmMessageScanResult
+    | ExcludedDangerousRequestResult;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
