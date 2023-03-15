@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 
 import { PrimaryButton, SecondaryButton } from "./Buttons";
 import { Text } from "./Typography";
+import { breakpoint } from "~utils/breakpoints";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
@@ -17,8 +18,9 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   margin: 0 auto;
   left: 0;
   right: 0;
-  bottom: 0;
-  background: ${({ theme }) => theme.palette.white};
+  bottom: 22px;
+  background: ${({ theme, slim }) =>
+    slim ? "transparent" : theme.palette.white};
   display: flex;
   align-items: center;
   ${({ slim }) =>
@@ -36,7 +38,10 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
           > * > * {
             margin-top: 24px;
           }
-        `}
+        `};
+  @media only screen and (max-width: ${breakpoint.size.md}) {
+    max-width: calc(100% - 24px);
+  }
 `;
 
 export interface SlimBottomMenuProps {
@@ -63,6 +68,10 @@ const GrayText = styled(Text)`
   color: rgba(0, 0, 0, 0.5);
 `;
 
+const RedText = styled(Text)`
+  color: ${({ theme }) => theme.palette.warningText};
+`;
+
 const Row = styled.div`
   display: flex;
   width: 100%;
@@ -74,6 +83,7 @@ export interface ApproveBottomMenuProps {
   onCancel: () => void;
   style?: React.CSSProperties;
   className?: string;
+  isImpersonatingWallet: boolean;
 }
 
 export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
@@ -81,15 +91,24 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   onCancel,
   style,
   className,
+  isImpersonatingWallet,
 }) => {
   return (
     <BottomMenuWrapper style={style} className={className}>
-      <GrayText>Confirm to continue to your wallet</GrayText>
+      {isImpersonatingWallet ? (
+        <RedText>Continue disabled while impersonating</RedText>
+      ) : (
+        <GrayText>Confirm to continue to your wallet</GrayText>
+      )}
       <Row>
         <SecondaryButton style={{ width: "172px" }} onClick={onCancel}>
           Cancel
         </SecondaryButton>
-        <PrimaryButton style={{ width: "172px" }} onClick={onContinue}>
+        <PrimaryButton
+          style={{ width: "172px" }}
+          onClick={onContinue}
+          disabled={isImpersonatingWallet}
+        >
           Confirm
         </PrimaryButton>
       </Row>

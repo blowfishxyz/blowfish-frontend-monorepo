@@ -22,6 +22,7 @@ import {
   AccountNotConnectedScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
+  TransactionUnsupportedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
   WrongChainScreen,
@@ -220,9 +221,6 @@ const ScanPage: React.FC = () => {
                 throw err;
               }
             }
-          } else {
-            // TODO(kimpers): Handle this is we want to support it or inform the user
-            alert("ETH_SIGN IS DANGEROUS AND THEREFORE NOT SUPPORTED");
           }
         } else {
           // TODO(kimpers): This should never happen
@@ -241,11 +239,18 @@ const ScanPage: React.FC = () => {
   logger.debug(message);
   logger.debug(request);
 
-  const severity = useMemo(
-    () =>
-      scanResults?.action ? actionToSeverity(scanResults?.action) : undefined,
-    [scanResults?.action]
-  );
+  const severity = useMemo(() => {
+    if (
+      request?.payload &&
+      "method" in request.payload &&
+      request?.payload?.method === "eth_sign"
+    ) {
+      return actionToSeverity("BLOCK");
+    }
+    return scanResults?.action
+      ? actionToSeverity(scanResults?.action)
+      : undefined;
+  }, [request?.payload, scanResults?.action]);
 
   const hasAllData =
     scanResults &&
@@ -273,6 +278,8 @@ const ScanPage: React.FC = () => {
       !!(chainId && connectedChainId) &&
       !isUnsupportedChain &&
       chainId !== connectedChainId;
+    const isUnsupportedDangerousRequest =
+      message?.data.payload.method === "eth_sign";
 
     if (isError) {
       logger.error(scanError);
@@ -306,6 +313,12 @@ const ScanPage: React.FC = () => {
           />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
+      );
+    } else if (isUnsupportedDangerousRequest) {
+      return (
+        <TransactionUnsupportedScreen
+          closeWindow={() => handleUserDecision(false)}
+        />
       );
     } else if (isWrongAccount) {
       return (
@@ -422,24 +435,25 @@ const ScanPage: React.FC = () => {
   }, [
     scanResults,
     scanError,
-    hasDismissedScreen,
-    closeWindow,
-    isMessageSignatureRequest,
-    mutate,
-    connectedAddress,
     chainFamily,
     chainNetwork,
-    message,
-    isRetrying,
-    isConnecting,
-    isSwitchingNetworks,
-    skipUnsupportedChainWarning,
+    connectedAddress,
+    userAccount,
     chainId,
     connectedChainId,
-    switchNetworkAsync,
+    message,
+    hasDismissedScreen,
+    mutate,
+    isConnecting,
+    closeWindow,
     connectAsync,
+    handleUserDecision,
     disconnectAsync,
-    userAccount,
+    isSwitchingNetworks,
+    switchNetworkAsync,
+    skipUnsupportedChainWarning,
+    isMessageSignatureRequest,
+    isRetrying,
   ]);
 
   return (
@@ -463,6 +477,7 @@ const ScanPage: React.FC = () => {
                   chainNetwork={chainNetwork}
                 />
                 <ApproveBottomMenu
+                  isImpersonatingWallet={!!request.isImpersonatingWallet}
                   onContinue={() => handleUserDecision(true)}
                   onCancel={() => handleUserDecision(false)}
                 />

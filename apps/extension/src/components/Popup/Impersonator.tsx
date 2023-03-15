@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { SmallButtonPrimary } from "~components/Buttons";
@@ -27,7 +27,7 @@ const ImpersonatorWrapper = styled.div`
   margin: 8px 0;
 `;
 
-const WalletInformationContainer = styled.div`
+const WalletInformationContainer = styled.form`
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 1em;
@@ -38,6 +38,7 @@ const GreenText = styled(Text)`
 `;
 
 const Impersonator: React.FC = () => {
+  const walletImpersonatorInputRef = useRef<HTMLInputElement>(null);
   const [isEnabled, setIsEnabled] = useState(true);
   const [impersonationWalletAddress, setImpersonationWalletAddress] =
     useState("");
@@ -58,6 +59,12 @@ const Impersonator: React.FC = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (isEnabled && walletImpersonatorInputRef.current) {
+      walletImpersonatorInputRef.current.focus();
+    }
+  }, [isEnabled]);
 
   const updateImpersonationWallet = (address: string) => {
     setCurrentImpersonationWallet(address);
@@ -90,19 +97,20 @@ const Impersonator: React.FC = () => {
         />
       </Row>
       {isEnabled && (
-        <WalletInformationContainer>
+        <WalletInformationContainer
+          onSubmit={(e) => {
+            e.preventDefault();
+            updateImpersonationWallet(impersonationWalletAddress);
+          }}
+        >
           <Input
             error={!isAddressValid}
             type="text"
             value={impersonationWalletAddress || ""}
             onChange={(e) => setImpersonationWalletAddress(e.target.value)}
+            ref={walletImpersonatorInputRef}
           />
-          <SmallButtonPrimary
-            disabled={!isAddressValid}
-            onClick={() =>
-              updateImpersonationWallet(impersonationWalletAddress)
-            }
-          >
+          <SmallButtonPrimary type="submit" disabled={!isAddressValid}>
             Update
           </SmallButtonPrimary>
         </WalletInformationContainer>

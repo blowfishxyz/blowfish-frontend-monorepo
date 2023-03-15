@@ -3,7 +3,10 @@ import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React, { useState } from "react";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
-import { TransactionBlockedScreen } from "../components/InformationScreens";
+import {
+  TransactionBlockedScreen,
+  TransactionUnsupportedScreen,
+} from "../components/InformationScreens";
 import {
   PopupContainer,
   PopupContainerProps,
@@ -14,12 +17,14 @@ import {
   exampleDappUrl,
   exampleNftSignTypedDataRequest,
   examplePermitSignTypeDataRequest,
+  exampleEthSignRequest,
   exampleTransactionRequest,
   messageNoActionScanResult,
   messageWarnResultScanResult,
   transactionBlockScanResult,
   transactionNoActionScanResult,
   transactionWarningScanResult,
+  exampleEthSignScanResult,
 } from "./fixtures/scan";
 
 export default {
@@ -34,6 +39,11 @@ export default {
   },
 } as ComponentMeta<typeof PopupContainer>;
 
+enum ScanResultScreenType {
+  INFO = "INFO",
+  UNSUPPORTED = "UNSUPPORTED",
+  WARNING = "WARNING",
+}
 export const TransactionNoAction: ComponentStory<
   React.FC<PopupContainerProps & ScanResultsProps>
 > = (props) => {
@@ -49,8 +59,16 @@ export const TransactionNoAction: ComponentStory<
     severity = actionToSeverity(scanResults.action);
   }
 
-  const shouldShowWarningScreen =
-    scanResults.action === "BLOCK" && !hasDismissedWarningScreen;
+  let screenType = ScanResultScreenType.INFO;
+  if (
+    request?.payload &&
+    "method" in request.payload &&
+    request.payload.method === "eth_sign"
+  ) {
+    screenType = ScanResultScreenType.UNSUPPORTED;
+  } else if (scanResults.action === "BLOCK" && !hasDismissedWarningScreen) {
+    screenType = ScanResultScreenType.WARNING;
+  }
 
   return (
     <div style={{ width: "392px", minHeight: "748px" }}>
@@ -63,24 +81,32 @@ export const TransactionNoAction: ComponentStory<
           }}
           {...props}
           severity={severity}
-          bottomMenuType={shouldShowWarningScreen ? "SLIM" : "NONE"}
+          bottomMenuType={screenType !== "INFO" ? "SLIM" : "FULL"}
         >
-          {shouldShowWarningScreen ? (
+          {}
+          {screenType === "WARNING" && (
             <>
               <TransactionBlockedScreen
                 onContinue={() => setHasDismissedWarningScreen(true)}
               />
               <SlimBottomMenu
-                style={{
-                  /* NOTE: This is only applicable in the context of the storybook,
-                   * in the extension we want this fixed to to bottom of the window */
-                  position: "absolute",
-                }}
                 onClick={() => alert("ABORTED...")}
                 buttonLabel="Close"
               />
             </>
-          ) : (
+          )}
+          {screenType === "UNSUPPORTED" && (
+            <>
+              <TransactionUnsupportedScreen
+                closeWindow={() => alert("CLOSING...")}
+              />
+              <SlimBottomMenu
+                onClick={() => alert("ABORTED...")}
+                buttonLabel="Close"
+              />
+            </>
+          )}
+          {screenType === "INFO" && (
             <>
               <ScanResults
                 request={request}
@@ -90,11 +116,7 @@ export const TransactionNoAction: ComponentStory<
                 chainFamily="ethereum"
               />
               <ApproveBottomMenu
-                style={{
-                  /* NOTE: This is only applicable in the context of the storybook,
-                   * in the extension we want this fixed to to bottom of the window */
-                  position: "absolute",
-                }}
+                isImpersonatingWallet={false}
                 onContinue={() => alert("PROCEEDING...")}
                 onCancel={() => alert("CANCEL")}
               />
@@ -114,6 +136,13 @@ TransactionWarn.args = {
 export const TransactionBlock = TransactionWarn.bind({});
 TransactionBlock.args = {
   scanResults: transactionBlockScanResult,
+};
+
+export const TransactionUnsupported = TransactionNoAction.bind({});
+TransactionUnsupported.args = {
+  request: exampleEthSignRequest,
+  scanResults: exampleEthSignScanResult,
+  severity: "CRITICAL",
 };
 
 export const MessageNoAction = TransactionNoAction.bind({});

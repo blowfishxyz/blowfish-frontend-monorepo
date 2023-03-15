@@ -6,7 +6,7 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "build-all": "pnpm run --parallel --filter \"@blowfish/transaction-portal\" --filter \"@blowfish/extension\" build",
-    "start": "next start",
+    "start": "next start -p 3001",
     "test": "pnpm jest --passWithNoTests",
     "lint:next": "next lint",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",

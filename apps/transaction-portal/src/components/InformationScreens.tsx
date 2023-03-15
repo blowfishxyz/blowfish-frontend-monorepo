@@ -1,5 +1,5 @@
-import React, { useState, PropsWithChildren } from "react";
-import styled from "styled-components";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import styled, { keyframes } from "styled-components";
 
 import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
@@ -10,10 +10,21 @@ import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
 } from "./icons/BlowfishWarningIcons";
+import { sendPauseResumeSelection } from "~utils/messages";
+import { SlimBottomMenu } from "~components/BottomMenus";
+import { useLocalStorage } from "react-use";
+import {
+  BlowfishPausedOptionType,
+  PAUSE_DURATIONS,
+  PauseDuration,
+  PREFERENCES_BLOWFISH_PAUSED,
+  useTransactionScannerPauseResume,
+} from "@blowfish/hooks";
 
 interface SharedProps {
   darkMode?: boolean;
 }
+
 const StyledTextXL = styled(TextXL)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
@@ -62,32 +73,125 @@ const WarningMessageWrapper = styled.div`
   }
 `;
 
+const StyledTextButton = styled(TextButton)`
+  display: flex;
+  align-items: center;
+`;
+const ellipsis = keyframes`
+  to {
+    width: 16px;
+  }
+`;
+const StyledTextWithEllipsisAnimation = styled(StyledText)`
+  display: flex;
+  width: 190px;
+  font-weight: 400;
+  opacity: 0.6;
+
+  &:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    animation: ${ellipsis} steps(4, end) 1200ms infinite;
+    content: "\\2026"; /* ascii code for the ellipsis character */
+    width: 0;
+  }
+`;
+
 export interface TransactionBlockedScreenProps {
   onContinue: () => void;
+  headline?: string;
+  message?: string;
+  continueButtonLabel?: string;
+  confirmationText?: string;
 }
+
 export const TransactionBlockedScreen: React.FC<
   TransactionBlockedScreenProps
-> = ({ onContinue }) => {
+> = ({
+  onContinue,
+  headline = "Transaction Flagged",
+  message = "We believe this transaction is malicious and unsafe to sign. Approving may lead to loss of funds",
+  continueButtonLabel = "Ignore warning, proceed anyway",
+  confirmationText,
+}) => {
+  const [showConfirmationText, setShowConfirmationText] =
+    useState<boolean>(false);
+
+  const continueClicked = () => {
+    if (confirmationText) {
+      setShowConfirmationText(true);
+    }
+    onContinue();
+  };
+
   return (
     <Wrapper darkMode>
       <StyledBlowfishWarningIcon severity="CRITICAL" />
-      <StyledTextXL darkMode>Transaction Flagged</StyledTextXL>
-      <StyledText darkMode>
-        We believe this transaction is malicious and unsafe to sign. Approving
-        may lead to loss of funds
-      </StyledText>
-      <StyledTextButton onClick={onContinue}>
-        <StyledText
-          darkMode
-          style={{
-            fontWeight: 400,
-            opacity: 0.6,
-          }}
-        >
-          Ignore warning, proceed anyway
-        </StyledText>
-      </StyledTextButton>
+      <StyledTextXL darkMode>{headline}</StyledTextXL>
+      <StyledText darkMode>{message}</StyledText>
+      {showConfirmationText ? (
+        <StyledTextWithEllipsisAnimation darkMode>
+          {confirmationText}
+        </StyledTextWithEllipsisAnimation>
+      ) : (
+        <StyledTextButton onClick={continueClicked}>
+          <StyledText
+            darkMode
+            style={{
+              fontWeight: 400,
+              opacity: 0.6,
+            }}
+          >
+            {continueButtonLabel}
+          </StyledText>
+        </StyledTextButton>
+      )}
     </Wrapper>
+  );
+};
+
+interface TransactionUnsupportedScreenProps {
+  closeWindow: () => void;
+}
+
+export const TransactionUnsupportedScreen = ({
+  closeWindow,
+}: TransactionUnsupportedScreenProps) => {
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
+  const { pauseScan } = useTransactionScannerPauseResume(
+    scanPaused,
+    setScanPaused
+  );
+
+  useEffect(() => {
+    return () => timeoutRef?.current && clearTimeout(timeoutRef.current);
+  }, []);
+
+  const pauseScannerAndCloseWindow = async () => {
+    pauseScan(PauseDuration.OneHour);
+    sendPauseResumeSelection({
+      isPaused: true,
+      until: Date.now() + PAUSE_DURATIONS[PauseDuration.OneHour],
+    });
+    timeoutRef.current = setTimeout(() => {
+      closeWindow();
+    }, 2000);
+  };
+  return (
+    <>
+      <TransactionBlockedScreen
+        headline="Dangerous unsupported action"
+        message="Signing messages with the eth_sign method is dangerous and should be avoided at all times. We cannot simulate the outcomes of this action"
+        continueButtonLabel="Ignore warning and turn off Blowfish Protect for 1 hour"
+        confirmationText={`Pausing scanning for ${PauseDuration.OneHour}`}
+        onContinue={pauseScannerAndCloseWindow}
+      />
+      <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+    </>
   );
 };
 
@@ -95,6 +199,7 @@ interface RetryButtonProps extends PropsWithChildren {
   onRetry: () => void;
   isRetrying: boolean;
 }
+
 const RetryButton: React.FC<RetryButtonProps> = ({
   onRetry,
   isRetrying,
@@ -118,6 +223,7 @@ export interface SimulationErrorScreenProps {
   onRetry?: () => void;
   isRetrying?: boolean;
 }
+
 export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
   style,
   className,
@@ -151,11 +257,6 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
 // TODO(kimpers): Checkbox styling
 const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
   margin-right: 13px;
-`;
-
-const StyledTextButton = styled(TextButton)`
-  display: flex;
-  align-items: center;
 `;
 
 export interface UnsupportedChainScreenProps {

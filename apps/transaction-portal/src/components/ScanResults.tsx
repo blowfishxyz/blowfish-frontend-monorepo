@@ -17,7 +17,7 @@ import {
   isTransactionRequest,
 } from "@blowfish/utils/types";
 import { Decimal } from "decimal.js";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { isNativeAsset, shortenHex } from "../utils/hex";
@@ -237,9 +237,17 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     useTransactionScannerPauseResume(scanPaused, setScanPaused);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
 
-  useInterval(async () => {
+  const getPauseResumeSelectionStatus = useCallback(async () => {
     const data = await getPauseResumeSelection();
     setScanPaused(data);
+  }, [setScanPaused]);
+
+  useEffect(() => {
+    getPauseResumeSelectionStatus();
+  }, [getPauseResumeSelectionStatus]);
+
+  useInterval(async () => {
+    getPauseResumeSelectionStatus();
   }, 3000);
 
   const expectedStateChangesProcessed = useMemo(
