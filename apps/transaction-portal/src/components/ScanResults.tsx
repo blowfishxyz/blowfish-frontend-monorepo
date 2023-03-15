@@ -1,4 +1,5 @@
 import { BLOWFISH_FEEDBACK_URL } from "../constants";
+import dynamic from "next/dynamic";
 import type {
   ChainFamily,
   ChainNetwork,
@@ -23,7 +24,6 @@ import styled from "styled-components";
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
 import { BaseButton } from "./BaseButton";
-import { JsonViewer } from "./JsonViewer";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
 import { WarningNotice } from "./WarningNotice";
@@ -46,6 +46,14 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
+
+const DynamicJsonViewer = dynamic(
+  () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
+  {
+    ssr: false,
+    loading: () => <TextSmall>Loading...</TextSmall>,
+  }
+);
 
 type NftStateChangeWithTokenId =
   | Erc721TransferData
@@ -200,7 +208,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
           <Text>Feedback</Text>
         </LinkWithArrow>
       </Row>
-      {showAdvancedDetails && content && <JsonViewer data={content} />}
+      {showAdvancedDetails && content && <DynamicJsonViewer data={content} />}
     </Section>
   );
 };

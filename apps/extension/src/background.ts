@@ -66,12 +66,6 @@ const responseProcessingMiddleware = async (
   }
 };
 
-const setExtensionOptionFromTransactionPortal = (
-  message: Message<UntypedMessageData>
-) => {
-  storage.set(message.data.key, message.data.value);
-};
-
 const getExtensionOptionFromTransactionPortal = async (
   message: Message<UntypedMessageData>
 ) => {
@@ -81,16 +75,18 @@ const getExtensionOptionFromTransactionPortal = async (
   return createRawMessage(message.type, pausedOptions || null);
 };
 
-const onBrowserMessageListener = (
+// HACK(kimpers): If we don't returna Promise of something here the sender will be stuck waiting for a response indefinitely
+// see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
+const onBrowserMessageListener = async (
   message: Message<UntypedMessageData>
-): Promise<Message<UntypedMessageData>> | void => {
+): Promise<Message<UntypedMessageData> | true> => {
   if (message.type === RequestType.BlowfishOptions) {
     return getExtensionOptionFromTransactionPortal(message);
   }
 
   if (message.type === RequestType.SetBlowfishOptions) {
-    setExtensionOptionFromTransactionPortal(message);
-    return undefined;
+    storage.set(message.data.key, message.data.value);
+    return true;
   }
 
   const responseRemotePort = messageToPortMapping.get(message.id);
@@ -106,7 +102,7 @@ const onBrowserMessageListener = (
       `Missing remote port for message ${message.id}: ${message.type}`
     );
   }
-  return undefined;
+  return true;
 };
 
 Browser.runtime.onConnect.addListener(setupRemoteConnection);
@@ -142,6 +138,14 @@ const processRequestBase = async (
     }
   }
 
+  const currentTab = await Browser.tabs
+    .query({
+      active: true,
+      currentWindow: true,
+    })
+    .then((tabs) => tabs[0]);
+  const currentTabId = currentTab?.id;
+
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
@@ -157,17 +161,33 @@ const processRequestBase = async (
   messageToPortMapping.set(message.id, remotePort);
   const tab = await tabPromise;
   const tabId = tab.id!;
-  Browser.tabs.onRemoved.addListener((removedTabId) => {
-    // If the window is closed before we received a response we assume cancel
-    // as the user probably just closed the window
-    if (removedTabId === tabId && messageToPortMapping.has(message.id)) {
-      logger.debug(
-        "Window closed without response, assuming the user wants to cancel"
-      );
-      const responseData: UserDecisionResponse = { isOk: false };
-      postResponseToPort(remotePort, message, responseData);
+  const handleRemovedTab = (removedTabId: number) => {
+    if (removedTabId === tabId) {
+      // If the window is closed before we received a response we assume cancel
+      // as the user probably just closed the window
+      if (messageToPortMapping.has(message.id)) {
+        messageToPortMapping.delete(message.id);
+        logger.debug(
+          "Window closed without response, assuming the user wants to cancel"
+        );
+        const responseData: UserDecisionResponse = { isOk: false };
+        postResponseToPort(remotePort, message, responseData);
+      }
+
+      // We want to restore the focus to the tab that the user was on
+      // when they initiated the transaction
+      if (currentTabId) {
+        Browser.tabs
+          .update(currentTabId, { active: true })
+          .catch((err) => logger.error(err));
+      }
+
+      // Clean up listner as it's no longer relevant
+      Browser.tabs.onRemoved.removeListener(handleRemovedTab);
     }
-  });
+  };
+
+  Browser.tabs.onRemoved.addListener(handleRemovedTab);
 };
 
 const processTransactionRequest = async (
