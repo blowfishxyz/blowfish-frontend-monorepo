@@ -97,7 +97,9 @@ export const TransactionNoAction: ComponentStory<
           )}
           {screenType === "UNSUPPORTED" && (
             <>
-              <TransactionUnsupportedScreen closeWindow={() => {}} />
+              <TransactionUnsupportedScreen
+                closeWindow={() => alert("CLOSING...")}
+              />
               <SlimBottomMenu
                 onClick={() => alert("ABORTED...")}
                 buttonLabel="Close"
