@@ -151,13 +151,13 @@ export const TransactionBlockedScreen: React.FC<
   );
 };
 
-interface TransactionExcludedScreenProps {
+interface TransactionUnsupportedScreenProps {
   closeWindow: () => void;
 }
 
-export const TransactionExcludedScreen = ({
+export const TransactionUnsupportedScreen = ({
   closeWindow,
-}: TransactionExcludedScreenProps) => {
+}: TransactionUnsupportedScreenProps) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
     PREFERENCES_BLOWFISH_PAUSED

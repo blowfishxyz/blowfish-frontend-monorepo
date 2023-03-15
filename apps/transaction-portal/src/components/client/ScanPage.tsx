@@ -22,7 +22,7 @@ import {
   AccountNotConnectedScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
-  TransactionExcludedScreen,
+  TransactionUnsupportedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
   WrongChainScreen,
@@ -316,7 +316,7 @@ const ScanPage: React.FC = () => {
       );
     } else if (isUnsupportedDangerousRequest) {
       return (
-        <TransactionExcludedScreen
+        <TransactionUnsupportedScreen
           closeWindow={() => handleUserDecision(false)}
         />
       );
