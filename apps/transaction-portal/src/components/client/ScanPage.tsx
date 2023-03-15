@@ -283,9 +283,6 @@ const ScanPage: React.FC = () => {
                 throw err;
               }
             }
-          } else {
-            // TODO(kimpers): Handle this is we want to support it or inform the user
-            alert("ETH_SIGN IS DANGEROUS AND THEREFORE NOT SUPPORTED");
           }
         } else {
           // TODO(kimpers): This should never happen
