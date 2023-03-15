@@ -12,7 +12,12 @@ import {
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
 import { TextSmall } from "./Typography";
-import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
+import {
+  EthereumIcon,
+  PolygonIcon,
+  ArbitrumIcon,
+  BnbChainIcon,
+} from "./icons/ChainIcons";
 import { WalletIcon } from "./icons/WalletIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
@@ -26,15 +31,21 @@ const StyledWalletIcon = styled(WalletIcon)`
   }
 `;
 
-const StyledEthereumIcon = styled(EthereumIcon)`
-  height: 16px;
-  width: auto;
-`;
-
-const StyledPolygonIcon = styled(PolygonIcon)`
-  height: 14px;
-  width: auto;
-`;
+const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
+  chainFamily,
+}) => {
+  switch (chainFamily) {
+    case "ethereum":
+      return <EthereumIcon style={{ height: "16px", width: "auto" }} />;
+    case "polygon":
+      return <PolygonIcon style={{ height: "14px", width: "auto" }} />;
+    case "arbitrum":
+      return <ArbitrumIcon style={{ height: "16px", width: "auto" }} />;
+    case "bsc":
+      return <BnbChainIcon style={{ height: "16px", width: "auto" }} />;
+  }
+};
+const IconForChainMemo = React.memo(IconForChain);
 
 const HeaderLeft = styled.div`
   position: absolute;
@@ -123,11 +134,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       )}
       {chainFamily && chainNetwork && (
         <HeaderRight>
-          {chainFamily === "polygon" ? (
-            <StyledPolygonIcon />
-          ) : (
-            <StyledEthereumIcon />
-          )}
+          <IconForChainMemo chainFamily={chainFamily} />
           <span>
             {chainFamily} {chainNetwork}
           </span>
