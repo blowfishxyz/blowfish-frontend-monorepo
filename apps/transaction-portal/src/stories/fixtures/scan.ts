@@ -168,7 +168,7 @@ export const exampleEthSignRequest: SignMessageRequest = {
   },
   chainId: "1",
   userAccount: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-  isImpersonatingWallet: true,
+  isImpersonatingWallet: "true",
 };
 
 export const transactionNoActionScanResult: EvmTransactionScanResult = {
