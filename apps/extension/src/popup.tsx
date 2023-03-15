@@ -130,7 +130,7 @@ const StatusIndicator = ({
     <StatusIndicatorWrapper gap="sm" paused={paused}>
       <Indicator paused={paused} />
       {paused && until ? (
-        <>Paused until {transformDate(until)}</>
+        <>Scanning Paused until {transformDate(until)}</>
       ) : (
         <>Running</>
       )}
