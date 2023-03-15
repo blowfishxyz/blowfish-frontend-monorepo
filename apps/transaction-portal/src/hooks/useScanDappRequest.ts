@@ -2,8 +2,6 @@ import useSWR, { SWRResponse } from "swr";
 
 import {
   DappRequest,
-  ExcludedDangerousRequestResult,
-  isExcludedDangerousRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
@@ -34,45 +32,19 @@ export const getCacheKey = (
   return [chainFamily, chainNetwork, request, origin];
 };
 
-const generateExcludedDangerousRequestResult = (
-  request: DappRequest
-): ExcludedDangerousRequestResult => {
-  let message = "The transaction is dangerous and should not be used.";
-  if ("method" in request.payload) {
-    message = `"${request.payload.method}" is dangerous and should not be used.`;
-  }
-  return {
-    action: "BLOCK",
-    warnings: [
-      {
-        kind: "EXCLUDED_DANGEROUS_REQUEST",
-        message,
-        severity: "CRITICAL",
-      },
-    ],
-    simulationResults: undefined,
-  };
-};
-
 const fetcher = async (
   chainFamily: ChainFamily,
   chainNetwork: ChainNetwork,
   request: DappRequest,
   origin: string
-): Promise<
-  | EvmTransactionScanResult
-  | EvmMessageScanResult
-  | ExcludedDangerousRequestResult
-> => {
+): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
   const client = new BlowfishApiClient(
     chainFamily,
     chainNetwork,
     undefined,
     BLOWFISH_API_BASE_URL
   );
-  if (isExcludedDangerousRequest(request)) {
-    return generateExcludedDangerousRequestResult(request);
-  } else if (isTransactionRequest(request)) {
+  if (isTransactionRequest(request)) {
     return client.scanTransaction(request.payload, request.userAccount, {
       origin,
     });
@@ -95,12 +67,7 @@ export const useScanDappRequest = (
   chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
   origin: string | undefined
-): SWRResponse<
-  | EvmTransactionScanResult
-  | EvmMessageScanResult
-  | ExcludedDangerousRequestResult,
-  Error
-> => {
+): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
   return useSWR(
     getCacheKey(chainFamily, chainNetwork, request, origin),
     (params) => fetcher(...params),

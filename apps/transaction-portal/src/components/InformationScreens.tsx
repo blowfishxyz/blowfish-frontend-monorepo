@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
 import { TextButton } from "./Buttons";
@@ -10,6 +10,16 @@ import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
 } from "./icons/BlowfishWarningIcons";
+import { sendPauseResumeSelection } from "~utils/messages";
+import { SlimBottomMenu } from "~components/BottomMenus";
+import { useLocalStorage } from "react-use";
+import {
+  BlowfishPausedOptionType,
+  PAUSE_DURATIONS,
+  PauseDuration,
+  PREFERENCES_BLOWFISH_PAUSED,
+  useTransactionScannerPauseResume,
+} from "@blowfish/hooks";
 
 interface SharedProps {
   darkMode?: boolean;
@@ -138,6 +148,50 @@ export const TransactionBlockedScreen: React.FC<
         </StyledTextButton>
       )}
     </Wrapper>
+  );
+};
+
+interface TransactionExcludedScreenProps {
+  closeWindow: () => void;
+}
+
+export const TransactionExcludedScreen = ({
+  closeWindow,
+}: TransactionExcludedScreenProps) => {
+  const timeoutRef = useRef<NodeJS.Timeout>();
+  const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
+    PREFERENCES_BLOWFISH_PAUSED
+  );
+  const { pauseScan } = useTransactionScannerPauseResume(
+    scanPaused,
+    setScanPaused
+  );
+
+  useEffect(() => {
+    return () => timeoutRef?.current && clearTimeout(timeoutRef.current);
+  }, []);
+
+  const pauseScannerAndCloseWindow = async () => {
+    pauseScan(PauseDuration.OneHour);
+    sendPauseResumeSelection({
+      isPaused: true,
+      until: Date.now() + PAUSE_DURATIONS[PauseDuration.OneHour],
+    });
+    timeoutRef.current = setTimeout(() => {
+      closeWindow();
+    }, 2000);
+  };
+  return (
+    <>
+      <TransactionBlockedScreen
+        headline="Dangerous unsupported action"
+        message="Signing messages with the eth_sign method is dangerous and should be avoided at all times. We cannot simulate the outcomes of this action"
+        continueButtonLabel="Ignore warning and turn off Blowfish Protect for 1 hour"
+        confirmationText={`Pausing scanning for ${PauseDuration.OneHour}`}
+        onContinue={pauseScannerAndCloseWindow}
+      />
+      <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+    </>
   );
 };
 

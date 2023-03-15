@@ -1,5 +1,4 @@
 import type { Action, SignTypedDataPayload } from "./BlowfishApiClient";
-import type { Warning } from "./BlowfishApiClient";
 
 export { SignTypedDataPayload };
 
@@ -49,6 +48,7 @@ export interface UntypedMessageData {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
+
 export interface Message<T extends object> {
   id: string;
   data: T;
@@ -97,15 +97,18 @@ export interface SignTypedDataRequest extends BaseRequest {
   payload: SignTypedDataPayload;
   isImpersonatingWallet?: boolean;
 }
+
 export const isSignTypedDataRequest = (
   req: DappRequest
 ): req is SignTypedDataRequest => req.type === RequestType.SignTypedData;
 
 export type SignMessageMethod = "eth_sign" | "personal_sign";
+
 export interface SignMessagePayload {
   method: SignMessageMethod;
   message: string;
 }
+
 export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
@@ -117,16 +120,6 @@ export interface BlowfishOptionRequest {
   option: string;
 }
 
-interface WithExcludedDangerousWarning extends Omit<Warning, "kind"> {
-  kind: "EXCLUDED_DANGEROUS_REQUEST";
-}
-
-export interface ExcludedDangerousRequestResult {
-  action: Action;
-  warnings: Array<WithExcludedDangerousWarning>;
-  simulationResults: undefined;
-}
-
 export const isSignMessageRequest = (
   req: DappRequest
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
@@ -134,18 +127,6 @@ export const isSignMessageRequest = (
 export type UserDecisionOpts = {
   skipUnsupportedChainWarning?: boolean;
   chainId: string;
-};
-
-const EXCLUDED_DANGEROUS_REQUESTS = new Set<string>(["eth_sign"]);
-
-export const isExcludedDangerousRequest = (
-  request: DappRequest | undefined
-): boolean => {
-  return (
-    !!request &&
-    isSignMessageRequest(request) &&
-    EXCLUDED_DANGEROUS_REQUESTS.has(request.payload.method)
-  );
 };
 
 export type UserDecisionResponse =

@@ -1,11 +1,5 @@
 import qs from "qs";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
   useAccount,
@@ -28,6 +22,7 @@ import {
   AccountNotConnectedScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
+  TransactionExcludedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
   WrongChainScreen,
@@ -36,11 +31,7 @@ import { LoadingScreen } from "../LoadingScreen";
 import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import {
-  sendAbort,
-  sendPauseResumeSelection,
-  sendResult,
-} from "~utils/messages";
+import { sendAbort, sendResult } from "~utils/messages";
 import {
   actionToSeverity,
   DappRequest,
@@ -55,14 +46,6 @@ import {
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "~utils/logger";
-import { useLocalStorage } from "react-use";
-import {
-  PauseDuration,
-  PREFERENCES_BLOWFISH_PAUSED,
-  BlowfishPausedOptionType,
-  useTransactionScannerPauseResume,
-  PAUSE_DURATIONS,
-} from "@blowfish/hooks";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -71,51 +54,6 @@ const ScanPageContainer = styled.div<{ severity?: Severity }>`
   background-color: ${({ severity, theme }) =>
     theme.contextBackgroundColors[severity ?? "INFO"]};
 `;
-
-interface TransactionExcludedScreenProps {
-  message: string;
-  closeWindow: () => void;
-}
-const TransactionExcludedScreen = ({
-  message,
-  closeWindow,
-}: TransactionExcludedScreenProps) => {
-  const timeoutRef = useRef<NodeJS.Timeout>();
-  const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
-  );
-  const { pauseScan } = useTransactionScannerPauseResume(
-    scanPaused,
-    setScanPaused
-  );
-
-  useEffect(() => {
-    return () => timeoutRef?.current && clearTimeout(timeoutRef.current);
-  }, []);
-
-  const pauseScannerAndCloseWindow = async () => {
-    pauseScan(PauseDuration.OneHour);
-    sendPauseResumeSelection({
-      isPaused: true,
-      until: Date.now() + PAUSE_DURATIONS[PauseDuration.OneHour],
-    });
-    timeoutRef.current = setTimeout(() => {
-      closeWindow();
-    }, 2000);
-  };
-  return (
-    <>
-      <TransactionBlockedScreen
-        headline="Known Dangerous Transaction"
-        message={message}
-        continueButtonLabel="Click to pause scanner"
-        confirmationText={`Pausing scanning for ${PauseDuration.OneHour}`}
-        onContinue={pauseScannerAndCloseWindow}
-      />
-      <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
-    </>
-  );
-};
 
 const ScanPage: React.FC = () => {
   const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
@@ -301,11 +239,18 @@ const ScanPage: React.FC = () => {
   logger.debug(message);
   logger.debug(request);
 
-  const severity = useMemo(
-    () =>
-      scanResults?.action ? actionToSeverity(scanResults?.action) : undefined,
-    [scanResults?.action]
-  );
+  const severity = useMemo(() => {
+    if (
+      request?.payload &&
+      "method" in request.payload &&
+      request?.payload?.method === "eth_sign"
+    ) {
+      return actionToSeverity("BLOCK");
+    }
+    return scanResults?.action
+      ? actionToSeverity(scanResults?.action)
+      : undefined;
+  }, [request?.payload, scanResults?.action]);
 
   const hasAllData =
     scanResults &&
@@ -333,9 +278,8 @@ const ScanPage: React.FC = () => {
       !!(chainId && connectedChainId) &&
       !isUnsupportedChain &&
       chainId !== connectedChainId;
-    const isExcludedDangerousRequest =
-      scanResults?.warnings?.length &&
-      scanResults?.warnings[0].kind === "EXCLUDED_DANGEROUS_REQUEST";
+    const isUnsupportedDangerousRequest =
+      message?.data.payload.method === "eth_sign";
 
     if (isError) {
       logger.error(scanError);
@@ -370,10 +314,9 @@ const ScanPage: React.FC = () => {
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
       );
-    } else if (isExcludedDangerousRequest) {
+    } else if (isUnsupportedDangerousRequest) {
       return (
         <TransactionExcludedScreen
-          message={scanResults?.warnings[0].message}
           closeWindow={() => handleUserDecision(false)}
         />
       );
