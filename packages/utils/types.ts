@@ -1,5 +1,5 @@
 import type { Action, SignTypedDataPayload } from "./BlowfishApiClient";
-import { Warning } from "./BlowfishApiClient";
+import type { Warning } from "./BlowfishApiClient";
 
 export { SignTypedDataPayload };
 
