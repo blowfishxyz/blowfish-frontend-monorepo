@@ -477,7 +477,9 @@ const ScanPage: React.FC = () => {
                   chainNetwork={chainNetwork}
                 />
                 <ApproveBottomMenu
-                  isImpersonatingWallet={!!request.isImpersonatingWallet}
+                  isImpersonatingWallet={
+                    request.isImpersonatingWallet === "true"
+                  }
                   onContinue={() => handleUserDecision(true)}
                   onCancel={() => handleUserDecision(false)}
                 />
