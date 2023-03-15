@@ -410,6 +410,7 @@ export const exampleEthSignScanResult: EvmMessageScanResult = {
   action: "WARN",
   warnings: [
     {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       kind: "ETH_SIGN_TX_HASH" as any,
       message:
         "You are signing what could be a transaction hash, which is a valid Ethereum transaction. Approving may lead to loss of funds.",
