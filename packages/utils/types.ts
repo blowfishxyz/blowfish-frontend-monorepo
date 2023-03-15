@@ -85,7 +85,7 @@ interface BaseRequest {
 export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;
-  isImpersonatingWallet?: boolean;
+  isImpersonatingWallet?: string;
 }
 
 export const isTransactionRequest = (
@@ -95,7 +95,7 @@ export const isTransactionRequest = (
 export interface SignTypedDataRequest extends BaseRequest {
   type: RequestType.SignTypedData;
   payload: SignTypedDataPayload;
-  isImpersonatingWallet?: boolean;
+  isImpersonatingWallet?: string;
 }
 
 export const isSignTypedDataRequest = (
@@ -112,7 +112,7 @@ export interface SignMessagePayload {
 export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
-  isImpersonatingWallet?: boolean;
+  isImpersonatingWallet?: string;
 }
 
 export interface BlowfishOptionRequest {

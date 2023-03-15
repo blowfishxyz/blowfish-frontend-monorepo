@@ -6,6 +6,7 @@ import { BLOWFISH_TRANSACTION_PORTAL_URL } from "../config";
 
 export interface QueryParams {
   type: RequestType;
+  extensionVersion: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }

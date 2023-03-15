@@ -21,7 +21,10 @@ import { Column } from "~components/common/Column";
 import Row from "~components/common/Row";
 import { PauseIcon } from "~components/icons/PauseIcon";
 import { PlayIcon } from "~components/icons/PlayIcon";
-import { IS_IMPERSONATION_AVAILABLE } from "~config";
+import {
+  BLOWFISH_EXTENSION_VERSION,
+  IS_IMPERSONATION_AVAILABLE,
+} from "~config";
 import { opacify, transformDate } from "~utils/utils";
 
 import { PopupContainer } from "./components/PopupContainer";
@@ -119,6 +122,11 @@ const InfoContainer = styled.div`
   opacity: 0.2;
 `;
 
+const ExtensionVersion = styled(Text)`
+  font-size: 12px;
+  opacity: 0.2;
+`;
+
 const StatusIndicator = ({
   paused,
   until,
@@ -159,13 +167,15 @@ const Popup: React.FC = () => {
     setShowDurationSelector(false);
     pauseScan(duration);
   };
-
   return (
     <StyledPopupContainer>
-      <StatusIndicator
-        paused={isScanPaused ?? false}
-        until={scanPausedUntil ?? null}
-      />
+      <Row>
+        <StatusIndicator
+          paused={isScanPaused ?? false}
+          until={scanPausedUntil ?? null}
+        />
+        <ExtensionVersion>v.{BLOWFISH_EXTENSION_VERSION}</ExtensionVersion>
+      </Row>
       <WalletHeroImage
         src={walletHero}
         alt="wallet"

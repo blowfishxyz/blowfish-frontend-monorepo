@@ -13,6 +13,8 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
+import { BLOWFISH_EXTENSION_VERSION } from "~config";
+
 import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
@@ -151,6 +153,7 @@ const processRequestBase = async (
   logger.debug(message);
   const tabPromise = createTransactionPortalTab({
     ...message,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION!,
     data: {
       ...message.data,
       isImpersonatingWallet,
