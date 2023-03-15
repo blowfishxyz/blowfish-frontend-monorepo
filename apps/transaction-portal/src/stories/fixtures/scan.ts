@@ -4,6 +4,7 @@ import type {
 } from "@blowfish/utils/BlowfishApiClient";
 import {
   RequestType,
+  SignMessageRequest,
   SignTypedDataRequest,
   TransactionRequest,
 } from "@blowfish/utils/types";
@@ -156,6 +157,18 @@ export const examplePermitSignTypeDataRequest: SignTypedDataRequest = {
         "115792089237316195423570985008687907853269984665640564039457584007913129639935",
     },
   },
+};
+
+export const exampleEthSignRequest: SignMessageRequest = {
+  type: RequestType.SignMessage,
+  payload: {
+    method: "eth_sign",
+    message:
+      "0x879a053d4800c6354e76c7985a865d2922c82fb5b3f4577b2fe08b998954f2e0",
+  },
+  chainId: "1",
+  userAccount: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+  isImpersonatingWallet: true,
 };
 
 export const transactionNoActionScanResult: EvmTransactionScanResult = {
@@ -391,6 +404,19 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
     ],
     error: null,
   },
+};
+
+export const exampleEthSignScanResult: EvmMessageScanResult = {
+  action: "WARN",
+  warnings: [
+    {
+      kind: "ETH_SIGN_TX_HASH" as any,
+      message:
+        "You are signing what could be a transaction hash, which is a valid Ethereum transaction. Approving may lead to loss of funds.",
+      severity: "WARNING",
+    },
+  ],
+  simulationResults: null,
 };
 
 export const exampleDappUrl = "https://app.uniswap.org/#/swap";
