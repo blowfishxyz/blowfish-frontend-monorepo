@@ -5,6 +5,7 @@
 import { isSupportedChainId } from "@blowfish/utils/chains";
 import {
   Identifier,
+  Message,
   SignMessageMethod,
   SignMessageRequest,
   SignTypedDataRequest,
@@ -24,14 +25,17 @@ import {
   createTransactionRequestMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
-import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
-import { isENS } from "~utils/utils";
+import {
+  BlowfishImpersonationWalletInfo,
+  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
+} from "~utils/storage";
 
 interface JsonRpcResponse {
   id: number;
   jsonrpc: "2.0";
   result: string;
 }
+
 interface JsonRpcError {
   id: number;
   jsonrpc: "2.0";
@@ -52,7 +56,7 @@ let requestProxy: undefined | typeof Proxy;
 let sendProxy: undefined | typeof Proxy;
 let sendAsyncProxy: undefined | typeof Proxy;
 
-const provider = new providers.Web3Provider(window.ethereum);
+const provider = new providers.Web3Provider(window.ethereum, "any");
 
 const randomId = () => Math.floor(Math.random() * 1_000_000);
 
@@ -68,6 +72,29 @@ const getChainIdAndUserAccount = async (): Promise<{
   const userAccount = accounts[0];
 
   return { chainId, userAccount };
+};
+
+const isScanningPaused = (response: Message<UserDecisionResponse>) => {
+  return !!response.data.opts?.pauseScan;
+};
+
+const shouldForwardToWallet = (
+  response: Message<UserDecisionResponse>,
+  chainId: number
+) => {
+  // NOTE: Scanning paused by user
+  if (isScanningPaused(response)) {
+    logger.debug("Scanning paused");
+    return true;
+  }
+
+  // NOTE: If the chain is not supported we cannot scan the request
+  // So just show a warning and proceed to the wallet
+  if (!isSupportedChainId(chainId)) {
+    logger.debug("Unsupported chain", chainId);
+    return true;
+  }
+  return false;
 };
 
 const overrideIfNotProxied = () => {
@@ -141,10 +168,7 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            // NOTE: If the chain is not supported we cannot scan the request
-            // So just show a warning and proceed to the wallet
-            if (!isSupportedChainId(chainId)) {
-              logger.debug("Unsupported chain", chainId);
+            if (shouldForwardToWallet(response, chainId)) {
               return forwardToWallet();
             }
 
@@ -191,10 +215,7 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            // NOTE: If the chain is not supported we cannot scan the request
-            // So just show a warning and proceed to the wallet
-            if (!isSupportedChainId(chainId)) {
-              logger.debug("Unsupported chain", chainId);
+            if (shouldForwardToWallet(response, chainId)) {
               return forwardToWallet();
             }
 
@@ -249,10 +270,7 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            // NOTE: If the chain is not supported we cannot scan the request
-            // So just show a warning and proceed to the wallet
-            if (!isSupportedChainId(chainId)) {
-              logger.debug("Unsupported chain", chainId);
+            if (shouldForwardToWallet(response, chainId)) {
               return forwardToWallet();
             }
 
@@ -299,28 +317,16 @@ const overrideWindowEthereum = () => {
         IS_IMPERSONATION_AVAILABLE
       ) {
         try {
-          const response = await Promise.race([
-            sendAndAwaitResponseFromStream(
-              stream,
-              createBlowfishOptionRequestMessage(
-                PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
-              )
-            ),
-            new Promise<never>((_, reject) =>
-              setTimeout(
-                () => reject(new Error("BlowfishOptions request timeout")),
-                300
-              )
-            ),
-          ]);
+          const response = await sendAndAwaitResponseFromStream(
+            stream,
+            createBlowfishOptionRequestMessage(
+              PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+            )
+          );
+          const { address } =
+            (response.data as BlowfishImpersonationWalletInfo) || {};
 
-          const impersonatingWallet = String(response.data);
-
-          if (impersonatingWallet) {
-            let address = impersonatingWallet;
-            if (isENS(impersonatingWallet)) {
-              address = (await provider.resolveName(impersonatingWallet)) || "";
-            }
+          if (address) {
             return [address];
           }
         } catch (err) {
@@ -341,10 +347,7 @@ const overrideWindowEthereum = () => {
           createTransactionRequestMessage(transaction, chainId, userAccount)
         );
 
-        // NOTE: If the chain is not supported we cannot scan the request
-        // So just show a warning and proceed to the wallet
-        if (!isSupportedChainId(chainId)) {
-          logger.debug("Unsupported chain", chainId);
+        if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
         }
 
@@ -376,10 +379,7 @@ const overrideWindowEthereum = () => {
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
         );
 
-        // NOTE: If the chain is not supported we cannot scan the request
-        // So just show a warning and proceed to the wallet
-        if (!isSupportedChainId(chainId)) {
-          logger.debug("Unsupported chain", chainId);
+        if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
         }
 
@@ -418,10 +418,7 @@ const overrideWindowEthereum = () => {
           )
         );
 
-        // NOTE: If the chain is not supported we cannot scan the request
-        // So just show a warning and proceed to the wallet
-        if (!isSupportedChainId(chainId)) {
-          logger.debug("Unsupported chain", chainId);
+        if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
         }
 

@@ -116,12 +116,14 @@ const processRequestBase = async (
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
-  const isImpersonatingWallet = !!(await getBlowfishImpersonationWallet());
+  const { address } = (await getBlowfishImpersonationWallet()) || {};
+  const isImpersonatingWallet = !!address;
   const pausedOption = await storage.get<BlowfishPausedOptionType>(
     PREFERENCES_BLOWFISH_PAUSED
   );
 
   if (pausedOption && pausedOption.isPaused) {
+    postResponseToPort(remotePort, message, { opts: { pauseScan: true } });
     return;
   }
 

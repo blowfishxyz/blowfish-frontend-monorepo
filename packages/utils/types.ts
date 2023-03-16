@@ -125,6 +125,7 @@ export const isSignMessageRequest = (
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
 
 export type UserDecisionOpts = {
+  pauseScan?: boolean;
   skipUnsupportedChainWarning?: boolean;
   chainId: string;
 };
