@@ -312,8 +312,7 @@ const overrideWindowEthereum = () => {
         Reflect.apply(target, thisArg, argumentsList);
 
       if (
-        (request.method === "eth_requestAccounts" ||
-          request.method === "eth_accounts") &&
+        request.method === "eth_requestAccounts" &&
         IS_IMPERSONATION_AVAILABLE
       ) {
         try {
