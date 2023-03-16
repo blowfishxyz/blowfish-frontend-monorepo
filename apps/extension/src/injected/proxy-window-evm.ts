@@ -78,6 +78,25 @@ const isScanningPaused = (response: Message<UserDecisionResponse>) => {
   return !!response.data.opts?.pauseScan;
 };
 
+const shouldForwardToWallet = (
+  response: Message<UserDecisionResponse>,
+  chainId: number
+) => {
+  // NOTE: Scanning paused by user
+  if (isScanningPaused(response)) {
+    logger.debug("Scanning paused");
+    return true;
+  }
+
+  // NOTE: If the chain is not supported we cannot scan the request
+  // So just show a warning and proceed to the wallet
+  if (!isSupportedChainId(chainId)) {
+    logger.debug("Unsupported chain", chainId);
+    return true;
+  }
+  return false;
+};
+
 const overrideIfNotProxied = () => {
   if (
     window.ethereum &&
@@ -149,15 +168,7 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            if (isScanningPaused(response)) {
-              logger.debug("Scanning paused");
-              return forwardToWallet();
-            }
-
-            // NOTE: If the chain is not supported we cannot scan the request
-            // So just show a warning and proceed to the wallet
-            if (!isSupportedChainId(chainId)) {
-              logger.debug("Unsupported chain", chainId);
+            if (shouldForwardToWallet(response, chainId)) {
               return forwardToWallet();
             }
 
@@ -204,15 +215,7 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            if (isScanningPaused(response)) {
-              logger.debug("Scanning paused");
-              return forwardToWallet();
-            }
-
-            // NOTE: If the chain is not supported we cannot scan the request
-            // So just show a warning and proceed to the wallet
-            if (!isSupportedChainId(chainId)) {
-              logger.debug("Unsupported chain", chainId);
+            if (shouldForwardToWallet(response, chainId)) {
               return forwardToWallet();
             }
 
@@ -267,15 +270,7 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            if (isScanningPaused(response)) {
-              logger.debug("Scanning paused");
-              return forwardToWallet();
-            }
-
-            // NOTE: If the chain is not supported we cannot scan the request
-            // So just show a warning and proceed to the wallet
-            if (!isSupportedChainId(chainId)) {
-              logger.debug("Unsupported chain", chainId);
+            if (shouldForwardToWallet(response, chainId)) {
               return forwardToWallet();
             }
 
@@ -352,14 +347,7 @@ const overrideWindowEthereum = () => {
           createTransactionRequestMessage(transaction, chainId, userAccount)
         );
 
-        if (isScanningPaused(response)) {
-          logger.debug("Scanning paused");
-          return forwardToWallet();
-        }
-        // NOTE: If the chain is not supported we cannot scan the request
-        // So just show a warning and proceed to the wallet
-        if (!isSupportedChainId(chainId)) {
-          logger.debug("Unsupported chain", chainId);
+        if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
         }
 
@@ -391,15 +379,7 @@ const overrideWindowEthereum = () => {
           createSignTypedDataRequestMessage(typedData, chainId, userAccount)
         );
 
-        if (isScanningPaused(response)) {
-          logger.debug("Scanning paused");
-          return forwardToWallet();
-        }
-
-        // NOTE: If the chain is not supported we cannot scan the request
-        // So just show a warning and proceed to the wallet
-        if (!isSupportedChainId(chainId)) {
-          logger.debug("Unsupported chain", chainId);
+        if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
         }
 
@@ -438,15 +418,7 @@ const overrideWindowEthereum = () => {
           )
         );
 
-        if (isScanningPaused(response)) {
-          logger.debug("Scanning paused");
-          return forwardToWallet();
-        }
-
-        // NOTE: If the chain is not supported we cannot scan the request
-        // So just show a warning and proceed to the wallet
-        if (!isSupportedChainId(chainId)) {
-          logger.debug("Unsupported chain", chainId);
+        if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
         }
 
