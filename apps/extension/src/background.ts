@@ -48,11 +48,6 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
         message as Message<SignMessageRequest>,
         remotePort
       );
-    } else if (message.type === RequestType.BlowfishOptions) {
-      return processBlowfishOptionsRequest(
-        message as Message<BlowfishOptionRequest>,
-        remotePort
-      );
     }
   });
 };

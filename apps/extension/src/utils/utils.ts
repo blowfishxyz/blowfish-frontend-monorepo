@@ -23,7 +23,8 @@ export const opacify = (amount: number, hexColor: string) => {
 };
 
 export const isENS = (address = "") =>
-  address.endsWith(".eth") || address.endsWith(".xyz");
+  address.toLowerCase().endsWith(".eth") ||
+  address.toLowerCase().endsWith(".xyz");
 
 export const transformDate = (timestamp: number) => {
   const date = new Date(timestamp);

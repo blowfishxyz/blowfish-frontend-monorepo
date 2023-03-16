@@ -19,6 +19,7 @@ import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
 import { Column } from "~components/common/Column";
 import Row from "~components/common/Row";
+import { CloseIcon } from "~components/icons/CloseIcon";
 import { PauseIcon } from "~components/icons/PauseIcon";
 import { PlayIcon } from "~components/icons/PlayIcon";
 import {
@@ -155,6 +156,10 @@ const Popup: React.FC = () => {
   const [showDurationSelector, setShowDurationSelector] = useState(false);
 
   const onActionClick = () => {
+    if (showDurationSelector) {
+      setShowDurationSelector(false);
+      return;
+    }
     if (isScanPaused) {
       resumeScan();
       return;
@@ -197,9 +202,14 @@ const Popup: React.FC = () => {
           <ScannerActionButton
             paused={isScanPaused ?? false}
             onClick={onActionClick}
-            disabled={showDurationSelector}
           >
-            {isScanPaused ? <PlayIcon /> : <PauseIcon />}
+            {showDurationSelector ? (
+              <CloseIcon />
+            ) : isScanPaused ? (
+              <PlayIcon />
+            ) : (
+              <PauseIcon />
+            )}
           </ScannerActionButton>
           {!showDurationSelector && (
             <InfoContainer>
