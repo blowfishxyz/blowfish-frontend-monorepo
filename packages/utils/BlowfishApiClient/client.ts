@@ -16,7 +16,7 @@ export interface SignTypedDataPayload {
     chainId?: string | number | bigint;
     name?: string;
     salt?: `0x${string}`;
-    verifyingContract: `0x${string}`;
+    verifyingContract?: `0x${string}`;
     version?: string;
   };
   message: { [key: string]: unknown };

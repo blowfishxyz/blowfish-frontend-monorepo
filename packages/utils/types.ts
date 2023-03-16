@@ -145,3 +145,9 @@ export const isUserDecisionResponseMessage = (
   message: Message<UntypedMessageData>
 ): message is Message<UserDecisionResponse> =>
   message.type === RequestType.UserDecision;
+
+export interface EIP712Payload {
+  type: string;
+  name: string;
+  value: { [key: string]: unknown };
+}

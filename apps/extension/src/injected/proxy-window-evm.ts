@@ -2,6 +2,7 @@
 // See https://github.com/RevokeCash/browser-extension/blob/d49f1de92003681b9e768782f54e734a52a5d975/src/injected/proxy-window-ethereum.tsx
 // The RevokeCash/browser-extension code is MIT licensed
 
+import { transformToEIP712 } from "@blowfish/utils";
 import { isSupportedChainId } from "@blowfish/utils/chains";
 import {
   Identifier,
@@ -359,6 +360,34 @@ const overrideWindowEthereum = () => {
         } else {
           throw ethErrors.provider.userRejectedRequest(
             "User denied transaction signature."
+          );
+        }
+      } else if (request?.method === "eth_signTypedData") {
+        const [typedData, address] = request?.params ?? [];
+        if (!address || !typedData) return forwardToWallet();
+
+        const { chainId, userAccount } = await getChainIdAndUserAccount();
+        const payload = transformToEIP712(typedData, chainId);
+
+        const response = await sendAndAwaitResponseFromStream<
+          SignTypedDataRequest,
+          UserDecisionResponse
+        >(
+          stream,
+          createSignTypedDataRequestMessage(payload, chainId, userAccount)
+        );
+        if (shouldForwardToWallet(response, chainId)) {
+          return forwardToWallet();
+        }
+
+        logger.debug(response);
+        const { isOk } = response.data;
+
+        if (isOk) {
+          return response.data.result;
+        } else {
+          throw ethErrors.provider.userRejectedRequest(
+            "User denied message signature."
           );
         }
       } else if (
