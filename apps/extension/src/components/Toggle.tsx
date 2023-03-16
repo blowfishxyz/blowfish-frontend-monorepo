@@ -63,16 +63,10 @@ interface ToggleProps {
   id?: string;
   isActive: boolean;
   toggle: () => void;
-  initialState: boolean;
 }
 
-export default function Toggle({
-  id,
-  isActive,
-  toggle,
-  initialState = false,
-}: ToggleProps) {
-  const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(initialState);
+export default function Toggle({ id, isActive, toggle }: ToggleProps) {
+  const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true);
 
   const switchToggle = () => {
     toggle();

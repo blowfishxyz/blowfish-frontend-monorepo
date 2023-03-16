@@ -7,6 +7,7 @@ import { Input } from "~components/Input";
 import Toggle from "~components/Toggle";
 import { Text } from "~components/Typography";
 import { shortenHex } from "~utils/hex";
+import { logger } from "~utils/logger";
 import {
   getBlowfishImpersonationWallet,
   setBlowfishImpersonationWallet,
@@ -37,9 +38,13 @@ const GreenText = styled(Text)`
   color: ${({ theme }) => theme.palette.green};
 `;
 
+const mainnetProvider = new ethers.providers.JsonRpcProvider(
+  "https://rpc.ankr.com/eth"
+);
+
 const Impersonator: React.FC = () => {
   const walletImpersonatorInputRef = useRef<HTMLInputElement>(null);
-  const [isEnabled, setIsEnabled] = useState(true);
+  const [isEnabled, setIsEnabled] = useState(false);
   const [impersonationWalletAddress, setImpersonationWalletAddress] =
     useState("");
   const [currentImpersonationWallet, setCurrentImpersonationWallet] =
@@ -47,16 +52,19 @@ const Impersonator: React.FC = () => {
   const isAddressValid =
     ethers.utils.isAddress(impersonationWalletAddress) ||
     isENS(impersonationWalletAddress);
+  const [updatingImpersonatingWallet, setUpdatingImpersonatingWallet] =
+    useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
-      const storedWallet = await getBlowfishImpersonationWallet();
-      setCurrentImpersonationWallet(storedWallet);
-      setImpersonationWalletAddress(storedWallet);
-      setIsEnabled(!!storedWallet);
-      if (!storedWallet) {
-        updateImpersonationWallet("");
+      const result = await getBlowfishImpersonationWallet();
+      if (result) {
+        const { address, ens } = result;
+        setCurrentImpersonationWallet(ens ?? address);
+        setIsEnabled(!!address);
       }
+      setIsLoaded(true);
     })();
   }, []);
 
@@ -66,10 +74,34 @@ const Impersonator: React.FC = () => {
     }
   }, [isEnabled]);
 
-  const updateImpersonationWallet = (address: string) => {
-    setCurrentImpersonationWallet(address);
-    setBlowfishImpersonationWallet(address);
+  const updateImpersonationWallet = async (addressOrEns: string) => {
+    try {
+      setUpdatingImpersonatingWallet(true);
+      if (!addressOrEns) {
+        setCurrentImpersonationWallet("");
+        setBlowfishImpersonationWallet("", "");
+        return;
+      }
+      const [address, ens] = isENS(addressOrEns)
+        ? [await mainnetProvider.resolveName(addressOrEns), addressOrEns]
+        : [addressOrEns, await mainnetProvider.lookupAddress(addressOrEns)];
+
+      if (!address) {
+        throw new Error(`No address found for the given ENS: ${ens}`);
+      }
+
+      setCurrentImpersonationWallet(ens || address);
+      setBlowfishImpersonationWallet(address, ens);
+    } catch (error) {
+      // TODO(Andrei) - add an error message in the UI
+      logger.error(error);
+    } finally {
+      setUpdatingImpersonatingWallet(false);
+      setImpersonationWalletAddress("");
+    }
   };
+
+  if (!isLoaded) return null;
 
   return (
     <ImpersonatorWrapper>
@@ -85,7 +117,6 @@ const Impersonator: React.FC = () => {
           <Text semiBold>Impersonate Account</Text>
         )}
         <Toggle
-          initialState={isEnabled}
           isActive={isEnabled}
           toggle={() => {
             if (isEnabled) {
@@ -104,14 +135,18 @@ const Impersonator: React.FC = () => {
           }}
         >
           <Input
-            error={!isAddressValid}
+            error={!isAddressValid && impersonationWalletAddress.length > 0}
             type="text"
             value={impersonationWalletAddress || ""}
             onChange={(e) => setImpersonationWalletAddress(e.target.value)}
             ref={walletImpersonatorInputRef}
+            placeholder="Enter address or ENS"
           />
-          <SmallButtonPrimary type="submit" disabled={!isAddressValid}>
-            Update
+          <SmallButtonPrimary
+            type="submit"
+            disabled={!isAddressValid || updatingImpersonatingWallet}
+          >
+            {updatingImpersonatingWallet ? <>Updating...</> : <>Update</>}
           </SmallButtonPrimary>
         </WalletInformationContainer>
       )}
