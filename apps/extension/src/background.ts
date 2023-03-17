@@ -1,7 +1,6 @@
 import type { BlowfishPausedOptionType } from "@blowfish/hooks";
 import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
-  BlowfishOptionRequest,
   Message,
   RequestType,
   SignMessageRequest,
@@ -46,11 +45,6 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
     } else if (message.type === RequestType.SignMessage) {
       return processSignMessageRequest(
         message as Message<SignMessageRequest>,
-        remotePort
-      );
-    } else if (message.type === RequestType.BlowfishOptions) {
-      return processBlowfishOptionsRequest(
-        message as Message<BlowfishOptionRequest>,
         remotePort
       );
     }
@@ -214,12 +208,4 @@ const processSignMessageRequest = async (
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
-};
-
-const processBlowfishOptionsRequest = async (
-  message: Message<BlowfishOptionRequest>,
-  remotePort: Browser.Runtime.Port
-): Promise<void> => {
-  const data = await storage.get(message.data.option);
-  remotePort.postMessage({ ...message, data });
 };
