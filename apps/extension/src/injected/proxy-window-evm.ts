@@ -79,6 +79,19 @@ const isScanningPaused = (response: Message<UserDecisionResponse>) => {
   return !!response.data.opts?.pauseScan;
 };
 
+const getSignTypedDataVersion = (method: string) => {
+  switch (method) {
+    case "eth_signTypedData":
+      return SignTypedDataVersion.v1;
+    case "eth_signTypedData_v3":
+      return SignTypedDataVersion.v3;
+    case "eth_signTypedData_v4":
+      return SignTypedDataVersion.v4;
+    default:
+      throw new Error(`Unknown eth_signTypedData version. Method: ${method}`);
+  }
+};
+
 const shouldForwardToWallet = (
   response: Message<UserDecisionResponse>,
   chainId: number
@@ -202,12 +215,8 @@ const overrideWindowEthereum = () => {
       ) {
         const [address, typedDataStr] = request?.params ?? [];
         if (!address || !typedDataStr) return forwardToWallet();
-        let signTypedDataVersion: SignTypedDataVersion;
-        if (request?.method === "eth_signTypedData_v3") {
-          signTypedDataVersion = SignTypedDataVersion.v3;
-        } else {
-          signTypedDataVersion = SignTypedDataVersion.v4;
-        }
+
+        const signTypedDataVersion = getSignTypedDataVersion(request.method);
         const typedData = JSON.parse(typedDataStr);
 
         getChainIdAndUserAccount()
@@ -409,12 +418,8 @@ const overrideWindowEthereum = () => {
       ) {
         const [address, typedDataStr] = request?.params ?? [];
         if (!address || !typedDataStr) return forwardToWallet();
-        let signTypedDataVersion: SignTypedDataVersion;
-        if (request?.method === "eth_signTypedData_v3") {
-          signTypedDataVersion = SignTypedDataVersion.v3;
-        } else {
-          signTypedDataVersion = SignTypedDataVersion.v4;
-        }
+
+        const signTypedDataVersion = getSignTypedDataVersion(request.method);
         const typedData = JSON.parse(typedDataStr);
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();

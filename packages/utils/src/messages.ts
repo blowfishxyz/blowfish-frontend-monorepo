@@ -1,7 +1,11 @@
-import { EIP712Payload, SignTypedDataPayload } from "./types";
+import { TypedDataV1Field, SignTypedDataPayload } from "./types";
 
 // https://github.com/0xProject/EIPs/blob/21abe254fe0452d8583d5b132b1d7be87c0439ca/EIPS/eip-signTypedData.md
-export const transformToEIP712 = (data: EIP712Payload[], chainId: string) => {
+// NOTE: this is the old version of the signTypedData spec, since v1 is not EIP712 compliant
+export const transformTypedDataV1FieldsToEIP712 = (
+  data: TypedDataV1Field[],
+  chainId: string
+) => {
   const schema: SignTypedDataPayload = {
     domain: {
       chainId,

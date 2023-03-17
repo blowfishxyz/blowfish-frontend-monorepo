@@ -99,7 +99,7 @@ export enum SignTypedDataVersion {
 }
 export interface SignTypedDataRequest extends BaseRequest {
   type: RequestType.SignTypedData;
-  payload: SignTypedDataPayload | EIP712Payload[];
+  payload: SignTypedDataPayload | TypedDataV1Field[];
   isImpersonatingWallet?: string;
   signedTypedDataVersion: SignTypedDataVersion;
 }
@@ -152,7 +152,7 @@ export const isUserDecisionResponseMessage = (
 ): message is Message<UserDecisionResponse> =>
   message.type === RequestType.UserDecision;
 
-export interface EIP712Payload {
+export interface TypedDataV1Field {
   type: string;
   name: string;
   value: unknown;
