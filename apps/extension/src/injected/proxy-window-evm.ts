@@ -2,8 +2,8 @@
 // See https://github.com/RevokeCash/browser-extension/blob/d49f1de92003681b9e768782f54e734a52a5d975/src/injected/proxy-window-ethereum.tsx
 // The RevokeCash/browser-extension code is MIT licensed
 
-import { transformToEIP712 } from "@blowfish/utils";
 import { isSupportedChainId } from "@blowfish/utils/chains";
+import { transformToEIP712 } from "@blowfish/utils/messages";
 import {
   Identifier,
   Message,

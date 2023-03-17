@@ -149,5 +149,5 @@ export const isUserDecisionResponseMessage = (
 export interface EIP712Payload {
   type: string;
   name: string;
-  value: { [key: string]: unknown };
+  value: unknown;
 }
