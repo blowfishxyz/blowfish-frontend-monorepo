@@ -7,7 +7,6 @@ export default defineConfig((options) => ({
   sourcemap: true,
   skipNodeModulesBundle: true,
   minify: !options.watch,
-  noExternal: [],
   entry: {
     types: "./src/types.ts",
     BlowfishApiClient: "./src/BlowfishApiClient/index.ts",
