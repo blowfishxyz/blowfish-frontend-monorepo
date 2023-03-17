@@ -1,7 +1,6 @@
 import type { BlowfishPausedOptionType } from "@blowfish/hooks";
 import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
-  BlowfishOptionRequest,
   Message,
   RequestType,
   SignMessageRequest,
@@ -209,12 +208,4 @@ const processSignMessageRequest = async (
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
-};
-
-const processBlowfishOptionsRequest = async (
-  message: Message<BlowfishOptionRequest>,
-  remotePort: Browser.Runtime.Port
-): Promise<void> => {
-  const data = await storage.get(message.data.option);
-  remotePort.postMessage({ ...message, data });
 };
