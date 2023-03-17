@@ -235,8 +235,8 @@ const ScanPage: React.FC = () => {
               });
             }
 
-            await sendResult(message.id, signedTypedMessage);
             logger.debug("signTypedMessage", signedTypedMessage);
+            await sendResult(message.id, signedTypedMessage);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
             const errMessage = err.message || err.toString();
