@@ -3,13 +3,13 @@
 // The RevokeCash/browser-extension code is MIT licensed
 
 import { isSupportedChainId } from "@blowfish/utils/chains";
-import { transformToEIP712 } from "@blowfish/utils/messages";
 import {
   Identifier,
   Message,
   SignMessageMethod,
   SignMessageRequest,
   SignTypedDataRequest,
+  SignTypedDataVersion,
   TransactionRequest,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
@@ -202,7 +202,12 @@ const overrideWindowEthereum = () => {
       ) {
         const [address, typedDataStr] = request?.params ?? [];
         if (!address || !typedDataStr) return forwardToWallet();
-
+        let signTypedDataVersion: SignTypedDataVersion;
+        if (request?.method === "eth_signTypedData_v3") {
+          signTypedDataVersion = SignTypedDataVersion.v3;
+        } else {
+          signTypedDataVersion = SignTypedDataVersion.v4;
+        }
         const typedData = JSON.parse(typedDataStr);
 
         getChainIdAndUserAccount()
@@ -212,7 +217,12 @@ const overrideWindowEthereum = () => {
               UserDecisionResponse
             >(
               stream,
-              createSignTypedDataRequestMessage(typedData, chainId, userAccount)
+              createSignTypedDataRequestMessage(
+                typedData,
+                chainId,
+                userAccount,
+                signTypedDataVersion
+              )
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
@@ -365,16 +375,19 @@ const overrideWindowEthereum = () => {
       } else if (request?.method === "eth_signTypedData") {
         const [typedData, address] = request?.params ?? [];
         if (!address || !typedData) return forwardToWallet();
-
         const { chainId, userAccount } = await getChainIdAndUserAccount();
-        const payload = transformToEIP712(typedData, chainId);
 
         const response = await sendAndAwaitResponseFromStream<
           SignTypedDataRequest,
           UserDecisionResponse
         >(
           stream,
-          createSignTypedDataRequestMessage(payload, chainId, userAccount)
+          createSignTypedDataRequestMessage(
+            typedData,
+            chainId,
+            userAccount,
+            SignTypedDataVersion.v1
+          )
         );
         if (shouldForwardToWallet(response, chainId)) {
           return forwardToWallet();
@@ -396,7 +409,12 @@ const overrideWindowEthereum = () => {
       ) {
         const [address, typedDataStr] = request?.params ?? [];
         if (!address || !typedDataStr) return forwardToWallet();
-
+        let signTypedDataVersion: SignTypedDataVersion;
+        if (request?.method === "eth_signTypedData_v3") {
+          signTypedDataVersion = SignTypedDataVersion.v3;
+        } else {
+          signTypedDataVersion = SignTypedDataVersion.v4;
+        }
         const typedData = JSON.parse(typedDataStr);
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
@@ -405,7 +423,12 @@ const overrideWindowEthereum = () => {
           UserDecisionResponse
         >(
           stream,
-          createSignTypedDataRequestMessage(typedData, chainId, userAccount)
+          createSignTypedDataRequestMessage(
+            typedData,
+            chainId,
+            userAccount,
+            signTypedDataVersion
+          )
         );
 
         if (shouldForwardToWallet(response, chainId)) {

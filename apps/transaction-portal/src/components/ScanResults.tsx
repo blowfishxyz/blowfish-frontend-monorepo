@@ -3,18 +3,19 @@ import dynamic from "next/dynamic";
 import type {
   ChainFamily,
   ChainNetwork,
+  Erc1155TransferData,
   Erc721ApprovalData,
   Erc721TransferData,
-  Erc1155TransferData,
   EvmMessageScanResult,
   EvmTransactionScanResult,
 } from "@blowfish/utils/BlowfishApiClient";
 import {
   DappRequest,
-  TransactionPayload,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
+  SignTypedDataPayload,
+  TransactionPayload,
 } from "@blowfish/utils/types";
 import { Decimal } from "decimal.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -36,10 +37,10 @@ import Row from "~components/common/Row";
 import { useInterval, useLocalStorage } from "react-use";
 import {
   BlowfishPausedOptionType,
+  PAUSE_DURATIONS,
   PauseDuration,
   PREFERENCES_BLOWFISH_PAUSED,
   useTransactionScannerPauseResume,
-  PAUSE_DURATIONS,
 } from "@blowfish/hooks";
 import {
   getPauseResumeSelection,
@@ -175,7 +176,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       };
       return displayTransaction;
     } else if (isSignTypedDataRequest(request)) {
-      const { domain, message } = request.payload;
+      const { domain, message } = request.payload as SignTypedDataPayload;
       return { domain, message };
     } else if (isSignMessageRequest(request)) {
       const { message } = request.payload;
@@ -282,7 +283,8 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     if (isTransactionRequest(request)) {
       return request.payload?.to;
     } else if (isSignTypedDataRequest(request)) {
-      return request.payload?.domain?.verifyingContract;
+      return (request.payload as SignTypedDataPayload)?.domain
+        ?.verifyingContract;
     }
 
     return undefined;

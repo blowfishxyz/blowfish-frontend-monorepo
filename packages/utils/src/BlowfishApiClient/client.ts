@@ -5,6 +5,7 @@ import type {
   EvmTransactionScanResult,
   RequestMetadata,
 } from "./types";
+import { EIP712Payload } from "../types";
 
 const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
 
@@ -33,7 +34,7 @@ export interface SignTypedDataPayload {
 
 export interface SignTypedDataRequest {
   kind: "SIGN_TYPED_DATA";
-  data: SignTypedDataPayload;
+  data: SignTypedDataPayload | EIP712Payload[];
 }
 
 export interface SignMessageRequest {
@@ -85,7 +86,7 @@ export class BlowfishApiClient {
   }
 
   public async scanSignTypedData(
-    typedData: SignTypedDataPayload,
+    typedData: SignTypedDataPayload | EIP712Payload[],
     userAccount: string,
     metadata: RequestMetadata
   ): Promise<EvmMessageScanResult> {

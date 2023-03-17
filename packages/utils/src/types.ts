@@ -92,10 +92,16 @@ export const isTransactionRequest = (
   req: DappRequest
 ): req is TransactionRequest => req.type === RequestType.Transaction;
 
+export enum SignTypedDataVersion {
+  v1 = "V1",
+  v3 = "V3",
+  v4 = "V4",
+}
 export interface SignTypedDataRequest extends BaseRequest {
   type: RequestType.SignTypedData;
-  payload: SignTypedDataPayload;
+  payload: SignTypedDataPayload | EIP712Payload[];
   isImpersonatingWallet?: string;
+  signedTypedDataVersion: SignTypedDataVersion;
 }
 
 export const isSignTypedDataRequest = (

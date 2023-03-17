@@ -12,7 +12,7 @@ describe("transformToEIP712", () => {
         value: "0x1234567890123456789012345678901234567890",
       },
     ];
-    const chainId = 1;
+    const chainId = "1";
     const expectedOutput = {
       types: {
         message: [
@@ -23,7 +23,7 @@ describe("transformToEIP712", () => {
       },
       primaryType: "message",
       domain: {
-        chainId: 1,
+        chainId: "1",
       },
       message: {
         name: "John",

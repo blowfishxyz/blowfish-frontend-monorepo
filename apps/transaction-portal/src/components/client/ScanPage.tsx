@@ -32,20 +32,25 @@ import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { sendAbort, sendResult } from "~utils/messages";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
+import { logger } from "~utils/logger";
+import { transformToEIP712 } from "@blowfish/utils/messages";
 import {
   actionToSeverity,
   DappRequest,
+  EIP712Payload,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
   Message,
   parseRequestFromMessage,
   Severity,
+  SignTypedDataPayload,
+  SignTypedDataRequest,
+  SignTypedDataVersion,
   UntypedMessageData,
 } from "@blowfish/utils/types";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
-import { logger } from "~utils/logger";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -77,6 +82,10 @@ const ScanPage: React.FC = () => {
     string | undefined
   >();
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  // used only for legacySignedType
+  const [legacySignedTypeRequest, setLegacySignedTypeRequest] = useState<
+    SignTypedDataRequest | undefined
+  >();
 
   const { address } = useAccount();
   const connectedChainId = useChainId();
@@ -98,6 +107,22 @@ const ScanPage: React.FC = () => {
     setChainId(parseInt(_chainId));
     setMessage(_message);
     setRequest(_request);
+
+    if (
+      "signedTypedDataVersion" in _request &&
+      _request.signedTypedDataVersion === SignTypedDataVersion.v1
+    ) {
+      setLegacySignedTypeRequest({
+        ..._request,
+        payload: transformToEIP712(
+          _request.payload as EIP712Payload[],
+          _chainId
+        ),
+      });
+    } else {
+      setRequest(_request);
+    }
+
     setUserAccount(_request.userAccount);
 
     if (_request.isImpersonatingWallet === "true") {
@@ -121,7 +146,12 @@ const ScanPage: React.FC = () => {
     error: scanError,
     mutate,
     isValidating,
-  } = useScanDappRequest(chainFamily, chainNetwork, request, message?.origin);
+  } = useScanDappRequest(
+    chainFamily,
+    chainNetwork,
+    legacySignedTypeRequest ?? request,
+    message?.origin
+  );
 
   // Reset-retry state when we are no longer validating
   useEffect(() => {
@@ -184,15 +214,32 @@ const ScanPage: React.FC = () => {
             }
           }
         } else if (isSignTypedDataRequest(request)) {
-          const { payload } = request;
           try {
-            const signedTypedMessage = await signTypedData({
-              domain: payload.domain,
-              types: payload.types,
-              value: payload.message,
-            });
-            logger.debug("signTypedMessage", signedTypedMessage);
+            let signedTypedMessage;
+            const { payload } = request;
+
+            if (legacySignedTypeRequest) {
+              signedTypedMessage = (await window.ethereum?.request({
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                method: "eth_signTypedData" as any,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                params: [payload, request.userAccount] as any,
+              })) as unknown as string;
+            } else {
+              const { domain, types, message } =
+                payload as SignTypedDataPayload;
+              signedTypedMessage = await signTypedData({
+                domain,
+                types,
+                value: message,
+              });
+            }
+            if (!signedTypedMessage) {
+              await sendAbort(message.id);
+              return;
+            }
             await sendResult(message.id, signedTypedMessage);
+            logger.debug("signTypedMessage", signedTypedMessage);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
             const errMessage = err.message || err.toString();
@@ -233,7 +280,7 @@ const ScanPage: React.FC = () => {
       closeWindow();
     },
 
-    [message, request, chainId, closeWindow]
+    [message, request, closeWindow, chainId, legacySignedTypeRequest]
   );
 
   logger.debug(message);
@@ -470,7 +517,7 @@ const ScanPage: React.FC = () => {
           : hasAllData && (
               <>
                 <ScanResults
-                  request={request}
+                  request={legacySignedTypeRequest ?? request}
                   scanResults={scanResults}
                   dappUrl={message.origin || ""}
                   chainFamily={chainFamily}
