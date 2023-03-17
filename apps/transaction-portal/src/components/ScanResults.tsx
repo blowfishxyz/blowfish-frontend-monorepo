@@ -434,51 +434,60 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           </Section>
         )}
         {expectedStateChangesProcessed &&
-          expectedStateChangesProcessed?.length > 0 && (
-            <Section borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
-                Simulation Results
-              </TextSmall>
-              {expectedStateChangesProcessed?.map((stateChange, i) => {
-                const address = stateChange.rawInfo.data.contract.address;
-                const { kind } = stateChange.rawInfo;
-                const isApproval = kind.includes("APPROVAL");
-                const isNft =
-                  kind.includes("ERC721") || kind.includes("ERC1155");
-                let nftTokenId: string | undefined;
-                if (isNft) {
-                  const nftData = stateChange.rawInfo
-                    .data as NftStateChangeWithTokenId;
-                  nftTokenId = nftData.tokenId || undefined;
-                }
-                // NOTE(kimpers): We define positive as decreased approval or increased balance
-                const isPositiveEffect =
-                  (isApproval && stateChange.diff.gt(0)) ||
-                  (!isApproval && stateChange.diff.lt(0));
-                // TODO(kimpers): What to link to for native assets?
-                return (
-                  <StateChangeRow key={`state-change-${i}`}>
-                    {isNativeAsset(address) ? (
+        expectedStateChangesProcessed?.length > 0 ? (
+          <Section borderBottom>
+            <TextSmall secondary style={{ marginBottom: "8px" }}>
+              Simulation Results
+            </TextSmall>
+            {expectedStateChangesProcessed?.map((stateChange, i) => {
+              const address = stateChange.rawInfo.data.contract.address;
+              const { kind } = stateChange.rawInfo;
+              const isApproval = kind.includes("APPROVAL");
+              const isNft = kind.includes("ERC721") || kind.includes("ERC1155");
+              let nftTokenId: string | undefined;
+              if (isNft) {
+                const nftData = stateChange.rawInfo
+                  .data as NftStateChangeWithTokenId;
+                nftTokenId = nftData.tokenId || undefined;
+              }
+              // NOTE(kimpers): We define positive as decreased approval or increased balance
+              const isPositiveEffect =
+                (isApproval && stateChange.diff.gt(0)) ||
+                (!isApproval && stateChange.diff.lt(0));
+              // TODO(kimpers): What to link to for native assets?
+              return (
+                <StateChangeRow key={`state-change-${i}`}>
+                  {isNativeAsset(address) ? (
+                    <StateChangeText isPositiveEffect={isPositiveEffect}>
+                      {stateChange.humanReadableDiff}
+                    </StateChangeText>
+                  ) : (
+                    <BlockExplorerLink
+                      address={address}
+                      chainFamily={chainFamily}
+                      chainNetwork={chainNetwork}
+                      nftTokenId={nftTokenId}
+                    >
                       <StateChangeText isPositiveEffect={isPositiveEffect}>
                         {stateChange.humanReadableDiff}
                       </StateChangeText>
-                    ) : (
-                      <BlockExplorerLink
-                        address={address}
-                        chainFamily={chainFamily}
-                        chainNetwork={chainNetwork}
-                        nftTokenId={nftTokenId}
-                      >
-                        <StateChangeText isPositiveEffect={isPositiveEffect}>
-                          {stateChange.humanReadableDiff}
-                        </StateChangeText>
-                      </BlockExplorerLink>
-                    )}
-                  </StateChangeRow>
-                );
-              })}
-            </Section>
-          )}
+                    </BlockExplorerLink>
+                  )}
+                </StateChangeRow>
+              );
+            })}
+          </Section>
+        ) : (
+          <Section borderBottom>
+            <TextSmall secondary style={{ marginBottom: "8px" }}>
+              Simulation Results
+            </TextSmall>
+            <StateChangeText isPositiveEffect={false}>
+              No state changes found. Proceed with caution
+            </StateChangeText>
+          </Section>
+        )}
+
         {parsedMessageContent && (
           <Section borderBottom>
             <TextSmall secondary style={{ marginBottom: "8px" }}>
