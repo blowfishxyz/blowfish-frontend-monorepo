@@ -42,7 +42,6 @@ interface JsonRpcError {
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ethereum?: any;
-  impersonatingAddress?: string | undefined;
 };
 
 const stream = new WindowPostMessageStream({
@@ -57,6 +56,7 @@ let sendAsyncProxy: undefined | typeof Proxy;
 const provider = new providers.Web3Provider(window.ethereum, "any");
 
 const randomId = () => Math.floor(Math.random() * 1_000_000);
+let impersonatingAddress: string | undefined;
 
 const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
@@ -313,9 +313,9 @@ const overrideWindowEthereum = () => {
         (request.method === "eth_requestAccounts" ||
           request.method === "eth_accounts") &&
         IS_IMPERSONATION_AVAILABLE &&
-        window.impersonatingAddress
+        impersonatingAddress
       ) {
-        return [window.impersonatingAddress];
+        return [impersonatingAddress];
       }
 
       if (request?.method === "eth_sendTransaction") {
@@ -446,7 +446,7 @@ if (IS_IMPERSONATION_AVAILABLE) {
   stream.on("data", async (message: Message<UntypedMessageData>) => {
     // Set the impersonating address on window to be used on eth_requestAccounts and eth_accounts
     if (message.type === RequestType.BlowfishOptions) {
-      window.impersonatingAddress = message.data.address;
+      impersonatingAddress = message.data.address;
     }
   });
 }
