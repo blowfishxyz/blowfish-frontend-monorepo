@@ -96,7 +96,7 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   return (
     <BottomMenuWrapper style={style} className={className}>
       {isImpersonatingWallet ? (
-        <RedText>Continue disabled while impersonating</RedText>
+        <RedText>Confirm disabled while impersonating</RedText>
       ) : (
         <GrayText>Confirm to continue to your wallet</GrayText>
       )}
