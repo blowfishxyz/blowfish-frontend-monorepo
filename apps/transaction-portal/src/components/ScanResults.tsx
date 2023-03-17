@@ -363,6 +363,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     }
   }, [scanResults, requestTypeStr, request]);
 
+  const simulationFailedMessage = useMemo(() => {
+    return (
+      scanResults?.simulationResults?.error?.humanReadableError ||
+      "Simulation failed"
+    );
+  }, [scanResults]);
+
   const onActionClick = () => {
     if (showDurationSelector) {
       setShowDurationSelector(false);
@@ -482,9 +489,15 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             <TextSmall secondary style={{ marginBottom: "8px" }}>
               Simulation Results
             </TextSmall>
-            <StateChangeText isPositiveEffect={false}>
-              No state changes found. Proceed with caution
-            </StateChangeText>
+            {scanResults?.simulationResults?.error ? (
+              <StateChangeText isPositiveEffect={false}>
+                {simulationFailedMessage}
+              </StateChangeText>
+            ) : (
+              <StateChangeText isPositiveEffect={false}>
+                No state changes found. Proceed with caution
+              </StateChangeText>
+            )}
           </Section>
         )}
 
