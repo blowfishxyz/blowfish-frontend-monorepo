@@ -204,6 +204,7 @@ const ScanPage: React.FC = () => {
           const { payload } = request;
           if (payload.method === "personal_sign") {
             // NOTE: domain mismatch on SIWE, so we just pass the message back to the dapp
+            logger.debug("personal_sign - send message back to dapp");
             await sendResult(message.id, payload.message);
           }
         } else {
