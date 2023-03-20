@@ -244,6 +244,8 @@ const overrideWindowEthereum = () => {
             }
           });
       } else if (
+        request?.method === "eth_signTypedData" ||
+        request?.method === "eth_signTypedData_v1" ||
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
