@@ -49,7 +49,7 @@ const StyledOl = styled.ol`
   padding-left: 0;
   margin-bottom: 32px;
   margin-top: 0;
-  
+
   li {
     counter-increment: item;
     margin-bottom: 1rem;
