@@ -27,7 +27,6 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
     slim
       ? css`
           height: ${SLIM_BOTTOM_MENU_HEIGHT}px;
-          padding: 0 12px;
         `
       : css`
           flex-direction: column;

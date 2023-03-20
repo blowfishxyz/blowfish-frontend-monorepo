@@ -8,8 +8,18 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { breakpoint } from "~utils/breakpoints";
 
+// TODO:(Andrei) extract to app
+const HeaderWrapper = styled(Row)`
+  padding: 24px;
+`;
+const Logo = styled.a`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 const FullHeightCenterContainer = styled(Row)`
-  height: 100vh;
+  height: calc(100vh - 84px);
   justify-content: center;
 `;
 
@@ -103,6 +113,7 @@ const ButtonRow = styled.div`
   display: grid;
   grid-template-columns: 140px 1fr;
   gap: 20px;
+
   ${PrimaryButton} {
     min-width: 140px;
     max-width: 265px;
@@ -141,55 +152,65 @@ const OnboardingPage = () => {
   };
 
   return (
-    <FullHeightCenterContainer>
-      <OnboardingContainer>
-        <ImageContainer>
-          {/*TODO: change image on each step*/}
-          <Image
-            src="/wallet-hero.webp"
-            width={291}
-            height={291}
-            alt="blowfish wallet hero"
-          />
-        </ImageContainer>
-        <StepDescriptionContainer>
-          <SubHeading>Get started</SubHeading>
-          <Heading>Protect your assets</Heading>
-          <StyledOl>
-            <TextStep
-              as="li"
-              active={currentStep === OnboardingStep.InvokeTransaction}
-            >
-              Invoke a transaction on web3
-            </TextStep>
-            <TextStep
-              as="li"
-              active={currentStep === OnboardingStep.CheckBlowfish}
-            >
-              Check Blowfish before your wallet
-            </TextStep>
-            <TextStep
-              as="li"
-              active={currentStep === OnboardingStep.ConfirmTransaction}
-            >
-              Confirm transaction with confidence
-            </TextStep>
-          </StyledOl>
-          <ButtonRow>
-            {currentStep !== OnboardingStep.InvokeTransaction && (
-              <SecondaryButton onClick={back}>Back</SecondaryButton>
-            )}
-            <PrimaryButton onClick={next}>
-              {currentStep === OnboardingStep.ConfirmTransaction ? (
-                <>Done!</>
-              ) : (
-                <>Next</>
+    <>
+      <HeaderWrapper>
+        <Logo
+          href={`https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`}
+          rel="noopener"
+        >
+          <Image src="/logo.svg" width="135" height="35" alt="Logo" />
+        </Logo>
+      </HeaderWrapper>
+      <FullHeightCenterContainer>
+        <OnboardingContainer>
+          <ImageContainer>
+            {/*TODO: change image on each step*/}
+            <Image
+              src="/wallet-hero.webp"
+              width={291}
+              height={291}
+              alt="blowfish wallet hero"
+            />
+          </ImageContainer>
+          <StepDescriptionContainer>
+            <SubHeading>Get started</SubHeading>
+            <Heading>Protect your assets</Heading>
+            <StyledOl>
+              <TextStep
+                as="li"
+                active={currentStep === OnboardingStep.InvokeTransaction}
+              >
+                Invoke a transaction on web3
+              </TextStep>
+              <TextStep
+                as="li"
+                active={currentStep === OnboardingStep.CheckBlowfish}
+              >
+                Check Blowfish before your wallet
+              </TextStep>
+              <TextStep
+                as="li"
+                active={currentStep === OnboardingStep.ConfirmTransaction}
+              >
+                Confirm transaction with confidence
+              </TextStep>
+            </StyledOl>
+            <ButtonRow>
+              {currentStep !== OnboardingStep.InvokeTransaction && (
+                <SecondaryButton onClick={back}>Back</SecondaryButton>
               )}
-            </PrimaryButton>
-          </ButtonRow>
-        </StepDescriptionContainer>
-      </OnboardingContainer>
-    </FullHeightCenterContainer>
+              <PrimaryButton onClick={next}>
+                {currentStep === OnboardingStep.ConfirmTransaction ? (
+                  <>Done!</>
+                ) : (
+                  <>Next</>
+                )}
+              </PrimaryButton>
+            </ButtonRow>
+          </StepDescriptionContainer>
+        </OnboardingContainer>
+      </FullHeightCenterContainer>
+    </>
   );
 };
 

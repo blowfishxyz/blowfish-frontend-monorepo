@@ -13,7 +13,7 @@ export const Input = styled.input<{ error?: boolean; fontSize?: string }>`
   text-overflow: ellipsis;
   font-weight: 500;
   padding: 0 16px;
-  width: calc(100% - 32px);
+  width: 100%;
   -webkit-appearance: textfield;
   ::-webkit-search-decoration {
     -webkit-appearance: none;

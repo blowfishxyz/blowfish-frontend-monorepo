@@ -45,7 +45,7 @@ const StyledPopupContainer = styled(PopupContainer)`
 `;
 
 const WalletHeroImage = styled.img<{ isScanPaused: boolean }>`
-  padding: 20px 0;
+  margin: 20px 0;
   transition: all 0.2s linear;
   filter: ${({ isScanPaused }) => (isScanPaused ? `grayscale(1)` : `none`)};
 `;
