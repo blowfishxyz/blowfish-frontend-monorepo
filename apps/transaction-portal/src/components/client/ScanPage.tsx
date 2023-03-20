@@ -8,11 +8,9 @@ import {
   useDisconnect,
   useSwitchNetwork,
 } from "wagmi";
-import { ethers } from "ethers";
 import {
   prepareSendTransaction,
   sendTransaction,
-  signMessage,
   signTypedData,
 } from "@wagmi/core";
 import { InjectedConnector } from "wagmi/connectors/injected";
@@ -205,22 +203,9 @@ const ScanPage: React.FC = () => {
         } else if (isSignMessageRequest(request)) {
           const { payload } = request;
           if (payload.method === "personal_sign") {
-            const decoded = ethers.utils.toUtf8String(payload.message);
-            try {
-              const signedMessage = await signMessage({
-                message: decoded,
-              });
-              logger.debug("signedMessage", signedMessage);
-              await sendResult(message.id, signedMessage);
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } catch (err: any) {
-              const errMessage = err.message || err.toString();
-              if (/rejected request/i.test(errMessage)) {
-                await sendAbort(message.id);
-              } else {
-                throw err;
-              }
-            }
+            // NOTE: domain mismatch on SIWE, so we just pass the message back to the dapp
+            logger.debug("personal_sign - send message back to dapp");
+            await sendResult(message.id, payload.message);
           }
         } else {
           // TODO(kimpers): This should never happen
