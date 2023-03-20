@@ -22,7 +22,7 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
     chainNetwork: "one",
   },
   56: {
-    chainFamily: "bsc",
+    chainFamily: "bnb",
     chainNetwork: "mainnet",
   },
 };
@@ -48,4 +48,34 @@ export const chainIdToName = (chainId: number | string) => {
   }
 
   return `${chainInfo.chainFamily} ${chainInfo.chainNetwork}`;
+};
+
+export interface BlockExplorerUrlOptions {
+  chainFamily: ChainFamily;
+  chainNetwork: ChainNetwork;
+  address: string;
+  nftTokenId?: string;
+}
+
+export const chainToBlockExplorerUrl = ({
+  chainFamily,
+  chainNetwork,
+  address,
+  nftTokenId,
+}: BlockExplorerUrlOptions): string => {
+  const prefix = chainNetwork == "mainnet" ? "" : `${chainFamily}.`;
+  const assetType = nftTokenId ? "nft" : "address";
+  switch (chainFamily) {
+    case "polygon":
+      return `https://${prefix}polygonscan.com/address/${address}`;
+    case "arbitrum":
+      return `https://arbiscan.io/address/${address}`;
+    case "bnb":
+      return `https://bscscan.com/address/${address}`;
+    case "ethereum":
+      // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
+      return `https://${prefix}etherscan.io/${assetType}/${address}${
+        nftTokenId ? `/${nftTokenId}` : ""
+      }`;
+  }
 };
