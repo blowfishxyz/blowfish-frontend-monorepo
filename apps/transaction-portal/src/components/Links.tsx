@@ -1,10 +1,14 @@
-import React from "react";
-import styled from "styled-components";
-
 import type {
   ChainFamily,
   ChainNetwork,
 } from "@blowfish/utils/BlowfishApiClient";
+import React from "react";
+import styled from "styled-components";
+import {
+  chainToBlockExplorerUrl,
+  BlockExplorerUrlOptions,
+} from "@blowfish/utils/chains";
+
 import { ArrowIcon } from "./icons/ArrowIcon";
 
 const SyledArrowIcon = styled(ArrowIcon)`
@@ -43,12 +47,10 @@ export const LinkWithArrow: React.FC<LinkWithArrowProps> = ({
   </A>
 );
 
-interface BlockExplorerLinkProps extends Omit<LinkWithArrowProps, "href"> {
-  chainFamily: ChainFamily;
-  chainNetwork: ChainNetwork;
-  address: string;
-  nftTokenId?: string;
-}
+interface BlockExplorerLinkProps
+  extends Omit<LinkWithArrowProps, "href">,
+    BlockExplorerUrlOptions {}
+
 export const BlockExplorerLink: React.FC<BlockExplorerLinkProps> = ({
   chainFamily,
   chainNetwork,
@@ -56,18 +58,11 @@ export const BlockExplorerLink: React.FC<BlockExplorerLinkProps> = ({
   nftTokenId,
   ...props
 }) => {
-  // TODO(kimpers): move to util?
-  const prefix = chainNetwork == "mainnet" ? "" : `${chainFamily}.`;
-  let url: string;
-  if (chainFamily === "polygon") {
-    url = `https://${prefix}polygonscan.com/address/${address}`;
-  } else {
-    // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
-    const assetType = nftTokenId ? "nft" : "address";
-    url = `https://${prefix}etherscan.io/${assetType}/${address}${
-      nftTokenId ? `/${nftTokenId}` : ""
-    }`;
-  }
-
+  const url = chainToBlockExplorerUrl({
+    chainFamily,
+    chainNetwork,
+    address,
+    nftTokenId,
+  });
   return <LinkWithArrow href={url} {...props} />;
 };
