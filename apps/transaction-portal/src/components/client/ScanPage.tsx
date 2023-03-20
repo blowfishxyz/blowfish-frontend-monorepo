@@ -35,11 +35,9 @@ import { sendAbort, sendResult } from "~utils/messages";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "~utils/logger";
-import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import {
   actionToSeverity,
   DappRequest,
-  TypedDataV1Field,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
@@ -47,7 +45,6 @@ import {
   parseRequestFromMessage,
   Severity,
   SignTypedDataPayload,
-  SignTypedDataRequest,
   SignTypedDataVersion,
   UntypedMessageData,
 } from "@blowfish/utils/types";
@@ -82,11 +79,6 @@ const ScanPage: React.FC = () => {
     string | undefined
   >();
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
-  // NOTE: used only for SignTypedDataRequest v1
-  const [
-    compliantSignedTypedDataV1Request,
-    setCompliantSignedTypedDataV1Request,
-  ] = useState<SignTypedDataRequest | undefined>();
 
   const { address } = useAccount();
   const connectedChainId = useChainId();
@@ -110,21 +102,6 @@ const ScanPage: React.FC = () => {
     setRequest(_request);
     setUserAccount(_request.userAccount);
 
-    // NOTE: We need to make the SignTypedDataVersion.v1 payload EIP712 compliant
-    // This is then used to call the Blowfish API & show the user the message to sign
-    if (
-      "signedTypedDataVersion" in _request &&
-      _request.signedTypedDataVersion === SignTypedDataVersion.v1
-    ) {
-      setCompliantSignedTypedDataV1Request({
-        ..._request,
-        payload: transformTypedDataV1FieldsToEIP712(
-          _request.payload as TypedDataV1Field[],
-          _chainId
-        ),
-      });
-    }
-
     if (_request.isImpersonatingWallet === "true") {
       setImpersonatingWallet(_request.userAccount);
     }
@@ -146,12 +123,7 @@ const ScanPage: React.FC = () => {
     error: scanError,
     mutate,
     isValidating,
-  } = useScanDappRequest(
-    chainFamily,
-    chainNetwork,
-    compliantSignedTypedDataV1Request ?? request,
-    message?.origin
-  );
+  } = useScanDappRequest(chainFamily, chainNetwork, request, message?.origin);
 
   // Reset-retry state when we are no longer validating
   useEffect(() => {
@@ -218,7 +190,7 @@ const ScanPage: React.FC = () => {
             let signedTypedMessage;
             const { payload } = request;
 
-            if (compliantSignedTypedDataV1Request) {
+            if (request.signedTypedDataVersion === SignTypedDataVersion.v1) {
               signedTypedMessage = (await window.ethereum?.request({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 method: "eth_signTypedData" as any,
@@ -277,7 +249,7 @@ const ScanPage: React.FC = () => {
       closeWindow();
     },
 
-    [message, request, closeWindow, chainId, compliantSignedTypedDataV1Request]
+    [message, request, closeWindow, chainId]
   );
 
   logger.debug(message);
@@ -514,7 +486,7 @@ const ScanPage: React.FC = () => {
           : hasAllData && (
               <>
                 <ScanResults
-                  request={compliantSignedTypedDataV1Request ?? request}
+                  request={request}
                   scanResults={scanResults}
                   dappUrl={message.origin || ""}
                   chainFamily={chainFamily}

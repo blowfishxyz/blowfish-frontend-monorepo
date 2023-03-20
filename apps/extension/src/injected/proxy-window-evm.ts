@@ -11,6 +11,7 @@ import {
   SignTypedDataRequest,
   SignTypedDataVersion,
   TransactionRequest,
+  TypedDataV1Field,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
@@ -41,6 +42,15 @@ interface JsonRpcError {
   id: number;
   jsonrpc: "2.0";
   error: EthereumProviderError<unknown>;
+}
+
+interface EthereumSignTypedDataRequest {
+  method:
+    | "eth_signTypedData"
+    | "eth_signTypedData_v1"
+    | "eth_signTypedData_v3"
+    | "eth_signTypedData_v4";
+  params: [string | TypedDataV1Field[], string];
 }
 
 declare let window: Window & {
@@ -79,14 +89,38 @@ const isScanningPaused = (response: Message<UserDecisionResponse>) => {
   return !!response.data.opts?.pauseScan;
 };
 
-const getSignTypedDataVersion = (method: string) => {
+const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
+  const { method, params } = request;
   switch (method) {
     case "eth_signTypedData":
-      return SignTypedDataVersion.v1;
+    case "eth_signTypedData_v1": {
+      if (Array.isArray(params[0])) {
+        const [typedData, address] = params;
+        return {
+          signTypedDataVersion: SignTypedDataVersion.v1,
+          address,
+          typedData,
+        };
+      }
+      const [address, data] = params;
+      return {
+        signTypedDataVersion: SignTypedDataVersion.v4,
+        address,
+        typedData: data ? JSON.parse(data) : null,
+      };
+    }
     case "eth_signTypedData_v3":
-      return SignTypedDataVersion.v3;
-    case "eth_signTypedData_v4":
-      return SignTypedDataVersion.v4;
+    case "eth_signTypedData_v4": {
+      const [address, data] = params;
+      return {
+        signTypedDataVersion:
+          method === "eth_signTypedData_v3"
+            ? SignTypedDataVersion.v3
+            : SignTypedDataVersion.v4,
+        address,
+        typedData: data ? JSON.parse(data) : null,
+      };
+    }
     default:
       throw new Error(`Unknown eth_signTypedData version. Method: ${method}`);
   }
@@ -213,11 +247,9 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
-        const [address, typedDataStr] = request?.params ?? [];
-        if (!address || !typedDataStr) return forwardToWallet();
-
-        const signTypedDataVersion = getSignTypedDataVersion(request.method);
-        const typedData = JSON.parse(typedDataStr);
+        const { signTypedDataVersion, typedData, address } =
+          enhanceSignTypedData(request);
+        if (!address || !typedData) return forwardToWallet();
 
         getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
@@ -381,46 +413,15 @@ const overrideWindowEthereum = () => {
             "User denied transaction signature."
           );
         }
-      } else if (request?.method === "eth_signTypedData") {
-        const [typedData, address] = request?.params ?? [];
-        if (!address || !typedData) return forwardToWallet();
-        const { chainId, userAccount } = await getChainIdAndUserAccount();
-
-        const response = await sendAndAwaitResponseFromStream<
-          SignTypedDataRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createSignTypedDataRequestMessage(
-            typedData,
-            chainId,
-            userAccount,
-            SignTypedDataVersion.v1
-          )
-        );
-        if (shouldForwardToWallet(response, chainId)) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const { isOk } = response.data;
-
-        if (isOk) {
-          return response.data.result;
-        } else {
-          throw ethErrors.provider.userRejectedRequest(
-            "User denied message signature."
-          );
-        }
       } else if (
+        request?.method === "eth_signTypedData" ||
+        request?.method === "eth_signTypedData_v1" ||
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
-        const [address, typedDataStr] = request?.params ?? [];
-        if (!address || !typedDataStr) return forwardToWallet();
-
-        const signTypedDataVersion = getSignTypedDataVersion(request.method);
-        const typedData = JSON.parse(typedDataStr);
+        const { signTypedDataVersion, address, typedData } =
+          enhanceSignTypedData(request);
+        if (!address || !typedData) return forwardToWallet();
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream<

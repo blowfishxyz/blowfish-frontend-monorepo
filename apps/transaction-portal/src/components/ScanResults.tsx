@@ -15,8 +15,10 @@ import {
   isSignTypedDataRequest,
   isTransactionRequest,
   SignTypedDataPayload,
+  isSignTypedDataPayload,
   TransactionPayload,
 } from "@blowfish/utils/types";
+import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { Decimal } from "decimal.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
@@ -176,7 +178,9 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       };
       return displayTransaction;
     } else if (isSignTypedDataRequest(request)) {
-      const { domain, message } = request.payload as SignTypedDataPayload;
+      const { domain, message } = isSignTypedDataPayload(request.payload)
+        ? request.payload
+        : transformTypedDataV1FieldsToEIP712(request.payload, request.chainId);
       return { domain, message };
     } else if (isSignMessageRequest(request)) {
       const { message } = request.payload;

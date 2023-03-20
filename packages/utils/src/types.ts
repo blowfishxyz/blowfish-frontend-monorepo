@@ -108,6 +108,12 @@ export const isSignTypedDataRequest = (
   req: DappRequest
 ): req is SignTypedDataRequest => req.type === RequestType.SignTypedData;
 
+export const isSignTypedDataPayload = (
+  request: SignTypedDataPayload | TypedDataV1Field[]
+): request is SignTypedDataPayload => {
+  return (request as SignTypedDataPayload).domain !== undefined;
+};
+
 export type SignMessageMethod = "eth_sign" | "personal_sign";
 
 export interface SignMessagePayload {
