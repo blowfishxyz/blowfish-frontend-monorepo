@@ -268,7 +268,12 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            if (shouldForwardToWallet(response, chainId)) {
+            const isConfirmedPersonalSign =
+              response.data.isOk && request.method === "personal_sign";
+            if (
+              shouldForwardToWallet(response, chainId) ||
+              isConfirmedPersonalSign
+            ) {
               return forwardToWallet();
             }
 
@@ -402,7 +407,12 @@ const overrideWindowEthereum = () => {
           )
         );
 
-        if (shouldForwardToWallet(response, chainId)) {
+        const isConfirmedPersonalSign =
+          response.data.isOk && request.method === "personal_sign";
+        if (
+          shouldForwardToWallet(response, chainId) ||
+          isConfirmedPersonalSign
+        ) {
           return forwardToWallet();
         }
 
