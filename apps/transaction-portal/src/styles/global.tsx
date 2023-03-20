@@ -20,6 +20,12 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     scroll-behavior: smooth;
   }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
   @font-face {
     font-family: "GT-Planar";

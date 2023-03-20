@@ -12,7 +12,10 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import { BLOWFISH_EXTENSION_VERSION } from "~config";
+import {
+  BLOWFISH_EXTENSION_VERSION,
+  BLOWFISH_TRANSACTION_PORTAL_URL,
+} from "~config";
 
 import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
@@ -27,6 +30,20 @@ import {
 
 logger.debug("BACKGROUND RUNNING");
 const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
+
+// Add a form for uninstalls to see if we can improve the product.
+// TODO(andrei) - Add the real form
+Browser.runtime.setUninstallURL("https://airtable.com/shrfiHgViyh1OekUu");
+
+// Add an onboarding URL on install.
+Browser.runtime.onInstalled.addListener((obj) => {
+  // On first install, create the tab.
+  if (obj.reason === "install") {
+    Browser.tabs.create({
+      url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/onboarding`,
+    });
+  }
+});
 
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   remotePort.onMessage.addListener((message: Message<UntypedMessageData>) => {
