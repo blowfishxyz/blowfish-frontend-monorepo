@@ -66,3 +66,12 @@ export const getPauseResumeSelection = async () => {
   };
   return (await sendAndAwaitAck(message)) as BlowfishPausedOptionType;
 };
+
+export const getTransactionToScan = async (messageId: string) => {
+  const message: Message<{ key: string }> = {
+    id: "get-transaction-to-scan",
+    data: { key: messageId },
+    type: RequestType.GetTransactionToScan,
+  };
+  return await sendAndAwaitAck(message);
+};

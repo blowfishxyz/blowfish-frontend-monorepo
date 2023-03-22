@@ -222,6 +222,7 @@ importers:
       '@storybook/manager-webpack5': ^6.5.16
       '@storybook/react': 6.5.16
       '@storybook/testing-library': ^0.0.13
+      '@types/chrome': 0.0.206
       '@types/jest': ^29.4.0
       '@types/node': 18.14.6
       '@types/qs': ^6.9.7
@@ -284,6 +285,7 @@ importers:
       '@storybook/manager-webpack5': 6.5.16_a5ainwq6j6e77vl54wahuheooy
       '@storybook/react': 6.5.16_slqrmyobqdcbfh3tda5vlunr6q
       '@storybook/testing-library': 0.0.13_biqbaboplfbrettd7655fr4n2y
+      '@types/chrome': 0.0.206
       '@types/jest': 29.4.0
       '@types/node': 18.14.6
       '@types/qs': 6.9.7
@@ -20868,7 +20870,7 @@ packages:
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
-      jest: 29.4.3_zfha7dvnw4nti6zkbsmhmn6xo4
+      jest: 29.4.3_@types+node@18.14.6
       jest-util: 29.4.3
       json5: 2.2.3
       lodash.memoize: 4.1.2

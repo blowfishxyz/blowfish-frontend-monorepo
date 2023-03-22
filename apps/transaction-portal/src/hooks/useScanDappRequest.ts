@@ -49,9 +49,22 @@ const fetcher = async (
       origin,
     });
   } else if (isSignTypedDataRequest(request)) {
-    return client.scanSignTypedData(request.payload, request.userAccount, {
-      origin,
-    });
+    // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
+    return client.scanSignTypedData(
+      {
+        ...request.payload,
+        domain: {
+          ...request.payload.domain,
+          ...(request.payload.domain.chainId && {
+            chainId: request.payload.domain.chainId.toString(),
+          }),
+        },
+      },
+      request.userAccount,
+      {
+        origin,
+      }
+    );
   } else if (isSignMessageRequest(request)) {
     return client.scanSignMessage(
       request.payload.message,

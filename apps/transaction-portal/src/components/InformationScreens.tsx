@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { TextButton } from "./Buttons";
+import { PrimaryButton, TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
 import { shortenHex } from "../utils/hex";
@@ -20,6 +20,9 @@ import {
   PREFERENCES_BLOWFISH_PAUSED,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
+import { MINIMUM_SUPPORTED_EXTENSION_VERSION } from "~config";
+import Row from "./common/Row";
+import { getExtensionInstallationUrl } from "~utils/utils";
 
 interface SharedProps {
   darkMode?: boolean;
@@ -96,6 +99,10 @@ const StyledTextWithEllipsisAnimation = styled(StyledText)`
     content: "\\2026"; /* ascii code for the ellipsis character */
     width: 0;
   }
+`;
+
+const Spacer = styled(Row)`
+  flex: 2;
 `;
 
 export interface TransactionBlockedScreenProps {
@@ -413,6 +420,51 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
       <RetryButton onRetry={onRetry} isRetrying={isRetrying}>
         <StyledText>Retry this transaction</StyledText>
       </RetryButton>
+    </Wrapper>
+  );
+};
+
+export const OutdatedExtensionCTAScreen: React.FC = () => {
+  const [extensionInstallationUrl, setExtensionInstallationUrl] = useState<
+    string | null
+  >();
+
+  useEffect(() => {
+    (async () => {
+      setExtensionInstallationUrl(await getExtensionInstallationUrl());
+    })();
+  }, []);
+
+  return (
+    <Wrapper>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Outdated Extension</StyledTextXL>
+      <StyledText>
+        The minimum supported extension version is{" "}
+        <b>{MINIMUM_SUPPORTED_EXTENSION_VERSION}</b>. Please update the Blowfish
+        extension to the latest version and retry the transaction.
+      </StyledText>
+      <Spacer />
+      {extensionInstallationUrl && (
+        <PrimaryButton
+          onClick={() =>
+            // use location replace so the user can't go back
+            location.replace(extensionInstallationUrl)
+          }
+        >
+          Update
+        </PrimaryButton>
+      )}
+    </Wrapper>
+  );
+};
+
+export const TransactionNotFoundScreen: React.FC = () => {
+  return (
+    <Wrapper>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Something went wrong</StyledTextXL>
+      <StyledText>Please close the window and try again.</StyledText>
     </Wrapper>
   );
 };

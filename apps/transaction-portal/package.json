@@ -17,8 +17,8 @@
     "build-storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json build-storybook"
   },
   "dependencies": {
-    "@blowfish/utils": "workspace:*",
     "@blowfish/hooks": "workspace:*",
+    "@blowfish/utils": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@wagmi/core": "^0.10.1",
     "decimal.js": "^10.4.3",
@@ -48,6 +48,7 @@
     "@storybook/manager-webpack5": "^6.5.16",
     "@storybook/react": "6.5.16",
     "@storybook/testing-library": "^0.0.13",
+    "@types/chrome": "0.0.206",
     "@types/jest": "^29.4.0",
     "@types/node": "18.14.6",
     "@types/qs": "^6.9.7",

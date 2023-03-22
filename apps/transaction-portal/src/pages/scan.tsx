@@ -12,4 +12,16 @@ const Page: React.FC = () => (
   </Providers>
 );
 
+export async function getServerSideProps({ query }: { query: { id: string } }) {
+  if (!query.id) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
 export default Page;

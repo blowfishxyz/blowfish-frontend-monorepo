@@ -1,6 +1,7 @@
 import type { BlowfishPausedOptionType } from "@blowfish/hooks";
 import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
+  DappRequest,
   Message,
   RequestType,
   SignMessageRequest,
@@ -12,9 +13,8 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import { BLOWFISH_EXTENSION_VERSION } from "~config";
+import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
 
-import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
 import { logger } from "./utils/logger";
 import { createRawMessage, postResponseToPort } from "./utils/messages";
@@ -26,7 +26,11 @@ import {
 } from "./utils/storage";
 
 logger.debug("BACKGROUND RUNNING");
-const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
+
+const messageIdToPortAndMessageMapping: Map<
+  string,
+  { remotePort: Browser.Runtime.Port; message: Message<DappRequest> }
+> = new Map();
 
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   remotePort.onMessage.addListener((message: Message<UntypedMessageData>) => {
@@ -84,12 +88,20 @@ const onBrowserMessageListener = async (
     storage.set(message.data.key, message.data.value);
     return true;
   }
+  if (message.type === RequestType.GetTransactionToScan) {
+    return createRawMessage(
+      message.type,
+      messageIdToPortAndMessageMapping.get(message.data.key)?.message || {}
+    );
+  }
 
-  const responseRemotePort = messageToPortMapping.get(message.id);
+  const responseRemotePort = messageIdToPortAndMessageMapping.get(
+    message.id
+  )?.remotePort;
 
   if (responseRemotePort) {
     responseRemotePort.postMessage(message);
-    messageToPortMapping.delete(message.id);
+    messageIdToPortAndMessageMapping.delete(message.id);
     responseProcessingMiddleware(message).catch((err) => {
       logger.error(err);
     });
@@ -145,27 +157,31 @@ const processRequestBase = async (
   const currentTabId = currentTab?.id;
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
-  // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
-  const tabPromise = createTransactionPortalTab({
-    ...message,
-    extensionVersion: BLOWFISH_EXTENSION_VERSION!,
-    data: {
-      ...message.data,
-      isImpersonatingWallet,
+  const tab = await Browser.tabs.create({
+    url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}`,
+    active: true,
+  });
+  const tabId = tab.id!;
+  console.log("message", message);
+  // Store port and message to id mapping so we can respond to the message later on and get the stored message
+  messageIdToPortAndMessageMapping.set(message.id, {
+    remotePort,
+    message: {
+      ...message,
+      data: {
+        ...message.data,
+        isImpersonatingWallet,
+      },
     },
   });
 
-  // Store port to id mapping so we can respond to the message later on
-  messageToPortMapping.set(message.id, remotePort);
-  const tab = await tabPromise;
-  const tabId = tab.id!;
   const handleRemovedTab = (removedTabId: number) => {
     if (removedTabId === tabId) {
       // If the window is closed before we received a response we assume cancel
       // as the user probably just closed the window
-      if (messageToPortMapping.has(message.id)) {
-        messageToPortMapping.delete(message.id);
+      if (messageIdToPortAndMessageMapping.has(message.id)) {
+        messageIdToPortAndMessageMapping.delete(message.id);
         logger.debug(
           "Window closed without response, assuming the user wants to cancel"
         );

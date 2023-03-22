@@ -13,6 +13,8 @@ import objectHash, { NotUndefined } from "object-hash";
 import type { Duplex } from "readable-stream";
 import type Browser from "webextension-polyfill";
 
+import { BLOWFISH_EXTENSION_VERSION } from "~config";
+
 export const createRawMessage = <T extends object>(
   type: RequestType,
   data: T
@@ -32,6 +34,7 @@ export const createTransactionRequestMessage = (
     payload,
     chainId: chainId.toString(),
     userAccount,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION,
   };
   return createRawMessage(type, transactionRequest);
 };
@@ -47,6 +50,7 @@ export const createSignTypedDataRequestMessage = (
     payload,
     chainId: chainId.toString(),
     userAccount,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION,
   };
   return createRawMessage(type, signTypedDataRequest);
 };
@@ -62,6 +66,7 @@ export const createSignMessageRequestMessage = (
     payload,
     chainId: chainId.toString(),
     userAccount,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION,
   };
   return createRawMessage(type, messageRequest);
 };

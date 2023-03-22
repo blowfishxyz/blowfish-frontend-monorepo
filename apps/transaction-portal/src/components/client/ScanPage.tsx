@@ -1,4 +1,3 @@
-import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import {
@@ -18,8 +17,10 @@ import { InjectedConnector } from "wagmi/connectors/injected";
 import { ApproveBottomMenu, SlimBottomMenu } from "../BottomMenus";
 import {
   AccountNotConnectedScreen,
+  OutdatedExtensionCTAScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
+  TransactionNotFoundScreen,
   TransactionUnsupportedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
@@ -29,7 +30,7 @@ import { LoadingScreen } from "../LoadingScreen";
 import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { sendAbort, sendResult } from "~utils/messages";
+import { getTransactionToScan, sendAbort, sendResult } from "~utils/messages";
 import {
   actionToSeverity,
   DappRequest,
@@ -44,6 +45,8 @@ import {
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "~utils/logger";
+import { useRouter } from "next/router";
+import { checkVersionAndTransformMessage, MessageError } from "~utils/utils";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -75,6 +78,10 @@ const ScanPage: React.FC = () => {
     string | undefined
   >();
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  const [isExtensionOutDated, setIsExtensionOutDated] =
+    useState<boolean>(false);
+  const [transactionNotFound, setTransactionNotFound] =
+    useState<boolean>(false);
 
   const { address } = useAccount();
   const connectedChainId = useChainId();
@@ -84,35 +91,50 @@ const ScanPage: React.FC = () => {
     connector: new InjectedConnector(),
   });
   const { disconnectAsync } = useDisconnect();
+  const router = useRouter();
+  const { id } = router.query;
 
   useEffect(() => {
-    const windowQs = window.location.search;
-    const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
-    // NOTE: We only pass Message through the query params
-    const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
-    const _request = parseRequestFromMessage(_message);
-    const _chainId = _message.data.chainId.toString();
+    (async () => {
+      if (!router.isReady) return;
+      try {
+        const _message = checkVersionAndTransformMessage(
+          (await getTransactionToScan(String(id))) as Message<DappRequest>
+        );
 
-    setChainId(parseInt(_chainId));
-    setMessage(_message);
-    setRequest(_request);
-    setUserAccount(_request.userAccount);
+        const _request = parseRequestFromMessage(_message);
+        const _chainId = _message.data.chainId.toString();
+        setUserAccount(_request.userAccount);
 
-    if (_request.isImpersonatingWallet === "true") {
-      setImpersonatingWallet(_request.userAccount);
-    }
+        setChainId(parseInt(_chainId));
+        setMessage(_message);
+        setRequest(_request);
 
-    // NOTE: This should never happen since we verify
-    // that the chain is supported before we create this page
-    if (!chainIdToSupportedChainMapping[_chainId]) {
-      logger.debug(`Blowfish unsupported chainId ${_chainId}`);
-      return;
-    }
-    const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
-      chainIdToSupportedChainMapping[_chainId];
-    setChainFamily(_chainFamily);
-    setChainNetwork(_chainNetwork);
-  }, []);
+        if (_request.isImpersonatingWallet) {
+          setImpersonatingWallet(_request.userAccount);
+        }
+
+        // NOTE: This should never happen since we verify
+        // that the chain is supported before we create this page
+        if (!chainIdToSupportedChainMapping[_chainId]) {
+          logger.debug(`Blowfish unsupported chainId ${_chainId}`);
+          return;
+        }
+        const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
+          chainIdToSupportedChainMapping[_chainId];
+        setChainFamily(_chainFamily);
+        setChainNetwork(_chainNetwork);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        if (e.message === MessageError.NO_MESSAGE) {
+          setTransactionNotFound(true);
+        }
+        if (e.message === MessageError.OUTDATED_EXTENSION) {
+          setIsExtensionOutDated(true);
+        }
+      }
+    })();
+  }, [id, router.isReady]);
 
   const {
     data: scanResults,
@@ -279,7 +301,16 @@ const ScanPage: React.FC = () => {
       mutate();
     };
 
-    if (!connectedAddress) {
+    if (transactionNotFound) {
+      return (
+        <>
+          <TransactionNotFoundScreen />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
+    } else if (isExtensionOutDated) {
+      return <OutdatedExtensionCTAScreen />;
+    } else if (!connectedAddress) {
       return (
         <>
           <AccountNotConnectedScreen
@@ -427,6 +458,8 @@ const ScanPage: React.FC = () => {
     chainId,
     connectedChainId,
     message,
+    transactionNotFound,
+    isExtensionOutDated,
     hasDismissedScreen,
     mutate,
     isConnecting,
@@ -462,9 +495,7 @@ const ScanPage: React.FC = () => {
                   chainNetwork={chainNetwork}
                 />
                 <ApproveBottomMenu
-                  isImpersonatingWallet={
-                    request.isImpersonatingWallet === "true"
-                  }
+                  isImpersonatingWallet={!!request.isImpersonatingWallet}
                   onContinue={() => handleUserDecision(true)}
                   onCancel={() => handleUserDecision(false)}
                 />
