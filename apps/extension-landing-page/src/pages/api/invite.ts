@@ -1,13 +1,12 @@
 import Airtable from "airtable";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
+import { CHROME_EXTENSION_STORE_URL } from "../../config";
 
 const { AIRTABLE_API_KEY } = process.env;
 
 const AIRTABLE_BASE_ID = "appm87MGvX3frydFL";
 const AIRTABLE_BASE_NAME = "Private Beta";
-const CHROME_EXTENSION_STORE_URL =
-  "https://chrome.google.com/webstore/detail/blowfish-wallet-protect-b/kbjhmlgclljgdhmhffjofbobmficicjp";
 
 export default async function handler(
   req: NextApiRequest,
