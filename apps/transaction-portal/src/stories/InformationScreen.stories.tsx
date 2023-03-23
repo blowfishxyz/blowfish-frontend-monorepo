@@ -7,20 +7,20 @@ import React from "react";
 
 import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
 import {
+  AccountNotConnectedScreen,
+  AccountNotConnectedScreenProps,
+  OutdatedExtensionCTAScreen,
   SimulationErrorScreen,
   SimulationErrorScreenProps,
   TransactionBlockedScreen as TransactionBlockedScreenComponent,
   TransactionBlockedScreenProps,
+  TransactionNotFoundScreen,
   UnknownErrorScreen,
   UnknownErrorScreenProps,
   UnsupportedChainScreen,
   UnsupportedChainScreenProps,
-  AccountNotConnectedScreenProps,
-  AccountNotConnectedScreen,
   WrongChainScreen,
   WrongChainScreenProps,
-  TransactionNotFoundScreen,
-  OutdatedExtensionCTAScreen,
 } from "../components/InformationScreens";
 import {
   PopupContainer,
@@ -333,7 +333,7 @@ WrongChain.args = {
 };
 
 export const TransactionNotFound: ComponentStory<
-  React.FC<PopupContainerProps & WrongChainScreenProps & SlimBottomMenuProps>
+  React.FC<PopupContainerProps & SlimBottomMenuProps>
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
@@ -368,7 +368,7 @@ TransactionNotFound.args = {
 };
 
 export const OutdatedExtension: ComponentStory<
-  React.FC<PopupContainerProps & WrongChainScreenProps & SlimBottomMenuProps>
+  React.FC<PopupContainerProps>
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
