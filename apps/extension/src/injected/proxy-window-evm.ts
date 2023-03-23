@@ -95,14 +95,14 @@ const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
       if (Array.isArray(params[0])) {
         const [typedData, address] = params;
         return {
-          signedTypedDataVersion: SignTypedDataVersion.v1,
+          signTypedDataVersion: SignTypedDataVersion.v1,
           address,
           typedData,
         };
       }
       const [address, data] = params;
       return {
-        signedTypedDataVersion: SignTypedDataVersion.v4,
+        signTypedDataVersion: SignTypedDataVersion.v4,
         address,
         typedData: data ? JSON.parse(data) : null,
       };
@@ -111,7 +111,7 @@ const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
     case "eth_signTypedData_v4": {
       const [address, data] = params;
       return {
-        signedTypedDataVersion:
+        signTypedDataVersion:
           method === "eth_signTypedData_v3"
             ? SignTypedDataVersion.v3
             : SignTypedDataVersion.v4,
@@ -247,7 +247,7 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
-        const { signedTypedDataVersion, typedData, address } =
+        const { signTypedDataVersion, typedData, address } =
           enhanceSignTypedData(request);
         if (!address || !typedData) return forwardToWallet();
 
@@ -260,7 +260,7 @@ const overrideWindowEthereum = () => {
               stream,
               createSignTypedDataRequestMessage({
                 payload: typedData,
-                signedTypedDataVersion,
+                signTypedDataVersion,
                 chainId: chainId.toString(),
                 userAccount,
                 type: RequestType.SignTypedData,
@@ -411,7 +411,7 @@ const overrideWindowEthereum = () => {
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
-        const { signedTypedDataVersion, address, typedData } =
+        const { signTypedDataVersion, address, typedData } =
           enhanceSignTypedData(request);
         if (!address || !typedData) return forwardToWallet();
 
@@ -423,7 +423,7 @@ const overrideWindowEthereum = () => {
           stream,
           createSignTypedDataRequestMessage({
             payload: typedData,
-            signedTypedDataVersion,
+            signTypedDataVersion,
             chainId: chainId.toString(),
             userAccount,
             type: RequestType.SignTypedData,

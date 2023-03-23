@@ -38,7 +38,7 @@ export const createTransactionRequestMessage = (
 export const createSignTypedDataRequestMessage = (
   request: SignTypedDataRequest
 ): Message<SignTypedDataRequest> => {
-  return createRawMessage(request.type, request);
+  return createRawMessage(RequestType.SignTypedData, request);
 };
 
 export const createSignMessageRequestMessage = (

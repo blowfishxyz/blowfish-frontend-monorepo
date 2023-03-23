@@ -100,11 +100,11 @@ export enum SignTypedDataVersion {
 
 export type SignTypedDataPayloadV3V4 = {
   payload: SignTypedDataPayload;
-  signedTypedDataVersion: SignTypedDataVersion.v3 | SignTypedDataVersion.v4;
+  signTypedDataVersion: SignTypedDataVersion.v3 | SignTypedDataVersion.v4;
 };
 export type SignTypedDataPayloadV1 = {
   payload: TypedDataV1Field[];
-  signedTypedDataVersion: SignTypedDataVersion.v1;
+  signTypedDataVersion: SignTypedDataVersion.v1;
 };
 
 export type SignTypedDataRequest = BaseRequest & {
