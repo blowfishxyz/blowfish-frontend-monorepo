@@ -9,7 +9,7 @@ import { TypedDataV1Field } from "../types";
 
 const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
 
-export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bsc";
+export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bnb";
 export type ChainNetwork = "mainnet" | "goerli" | "one";
 
 export interface SignTypedDataPayload {

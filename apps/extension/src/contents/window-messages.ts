@@ -1,9 +1,23 @@
-import { Identifier, Message, UntypedMessageData } from "@blowfish/utils/types";
+import {
+  Identifier,
+  Message,
+  RequestType,
+  UntypedMessageData,
+} from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
 
-import { sendAndAwaitResponseFromPort } from "../utils/messages";
+import { IS_IMPERSONATION_AVAILABLE } from "~config";
+import {
+  createRawMessage,
+  sendAndAwaitResponseFromPort,
+} from "~utils/messages";
+import {
+  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
+  getBlowfishImpersonationWallet,
+  storage,
+} from "~utils/storage";
 
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
@@ -34,4 +48,26 @@ stream.on("data", (message: Message<UntypedMessageData>) => {
   );
 });
 
+if (IS_IMPERSONATION_AVAILABLE) {
+  const init = async () => {
+    const impersonatingWallet = await getBlowfishImpersonationWallet();
+    if (impersonatingWallet) {
+      const { address } = impersonatingWallet;
+      const message: Message<UntypedMessageData> = createRawMessage(
+        RequestType.BlowfishOptions,
+        { address }
+      );
+      // Send impersonating wallet address to proxy-window-evm
+      stream.write(message);
+    }
+  };
+  init();
+
+  // Watch extension storage for changes to the impersonating wallet
+  storage.watch({
+    [PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]: () => {
+      window.location.reload();
+    },
+  });
+}
 export default {};

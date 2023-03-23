@@ -41,7 +41,7 @@ const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
       return <PolygonIcon style={{ height: "14px", width: "auto" }} />;
     case "arbitrum":
       return <ArbitrumIcon style={{ height: "16px", width: "auto" }} />;
-    case "bsc":
+    case "bnb":
       return <BnbChainIcon style={{ height: "16px", width: "auto" }} />;
   }
 };

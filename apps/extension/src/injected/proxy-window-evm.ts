@@ -13,6 +13,7 @@ import {
   SignTypedDataVersion,
   TransactionRequest,
   TypedDataV1Field,
+  UntypedMessageData,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
@@ -22,16 +23,11 @@ import { providers } from "ethers";
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
 import { logger } from "~utils/logger";
 import {
-  createBlowfishOptionRequestMessage,
   createSignMessageRequestMessage,
   createSignTypedDataRequestMessage,
   createTransactionRequestMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
-import {
-  BlowfishImpersonationWalletInfo,
-  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
-} from "~utils/storage";
 
 interface JsonRpcResponse {
   id: number;
@@ -71,6 +67,7 @@ let sendAsyncProxy: undefined | typeof Proxy;
 const provider = new providers.Web3Provider(window.ethereum, "any");
 
 const randomId = () => Math.floor(Math.random() * 1_000_000);
+let impersonatingAddress: string | undefined;
 
 const getChainIdAndUserAccount = async (): Promise<{
   chainId: number;
@@ -326,7 +323,12 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            if (shouldForwardToWallet(response, chainId)) {
+            const isConfirmedPersonalSign =
+              response.data.isOk && request.method === "personal_sign";
+            if (
+              shouldForwardToWallet(response, chainId) ||
+              isConfirmedPersonalSign
+            ) {
               return forwardToWallet();
             }
 
@@ -370,24 +372,10 @@ const overrideWindowEthereum = () => {
       if (
         (request.method === "eth_requestAccounts" ||
           request.method === "eth_accounts") &&
-        IS_IMPERSONATION_AVAILABLE
+        IS_IMPERSONATION_AVAILABLE &&
+        impersonatingAddress
       ) {
-        try {
-          const response = await sendAndAwaitResponseFromStream(
-            stream,
-            createBlowfishOptionRequestMessage(
-              PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
-            )
-          );
-          const { address } =
-            (response.data as BlowfishImpersonationWalletInfo) || {};
-
-          if (address) {
-            return [address];
-          }
-        } catch (err) {
-          logger.error(err);
-        }
+        return [impersonatingAddress];
       }
 
       if (request?.method === "eth_sendTransaction") {
@@ -481,7 +469,12 @@ const overrideWindowEthereum = () => {
           )
         );
 
-        if (shouldForwardToWallet(response, chainId)) {
+        const isConfirmedPersonalSign =
+          response.data.isOk && request.method === "personal_sign";
+        if (
+          shouldForwardToWallet(response, chainId) ||
+          isConfirmedPersonalSign
+        ) {
           return forwardToWallet();
         }
 
@@ -520,6 +513,15 @@ const overrideWindowEthereum = () => {
     writable: false,
   });
 };
+
+if (IS_IMPERSONATION_AVAILABLE) {
+  stream.on("data", async (message: Message<UntypedMessageData>) => {
+    // Set the impersonating address on window to be used on eth_requestAccounts and eth_accounts
+    if (message.type === RequestType.BlowfishOptions) {
+      impersonatingAddress = message.data.address;
+    }
+  });
+}
 
 const overrideInterval = setInterval(overrideWindowEthereum, 100);
 overrideWindowEthereum();
