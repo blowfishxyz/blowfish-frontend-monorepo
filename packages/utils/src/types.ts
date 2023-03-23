@@ -98,19 +98,24 @@ export enum SignTypedDataVersion {
   v4 = "V4",
 }
 
-export type SignTypedDataPayloadV3V4 = {
-  payload: SignTypedDataPayload;
-  signTypedDataVersion: SignTypedDataVersion.v3 | SignTypedDataVersion.v4;
-};
-export type SignTypedDataPayloadV1 = {
+type SignTypedDataPayloadV1 = {
   payload: TypedDataV1Field[];
   signTypedDataVersion: SignTypedDataVersion.v1;
 };
 
+type SignTypedDataPayloadV3V4 = {
+  payload: SignTypedDataPayload;
+  signTypedDataVersion: SignTypedDataVersion.v3 | SignTypedDataVersion.v4;
+};
+
+export type SupportedSignTypedDataPayloadVersion =
+  | SignTypedDataPayloadV1
+  | SignTypedDataPayloadV3V4;
+
 export type SignTypedDataRequest = BaseRequest & {
   type: RequestType.SignTypedData;
   isImpersonatingWallet?: string;
-} & (SignTypedDataPayloadV3V4 | SignTypedDataPayloadV1);
+} & SupportedSignTypedDataPayloadVersion;
 
 export const isSignTypedDataRequest = (
   req: DappRequest

@@ -258,13 +258,14 @@ const overrideWindowEthereum = () => {
               UserDecisionResponse
             >(
               stream,
-              createSignTypedDataRequestMessage({
-                payload: typedData,
-                signTypedDataVersion,
-                chainId: chainId.toString(),
+              createSignTypedDataRequestMessage(
+                {
+                  payload: typedData,
+                  signTypedDataVersion,
+                },
                 userAccount,
-                type: RequestType.SignTypedData,
-              })
+                chainId
+              )
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
@@ -421,13 +422,14 @@ const overrideWindowEthereum = () => {
           UserDecisionResponse
         >(
           stream,
-          createSignTypedDataRequestMessage({
-            payload: typedData,
-            signTypedDataVersion,
-            chainId: chainId.toString(),
+          createSignTypedDataRequestMessage(
+            {
+              payload: typedData,
+              signTypedDataVersion,
+            },
             userAccount,
-            type: RequestType.SignTypedData,
-          })
+            chainId
+          )
         );
 
         if (shouldForwardToWallet(response, chainId)) {
