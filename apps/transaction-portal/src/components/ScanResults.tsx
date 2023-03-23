@@ -14,9 +14,8 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-  SignTypedDataPayload,
-  isSignTypedDataPayload,
   TransactionPayload,
+  SignTypedDataVersion,
 } from "@blowfish/utils/types";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { Decimal } from "decimal.js";
@@ -178,9 +177,10 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       };
       return displayTransaction;
     } else if (isSignTypedDataRequest(request)) {
-      const { domain, message } = isSignTypedDataPayload(request.payload)
-        ? request.payload
-        : transformTypedDataV1FieldsToEIP712(request.payload, request.chainId);
+      const { domain, message } =
+        request.signedTypedDataVersion === SignTypedDataVersion.v1
+          ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
+          : request.payload;
       return { domain, message };
     } else if (isSignMessageRequest(request)) {
       const { message } = request.payload;
@@ -286,9 +286,12 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   const toAddress = useMemo(() => {
     if (isTransactionRequest(request)) {
       return request.payload?.to;
-    } else if (isSignTypedDataRequest(request)) {
-      return (request.payload as SignTypedDataPayload)?.domain
-        ?.verifyingContract;
+    }
+    if (
+      isSignTypedDataRequest(request) &&
+      request.signedTypedDataVersion !== SignTypedDataVersion.v1
+    ) {
+      return request.payload.domain.verifyingContract;
     }
 
     return undefined;

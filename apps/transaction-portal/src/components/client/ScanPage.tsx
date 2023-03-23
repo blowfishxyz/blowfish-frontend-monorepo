@@ -44,7 +44,6 @@ import {
   Message,
   parseRequestFromMessage,
   Severity,
-  SignTypedDataPayload,
   SignTypedDataVersion,
   UntypedMessageData,
 } from "@blowfish/utils/types";
@@ -188,18 +187,17 @@ const ScanPage: React.FC = () => {
         } else if (isSignTypedDataRequest(request)) {
           try {
             let signedTypedMessage;
-            const { payload } = request;
 
             if (request.signedTypedDataVersion === SignTypedDataVersion.v1) {
               signedTypedMessage = (await window.ethereum?.request({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 method: "eth_signTypedData" as any,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                params: [payload, request.userAccount] as any,
+                params: [request.payload, request.userAccount] as any,
               })) as unknown as string;
             } else {
-              const { domain, types, message } =
-                payload as SignTypedDataPayload;
+              const { domain, types, message } = request.payload;
+
               signedTypedMessage = await signTypedData({
                 domain,
                 types,

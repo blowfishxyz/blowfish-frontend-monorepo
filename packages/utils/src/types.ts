@@ -97,22 +97,24 @@ export enum SignTypedDataVersion {
   v3 = "V3",
   v4 = "V4",
 }
-export interface SignTypedDataRequest extends BaseRequest {
+
+export type SignTypedDataPayloadV3V4 = {
+  payload: SignTypedDataPayload;
+  signedTypedDataVersion: SignTypedDataVersion.v3 | SignTypedDataVersion.v4;
+};
+export type SignTypedDataPayloadV1 = {
+  payload: TypedDataV1Field[];
+  signedTypedDataVersion: SignTypedDataVersion.v1;
+};
+
+export type SignTypedDataRequest = BaseRequest & {
   type: RequestType.SignTypedData;
-  payload: SignTypedDataPayload | TypedDataV1Field[];
   isImpersonatingWallet?: string;
-  signedTypedDataVersion: SignTypedDataVersion;
-}
+} & (SignTypedDataPayloadV3V4 | SignTypedDataPayloadV1);
 
 export const isSignTypedDataRequest = (
   req: DappRequest
 ): req is SignTypedDataRequest => req.type === RequestType.SignTypedData;
-
-export const isSignTypedDataPayload = (
-  request: SignTypedDataPayload | TypedDataV1Field[]
-): request is SignTypedDataPayload => {
-  return (request as SignTypedDataPayload).domain !== undefined;
-};
 
 export type SignMessageMethod = "eth_sign" | "personal_sign";
 

@@ -3,9 +3,9 @@ import useSWR, { SWRResponse } from "swr";
 import {
   DappRequest,
   isSignMessageRequest,
-  isSignTypedDataPayload,
   isSignTypedDataRequest,
   isTransactionRequest,
+  SignTypedDataVersion,
 } from "@blowfish/utils/types";
 import {
   BlowfishApiClient,
@@ -52,9 +52,10 @@ const fetcher = async (
     });
   } else if (isSignTypedDataRequest(request)) {
     // NOTE: We need to make the SignTypedDataVersion.v1 payload EIP712 compliant
-    const payload = isSignTypedDataPayload(request.payload)
-      ? request.payload
-      : transformTypedDataV1FieldsToEIP712(request.payload, request.chainId);
+    const payload =
+      request.signedTypedDataVersion === SignTypedDataVersion.v1
+        ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
+        : request.payload;
 
     return client.scanSignTypedData(payload, request.userAccount, {
       origin,
