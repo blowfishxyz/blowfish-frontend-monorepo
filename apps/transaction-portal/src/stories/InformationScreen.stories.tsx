@@ -9,12 +9,10 @@ import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
 import {
   AccountNotConnectedScreen,
   AccountNotConnectedScreenProps,
-  OutdatedExtensionCTAScreen,
   SimulationErrorScreen,
   SimulationErrorScreenProps,
   TransactionBlockedScreen as TransactionBlockedScreenComponent,
   TransactionBlockedScreenProps,
-  TransactionNotFoundScreen,
   UnknownErrorScreen,
   UnknownErrorScreenProps,
   UnsupportedChainScreen,
@@ -332,63 +330,63 @@ WrongChain.args = {
   chainIdToConnect: 137,
 };
 
-export const TransactionNotFound: ComponentStory<
-  React.FC<PopupContainerProps & SlimBottomMenuProps>
-> = (props) => {
-  return (
-    <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
-          style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
-          }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <TransactionNotFoundScreen />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
-    </div>
-  );
-};
-TransactionNotFound.args = {
-  ...DEFAULT_ARGS,
-};
-
-export const OutdatedExtension: ComponentStory<
-  React.FC<PopupContainerProps>
-> = (props) => {
-  return (
-    <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
-          style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
-          }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <OutdatedExtensionCTAScreen />
-        </PopupContainer>
-      </Providers>
-    </div>
-  );
-};
-OutdatedExtension.args = {
-  ...DEFAULT_ARGS,
-};
+// export const TransactionNotFound: ComponentStory<
+//   React.FC<PopupContainerProps & SlimBottomMenuProps>
+// > = (props) => {
+//   return (
+//     <div style={{ width: "600px", minHeight: "768px" }}>
+//       <Providers>
+//         <PopupContainer
+//           style={{
+//             /* NOTE This is only for the story,
+//              * normally we want this to take up all the available window height */
+//             minHeight: "748px",
+//           }}
+//           {...props}
+//           severity="INFO"
+//           bottomMenuType="SLIM"
+//         >
+//           <TransactionNotFoundScreen />
+//           <SlimBottomMenu
+//             style={{
+//               /* NOTE: This is only applicable in the context of the storybook,
+//                * in the extension we want this fixed to to bottom of the window */
+//               position: "absolute",
+//             }}
+//             onClick={props.onClick}
+//             buttonLabel="Close"
+//           />
+//         </PopupContainer>
+//       </Providers>
+//     </div>
+//   );
+// };
+// TransactionNotFound.args = {
+//   ...DEFAULT_ARGS,
+// };
+//
+// export const OutdatedExtension: ComponentStory<
+//   React.FC<PopupContainerProps>
+// > = (props) => {
+//   return (
+//     <div style={{ width: "600px", minHeight: "768px" }}>
+//       <Providers>
+//         <PopupContainer
+//           style={{
+//             /* NOTE This is only for the story,
+//              * normally we want this to take up all the available window height */
+//             minHeight: "748px",
+//           }}
+//           {...props}
+//           severity="INFO"
+//           bottomMenuType="SLIM"
+//         >
+//           <OutdatedExtensionCTAScreen />
+//         </PopupContainer>
+//       </Providers>
+//     </div>
+//   );
+// };
+// OutdatedExtension.args = {
+//   ...DEFAULT_ARGS,
+// };
