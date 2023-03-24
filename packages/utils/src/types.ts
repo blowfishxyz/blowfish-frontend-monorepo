@@ -93,19 +93,19 @@ export const isTransactionRequest = (
 ): req is TransactionRequest => req.type === RequestType.Transaction;
 
 export enum SignTypedDataVersion {
-  v1 = "V1",
-  v3 = "V3",
-  v4 = "V4",
+  V1 = "V1",
+  V3 = "V3",
+  V4 = "V4",
 }
 
 type SignTypedDataPayloadV1 = {
   payload: TypedDataV1Field[];
-  signTypedDataVersion: SignTypedDataVersion.v1;
+  signTypedDataVersion: SignTypedDataVersion.V1;
 };
 
 type SignTypedDataPayloadV3V4 = {
   payload: SignTypedDataPayload;
-  signTypedDataVersion: SignTypedDataVersion.v3 | SignTypedDataVersion.v4;
+  signTypedDataVersion: SignTypedDataVersion.V3 | SignTypedDataVersion.V4;
 };
 
 export type SupportedSignTypedDataPayloadVersion =

@@ -51,9 +51,9 @@ const fetcher = async (
       origin,
     });
   } else if (isSignTypedDataRequest(request)) {
-    // NOTE: We need to make the SignTypedDataVersion.v1 payload EIP712 compliant
+    // NOTE: We need to make the SignTypedDataVersion.V1 payload EIP712 compliant
     const payload =
-      request.signTypedDataVersion === SignTypedDataVersion.v1
+      request.signTypedDataVersion === SignTypedDataVersion.V1
         ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
         : request.payload;
 

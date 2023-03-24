@@ -178,7 +178,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       return displayTransaction;
     } else if (isSignTypedDataRequest(request)) {
       const { domain, message } =
-        request.signTypedDataVersion === SignTypedDataVersion.v1
+        request.signTypedDataVersion === SignTypedDataVersion.V1
           ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
           : request.payload;
       return { domain, message };
@@ -289,7 +289,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     }
     if (
       isSignTypedDataRequest(request) &&
-      request.signTypedDataVersion !== SignTypedDataVersion.v1
+      request.signTypedDataVersion !== SignTypedDataVersion.V1
     ) {
       return request.payload.domain.verifyingContract;
     }

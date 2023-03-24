@@ -95,14 +95,14 @@ const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
       if (Array.isArray(params[0])) {
         const [typedData, address] = params;
         return {
-          signTypedDataVersion: SignTypedDataVersion.v1,
+          signTypedDataVersion: SignTypedDataVersion.V1,
           address,
           typedData,
         };
       }
       const [address, data] = params;
       return {
-        signTypedDataVersion: SignTypedDataVersion.v4,
+        signTypedDataVersion: SignTypedDataVersion.V4,
         address,
         typedData: data ? JSON.parse(data) : null,
       };
@@ -113,8 +113,8 @@ const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
       return {
         signTypedDataVersion:
           method === "eth_signTypedData_v3"
-            ? SignTypedDataVersion.v3
-            : SignTypedDataVersion.v4,
+            ? SignTypedDataVersion.V3
+            : SignTypedDataVersion.V4,
         address,
         typedData: data ? JSON.parse(data) : null,
       };

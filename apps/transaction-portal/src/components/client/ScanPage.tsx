@@ -184,10 +184,10 @@ const ScanPage: React.FC = () => {
           }
         } else if (isSignTypedDataRequest(request)) {
           try {
-            let signTypedDataVersion;
+            let signTypedMessage;
 
-            if (request.signTypedDataVersion === SignTypedDataVersion.v1) {
-              signTypedDataVersion = (await window.ethereum?.request({
+            if (request.signTypedDataVersion === SignTypedDataVersion.V1) {
+              signTypedMessage = (await window.ethereum?.request({
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 method: "eth_signTypedData" as any,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -196,15 +196,15 @@ const ScanPage: React.FC = () => {
             } else {
               const { domain, types, message } = request.payload;
 
-              signTypedDataVersion = await signTypedData({
+              signTypedMessage = await signTypedData({
                 domain,
                 types,
                 value: message,
               });
             }
 
-            logger.debug("signTypedMessage", signTypedDataVersion);
-            await sendResult(message.id, signTypedDataVersion);
+            logger.debug("signTypedMessage", signTypedMessage);
+            await sendResult(message.id, signTypedMessage);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
             const errMessage = err.message || err.toString();
