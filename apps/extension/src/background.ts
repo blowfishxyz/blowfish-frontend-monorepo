@@ -163,7 +163,7 @@ const processRequestBase = async (
     active: true,
   });
   const tabId = tab.id!;
-  console.log("message", message);
+
   // Store port and message to id mapping so we can respond to the message later on and get the stored message
   messageIdToPortAndMessageMapping.set(message.id, {
     remotePort,
