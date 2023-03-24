@@ -25,7 +25,8 @@ jobs:
       - name: Get package version
         uses: martinbeentjes/npm-get-version-action@main
         id: get-version
-        working-directory: ./apps/transaction-portal
+        with:
+          path: ./apps/transaction-portal
       - name: Set package version as env variable
         run: echo "PLASMO_PUBLIC_EXTENSION_VERSION=${{ steps.get-version.outputs.version }}" >> $GITHUB_ENV
       - name: Publish to Chromatic
