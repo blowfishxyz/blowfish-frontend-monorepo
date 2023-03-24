@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - "apps/transaction-portal/**"
-      -
+
 env:
   NEXT_PUBLIC_ALCHEMY_API_KEY: ${{vars.ALCHEMY_API_KEY}}
   NEXT_PUBLIC_BLOWFISH_API_BASE_URL: ${{vars.BLOWFISH_API_BASE_URL}}
@@ -22,14 +22,14 @@ jobs:
       - name: Install dependencies
         working-directory: ./apps/transaction-portal
         run: pnpm install
-      - name: Publish to Chromatic
-        uses: chromaui/action@v1
       - name: Get package version
-        uses: anothrNick/npm-get-version-action@v1.2.0
+        uses: martinbeentjes/npm-get-version-action@main
         id: get-version
         working-directory: ./apps/transaction-portal
       - name: Set package version as env variable
         run: echo "PLASMO_PUBLIC_EXTENSION_VERSION=${{ steps.get-version.outputs.version }}" >> $GITHUB_ENV
+      - name: Publish to Chromatic
+        uses: chromaui/action@v1
         # Chromatic GitHub Action options
         with:
           workingDir: ./apps/transaction-portal
