@@ -40,6 +40,7 @@ import {
   Message,
   parseRequestFromMessage,
   Severity,
+  SignTypedDataVersion,
   UntypedMessageData,
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
@@ -47,6 +48,7 @@ import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "~utils/logger";
 import { useRouter } from "next/router";
 import { checkVersionAndTransformMessage, MessageError } from "~utils/utils";
+
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -204,15 +206,28 @@ const ScanPage: React.FC = () => {
             }
           }
         } else if (isSignTypedDataRequest(request)) {
-          const { payload } = request;
           try {
-            const signedTypedMessage = await signTypedData({
-              domain: payload.domain,
-              types: payload.types,
-              value: payload.message,
-            });
-            logger.debug("signTypedMessage", signedTypedMessage);
-            await sendResult(message.id, signedTypedMessage);
+            let signTypedMessage;
+
+            if (request.signTypedDataVersion === SignTypedDataVersion.V1) {
+              signTypedMessage = (await window.ethereum?.request({
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                method: "eth_signTypedData" as any,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                params: [request.payload, request.userAccount] as any,
+              })) as unknown as string;
+            } else {
+              const { domain, types, message } = request.payload;
+
+              signTypedMessage = await signTypedData({
+                domain,
+                types,
+                value: message,
+              });
+            }
+
+            logger.debug("signTypedMessage", signTypedMessage);
+            await sendResult(message.id, signTypedMessage);
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (err: any) {
             const errMessage = err.message || err.toString();
@@ -240,7 +255,7 @@ const ScanPage: React.FC = () => {
       closeWindow();
     },
 
-    [message, request, chainId, closeWindow]
+    [message, request, closeWindow, chainId]
   );
 
   logger.debug(message);
