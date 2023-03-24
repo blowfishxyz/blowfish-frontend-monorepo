@@ -94,10 +94,6 @@ const MobileImage = styled.div`
   }
 `;
 
-const FadedArbitrumIcon = styled(ArbitrumIcon)`
-  opacity: 0.3;
-`;
-
 const FadedOptimismIcon = styled(OptimismIcon)`
   opacity: 0.3;
 `;
@@ -171,7 +167,7 @@ export const Hero: React.FC = () => {
             <EthereumIcon />
             <PolygonIcon />
             <BnbChainIcon />
-            <FadedArbitrumIcon />
+            <ArbitrumIcon />
             <FadedOptimismIcon />
           </IconGroup>
           <InstallLink href={CHROME_EXTENSION_STORE_URL}>
