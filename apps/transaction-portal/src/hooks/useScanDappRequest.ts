@@ -5,6 +5,7 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
+  SignTypedDataVersion,
 } from "@blowfish/utils/types";
 import {
   BlowfishApiClient,
@@ -13,6 +14,7 @@ import {
   EvmMessageScanResult,
   EvmTransactionScanResult,
 } from "@blowfish/utils/BlowfishApiClient";
+import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -49,7 +51,13 @@ const fetcher = async (
       origin,
     });
   } else if (isSignTypedDataRequest(request)) {
-    return client.scanSignTypedData(request.payload, request.userAccount, {
+    // NOTE: We need to make the SignTypedDataVersion.V1 payload EIP712 compliant
+    const payload =
+      request.signTypedDataVersion === SignTypedDataVersion.V1
+        ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
+        : request.payload;
+
+    return client.scanSignTypedData(payload, request.userAccount, {
       origin,
     });
   } else if (isSignMessageRequest(request)) {
