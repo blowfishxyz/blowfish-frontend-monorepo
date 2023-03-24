@@ -49,7 +49,6 @@ import { logger } from "~utils/logger";
 import { useRouter } from "next/router";
 import { checkVersionAndTransformMessage, MessageError } from "~utils/utils";
 
-
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
   height: 100%;
