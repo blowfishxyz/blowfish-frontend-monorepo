@@ -3,7 +3,7 @@ import {
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
 import { logger } from "~utils/logger";
-import { DappRequest, Message } from "@blowfish/utils/build/types";
+import { DappRequest, Message } from "@blowfish/utils/types";
 
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
