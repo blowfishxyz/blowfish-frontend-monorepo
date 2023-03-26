@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { ConnectKitButton } from "connectkit";
 
 import type { Severity } from "@blowfish/utils/types";
 import type {
@@ -127,6 +128,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       {userAccount && (
         <HeaderLeft>
           <StyledWalletIcon />
+          <ConnectKitButton />
           <TextSmall style={{ marginLeft: "9px" }} secondary>
             {shortenHex(userAccount)}
           </TextSmall>

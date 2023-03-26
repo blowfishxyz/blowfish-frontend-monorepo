@@ -5,6 +5,7 @@ import { WagmiConfig } from "wagmi";
 import { GlobalStyle } from "../styles/global";
 import { themes } from "../styles/theme";
 import { wagmiClient } from "../utils/wagmi";
+import { ConnectKitProvider, ConnectKitButton } from "connectkit";
 import Head from "next/head";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -16,7 +17,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={themes.light}>
         <GlobalStyle />
         <WagmiConfig client={wagmiClient}>
-          <Component {...pageProps} />
+          <ConnectKitProvider>
+            <Component {...pageProps} />
+            <ConnectKitButton />
+          </ConnectKitProvider>
         </WagmiConfig>
       </ThemeProvider>
     </>

@@ -332,7 +332,7 @@ export const AccountNotConnectedScreen: React.FC<
           </StyledText>
           {onRetry && (
             <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
-              <StyledText>Switch account</StyledText>
+              <StyledText>Disconnect account</StyledText>
             </RetryButton>
           )}
         </>

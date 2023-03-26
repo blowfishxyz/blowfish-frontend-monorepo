@@ -1,22 +1,15 @@
 import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useModal } from "connectkit";
 import styled from "styled-components";
-import {
-  useAccount,
-  useChainId,
-  useConnect,
-  useDisconnect,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
 import {
   prepareSendTransaction,
   sendTransaction,
   signTypedData,
 } from "@wagmi/core";
-import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../BottomMenus";
-import { connectors } from "../../utils/wagmi";
 import {
   AccountNotConnectedScreen,
   SimulationErrorScreen,
@@ -70,7 +63,6 @@ const ScanPage: React.FC = () => {
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [skipUnsupportedChainWarning, setSkipUnsupportedChainWarning] =
     useState<boolean>(false);
   const [impersonatingWallet, setImpersonatingWallet] = useState<
@@ -82,10 +74,8 @@ const ScanPage: React.FC = () => {
   const connectedChainId = useChainId();
   const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
     useSwitchNetwork({ throwForSwitchChainNotSupported: true });
-  const { connectAsync } = useConnect({
-    connector: connectors.metamask,
-  });
   const { disconnectAsync } = useDisconnect();
+  const { setOpen: setConnectWalletModalOpen } = useModal();
 
   useEffect(() => {
     const windowQs = window.location.search;
@@ -299,16 +289,8 @@ const ScanPage: React.FC = () => {
         <>
           <AccountNotConnectedScreen
             accountToConnect={userAccount ?? ""}
-            isRetrying={isConnecting}
             onRetry={async () => {
-              setIsConnecting(true);
-              try {
-                await connectAsync();
-              } catch (err) {
-                logger.error(err);
-              } finally {
-                setIsConnecting(false);
-              }
+              setConnectWalletModalOpen(true);
             }}
           />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
@@ -326,17 +308,11 @@ const ScanPage: React.FC = () => {
           <AccountNotConnectedScreen
             accountToConnect={userAccount ?? ""}
             connectedAccount={connectedAddress}
-            isRetrying={isConnecting}
             onRetry={async () => {
-              setIsConnecting(true);
               try {
                 await disconnectAsync();
-                setConnectedAddress(null);
-                await connectAsync();
               } catch (err) {
                 logger.error(err);
-              } finally {
-                setIsConnecting(false);
               }
             }}
           />
@@ -444,9 +420,8 @@ const ScanPage: React.FC = () => {
     message,
     hasDismissedScreen,
     mutate,
-    isConnecting,
+    setConnectWalletModalOpen,
     closeWindow,
-    connectAsync,
     handleUserDecision,
     disconnectAsync,
     isSwitchingNetworks,
