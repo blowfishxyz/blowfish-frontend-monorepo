@@ -16,6 +16,7 @@ import {
 import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../BottomMenus";
+import { connectors } from "../../utils/wagmi";
 import {
   AccountNotConnectedScreen,
   SimulationErrorScreen,
@@ -82,7 +83,7 @@ const ScanPage: React.FC = () => {
   const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
     useSwitchNetwork({ throwForSwitchChainNotSupported: true });
   const { connectAsync } = useConnect({
-    connector: new InjectedConnector(),
+    connector: connectors.metamask,
   });
   const { disconnectAsync } = useDisconnect();
 
@@ -330,8 +331,8 @@ const ScanPage: React.FC = () => {
               setIsConnecting(true);
               try {
                 await disconnectAsync();
-                await connectAsync();
                 setConnectedAddress(null);
+                await connectAsync();
               } catch (err) {
                 logger.error(err);
               } finally {

@@ -322,13 +322,20 @@ export const AccountNotConnectedScreen: React.FC<
       </StyledTextXL>
 
       {connectedAccount ? (
-        <StyledText>
-          You are connected with{" "}
-          <StyledText semiBold>{shortenHex(connectedAccount, 5)}</StyledText>,
-          but are trying to perform an action for{" "}
-          <StyledText semiBold>{accountToConnect}</StyledText>. Please switch to
-          the correct account in your wallet
-        </StyledText>
+        <>
+          <StyledText>
+            You are connected with{" "}
+            <StyledText semiBold>{shortenHex(connectedAccount, 5)}</StyledText>,
+            but are trying to perform an action for{" "}
+            <StyledText semiBold>{accountToConnect}</StyledText>. Please switch
+            to the correct account in your wallet
+          </StyledText>
+          {onRetry && (
+            <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+              <StyledText>Switch account</StyledText>
+            </RetryButton>
+          )}
+        </>
       ) : (
         <>
           <StyledText>

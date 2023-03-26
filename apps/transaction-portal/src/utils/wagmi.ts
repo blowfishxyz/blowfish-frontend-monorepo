@@ -1,7 +1,7 @@
 import { mainnet, polygon, goerli, arbitrum, bsc } from "@wagmi/core/chains";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
 import { publicProvider } from "@wagmi/core/providers/public";
-import { InjectedConnector } from "@wagmi/core/connectors/injected";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { configureChains, createClient } from "wagmi";
 
 import { ALCHEMY_API_KEY } from "../config";
@@ -17,8 +17,18 @@ const { chains, provider } = configureChains(
   ]
 );
 
+export const connectors = {
+  metamask: new MetaMaskConnector({
+    chains,
+    options: {
+      shimDisconnect: true,
+      UNSTABLE_shimOnConnectSelectAccount: true,
+    },
+  }),
+};
+
 export const wagmiClient = createClient({
   autoConnect: true,
-  connectors: [new InjectedConnector({ chains })],
+  connectors: Object.values(connectors),
   provider,
 });
