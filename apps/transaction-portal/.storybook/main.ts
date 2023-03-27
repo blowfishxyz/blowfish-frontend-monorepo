@@ -21,6 +21,8 @@ module.exports = {
       "~hooks": path.resolve(__dirname, "../src/hooks"),
       "~components": path.resolve(__dirname, "../src/components"),
       "~utils": path.resolve(__dirname, "../src/utils"),
+      // Mocks for dependencies incompatible with Storybook
+      connectkit: path.resolve(__dirname, "../src/__mocks__/connectkit"),
     };
 
     return config;
