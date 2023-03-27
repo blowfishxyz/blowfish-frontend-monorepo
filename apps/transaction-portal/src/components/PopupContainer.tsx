@@ -13,6 +13,7 @@ import {
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
 import { TextSmall } from "./Typography";
+import { TextButton } from "./Buttons";
 import {
   EthereumIcon,
   PolygonIcon,
@@ -20,6 +21,7 @@ import {
   BnbChainIcon,
 } from "./icons/ChainIcons";
 import { WalletIcon } from "./icons/WalletIcon";
+import { FaLink, FaUnlink } from "./icons/FontAwesome";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
@@ -75,6 +77,28 @@ const HeaderRight = styled.div`
   }
 `;
 
+const CustomConnectButton = styled(TextButton)`
+  display: flex;
+  align-items: center;
+  :hover {
+    opacity: 0.7;
+  }
+`;
+
+const StyledLinkIcon = styled(FaLink)`
+  height: 12px;
+  margin-left: 3px;
+  width: auto;
+  fill: ${({ theme }) => theme.colors.secondaryText};
+`;
+
+const StyledUnlinkIcon = styled(FaUnlink)`
+  height: 12px;
+  margin-left: 3px;
+  width: auto;
+  fill: ${({ theme }) => theme.colors.secondaryText};
+`;
+
 export interface PopupContainerProps extends React.PropsWithChildren {
   style?: React.CSSProperties;
   className?: string;
@@ -127,11 +151,26 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
     >
       {userAccount && (
         <HeaderLeft>
-          <StyledWalletIcon />
-          <ConnectKitButton />
-          <TextSmall style={{ marginLeft: "9px" }} secondary>
-            {shortenHex(userAccount)}
-          </TextSmall>
+          <ConnectKitButton.Custom>
+            {({ show, address, ensName, isConnecting, isConnected }) => {
+              return (
+                <CustomConnectButton onClick={show}>
+                  <StyledWalletIcon />
+                  <TextSmall style={{ marginLeft: "9px" }} secondary>
+                    {isConnecting
+                      ? "Connecting..."
+                      : ensName ??
+                        (address ? shortenHex(address) : "Connect wallet")}
+                  </TextSmall>
+                  {isConnecting ? null : isConnected ? (
+                    <StyledUnlinkIcon />
+                  ) : (
+                    <StyledLinkIcon />
+                  )}
+                </CustomConnectButton>
+              );
+            }}
+          </ConnectKitButton.Custom>
         </HeaderLeft>
       )}
       {chainFamily && chainNetwork && (

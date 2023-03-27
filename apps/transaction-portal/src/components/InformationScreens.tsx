@@ -332,7 +332,7 @@ export const AccountNotConnectedScreen: React.FC<
           </StyledText>
           {onRetry && (
             <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
-              <StyledText>Disconnect account</StyledText>
+              <StyledText>Disconnect wallet</StyledText>
             </RetryButton>
           )}
         </>
@@ -344,7 +344,7 @@ export const AccountNotConnectedScreen: React.FC<
           </StyledText>
           {onRetry && (
             <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
-              <StyledText>Connect account</StyledText>
+              <StyledText>Connect wallet</StyledText>
             </RetryButton>
           )}
         </>
