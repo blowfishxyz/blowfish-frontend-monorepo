@@ -16,7 +16,7 @@ import {
   ArbitrumIcon,
   BnbChainIcon,
 } from "./icons/ChainIcons";
-import { CustomConnectkitButton } from "./CustomConnectKitButton";
+import { CustomConnectkitButton } from "./CustomConnectkitButton";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
