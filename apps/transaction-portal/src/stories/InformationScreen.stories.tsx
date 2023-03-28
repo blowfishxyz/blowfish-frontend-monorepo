@@ -24,7 +24,7 @@ import {
   PopupContainer,
   PopupContainerProps,
 } from "../components/PopupContainer";
-import { Providers } from "../components/Providers";
+import { BaseProviders } from "../components/Providers";
 
 const DEFAULT_ARGS = {
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -49,7 +49,7 @@ export const TransactionBlocked: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -71,7 +71,7 @@ export const TransactionBlocked: ComponentStory<
             buttonLabel="Close"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
@@ -83,7 +83,7 @@ export const SimulationError: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -110,7 +110,7 @@ export const SimulationError: ComponentStory<
             buttonLabel="Close"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
@@ -129,7 +129,7 @@ export const TransactionReverted: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -155,7 +155,7 @@ export const TransactionReverted: ComponentStory<
             buttonLabel="Close"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
@@ -174,7 +174,7 @@ export const UnsupportedChain: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -200,7 +200,7 @@ export const UnsupportedChain: ComponentStory<
             buttonLabel="Close"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
@@ -210,7 +210,7 @@ export const UnknownError: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -235,7 +235,7 @@ export const UnknownError: ComponentStory<
             buttonLabel="Close this window"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
@@ -251,7 +251,7 @@ export const AccountNotConnected: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -278,7 +278,7 @@ export const AccountNotConnected: ComponentStory<
             buttonLabel="Close"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
@@ -293,7 +293,7 @@ export const WrongChain: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -320,7 +320,7 @@ export const WrongChain: ComponentStory<
             buttonLabel="Close"
           />
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };

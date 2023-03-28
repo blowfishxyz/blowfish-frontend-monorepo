@@ -1,4 +1,3 @@
-import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useModal } from "connectkit";
 import styled from "styled-components";
@@ -24,21 +23,17 @@ import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { sendAbort, sendResult } from "~utils/messages";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "~utils/logger";
 import {
+  RequestType,
   actionToSeverity,
-  DappRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-  Message,
-  parseRequestFromMessage,
   Severity,
   SignTypedDataVersion,
-  UntypedMessageData,
 } from "@blowfish/utils/types";
+import { useRequestQueryParams } from "../../hooks/useRequestQueryParams";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -49,18 +44,8 @@ const ScanPageContainer = styled.div<{ severity?: Severity }>`
 `;
 
 const ScanPage: React.FC = () => {
-  const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
-    undefined
-  );
-  const [chainFamily, setChainFamily] = useState<ChainFamily | undefined>(
-    undefined
-  );
-  const [userAccount, setUserAccount] = useState<string | undefined>(undefined);
-  const [chainId, setChainId] = useState<number | undefined>(undefined);
-  const [message, setMessage] = useState<
-    Message<UntypedMessageData> | undefined
-  >(undefined);
-  const [request, setRequest] = useState<DappRequest | undefined>(undefined);
+  const { message, request, chainId, userAccount, chainFamily, chainNetwork } =
+    useRequestQueryParams();
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
   const [isRetrying, setIsRetrying] = useState<boolean>(false);
   const [skipUnsupportedChainWarning, setSkipUnsupportedChainWarning] =
@@ -78,33 +63,10 @@ const ScanPage: React.FC = () => {
   const { setOpen: setConnectWalletModalOpen } = useModal();
 
   useEffect(() => {
-    const windowQs = window.location.search;
-    const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
-    // NOTE: We only pass Message through the query params
-    const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
-    const _request = parseRequestFromMessage(_message);
-    const _chainId = _message.data.chainId.toString();
-
-    setChainId(parseInt(_chainId));
-    setMessage(_message);
-    setRequest(_request);
-    setUserAccount(_request.userAccount);
-
-    if (_request.isImpersonatingWallet === "true") {
-      setImpersonatingWallet(_request.userAccount);
+    if (request?.isImpersonatingWallet === "true") {
+      setImpersonatingWallet(request.userAccount);
     }
-
-    // NOTE: This should never happen since we verify
-    // that the chain is supported before we create this page
-    if (!chainIdToSupportedChainMapping[_chainId]) {
-      logger.debug(`Blowfish unsupported chainId ${_chainId}`);
-      return;
-    }
-    const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
-      chainIdToSupportedChainMapping[_chainId];
-    setChainFamily(_chainFamily);
-    setChainNetwork(_chainNetwork);
-  }, []);
+  }, [request]);
 
   const {
     data: scanResults,
@@ -269,6 +231,7 @@ const ScanPage: React.FC = () => {
       !isUnsupportedChain &&
       chainId !== connectedChainId;
     const isUnsupportedDangerousRequest =
+      message?.data.type === RequestType.SignMessage &&
       message?.data.payload.method === "eth_sign";
 
     if (isError) {

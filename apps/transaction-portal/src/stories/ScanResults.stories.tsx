@@ -11,7 +11,7 @@ import {
   PopupContainer,
   PopupContainerProps,
 } from "../components/PopupContainer";
-import { Providers } from "../components/Providers";
+import { BaseProviders } from "../components/Providers";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
 import {
   exampleDappUrl,
@@ -72,7 +72,7 @@ export const TransactionNoAction: ComponentStory<
 
   return (
     <div style={{ width: "392px", minHeight: "748px" }}>
-      <Providers>
+      <BaseProviders>
         <PopupContainer
           style={{
             /* NOTE This is only for the story,
@@ -123,7 +123,7 @@ export const TransactionNoAction: ComponentStory<
             </>
           )}
         </PopupContainer>
-      </Providers>
+      </BaseProviders>
     </div>
   );
 };
