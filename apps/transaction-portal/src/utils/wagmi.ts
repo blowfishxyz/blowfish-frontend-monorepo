@@ -31,6 +31,6 @@ export const connectors = [
 
 export const wagmiClient = createClient({
   autoConnect: true,
-  connectors: connectors,
+  connectors,
   provider,
 });

@@ -1,38 +1,25 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { ConnectKitButton } from "connectkit";
 
 import type { Severity } from "@blowfish/utils/types";
 import type {
   ChainFamily,
   ChainNetwork,
 } from "@blowfish/utils/BlowfishApiClient";
-import { shortenHex } from "../utils/hex";
 import {
   REGULAR_BOTTOM_MENU_HEIGHT,
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
-import { TextSmall } from "./Typography";
-import { TextButton } from "./Buttons";
 import {
   EthereumIcon,
   PolygonIcon,
   ArbitrumIcon,
   BnbChainIcon,
 } from "./icons/ChainIcons";
-import { WalletIcon } from "./icons/WalletIcon";
-import { FaLink, FaUnlink } from "./icons/FontAwesome";
+import { CustomConnectkitButton } from "./CustomConnectKitButton";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
-
-const StyledWalletIcon = styled(WalletIcon)`
-  width: 16px;
-  height: auto;
-  & > path {
-    fill: rgba(0, 0, 0, 0.33);
-  }
-`;
 
 const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
   chainFamily,
@@ -77,28 +64,6 @@ const HeaderRight = styled.div`
   }
 `;
 
-const CustomConnectButton = styled(TextButton)`
-  display: flex;
-  align-items: center;
-  :hover {
-    opacity: 0.7;
-  }
-`;
-
-const StyledLinkIcon = styled(FaLink)`
-  height: 12px;
-  margin-left: 3px;
-  width: auto;
-  fill: ${({ theme }) => theme.colors.secondaryText};
-`;
-
-const StyledUnlinkIcon = styled(FaUnlink)`
-  height: 12px;
-  margin-left: 3px;
-  width: auto;
-  fill: ${({ theme }) => theme.colors.secondaryText};
-`;
-
 export interface PopupContainerProps extends React.PropsWithChildren {
   style?: React.CSSProperties;
   className?: string;
@@ -136,7 +101,6 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
   children,
   style,
   className,
-  userAccount,
   chainFamily,
   chainNetwork,
   severity,
@@ -149,30 +113,9 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       severity={severity}
       bottomMenuType={bottomMenuType}
     >
-      {userAccount && (
-        <HeaderLeft>
-          <ConnectKitButton.Custom>
-            {({ show, address, ensName, isConnecting, isConnected }) => {
-              return (
-                <CustomConnectButton onClick={show}>
-                  <StyledWalletIcon />
-                  <TextSmall style={{ marginLeft: "9px" }} secondary>
-                    {isConnecting
-                      ? "Connecting..."
-                      : ensName ??
-                        (address ? shortenHex(address) : "Connect wallet")}
-                  </TextSmall>
-                  {isConnecting ? null : isConnected ? (
-                    <StyledUnlinkIcon />
-                  ) : (
-                    <StyledLinkIcon />
-                  )}
-                </CustomConnectButton>
-              );
-            }}
-          </ConnectKitButton.Custom>
-        </HeaderLeft>
-      )}
+      <HeaderLeft>
+        <CustomConnectkitButton />
+      </HeaderLeft>
       {chainFamily && chainNetwork && (
         <HeaderRight>
           <IconForChainMemo chainFamily={chainFamily} />
