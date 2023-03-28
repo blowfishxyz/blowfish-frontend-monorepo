@@ -10,7 +10,9 @@ import {
   SignMessageMethod,
   SignMessageRequest,
   SignTypedDataRequest,
+  SignTypedDataVersion,
   TransactionRequest,
+  TypedDataV1Field,
   UntypedMessageData,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
@@ -37,6 +39,15 @@ interface JsonRpcError {
   id: number;
   jsonrpc: "2.0";
   error: EthereumProviderError<unknown>;
+}
+
+interface EthereumSignTypedDataRequest {
+  method:
+    | "eth_signTypedData"
+    | "eth_signTypedData_v1"
+    | "eth_signTypedData_v3"
+    | "eth_signTypedData_v4";
+  params: [string | TypedDataV1Field[], string];
 }
 
 declare let window: Window & {
@@ -74,6 +85,43 @@ const getChainIdAndUserAccount = async (): Promise<{
 
 const isScanningPaused = (response: Message<UserDecisionResponse>) => {
   return !!response.data.opts?.pauseScan;
+};
+
+const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
+  const { method, params } = request;
+  switch (method) {
+    case "eth_signTypedData":
+    case "eth_signTypedData_v1": {
+      if (Array.isArray(params[0])) {
+        const [typedData, address] = params;
+        return {
+          signTypedDataVersion: SignTypedDataVersion.V1,
+          address,
+          typedData,
+        };
+      }
+      const [address, data] = params;
+      return {
+        signTypedDataVersion: SignTypedDataVersion.V4,
+        address,
+        typedData: data ? JSON.parse(data) : null,
+      };
+    }
+    case "eth_signTypedData_v3":
+    case "eth_signTypedData_v4": {
+      const [address, data] = params;
+      return {
+        signTypedDataVersion:
+          method === "eth_signTypedData_v3"
+            ? SignTypedDataVersion.V3
+            : SignTypedDataVersion.V4,
+        address,
+        typedData: data ? JSON.parse(data) : null,
+      };
+    }
+    default:
+      throw new Error(`Unknown eth_signTypedData version. Method: ${method}`);
+  }
 };
 
 const shouldForwardToWallet = (
@@ -194,13 +242,14 @@ const overrideWindowEthereum = () => {
             }
           });
       } else if (
+        request?.method === "eth_signTypedData" ||
+        request?.method === "eth_signTypedData_v1" ||
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
-        const [address, typedDataStr] = request?.params ?? [];
-        if (!address || !typedDataStr) return forwardToWallet();
-
-        const typedData = JSON.parse(typedDataStr);
+        const { signTypedDataVersion, typedData, address } =
+          enhanceSignTypedData(request);
+        if (!address || !typedData) return forwardToWallet();
 
         getChainIdAndUserAccount()
           .then(({ chainId, userAccount }) =>
@@ -209,7 +258,14 @@ const overrideWindowEthereum = () => {
               UserDecisionResponse
             >(
               stream,
-              createSignTypedDataRequestMessage(typedData, chainId, userAccount)
+              createSignTypedDataRequestMessage(
+                {
+                  payload: typedData,
+                  signTypedDataVersion,
+                },
+                userAccount,
+                chainId
+              )
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
@@ -268,7 +324,12 @@ const overrideWindowEthereum = () => {
             ).then((response) => ({ response, chainId, userAccount }))
           )
           .then(({ response, chainId }) => {
-            if (shouldForwardToWallet(response, chainId)) {
+            const isConfirmedPersonalSign =
+              response.data.isOk && request.method === "personal_sign";
+            if (
+              shouldForwardToWallet(response, chainId) ||
+              isConfirmedPersonalSign
+            ) {
               return forwardToWallet();
             }
 
@@ -346,13 +407,14 @@ const overrideWindowEthereum = () => {
           );
         }
       } else if (
+        request?.method === "eth_signTypedData" ||
+        request?.method === "eth_signTypedData_v1" ||
         request?.method === "eth_signTypedData_v3" ||
         request?.method === "eth_signTypedData_v4"
       ) {
-        const [address, typedDataStr] = request?.params ?? [];
-        if (!address || !typedDataStr) return forwardToWallet();
-
-        const typedData = JSON.parse(typedDataStr);
+        const { signTypedDataVersion, address, typedData } =
+          enhanceSignTypedData(request);
+        if (!address || !typedData) return forwardToWallet();
 
         const { chainId, userAccount } = await getChainIdAndUserAccount();
         const response = await sendAndAwaitResponseFromStream<
@@ -360,7 +422,14 @@ const overrideWindowEthereum = () => {
           UserDecisionResponse
         >(
           stream,
-          createSignTypedDataRequestMessage(typedData, chainId, userAccount)
+          createSignTypedDataRequestMessage(
+            {
+              payload: typedData,
+              signTypedDataVersion,
+            },
+            userAccount,
+            chainId
+          )
         );
 
         if (shouldForwardToWallet(response, chainId)) {
@@ -402,7 +471,12 @@ const overrideWindowEthereum = () => {
           )
         );
 
-        if (shouldForwardToWallet(response, chainId)) {
+        const isConfirmedPersonalSign =
+          response.data.isOk && request.method === "personal_sign";
+        if (
+          shouldForwardToWallet(response, chainId) ||
+          isConfirmedPersonalSign
+        ) {
           return forwardToWallet();
         }
 

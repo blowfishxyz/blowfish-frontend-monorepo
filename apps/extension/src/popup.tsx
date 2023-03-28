@@ -1,6 +1,6 @@
 import walletHero from "data-base64:~assets/wallet-hero.png";
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 import "./style.css";
 
@@ -102,21 +102,30 @@ const Indicator = styled.div<{ paused: boolean }>`
   height: 18px;
   border-radius: 100%;
 `;
-
+const blink = keyframes`
+  50% {
+    opacity: 0.5;
+  }
+`;
 const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
   font-size: 12px;
 
   ${Indicator} {
-    background-color: ${({ paused, theme }) =>
-      paused
-        ? `${opacify(80, theme.palette.yellow)}`
-        : `${opacify(80, theme.palette.green)}`};
+    ${({ paused, theme }) => {
+      if (paused) {
+        return css`
+          background-color: ${theme.palette.red};
+        `;
+      } else {
+        return css`
+          background-color: ${opacify(80, theme.palette.green)};
+          animation: ${blink} 2s ease-in-out infinite;
+        `;
+      }
+    }};
   }
-
   color: ${({ paused, theme }) =>
-    paused
-      ? `${opacify(80, theme.palette.yellow)}`
-      : `${opacify(80, theme.palette.green)}`};
+    paused ? `${theme.palette.red}` : `${opacify(80, theme.palette.green)}`};
 `;
 
 const InfoContainer = styled.div`

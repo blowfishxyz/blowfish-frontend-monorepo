@@ -92,11 +92,30 @@ export const isTransactionRequest = (
   req: DappRequest
 ): req is TransactionRequest => req.type === RequestType.Transaction;
 
-export interface SignTypedDataRequest extends BaseRequest {
-  type: RequestType.SignTypedData;
-  payload: SignTypedDataPayload;
-  isImpersonatingWallet?: string;
+export enum SignTypedDataVersion {
+  V1 = "V1",
+  V3 = "V3",
+  V4 = "V4",
 }
+
+type SignTypedDataPayloadV1 = {
+  payload: TypedDataV1Field[];
+  signTypedDataVersion: SignTypedDataVersion.V1;
+};
+
+type SignTypedDataPayloadV3V4 = {
+  payload: SignTypedDataPayload;
+  signTypedDataVersion: SignTypedDataVersion.V3 | SignTypedDataVersion.V4;
+};
+
+export type SupportedSignTypedDataPayloadVersion =
+  | SignTypedDataPayloadV1
+  | SignTypedDataPayloadV3V4;
+
+export type SignTypedDataRequest = BaseRequest & {
+  type: RequestType.SignTypedData;
+  isImpersonatingWallet?: string;
+} & SupportedSignTypedDataPayloadVersion;
 
 export const isSignTypedDataRequest = (
   req: DappRequest
@@ -145,3 +164,9 @@ export const isUserDecisionResponseMessage = (
   message: Message<UntypedMessageData>
 ): message is Message<UserDecisionResponse> =>
   message.type === RequestType.UserDecision;
+
+export interface TypedDataV1Field {
+  type: string;
+  name: string;
+  value: unknown;
+}

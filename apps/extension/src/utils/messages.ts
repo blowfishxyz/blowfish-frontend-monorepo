@@ -3,8 +3,8 @@ import {
   RequestType,
   SignMessagePayload,
   SignMessageRequest,
-  SignTypedDataPayload,
   SignTypedDataRequest,
+  SupportedSignTypedDataPayloadVersion,
   TransactionPayload,
   TransactionRequest,
   UntypedMessageData,
@@ -37,18 +37,19 @@ export const createTransactionRequestMessage = (
 };
 
 export const createSignTypedDataRequestMessage = (
-  payload: SignTypedDataPayload,
-  chainId: number,
-  userAccount: string
+  { payload, signTypedDataVersion }: SupportedSignTypedDataPayloadVersion,
+  userAccount: string,
+  chainId: number
 ): Message<SignTypedDataRequest> => {
   const type = RequestType.SignTypedData;
-  const signTypedDataRequest: SignTypedDataRequest = {
-    type,
+  const request: SignTypedDataRequest = {
     payload,
-    chainId: chainId.toString(),
+    signTypedDataVersion,
     userAccount,
-  };
-  return createRawMessage(type, signTypedDataRequest);
+    chainId: chainId.toString(),
+    type,
+  } as SignTypedDataRequest;
+  return createRawMessage(type, request);
 };
 
 export const createSignMessageRequestMessage = (

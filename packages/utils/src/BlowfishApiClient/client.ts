@@ -5,10 +5,11 @@ import type {
   EvmTransactionScanResult,
   RequestMetadata,
 } from "./types";
+import { TypedDataV1Field } from "../types";
 
 const DEFAULT_BLOWFISH_BASE_URL = "https://api.blowfish.xyz";
 
-export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bsc";
+export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bnb";
 export type ChainNetwork = "mainnet" | "goerli" | "one";
 
 export interface SignTypedDataPayload {
@@ -16,7 +17,7 @@ export interface SignTypedDataPayload {
     chainId?: string | number | bigint;
     name?: string;
     salt?: `0x${string}`;
-    verifyingContract: `0x${string}`;
+    verifyingContract?: `0x${string}`;
     version?: string;
   };
   message: { [key: string]: unknown };
@@ -33,7 +34,7 @@ export interface SignTypedDataPayload {
 
 export interface SignTypedDataRequest {
   kind: "SIGN_TYPED_DATA";
-  data: SignTypedDataPayload;
+  data: SignTypedDataPayload | TypedDataV1Field[];
 }
 
 export interface SignMessageRequest {
@@ -85,7 +86,7 @@ export class BlowfishApiClient {
   }
 
   public async scanSignTypedData(
-    typedData: SignTypedDataPayload,
+    typedData: SignTypedDataPayload | TypedDataV1Field[],
     userAccount: string,
     metadata: RequestMetadata
   ): Promise<EvmMessageScanResult> {

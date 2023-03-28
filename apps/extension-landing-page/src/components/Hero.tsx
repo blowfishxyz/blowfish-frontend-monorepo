@@ -1,14 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { Signup } from "../components/Signup";
 import { breakpoint } from "../utils/breakpoints";
+import { PrimaryButton } from "../components/Buttons";
 import {
   EthereumIcon,
   PolygonIcon,
+  BnbChainIcon,
   ArbitrumIcon,
   OptimismIcon,
 } from "./icons/ChainIcons";
+import { CHROME_EXTENSION_STORE_URL } from "../config";
 import { TextSmall } from "./Typography";
 
 const H1 = styled.h1`
@@ -92,10 +94,6 @@ const MobileImage = styled.div`
   }
 `;
 
-const FadedArbitrumIcon = styled(ArbitrumIcon)`
-  opacity: 0.3;
-`;
-
 const FadedOptimismIcon = styled(OptimismIcon)`
   opacity: 0.3;
 `;
@@ -124,6 +122,15 @@ const BrowserSupportNotice = styled(TextSmall)`
 
   @media only screen and ${breakpoint.device.lg} {
     text-align: center;
+  }
+`;
+
+const InstallLink = styled.a.attrs({ target: "_blank", rel: "noopener" })`
+  max-width: 400px;
+  width: 100%;
+  margin-top: 20px;
+  @media only screen and ${breakpoint.device.lg} {
+    align-self: center;
   }
 `;
 
@@ -159,10 +166,13 @@ export const Hero: React.FC = () => {
           <IconGroup>
             <EthereumIcon />
             <PolygonIcon />
-            <FadedArbitrumIcon />
+            <BnbChainIcon />
+            <ArbitrumIcon />
             <FadedOptimismIcon />
           </IconGroup>
-          <Signup />
+          <InstallLink href={CHROME_EXTENSION_STORE_URL}>
+            <PrimaryButton>Download Blowfish Protect</PrimaryButton>{" "}
+          </InstallLink>
           <BrowserSupportNotice>
             Available on Chrome, Brave, Arc and other Chromium-based browsers.
           </BrowserSupportNotice>
