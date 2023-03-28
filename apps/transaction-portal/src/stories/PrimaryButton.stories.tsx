@@ -2,7 +2,6 @@ import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 
 import { PrimaryButton, SecondaryButton } from "../components/Buttons";
-import { BaseProviders } from "../components/Providers";
 
 export default {
   title: "Buttons",
@@ -14,7 +13,5 @@ export const Primary: ComponentStory<typeof PrimaryButton> = () => (
 );
 
 export const Secondary: ComponentStory<typeof SecondaryButton> = () => (
-  <BaseProviders>
-    <SecondaryButton style={{ width: "160px" }}>Cancel</SecondaryButton>
-  </BaseProviders>
+  <SecondaryButton style={{ width: "160px" }}>Cancel</SecondaryButton>
 );

@@ -4,7 +4,6 @@ import styled, { keyframes } from "styled-components";
 import { TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
-import { shortenHex } from "../utils/hex";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
