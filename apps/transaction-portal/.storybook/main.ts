@@ -22,6 +22,7 @@ module.exports = {
       "~components": path.resolve(__dirname, "../src/components"),
       "~utils": path.resolve(__dirname, "../src/utils"),
       "~config": path.resolve(__dirname, "../src/config"),
+      "~constants": path.resolve(__dirname, "../src/constants"),
     };
 
     return config;
