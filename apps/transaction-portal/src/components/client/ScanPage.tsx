@@ -46,7 +46,11 @@ import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { logger } from "~utils/logger";
 import { useRouter } from "next/router";
-import { checkVersionAndTransformMessage, MessageError } from "~utils/utils";
+import {
+  checkVersionAndTransformMessage,
+  getTransactionToScanFromUrl,
+  MessageError,
+} from "~utils/utils";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -92,17 +96,24 @@ const ScanPage: React.FC = () => {
   });
   const { disconnectAsync } = useDisconnect();
   const router = useRouter();
-  const { id } = router.query;
+  // NOTE: extensionVersion, origin, type only available on url scan
+  const { id, extensionVersion, origin, type } = router.query;
+  // NOTE: used to check if params are sent via URL
+  const isUrlScan = type !== undefined;
 
   useEffect(() => {
     (async () => {
       if (!router.isReady) return;
+
       try {
         const _message = checkVersionAndTransformMessage(
-          (await getTransactionToScan(String(id))) as unknown as Message<
-            DappRequest["type"],
-            DappRequest
-          >
+          isUrlScan
+            ? getTransactionToScanFromUrl(
+                String(id),
+                extensionVersion as string,
+                origin as string
+              )
+            : await getTransactionToScan(String(id))
         );
 
         const _request = parseRequestFromMessage(_message);
@@ -137,7 +148,7 @@ const ScanPage: React.FC = () => {
         }
       }
     })();
-  }, [id, router.isReady]);
+  }, [extensionVersion, id, isUrlScan, origin, router.isReady]);
 
   const {
     data: scanResults,

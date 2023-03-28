@@ -4,6 +4,7 @@ import {
   BlowfishOptionKeyValue,
   BlowfishPausedOptionType,
   BlowfishPortalBackgroundMessage,
+  DappRequest,
   Message,
   RequestType,
   UserDecisionOpts,
@@ -84,5 +85,8 @@ export const getTransactionToScan = async (messageId: string) => {
     data: { key: messageId },
     type: RequestType.GetTransactionToScan,
   };
-  return await sendAndAwaitAck(message);
+  return (await sendAndAwaitAck(message)) as unknown as Message<
+    DappRequest["type"],
+    DappRequest
+  >;
 };

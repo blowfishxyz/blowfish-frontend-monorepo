@@ -46,6 +46,7 @@ const fetcher = async (
     undefined,
     BLOWFISH_API_BASE_URL
   );
+
   if (isTransactionRequest(request)) {
     return client.scanTransaction(request.payload, request.userAccount, {
       origin,

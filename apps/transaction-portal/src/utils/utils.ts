@@ -3,7 +3,12 @@ import {
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
 import { logger } from "~utils/logger";
-import { DappRequest, Message } from "@blowfish/utils/types";
+import {
+  DappRequest,
+  Message,
+  parseRequestFromMessage,
+} from "@blowfish/utils/types";
+import qs from "qs";
 
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
@@ -104,6 +109,7 @@ export const checkVersionAndTransformMessage = (
     throw new Error(MessageError.NO_MESSAGE);
   }
   const { extensionVersion } = message.data;
+
   if (!isVersionCompatible(extensionVersion)) {
     throw new Error(MessageError.OUTDATED_EXTENSION);
   }
@@ -113,5 +119,28 @@ export const checkVersionAndTransformMessage = (
     (transformed, transformerFn) => transformerFn(transformed),
     message
   );
+
   return transformedMessage || message;
+};
+
+export const getTransactionToScanFromUrl = (
+  id: string,
+  extensionVersion = "0.0.0",
+  origin: string
+) => {
+  const windowQs = window.location.search;
+  const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
+  const parsedMessage = parseRequestFromMessage(
+    qs.parse(cleanedQs) as unknown as Message<DappRequest["type"], DappRequest>
+  );
+
+  return {
+    id,
+    type: parsedMessage.type,
+    origin,
+    data: {
+      ...parsedMessage,
+      extensionVersion,
+    },
+  } as unknown as Message<DappRequest["type"], DappRequest>;
 };
