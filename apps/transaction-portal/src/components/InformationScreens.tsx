@@ -299,56 +299,28 @@ export interface AccountNotConnectedScreenProps {
   style?: React.CSSProperties;
   className?: string;
   accountToConnect: string;
-  connectedAccount?: string;
   onRetry?: () => void;
   isRetrying?: boolean;
 }
 
 export const AccountNotConnectedScreen: React.FC<
   AccountNotConnectedScreenProps
-> = ({
-  style,
-  className,
-  accountToConnect,
-  connectedAccount,
-  onRetry,
-  isRetrying,
-}) => {
+> = ({ style, className, accountToConnect, onRetry, isRetrying }) => {
   return (
     <Wrapper style={style} className={className}>
       <StyledBlowfishInvertedWarningIcon />
-      <StyledTextXL>
-        {connectedAccount ? "Wrong account connected" : "Account not connected"}
-      </StyledTextXL>
-
-      {connectedAccount ? (
-        <>
-          <StyledText>
-            You are connected with{" "}
-            <StyledText semiBold>{shortenHex(connectedAccount, 5)}</StyledText>,
-            but are trying to perform an action for{" "}
-            <StyledText semiBold>{accountToConnect}</StyledText>. Please switch
-            to the correct account in your wallet
-          </StyledText>
-          {onRetry && (
-            <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
-              <StyledText>Disconnect wallet</StyledText>
-            </RetryButton>
-          )}
-        </>
-      ) : (
-        <>
-          <StyledText>
-            Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
-            to Blowfish&nbsp;Protect in order to proceed with the action
-          </StyledText>
-          {onRetry && (
-            <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
-              <StyledText>Connect wallet</StyledText>
-            </RetryButton>
-          )}
-        </>
-      )}
+      <StyledTextXL>Account not connected</StyledTextXL>
+      <>
+        <StyledText>
+          Please connect <StyledText semiBold>{accountToConnect}</StyledText> to
+          Blowfish&nbsp;Protect in order to proceed with the action
+        </StyledText>
+        {onRetry && (
+          <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+            <StyledText>Connect wallet</StyledText>
+          </RetryButton>
+        )}
+      </>
     </Wrapper>
   );
 };

@@ -217,6 +217,15 @@ const ScanPage: React.FC = () => {
       (isSignMessageRequest(request) || isSignTypedDataRequest(request)),
     [request]
   );
+  const isConnectedToWrongAccount =
+    connectedAddress && userAccount && connectedAddress !== userAccount;
+  useEffect(() => {
+    if (isConnectedToWrongAccount) {
+      disconnectAsync().catch((err) =>
+        logger.error("Error disconnecting wallet", err)
+      );
+    }
+  }, [isConnectedToWrongAccount, disconnectAsync]);
 
   const maybeInformationScreen = useMemo(() => {
     const isLoading = !scanResults && !scanError;
@@ -224,8 +233,6 @@ const ScanPage: React.FC = () => {
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
     const isUnsupportedChain = !chainFamily || !chainNetwork;
-    const isWrongAccount =
-      connectedAddress && userAccount && connectedAddress !== userAccount;
     const isWrongChainId =
       !!(chainId && connectedChainId) &&
       !isUnsupportedChain &&
@@ -264,23 +271,6 @@ const ScanPage: React.FC = () => {
         <TransactionUnsupportedScreen
           closeWindow={() => handleUserDecision(false)}
         />
-      );
-    } else if (isWrongAccount) {
-      return (
-        <>
-          <AccountNotConnectedScreen
-            accountToConnect={userAccount ?? ""}
-            connectedAccount={connectedAddress}
-            onRetry={async () => {
-              try {
-                await disconnectAsync();
-              } catch (err) {
-                logger.error(err);
-              }
-            }}
-          />
-          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
-        </>
       );
     } else if (isWrongChainId && chainId) {
       return (
@@ -386,7 +376,6 @@ const ScanPage: React.FC = () => {
     setConnectWalletModalOpen,
     closeWindow,
     handleUserDecision,
-    disconnectAsync,
     isSwitchingNetworks,
     switchNetworkAsync,
     skipUnsupportedChainWarning,
