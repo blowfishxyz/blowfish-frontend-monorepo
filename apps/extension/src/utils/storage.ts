@@ -1,10 +1,10 @@
+import { BlowfishOption } from "@blowfish/utils/types";
+
 import { Storage } from "@plasmohq/storage";
 
 const PREFERENCES_UNSUPPORTED_CHAINS_DISMISSED_KEY =
   "PREFERENCES_UNSUPPORTED_CHAINS_DISMISSED";
 
-export const PREFERENCES_BLOWFISH_IMPERSONATION_WALLET =
-  "PREFERENCES_BLOWFISH_IMPERSONATION_WALLET";
 export interface BlowfishImpersonationWalletInfo {
   address: string;
   ens: string | null;
@@ -38,14 +38,16 @@ export const setUnsupportedChainDismissed = async (
 
 export const getBlowfishImpersonationWallet =
   async (): Promise<BlowfishImpersonationWalletInfo> => {
-    return await storage.get(PREFERENCES_BLOWFISH_IMPERSONATION_WALLET);
+    return await storage.get(
+      BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+    );
   };
 
 export const setBlowfishImpersonationWallet = async (
   address: string,
   ens: string | null
 ) => {
-  await storage.set(PREFERENCES_BLOWFISH_IMPERSONATION_WALLET, {
+  await storage.set(BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET, {
     address,
     ens,
   });

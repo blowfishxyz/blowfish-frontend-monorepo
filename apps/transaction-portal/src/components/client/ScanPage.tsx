@@ -41,7 +41,6 @@ import {
   parseRequestFromMessage,
   Severity,
   SignTypedDataVersion,
-  UntypedMessageData,
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
@@ -67,7 +66,7 @@ const ScanPage: React.FC = () => {
   const [userAccount, setUserAccount] = useState<string | undefined>(undefined);
   const [chainId, setChainId] = useState<number | undefined>(undefined);
   const [message, setMessage] = useState<
-    Message<UntypedMessageData> | undefined
+    Message<DappRequest["type"], DappRequest> | undefined
   >(undefined);
   const [request, setRequest] = useState<DappRequest | undefined>(undefined);
   const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
@@ -100,7 +99,10 @@ const ScanPage: React.FC = () => {
       if (!router.isReady) return;
       try {
         const _message = checkVersionAndTransformMessage(
-          (await getTransactionToScan(String(id))) as Message<DappRequest>
+          (await getTransactionToScan(String(id))) as unknown as Message<
+            DappRequest["type"],
+            DappRequest
+          >
         );
 
         const _request = parseRequestFromMessage(_message);
@@ -300,7 +302,9 @@ const ScanPage: React.FC = () => {
       !isUnsupportedChain &&
       chainId !== connectedChainId;
     const isUnsupportedDangerousRequest =
-      message?.data.payload.method === "eth_sign";
+      message && isSignMessageRequest(message.data)
+        ? message?.data.payload.method === "eth_sign"
+        : false;
 
     if (isError) {
       logger.error(scanError);

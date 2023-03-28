@@ -50,10 +50,10 @@ export interface UntypedMessageData {
   [key: string]: any;
 }
 
-export interface Message<T extends object> {
+export interface Message<TType extends RequestType, TData extends object> {
   id: string;
-  data: T;
-  type: RequestType;
+  data: TData;
+  type: TType;
   origin?: string;
 }
 
@@ -63,15 +63,13 @@ export type DappRequest =
   | SignMessageRequest;
 
 export const parseRequestFromMessage = (
-  message: Message<DappRequest>
+  message: Message<DappRequest["type"], DappRequest>
 ): DappRequest => {
   switch (message.type) {
     case RequestType.Transaction:
-      return message.data as TransactionRequest;
     case RequestType.SignTypedData:
-      return message.data as SignTypedDataRequest;
     case RequestType.SignMessage:
-      return message.data as SignMessageRequest;
+      return message.data;
     default:
       throw new Error(`Unhandled request type ${message.type}`);
   }
@@ -159,13 +157,62 @@ export type UserDecisionResponse =
       opts?: UserDecisionOpts;
     };
 
-export const isUserDecisionResponseMessage = (
-  message: Message<UntypedMessageData>
-): message is Message<UserDecisionResponse> =>
-  message.type === RequestType.UserDecision;
-
 export interface TypedDataV1Field {
   type: string;
   name: string;
   value: unknown;
 }
+
+export enum BlowfishOption {
+  PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED",
+  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET = "PREFERENCES_BLOWFISH_IMPERSONATION_WALLET",
+}
+
+export type BlowfishPausedOptionType = {
+  until: number | null;
+  isPaused: boolean;
+};
+
+export type BlowfishOptionKey = {
+  key: BlowfishOption;
+};
+
+export type BlowfishOptionKeyValue =
+  | {
+      key: BlowfishOption.PREFERENCES_BLOWFISH_PAUSED;
+      value: BlowfishPausedOptionType;
+    }
+  | {
+      key: BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET;
+      value: string;
+    };
+
+export type BlowfishPortalBackgroundMessage =
+  | Message<RequestType.UserDecision, UserDecisionResponse>
+  | Message<RequestType.GetTransactionToScan, { key: string }>
+  | Message<RequestType.BlowfishOptions, BlowfishOptionKey>
+  | Message<RequestType.SetBlowfishOptions, BlowfishOptionKeyValue>
+  | Message<DappRequest["type"], DappRequest>;
+
+export const isUserDecisionResponseMessage = (
+  message: BlowfishPortalBackgroundMessage
+): message is Message<RequestType.UserDecision, UserDecisionResponse> =>
+  message.type === RequestType.UserDecision;
+
+export const isTransactionRequestMessage = (
+  message: Message<DappRequest["type"], DappRequest>
+): message is Message<RequestType.Transaction, TransactionRequest> => {
+  return message.type === RequestType.Transaction;
+};
+
+export const isSignTypedDataRequestMessage = (
+  message: Message<DappRequest["type"], DappRequest>
+): message is Message<RequestType.SignTypedData, SignTypedDataRequest> => {
+  return message.type === RequestType.SignTypedData;
+};
+
+export const isSignRequestMessage = (
+  message: Message<DappRequest["type"], DappRequest>
+): message is Message<RequestType.SignMessage, SignMessageRequest> => {
+  return message.type === RequestType.SignMessage;
+};

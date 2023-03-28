@@ -1,9 +1,8 @@
+import { BlowfishOption } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
 import { useStorage } from "@plasmohq/storage/hook";
-
-import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
 
 import { PrimaryButton, SecondaryButton } from "./Buttons";
 import { Text } from "./Typography";
@@ -89,7 +88,7 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   className,
 }) => {
   const [blowfishImpersonationWallet] = useStorage(
-    PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+    BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
   );
 
   return (

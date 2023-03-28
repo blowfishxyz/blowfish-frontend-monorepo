@@ -1,4 +1,5 @@
 import {
+  DappRequest,
   Message,
   RequestType,
   SignMessagePayload,
@@ -7,7 +8,7 @@ import {
   SupportedSignTypedDataPayloadVersion,
   TransactionPayload,
   TransactionRequest,
-  UntypedMessageData,
+  UserDecisionResponse,
 } from "@blowfish/utils/types";
 import objectHash, { NotUndefined } from "object-hash";
 import type { Duplex } from "readable-stream";
@@ -18,7 +19,7 @@ import { BLOWFISH_EXTENSION_VERSION } from "~config";
 export const createRawMessage = <T extends object>(
   type: RequestType,
   data: T
-): Message<T> => {
+): Message<RequestType, T> => {
   const id = objectHash(data as NotUndefined);
   return { id, data, type };
 };
@@ -27,7 +28,7 @@ export const createTransactionRequestMessage = (
   payload: TransactionPayload,
   chainId: number,
   userAccount: string
-): Message<TransactionRequest> => {
+): Message<RequestType, TransactionRequest> => {
   const type = RequestType.Transaction;
   const transactionRequest: TransactionRequest = {
     type,
@@ -43,7 +44,7 @@ export const createSignTypedDataRequestMessage = (
   { payload, signTypedDataVersion }: SupportedSignTypedDataPayloadVersion,
   userAccount: string,
   chainId: number
-): Message<SignTypedDataRequest> => {
+): Message<RequestType, SignTypedDataRequest> => {
   const type = RequestType.SignTypedData;
   const signTypedDataRequest: SignTypedDataRequest = {
     payload,
@@ -60,7 +61,7 @@ export const createSignMessageRequestMessage = (
   payload: SignMessagePayload,
   chainId: number,
   userAccount: string
-): Message<SignMessageRequest> => {
+): Message<RequestType, SignMessageRequest> => {
   const type = RequestType.SignMessage;
   const messageRequest: SignMessageRequest = {
     type,
@@ -77,12 +78,12 @@ export const sendAndAwaitResponseFromStream = <
   R extends object
 >(
   stream: Duplex,
-  request: Message<T>
-): Promise<Message<R>> => {
+  request: Message<RequestType, T>
+): Promise<Message<RequestType, R>> => {
   stream.write(request);
 
   return new Promise((resolve) => {
-    const callback = (response: Message<R>): void => {
+    const callback = (response: Message<RequestType, R>): void => {
       if (response.id === request.id) {
         stream.off("data", callback);
         resolve(response);
@@ -95,12 +96,12 @@ export const sendAndAwaitResponseFromStream = <
 
 export const sendAndAwaitResponseFromPort = (
   stream: Browser.Runtime.Port,
-  request: Message<UntypedMessageData>
-): Promise<Message<UntypedMessageData>> => {
+  request: Message<RequestType, DappRequest>
+): Promise<Message<RequestType, DappRequest>> => {
   stream.postMessage(request);
 
   return new Promise((resolve) => {
-    const callback = (response: Message<UntypedMessageData>): void => {
+    const callback = (response: Message<RequestType, DappRequest>): void => {
       if (response.id === request.id) {
         stream.onMessage.removeListener(callback);
         resolve(response);
@@ -111,13 +112,18 @@ export const sendAndAwaitResponseFromPort = (
   });
 };
 
+// NOTE: It is used in 3 cases:
+// 1. When the user closes the portal window (we assume the user wants to cancel)
+// 2. When the scanning is paused
+// 3. Unsupported chain
 export const postResponseToPort = (
   remotePort: Browser.Runtime.Port,
-  originalMessage: Message<UntypedMessageData>,
-  responseData: UntypedMessageData
-): Message<UntypedMessageData> => {
-  const response: Message<UntypedMessageData> = {
+  originalMessage: Message<RequestType, DappRequest>,
+  responseData: UserDecisionResponse
+): Message<RequestType, UserDecisionResponse> => {
+  const response: Message<RequestType.UserDecision, UserDecisionResponse> = {
     ...originalMessage,
+    type: RequestType.UserDecision,
     data: responseData,
   };
 

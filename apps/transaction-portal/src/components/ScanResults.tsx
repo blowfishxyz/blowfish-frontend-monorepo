@@ -1,4 +1,4 @@
-import { BLOWFISH_FEEDBACK_URL } from "../constants";
+import { BLOWFISH_FEEDBACK_URL } from "~constants";
 import dynamic from "next/dynamic";
 import type {
   ChainFamily,
@@ -10,20 +10,22 @@ import type {
   EvmTransactionScanResult,
 } from "@blowfish/utils/BlowfishApiClient";
 import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
   DappRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-  TransactionPayload,
   SignTypedDataVersion,
+  TransactionPayload,
 } from "@blowfish/utils/types";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { Decimal } from "decimal.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
-import { isNativeAsset, shortenHex } from "../utils/hex";
-import { logger } from "../utils/logger";
+import { isNativeAsset, shortenHex } from "~utils/hex";
+import { logger } from "~utils/logger";
 import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
@@ -37,10 +39,8 @@ import Row from "~components/common/Row";
 
 import { useInterval, useLocalStorage } from "react-use";
 import {
-  BlowfishPausedOptionType,
   PAUSE_DURATIONS,
   PauseDuration,
-  PREFERENCES_BLOWFISH_PAUSED,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
 import {
@@ -236,14 +236,15 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   const [showAdvancedDetails, setShowAdvancedDetails] =
     useState<boolean>(false);
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
   const { pauseScan, resumeScan, isScanPaused } =
     useTransactionScannerPauseResume(scanPaused, setScanPaused);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
 
   const getPauseResumeSelectionStatus = useCallback(async () => {
-    const data = await getPauseResumeSelection();
+    const data =
+      (await getPauseResumeSelection()) as unknown as BlowfishPausedOptionType;
     setScanPaused(data);
   }, [setScanPaused]);
 

@@ -1,26 +1,31 @@
 import {
+  BlowfishOption,
+  BlowfishOptionKey,
+  BlowfishOptionKeyValue,
   BlowfishPausedOptionType,
-  PREFERENCES_BLOWFISH_PAUSED,
-} from "@blowfish/hooks";
-import {
+  BlowfishPortalBackgroundMessage,
   Message,
   RequestType,
-  UntypedMessageData,
   UserDecisionOpts,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
 
 const sendAndAwaitAck = async (
-  message: Message<UntypedMessageData>
-): Promise<UntypedMessageData> => {
-  const responsePromise = new Promise<UntypedMessageData>((resolve) => {
-    window.addEventListener("message", (event) => {
-      const data = event.data as Message<UntypedMessageData>;
-      if (data.id === message.id && data.type === RequestType.MessageAck) {
-        resolve(data.data);
-      }
-    });
-  });
+  message: BlowfishPortalBackgroundMessage
+): Promise<BlowfishPortalBackgroundMessage["data"]> => {
+  const responsePromise = new Promise<BlowfishPortalBackgroundMessage["data"]>(
+    (resolve) => {
+      window.addEventListener("message", (event) => {
+        const data = event.data as Message<
+          RequestType,
+          BlowfishPortalBackgroundMessage["data"]
+        >;
+        if (data.id === message.id && data.type === RequestType.MessageAck) {
+          resolve(data.data);
+        }
+      });
+    }
+  );
   window.postMessage(message);
   return await responsePromise;
 };
@@ -30,7 +35,7 @@ export const sendResult = async (
   result: string,
   opts?: UserDecisionOpts
 ) => {
-  const message: Message<UserDecisionResponse> = {
+  const message: Message<RequestType.UserDecision, UserDecisionResponse> = {
     id,
     data: { isOk: true, result, opts },
     type: RequestType.UserDecision,
@@ -39,7 +44,7 @@ export const sendResult = async (
 };
 
 export const sendAbort = async (id: string, opts?: UserDecisionOpts) => {
-  const message: Message<UserDecisionResponse> = {
+  const message: Message<RequestType.UserDecision, UserDecisionResponse> = {
     id,
     data: { isOk: false, opts },
     type: RequestType.UserDecision,
@@ -50,25 +55,31 @@ export const sendAbort = async (id: string, opts?: UserDecisionOpts) => {
 export const sendPauseResumeSelection = async (
   pauseOption: BlowfishPausedOptionType
 ) => {
-  const message: Message<{ key: string; value: BlowfishPausedOptionType }> = {
+  const message: Message<
+    RequestType.SetBlowfishOptions,
+    BlowfishOptionKeyValue
+  > = {
     id: "set-pause-resume-selection",
-    data: { key: PREFERENCES_BLOWFISH_PAUSED, value: pauseOption },
+    data: {
+      key: BlowfishOption.PREFERENCES_BLOWFISH_PAUSED,
+      value: pauseOption,
+    },
     type: RequestType.SetBlowfishOptions,
   };
   await sendAndAwaitAck(message);
 };
 
 export const getPauseResumeSelection = async () => {
-  const message: Message<{ key: string }> = {
+  const message: Message<RequestType.BlowfishOptions, BlowfishOptionKey> = {
     id: "get-pause-resume-selection",
-    data: { key: PREFERENCES_BLOWFISH_PAUSED },
+    data: { key: BlowfishOption.PREFERENCES_BLOWFISH_PAUSED },
     type: RequestType.BlowfishOptions,
   };
-  return (await sendAndAwaitAck(message)) as BlowfishPausedOptionType;
+  return await sendAndAwaitAck(message);
 };
 
 export const getTransactionToScan = async (messageId: string) => {
-  const message: Message<{ key: string }> = {
+  const message: Message<RequestType.GetTransactionToScan, { key: string }> = {
     id: "get-transaction-to-scan",
     data: { key: messageId },
     type: RequestType.GetTransactionToScan,

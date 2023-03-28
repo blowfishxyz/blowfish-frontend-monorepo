@@ -70,13 +70,16 @@ export const getExtensionInstallationUrl = async () => {
   return null;
 };
 
-type TransformFunction = (
-  request: Message<DappRequest>
-) => Message<DappRequest>;
+export type TransformFunction = (
+  request: Message<DappRequest["type"], DappRequest>
+) => Message<DappRequest["type"], DappRequest>;
 
-const EXTENSION_VERSION_TRANSFORMERS: Record<string, TransformFunction[]> = {};
+export const EXTENSION_VERSION_TRANSFORMERS: Record<
+  string,
+  TransformFunction[]
+> = {};
 
-const getTransformersForVersion = (extensionVersion: string) => {
+export const getTransformersForVersion = (extensionVersion: string) => {
   if (EXTENSION_VERSION_TRANSFORMERS[extensionVersion])
     return EXTENSION_VERSION_TRANSFORMERS[extensionVersion];
 
@@ -95,7 +98,7 @@ export enum MessageError {
 }
 
 export const checkVersionAndTransformMessage = (
-  message: Message<DappRequest>
+  message: Message<DappRequest["type"], DappRequest>
 ) => {
   if (Object.keys(message).length === 0) {
     throw new Error(MessageError.NO_MESSAGE);

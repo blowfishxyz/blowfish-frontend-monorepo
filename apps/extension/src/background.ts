@@ -1,62 +1,61 @@
-import type { BlowfishPausedOptionType } from "@blowfish/hooks";
-import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
+  BlowfishOption,
+  BlowfishOptionKey,
+  BlowfishPausedOptionType,
+  BlowfishPortalBackgroundMessage,
   DappRequest,
   Message,
   RequestType,
   SignMessageRequest,
   SignTypedDataRequest,
   TransactionRequest,
-  UntypedMessageData,
   UserDecisionResponse,
+  isSignRequestMessage,
+  isSignTypedDataRequestMessage,
+  isTransactionRequestMessage,
   isUserDecisionResponseMessage,
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
 import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
-
-import { chainIdToSupportedChainMapping } from "./utils/constants";
-import { logger } from "./utils/logger";
-import { createRawMessage, postResponseToPort } from "./utils/messages";
+import { chainIdToSupportedChainMapping } from "~utils/constants";
+import { logger } from "~utils/logger";
+import { createRawMessage, postResponseToPort } from "~utils/messages";
 import {
   getBlowfishImpersonationWallet,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
-} from "./utils/storage";
+} from "~utils/storage";
 
 logger.debug("BACKGROUND RUNNING");
 
 const messageIdToPortAndMessageMapping: Map<
   string,
-  { remotePort: Browser.Runtime.Port; message: Message<DappRequest> }
+  {
+    remotePort: Browser.Runtime.Port;
+    message: Message<RequestType, DappRequest>;
+  }
 > = new Map();
 
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
-  remotePort.onMessage.addListener((message: Message<UntypedMessageData>) => {
-    logger.debug(message);
+  remotePort.onMessage.addListener(
+    (message: Message<DappRequest["type"], DappRequest>) => {
+      logger.debug(message);
 
-    if (message.type === RequestType.Transaction) {
-      return processTransactionRequest(
-        message as Message<TransactionRequest>,
-        remotePort
-      );
-    } else if (message.type === RequestType.SignTypedData) {
-      return processSignTypedDataRequest(
-        message as Message<SignTypedDataRequest>,
-        remotePort
-      );
-    } else if (message.type === RequestType.SignMessage) {
-      return processSignMessageRequest(
-        message as Message<SignMessageRequest>,
-        remotePort
-      );
+      if (isTransactionRequestMessage(message)) {
+        return processTransactionRequest(message, remotePort);
+      } else if (isSignTypedDataRequestMessage(message)) {
+        return processSignTypedDataRequest(message, remotePort);
+      } else if (isSignRequestMessage(message)) {
+        return processSignMessageRequest(message, remotePort);
+      }
     }
-  });
+  );
 };
 
 const responseProcessingMiddleware = async (
-  message: Message<UntypedMessageData>
+  message: BlowfishPortalBackgroundMessage
 ) => {
   if (isUserDecisionResponseMessage(message)) {
     if (message.data.opts?.skipUnsupportedChainWarning) {
@@ -67,7 +66,7 @@ const responseProcessingMiddleware = async (
 };
 
 const getExtensionOptionFromTransactionPortal = async (
-  message: Message<UntypedMessageData>
+  message: Message<RequestType.BlowfishOptions, BlowfishOptionKey>
 ) => {
   const pausedOptions = await storage.get<BlowfishPausedOptionType>(
     message.data.key
@@ -78,8 +77,10 @@ const getExtensionOptionFromTransactionPortal = async (
 // HACK(kimpers): If we don't returna Promise of something here the sender will be stuck waiting for a response indefinitely
 // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
 const onBrowserMessageListener = async (
-  message: Message<UntypedMessageData>
-): Promise<Message<UntypedMessageData> | true> => {
+  message: BlowfishPortalBackgroundMessage
+): Promise<
+  Message<RequestType, BlowfishPausedOptionType | Record<string, never>> | true
+> => {
   if (message.type === RequestType.BlowfishOptions) {
     return getExtensionOptionFromTransactionPortal(message);
   }
@@ -88,6 +89,7 @@ const onBrowserMessageListener = async (
     storage.set(message.data.key, message.data.value);
     return true;
   }
+
   if (message.type === RequestType.GetTransactionToScan) {
     return createRawMessage(
       message.type,
@@ -117,23 +119,24 @@ Browser.runtime.onConnect.addListener(setupRemoteConnection);
 Browser.runtime.onMessage.addListener(onBrowserMessageListener);
 
 const processRequestBase = async (
-  message: Message<
-    TransactionRequest | SignTypedDataRequest | SignMessageRequest
-  >,
+  message: Message<RequestType, DappRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   const { address } = (await getBlowfishImpersonationWallet()) || {};
   const isImpersonatingWallet = !!address;
   const pausedOption = await storage.get<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
+  const { chainId } = message.data;
 
   if (pausedOption && pausedOption.isPaused) {
-    postResponseToPort(remotePort, message, { opts: { pauseScan: true } });
+    postResponseToPort(remotePort, message, {
+      isOk: false,
+      opts: { pauseScan: true, chainId },
+    });
     return;
   }
 
-  const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   // and the user dismissed the notice
   const isUnsupportedChain = !chainIdToSupportedChainMapping[chainId];
@@ -206,21 +209,21 @@ const processRequestBase = async (
 };
 
 const processTransactionRequest = async (
-  message: Message<TransactionRequest>,
+  message: Message<RequestType.Transaction, TransactionRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
 };
 
 const processSignTypedDataRequest = async (
-  message: Message<SignTypedDataRequest>,
+  message: Message<RequestType.SignTypedData, SignTypedDataRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
 };
 
 const processSignMessageRequest = async (
-  message: Message<SignMessageRequest>,
+  message: Message<RequestType.SignMessage, SignMessageRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);

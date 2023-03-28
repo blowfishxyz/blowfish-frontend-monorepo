@@ -4,7 +4,7 @@ import styled, { keyframes } from "styled-components";
 import { PrimaryButton, TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
-import { shortenHex } from "../utils/hex";
+import { shortenHex } from "~utils/hex";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
@@ -14,15 +14,17 @@ import { sendPauseResumeSelection } from "~utils/messages";
 import { SlimBottomMenu } from "~components/BottomMenus";
 import { useLocalStorage } from "react-use";
 import {
-  BlowfishPausedOptionType,
   PAUSE_DURATIONS,
   PauseDuration,
-  PREFERENCES_BLOWFISH_PAUSED,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
 import { MINIMUM_SUPPORTED_EXTENSION_VERSION } from "~config";
 import Row from "./common/Row";
 import { getExtensionInstallationUrl } from "~utils/utils";
+import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
+} from "@blowfish/utils/types";
 
 interface SharedProps {
   darkMode?: boolean;
@@ -167,7 +169,7 @@ export const TransactionUnsupportedScreen = ({
 }: TransactionUnsupportedScreenProps) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
   const { pauseScan } = useTransactionScannerPauseResume(
     scanPaused,
