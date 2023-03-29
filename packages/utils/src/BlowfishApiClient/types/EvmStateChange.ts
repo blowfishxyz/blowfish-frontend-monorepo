@@ -4,6 +4,17 @@ import type { EvmAmountDiff } from "./EvmAmountDiff";
 import type { EvmTokenMetadata } from "./EvmTokenMetadata";
 import type { Price } from "./Price";
 
+export interface TransferDataAsset {
+  address: string;
+  decimals: number;
+  imageUrl: string;
+  lists: string[];
+  name: string;
+  price: Price | null;
+  symbol: string;
+  verified: boolean;
+}
+
 export interface Erc20TransferData {
   symbol: string;
   name: string;
@@ -11,6 +22,7 @@ export interface Erc20TransferData {
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
   assetPrice: Price | null;
+  asset: TransferDataAsset;
 }
 
 export interface Erc721TransferData {
@@ -20,6 +32,7 @@ export interface Erc721TransferData {
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
   metadata: EvmTokenMetadata;
+  assetPrice: Price | null;
 }
 
 export interface Erc1155TransferData {
@@ -55,6 +68,7 @@ export interface NativeAssetTransferData {
   decimals: number;
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
+  asset: TransferDataAsset;
 }
 
 export interface Erc20ApprovalData {

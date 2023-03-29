@@ -1,12 +1,13 @@
-import { BLOWFISH_FEEDBACK_URL } from "../constants";
+import { BLOWFISH_FEEDBACK_URL } from "~constants";
 import dynamic from "next/dynamic";
-import type {
+import {
   ChainFamily,
   ChainNetwork,
   Erc1155TransferData,
   Erc721ApprovalData,
   Erc721TransferData,
   EvmMessageScanResult,
+  EvmStateChange,
   EvmTransactionScanResult,
 } from "@blowfish/utils/BlowfishApiClient";
 import {
@@ -14,16 +15,16 @@ import {
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-  TransactionPayload,
   SignTypedDataVersion,
+  TransactionPayload,
 } from "@blowfish/utils/types";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { Decimal } from "decimal.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
-
-import { isNativeAsset, shortenHex } from "../utils/hex";
-import { logger } from "../utils/logger";
+import styled, { css } from "styled-components";
+import Image from "next/image";
+import { isNativeAsset, shortenHex } from "~utils/hex";
+import { logger } from "~utils/logger";
 import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
@@ -47,6 +48,9 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
+import { ArrowRightIcon } from "~components/icons/ArrowRightIcon";
+import { Column } from "~components/common/Column";
+import { BlowfishIcon } from "~components/icons/BlowfishIcon";
 
 const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
@@ -123,12 +127,57 @@ const PauseScanningButton = styled(BaseButton)`
   font-size: 12px;
 `;
 
+const SimulationResultsHeader = styled(Row)`
+  margin-bottom: 22px;
+`;
+
 const StateChangeRow = styled(Row)`
-  justify-content: space-between;
+  gap: 12px;
 
   & + & {
     margin-top: 11px;
   }
+`;
+const SimulationResultImageWrapper = styled.div`
+  position: relative;
+  margin-right: 12px;
+
+  img {
+    border-radius: 6px;
+  }
+`;
+
+const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  padding: 6px;
+  border-radius: 50%;
+  top: -10px;
+  right: -10px;
+  background: ${({ isPositiveEffect }) =>
+    isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
+
+  svg {
+    ${({ isPositiveEffect, theme }) => {
+      if (isPositiveEffect) {
+        return css`
+          fill: #00bfa6;
+          transform: rotate(135deg);
+          transform-origin: center;
+        `;
+      }
+      return css`
+        fill: ${theme.palette.red};
+        transform: rotate(-45deg);
+        transform-origin: center;
+      `;
+    }};
+  }
+`;
+
+const StateChangeTextBlock = styled.div`
+  display: flex;
 `;
 
 const AdvancedDetailsToggleButton = styled(BaseButton)`
@@ -152,6 +201,11 @@ const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   color: ${({ isPositiveEffect, theme }) =>
     isPositiveEffect ? theme.palette.green : theme.palette.red};
   line-height: 16px;
+`;
+
+const AssetPriceWrapper = styled(Text)`
+  font-size: 14px;
+  opacity: 0.4;
 `;
 
 interface AdvancedDetailsProps {
@@ -214,6 +268,101 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       </Row>
       {showAdvancedDetails && content && <DynamicJsonViewer data={content} />}
     </Section>
+  );
+};
+
+const PlaceholderSimulationImage = styled.div`
+  width: 38px;
+  height: 38px;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+
+  svg {
+    height: 24px;
+    width: 24px;
+
+    path {
+      fill: ${({ theme }) => theme.palette.border};
+    }
+  }
+`;
+
+interface AssetImageProps {
+  stateChange: EvmStateChange;
+  isPositiveEffect: boolean;
+}
+
+const AssetImage = ({ stateChange, isPositiveEffect }: AssetImageProps) => {
+  let imageSrc;
+  let altText = "asset image";
+  let showPlaceholderImage = false;
+
+  if (
+    stateChange.kind === "ERC721_TRANSFER" ||
+    stateChange.kind === "ERC721_APPROVAL" ||
+    stateChange.kind === "ERC1155_TRANSFER"
+  ) {
+    imageSrc = (stateChange.data as NftStateChangeWithTokenId).metadata
+      .rawImageUrl;
+    showPlaceholderImage = !imageSrc;
+    if (stateChange.data.tokenId) {
+      altText = stateChange.data.tokenId;
+    }
+  } else if (
+    stateChange.kind === "ERC20_TRANSFER" ||
+    stateChange.kind === "NATIVE_ASSET_TRANSFER"
+  ) {
+    imageSrc = stateChange.data.asset?.imageUrl;
+    showPlaceholderImage = !imageSrc;
+    altText = stateChange.data.name;
+  }
+
+  return (
+    <>
+      {(imageSrc || showPlaceholderImage) && (
+        <SimulationResultImageWrapper>
+          {imageSrc && (
+            <Image width={38} height={38} src={imageSrc} alt={altText} />
+          )}
+          {showPlaceholderImage && (
+            <PlaceholderSimulationImage>
+              <BlowfishIcon />
+            </PlaceholderSimulationImage>
+          )}
+          <SimulationIcon isPositiveEffect={isPositiveEffect}>
+            <ArrowRightIcon />
+          </SimulationIcon>
+        </SimulationResultImageWrapper>
+      )}
+    </>
+  );
+};
+
+interface AssetPriceProps {
+  stateChange: EvmStateChange;
+}
+
+const AssetPrice = ({ stateChange }: AssetPriceProps) => {
+  let price;
+  if (
+    stateChange.kind === "ERC20_TRANSFER" ||
+    stateChange.kind === "ERC20_APPROVAL" ||
+    stateChange.kind === "ERC721_TRANSFER"
+  ) {
+    price = Number(stateChange.data.assetPrice?.dollar_value_per_token) || null;
+  }
+
+  return (
+    <>
+      {price && (
+        <AssetPriceWrapper>
+          ${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+        </AssetPriceWrapper>
+      )}
+    </>
   );
 };
 
@@ -452,9 +601,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         {expectedStateChangesProcessed &&
         expectedStateChangesProcessed?.length > 0 ? (
           <Section borderBottom>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
-              Simulation Results
-            </TextSmall>
+            <SimulationResultsHeader>
+              <TextSmall secondary>Simulation Results</TextSmall>
+            </SimulationResultsHeader>
             {expectedStateChangesProcessed?.map((stateChange, i) => {
               const address = stateChange.rawInfo.data.contract.address;
               const { kind } = stateChange.rawInfo;
@@ -466,6 +615,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                   .data as NftStateChangeWithTokenId;
                 nftTokenId = nftData.tokenId || undefined;
               }
+
               // NOTE(kimpers): We define positive as decreased approval or increased balance
               const isPositiveEffect =
                 (isApproval && stateChange.diff.gt(0)) ||
@@ -473,22 +623,32 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               // TODO(kimpers): What to link to for native assets?
               return (
                 <StateChangeRow key={`state-change-${i}`}>
-                  {isNativeAsset(address) ? (
-                    <StateChangeText isPositiveEffect={isPositiveEffect}>
-                      {stateChange.humanReadableDiff}
-                    </StateChangeText>
-                  ) : (
-                    <BlockExplorerLink
-                      address={address}
-                      chainFamily={chainFamily}
-                      chainNetwork={chainNetwork}
-                      nftTokenId={nftTokenId}
-                    >
+                  <AssetImage
+                    stateChange={stateChange.rawInfo}
+                    isPositiveEffect={isPositiveEffect}
+                  />
+                  <StateChangeTextBlock>
+                    {isNativeAsset(address) ? (
                       <StateChangeText isPositiveEffect={isPositiveEffect}>
                         {stateChange.humanReadableDiff}
                       </StateChangeText>
-                    </BlockExplorerLink>
-                  )}
+                    ) : (
+                      <>
+                        <Column>
+                          <StateChangeText isPositiveEffect={isPositiveEffect}>
+                            {stateChange.humanReadableDiff}
+                          </StateChangeText>
+                          <AssetPrice stateChange={stateChange.rawInfo} />
+                        </Column>
+                        <BlockExplorerLink
+                          address={address}
+                          chainFamily={chainFamily}
+                          chainNetwork={chainNetwork}
+                          nftTokenId={nftTokenId}
+                        ></BlockExplorerLink>
+                      </>
+                    )}
+                  </StateChangeTextBlock>
                 </StateChangeRow>
               );
             })}
