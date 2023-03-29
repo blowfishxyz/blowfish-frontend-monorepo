@@ -1,4 +1,10 @@
-import type { Action, SignTypedDataPayload } from "./BlowfishApiClient";
+import type {
+  Action,
+  Erc1155TransferData,
+  Erc721ApprovalData,
+  Erc721TransferData,
+  SignTypedDataPayload,
+} from "./BlowfishApiClient";
 
 export { SignTypedDataPayload };
 
@@ -170,3 +176,8 @@ export interface TypedDataV1Field {
   name: string;
   value: unknown;
 }
+
+export type NftStateChangeWithTokenId =
+  | Erc721TransferData
+  | Erc1155TransferData
+  | Erc721ApprovalData;

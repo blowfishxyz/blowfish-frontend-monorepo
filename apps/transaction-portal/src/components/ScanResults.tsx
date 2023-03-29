@@ -3,13 +3,10 @@ import dynamic from "next/dynamic";
 import {
   ChainFamily,
   ChainNetwork,
-  Erc1155TransferData,
-  Erc721ApprovalData,
-  Erc721TransferData,
   EvmMessageScanResult,
-  EvmStateChange,
   EvmTransactionScanResult,
 } from "@blowfish/utils/BlowfishApiClient";
+import type { NftStateChangeWithTokenId } from "@blowfish/utils/types";
 import {
   DappRequest,
   isSignMessageRequest,
@@ -18,11 +15,11 @@ import {
   SignTypedDataVersion,
   TransactionPayload,
 } from "@blowfish/utils/types";
+
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { Decimal } from "decimal.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styled, { css } from "styled-components";
-import Image from "next/image";
+import styled from "styled-components";
 import { isNativeAsset, shortenHex } from "~utils/hex";
 import { logger } from "~utils/logger";
 import { BaseButton } from "./BaseButton";
@@ -48,9 +45,9 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
-import { ArrowRightIcon } from "~components/icons/ArrowRightIcon";
 import { Column } from "~components/common/Column";
-import { BlowfishIcon } from "~components/icons/BlowfishIcon";
+import AssetImage from "./AssetImage";
+import AssetPrice from "./AssetPrice";
 
 const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
@@ -59,11 +56,6 @@ const DynamicJsonViewer = dynamic(
     loading: () => <TextSmall>Loading...</TextSmall>,
   }
 );
-
-type NftStateChangeWithTokenId =
-  | Erc721TransferData
-  | Erc1155TransferData
-  | Erc721ApprovalData;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -138,43 +130,6 @@ const StateChangeRow = styled(Row)`
     margin-top: 11px;
   }
 `;
-const SimulationResultImageWrapper = styled.div`
-  position: relative;
-  margin-right: 12px;
-
-  img {
-    border-radius: 6px;
-  }
-`;
-
-const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
-  position: absolute;
-  height: 14px;
-  width: 14px;
-  padding: 6px;
-  border-radius: 50%;
-  top: -10px;
-  right: -10px;
-  background: ${({ isPositiveEffect }) =>
-    isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
-
-  svg {
-    ${({ isPositiveEffect, theme }) => {
-      if (isPositiveEffect) {
-        return css`
-          fill: #00bfa6;
-          transform: rotate(135deg);
-          transform-origin: center;
-        `;
-      }
-      return css`
-        fill: ${theme.palette.red};
-        transform: rotate(-45deg);
-        transform-origin: center;
-      `;
-    }};
-  }
-`;
 
 const StateChangeTextBlock = styled.div`
   display: flex;
@@ -201,11 +156,6 @@ const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   color: ${({ isPositiveEffect, theme }) =>
     isPositiveEffect ? theme.palette.green : theme.palette.red};
   line-height: 16px;
-`;
-
-const AssetPriceWrapper = styled(Text)`
-  font-size: 14px;
-  opacity: 0.4;
 `;
 
 interface AdvancedDetailsProps {
@@ -268,101 +218,6 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
       </Row>
       {showAdvancedDetails && content && <DynamicJsonViewer data={content} />}
     </Section>
-  );
-};
-
-const PlaceholderSimulationImage = styled.div`
-  width: 38px;
-  height: 38px;
-  background: #f2f2f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-
-  svg {
-    height: 24px;
-    width: 24px;
-
-    path {
-      fill: ${({ theme }) => theme.palette.border};
-    }
-  }
-`;
-
-interface AssetImageProps {
-  stateChange: EvmStateChange;
-  isPositiveEffect: boolean;
-}
-
-const AssetImage = ({ stateChange, isPositiveEffect }: AssetImageProps) => {
-  let imageSrc;
-  let altText = "asset image";
-  let showPlaceholderImage = false;
-
-  if (
-    stateChange.kind === "ERC721_TRANSFER" ||
-    stateChange.kind === "ERC721_APPROVAL" ||
-    stateChange.kind === "ERC1155_TRANSFER"
-  ) {
-    imageSrc = (stateChange.data as NftStateChangeWithTokenId).metadata
-      .rawImageUrl;
-    showPlaceholderImage = !imageSrc;
-    if (stateChange.data.tokenId) {
-      altText = stateChange.data.tokenId;
-    }
-  } else if (
-    stateChange.kind === "ERC20_TRANSFER" ||
-    stateChange.kind === "NATIVE_ASSET_TRANSFER"
-  ) {
-    imageSrc = stateChange.data.asset?.imageUrl;
-    showPlaceholderImage = !imageSrc;
-    altText = stateChange.data.name;
-  }
-
-  return (
-    <>
-      {(imageSrc || showPlaceholderImage) && (
-        <SimulationResultImageWrapper>
-          {imageSrc && (
-            <Image width={38} height={38} src={imageSrc} alt={altText} />
-          )}
-          {showPlaceholderImage && (
-            <PlaceholderSimulationImage>
-              <BlowfishIcon />
-            </PlaceholderSimulationImage>
-          )}
-          <SimulationIcon isPositiveEffect={isPositiveEffect}>
-            <ArrowRightIcon />
-          </SimulationIcon>
-        </SimulationResultImageWrapper>
-      )}
-    </>
-  );
-};
-
-interface AssetPriceProps {
-  stateChange: EvmStateChange;
-}
-
-const AssetPrice = ({ stateChange }: AssetPriceProps) => {
-  let price;
-  if (
-    stateChange.kind === "ERC20_TRANSFER" ||
-    stateChange.kind === "ERC20_APPROVAL" ||
-    stateChange.kind === "ERC721_TRANSFER"
-  ) {
-    price = Number(stateChange.data.assetPrice?.dollar_value_per_token) || null;
-  }
-
-  return (
-    <>
-      {price && (
-        <AssetPriceWrapper>
-          ${price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-        </AssetPriceWrapper>
-      )}
-    </>
   );
 };
 
