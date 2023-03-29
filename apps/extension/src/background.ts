@@ -90,7 +90,7 @@ const onBrowserMessageListener = async (
     return true;
   }
 
-  if (message.type === RequestType.GetTransactionToScan) {
+  if (message.type === RequestType.GetRequestToScan) {
     return createRawMessage(
       message.type,
       messageIdToPortAndMessageMapping.get(message.data.key)?.message || {}

@@ -11,7 +11,7 @@ const REQUEST_TYPES_TO_PROXY = new Set([
   RequestType.UserDecision,
   RequestType.SetBlowfishOptions,
   RequestType.BlowfishOptions,
-  RequestType.GetTransactionToScan,
+  RequestType.GetRequestToScan,
 ]);
 
 // NOTE: This should only be injected into the transaction portal website

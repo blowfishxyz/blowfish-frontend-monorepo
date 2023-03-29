@@ -40,7 +40,7 @@ export enum RequestType {
   UserDecision = "USER_DECISION",
   BlowfishOptions = "BLOWFISH_OPTIONS",
   SetBlowfishOptions = "SET_BLOWFISH_OPTIONS",
-  GetTransactionToScan = "GET_TRANSACTION_TO_SCAN",
+  GetRequestToScan = "GET_REQUEST_TO_SCAN",
   MessageAck = "BLOWFISH_MESSAGE_ACK",
 }
 
@@ -189,7 +189,7 @@ export type BlowfishOptionKeyValue =
 
 export type BlowfishPortalBackgroundMessage =
   | Message<RequestType.UserDecision, UserDecisionResponse>
-  | Message<RequestType.GetTransactionToScan, { key: string }>
+  | Message<RequestType.GetRequestToScan, { key: string }>
   | Message<RequestType.BlowfishOptions, BlowfishOptionKey>
   | Message<RequestType.SetBlowfishOptions, BlowfishOptionKeyValue>
   | Message<DappRequest["type"], DappRequest>;
@@ -215,4 +215,14 @@ export const isSignRequestMessage = (
   message: Message<DappRequest["type"], DappRequest>
 ): message is Message<RequestType.SignMessage, SignMessageRequest> => {
   return message.type === RequestType.SignMessage;
+};
+
+export const isDappRequestMessage = (
+  message: BlowfishPortalBackgroundMessage
+): message is Message<DappRequest["type"], DappRequest> => {
+  return (
+    message.type === RequestType.Transaction ||
+    message.type === RequestType.SignTypedData ||
+    message.type === RequestType.SignMessage
+  );
 };

@@ -4,7 +4,7 @@ import {
   BlowfishOptionKeyValue,
   BlowfishPausedOptionType,
   BlowfishPortalBackgroundMessage,
-  DappRequest,
+  isDappRequestMessage,
   Message,
   RequestType,
   UserDecisionOpts,
@@ -13,13 +13,13 @@ import {
 
 const sendAndAwaitAck = async (
   message: BlowfishPortalBackgroundMessage
-): Promise<BlowfishPortalBackgroundMessage["data"]> => {
-  const responsePromise = new Promise<BlowfishPortalBackgroundMessage["data"]>(
+): Promise<BlowfishPortalBackgroundMessage> => {
+  const responsePromise = new Promise<BlowfishPortalBackgroundMessage>(
     (resolve) => {
       window.addEventListener("message", (event) => {
         const data = event.data as Message<
           RequestType,
-          BlowfishPortalBackgroundMessage["data"]
+          BlowfishPortalBackgroundMessage
         >;
         if (data.id === message.id && data.type === RequestType.MessageAck) {
           resolve(data.data);
@@ -79,14 +79,15 @@ export const getPauseResumeSelection = async () => {
   return await sendAndAwaitAck(message);
 };
 
-export const getTransactionToScan = async (messageId: string) => {
-  const message: Message<RequestType.GetTransactionToScan, { key: string }> = {
-    id: "get-transaction-to-scan",
+export const getScanRequestFromMessageChannel = async (messageId: string) => {
+  const message: Message<RequestType.GetRequestToScan, { key: string }> = {
+    id: "get-request-to-scan",
     data: { key: messageId },
-    type: RequestType.GetTransactionToScan,
+    type: RequestType.GetRequestToScan,
   };
-  return (await sendAndAwaitAck(message)) as unknown as Message<
-    DappRequest["type"],
-    DappRequest
-  >;
+  const response = await sendAndAwaitAck(message);
+  if (isDappRequestMessage(response)) {
+    return response;
+  }
+  throw new Error("Unsupported response type");
 };

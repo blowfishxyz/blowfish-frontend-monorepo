@@ -123,7 +123,7 @@ export const checkVersionAndTransformMessage = (
   return transformedMessage || message;
 };
 
-export const getTransactionToScanFromUrl = (
+export const getScanRequestFromUrl = (
   id: string,
   extensionVersion = "0.0.0",
   origin: string

@@ -30,7 +30,11 @@ import { LoadingScreen } from "../LoadingScreen";
 import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { getTransactionToScan, sendAbort, sendResult } from "~utils/messages";
+import {
+  getScanRequestFromMessageChannel,
+  sendAbort,
+  sendResult,
+} from "~utils/messages";
 import {
   actionToSeverity,
   DappRequest,
@@ -48,7 +52,7 @@ import { logger } from "~utils/logger";
 import { useRouter } from "next/router";
 import {
   checkVersionAndTransformMessage,
-  getTransactionToScanFromUrl,
+  getScanRequestFromUrl,
   MessageError,
 } from "~utils/utils";
 
@@ -108,12 +112,12 @@ const ScanPage: React.FC = () => {
       try {
         const _message = checkVersionAndTransformMessage(
           isUrlScan
-            ? getTransactionToScanFromUrl(
+            ? getScanRequestFromUrl(
                 String(id),
                 extensionVersion as string,
                 origin as string
               )
-            : await getTransactionToScan(String(id))
+            : await getScanRequestFromMessageChannel(String(id))
         );
 
         const _request = parseRequestFromMessage(_message);
