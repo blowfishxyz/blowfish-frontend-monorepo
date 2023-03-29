@@ -64,12 +64,12 @@ let requestProxy: undefined | typeof Proxy;
 let sendProxy: undefined | typeof Proxy;
 let sendAsyncProxy: undefined | typeof Proxy;
 
-const provider = new providers.Web3Provider(window.ethereum, "any");
-
 const randomId = () => Math.floor(Math.random() * 1_000_000);
 let impersonatingAddress: string | undefined;
 
-const getChainIdAndUserAccount = async (): Promise<{
+const getChainIdAndUserAccount = async (
+  provider: providers.Web3Provider
+): Promise<{
   chainId: number;
   userAccount: string;
 }> => {
@@ -162,6 +162,8 @@ const overrideWindowEthereum = () => {
   // Recheck that we are still proxying window.ethereum every 10 seconds
   setInterval(overrideIfNotProxied, 10_000);
 
+  const provider = new providers.Web3Provider(window.ethereum, "any");
+
   const sendHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
@@ -203,7 +205,7 @@ const overrideWindowEthereum = () => {
         const [transaction] = request?.params ?? [];
         if (!transaction) return forwardToWallet();
 
-        getChainIdAndUserAccount()
+        getChainIdAndUserAccount(provider)
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream<
               TransactionRequest,
@@ -251,7 +253,7 @@ const overrideWindowEthereum = () => {
           enhanceSignTypedData(request);
         if (!address || !typedData) return forwardToWallet();
 
-        getChainIdAndUserAccount()
+        getChainIdAndUserAccount(provider)
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream<
               SignTypedDataRequest,
@@ -309,7 +311,7 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        getChainIdAndUserAccount()
+        getChainIdAndUserAccount(provider)
           .then(({ chainId, userAccount }) =>
             sendAndAwaitResponseFromStream<
               SignMessageRequest,
@@ -383,7 +385,9 @@ const overrideWindowEthereum = () => {
         const [transaction] = request?.params ?? [];
         if (!transaction) return forwardToWallet();
 
-        const { chainId, userAccount } = await getChainIdAndUserAccount();
+        const { chainId, userAccount } = await getChainIdAndUserAccount(
+          provider
+        );
         const response = await sendAndAwaitResponseFromStream<
           TransactionRequest,
           UserDecisionResponse
@@ -416,7 +420,9 @@ const overrideWindowEthereum = () => {
           enhanceSignTypedData(request);
         if (!address || !typedData) return forwardToWallet();
 
-        const { chainId, userAccount } = await getChainIdAndUserAccount();
+        const { chainId, userAccount } = await getChainIdAndUserAccount(
+          provider
+        );
         const response = await sendAndAwaitResponseFromStream<
           SignTypedDataRequest,
           UserDecisionResponse
@@ -458,7 +464,9 @@ const overrideWindowEthereum = () => {
         const message =
           String(first).replace(/0x/, "").length === 40 ? second : first;
 
-        const { chainId, userAccount } = await getChainIdAndUserAccount();
+        const { chainId, userAccount } = await getChainIdAndUserAccount(
+          provider
+        );
         const response = await sendAndAwaitResponseFromStream<
           SignMessageRequest,
           UserDecisionResponse

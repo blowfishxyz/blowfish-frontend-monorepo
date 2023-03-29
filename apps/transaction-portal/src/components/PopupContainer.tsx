@@ -6,30 +6,20 @@ import type {
   ChainFamily,
   ChainNetwork,
 } from "@blowfish/utils/BlowfishApiClient";
-import { shortenHex } from "../utils/hex";
 import {
   REGULAR_BOTTOM_MENU_HEIGHT,
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
-import { TextSmall } from "./Typography";
 import {
   EthereumIcon,
   PolygonIcon,
   ArbitrumIcon,
   BnbChainIcon,
 } from "./icons/ChainIcons";
-import { WalletIcon } from "./icons/WalletIcon";
+import { CustomConnectkitButton } from "./CustomConnectkitButton";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
-
-const StyledWalletIcon = styled(WalletIcon)`
-  width: 16px;
-  height: auto;
-  & > path {
-    fill: rgba(0, 0, 0, 0.33);
-  }
-`;
 
 const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
   chainFamily,
@@ -111,7 +101,6 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
   children,
   style,
   className,
-  userAccount,
   chainFamily,
   chainNetwork,
   severity,
@@ -124,14 +113,9 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       severity={severity}
       bottomMenuType={bottomMenuType}
     >
-      {userAccount && (
-        <HeaderLeft>
-          <StyledWalletIcon />
-          <TextSmall style={{ marginLeft: "9px" }} secondary>
-            {shortenHex(userAccount)}
-          </TextSmall>
-        </HeaderLeft>
-      )}
+      <HeaderLeft>
+        <CustomConnectkitButton />
+      </HeaderLeft>
       {chainFamily && chainNetwork && (
         <HeaderRight>
           <IconForChainMemo chainFamily={chainFamily} />
