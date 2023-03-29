@@ -1,6 +1,7 @@
 import type {
   EvmMessageScanResult,
   EvmTransactionScanResult,
+  NativeAssetTransferData,
 } from "@blowfish/utils/BlowfishApiClient";
 import {
   RequestType,
@@ -198,6 +199,11 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
             name: "PudgyPenguins",
             symbol: "PPG",
             tokenId: "7238",
+            assetPrice: {
+              source: "Coingecko",
+              last_updated_at: 1680006487,
+              dollar_value_per_token: 4886.162862975,
+            },
           },
           kind: "ERC721_TRANSFER",
         },
@@ -217,6 +223,21 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
             decimals: 18,
             name: "Ether",
             symbol: "ETH",
+            asset: {
+              address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              symbol: "ETH",
+              name: "Ether",
+              decimals: 18,
+              verified: true,
+              lists: [],
+              imageUrl:
+                "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+              price: {
+                source: "Coingecko",
+                last_updated_at: 1670252058,
+                dollar_value_per_token: 1288.41,
+              },
+            },
           },
           kind: "NATIVE_ASSET_TRANSFER",
         },
@@ -333,6 +354,21 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
             decimals: 18,
             name: "Ether",
             symbol: "ETH",
+            asset: {
+              address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              symbol: "ETH",
+              name: "Ether",
+              decimals: 18,
+              verified: true,
+              lists: [],
+              imageUrl:
+                "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+              price: {
+                source: "Coingecko",
+                last_updated_at: 1670252058,
+                dollar_value_per_token: 1288.41,
+              },
+            },
           },
           kind: "NATIVE_ASSET_TRANSFER",
         },
@@ -351,11 +387,16 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
             },
             metadata: {
               rawImageUrl:
-                "ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
+                "https://ipfs.io/ipfs/QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
             },
             name: "BoredApeYachtClub",
             symbol: "BAYC",
             tokenId: "1726",
+            assetPrice: {
+              source: "Coingecko",
+              last_updated_at: 1680006487,
+              dollar_value_per_token: 4886.162862975,
+            },
           },
           kind: "ERC721_TRANSFER",
         },
