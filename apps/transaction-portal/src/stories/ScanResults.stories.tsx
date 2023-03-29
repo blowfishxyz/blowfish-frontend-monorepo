@@ -11,7 +11,6 @@ import {
   PopupContainer,
   PopupContainerProps,
 } from "../components/PopupContainer";
-import { Providers } from "../components/Providers";
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
 import {
   exampleDappUrl,
@@ -72,58 +71,56 @@ export const TransactionNoAction: ComponentStory<
 
   return (
     <div style={{ width: "392px", minHeight: "748px" }}>
-      <Providers>
-        <PopupContainer
-          style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
-          }}
-          {...props}
-          severity={severity}
-          bottomMenuType={screenType !== "INFO" ? "SLIM" : "FULL"}
-        >
-          {}
-          {screenType === "WARNING" && (
-            <>
-              <TransactionBlockedScreen
-                onContinue={() => setHasDismissedWarningScreen(true)}
-              />
-              <SlimBottomMenu
-                onClick={() => alert("ABORTED...")}
-                buttonLabel="Close"
-              />
-            </>
-          )}
-          {screenType === "UNSUPPORTED" && (
-            <>
-              <TransactionUnsupportedScreen
-                closeWindow={() => alert("CLOSING...")}
-              />
-              <SlimBottomMenu
-                onClick={() => alert("ABORTED...")}
-                buttonLabel="Close"
-              />
-            </>
-          )}
-          {screenType === "INFO" && (
-            <>
-              <ScanResults
-                request={request}
-                scanResults={scanResults}
-                dappUrl={exampleDappUrl}
-                chainNetwork="mainnet"
-                chainFamily="ethereum"
-              />
-              <ApproveBottomMenu
-                isImpersonatingWallet={false}
-                onContinue={() => alert("PROCEEDING...")}
-                onCancel={() => alert("CANCEL")}
-              />
-            </>
-          )}
-        </PopupContainer>
-      </Providers>
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity={severity}
+        bottomMenuType={screenType !== "INFO" ? "SLIM" : "FULL"}
+      >
+        {}
+        {screenType === "WARNING" && (
+          <>
+            <TransactionBlockedScreen
+              onContinue={() => setHasDismissedWarningScreen(true)}
+            />
+            <SlimBottomMenu
+              onClick={() => alert("ABORTED...")}
+              buttonLabel="Close"
+            />
+          </>
+        )}
+        {screenType === "UNSUPPORTED" && (
+          <>
+            <TransactionUnsupportedScreen
+              closeWindow={() => alert("CLOSING...")}
+            />
+            <SlimBottomMenu
+              onClick={() => alert("ABORTED...")}
+              buttonLabel="Close"
+            />
+          </>
+        )}
+        {screenType === "INFO" && (
+          <>
+            <ScanResults
+              request={request}
+              scanResults={scanResults}
+              dappUrl={exampleDappUrl}
+              chainNetwork="mainnet"
+              chainFamily="ethereum"
+            />
+            <ApproveBottomMenu
+              isImpersonatingWallet={false}
+              onContinue={() => alert("PROCEEDING...")}
+              onCancel={() => alert("CANCEL")}
+            />
+          </>
+        )}
+      </PopupContainer>
     </div>
   );
 };

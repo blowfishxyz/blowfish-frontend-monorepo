@@ -21,6 +21,12 @@ module.exports = {
       "~hooks": path.resolve(__dirname, "../src/hooks"),
       "~components": path.resolve(__dirname, "../src/components"),
       "~utils": path.resolve(__dirname, "../src/utils"),
+      // Mocks for dependencies incompatible with Storybook
+      // We bypass the Connectkit integration by mocking the button
+      "./CustomConnectkitButton": path.resolve(
+        __dirname,
+        "../src/__mocks__/CustomConnectkitButton"
+      ),
     };
 
     return config;
