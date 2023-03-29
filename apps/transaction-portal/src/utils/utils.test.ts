@@ -85,10 +85,10 @@ describe("checkVersionAndTransformMessage", () => {
     type: "SIGN_TYPED_DATA",
     origin: "https://metamask.github.io",
   } as Message<DappRequest["type"], DappRequest>;
-  test("should throw NO_MESSAGE if the message is empty", () => {
+  test("should throw PARAMS_NOK if the message is empty", () => {
     const emptyMessage = {} as Message<DappRequest["type"], DappRequest>;
     expect(() => checkVersionAndTransformMessage(emptyMessage)).toThrowError(
-      MessageError.NO_MESSAGE
+      MessageError.PARAMS_NOK
     );
   });
 

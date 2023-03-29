@@ -2,7 +2,6 @@ import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 
 import { LoadingScreen as LoadingScreenComponent } from "../components/LoadingScreen";
-import { Providers } from "../components/Providers";
 import { PopupContainer } from "./../components/PopupContainer";
 
 export default {
@@ -22,13 +21,11 @@ export const LoadingScreen: ComponentStory<typeof LoadingScreenComponent> = ({
   animate,
 }) => (
   <div style={{ width: "392px", minHeight: "748px" }}>
-    <Providers>
-      <PopupContainer style={fullScreenStyleOverrides}>
-        <LoadingScreenComponent
-          style={fullScreenStyleOverrides}
-          animate={animate}
-        />
-      </PopupContainer>
-    </Providers>
+    <PopupContainer style={fullScreenStyleOverrides}>
+      <LoadingScreenComponent
+        style={fullScreenStyleOverrides}
+        animate={animate}
+      />
+    </PopupContainer>
   </div>
 );

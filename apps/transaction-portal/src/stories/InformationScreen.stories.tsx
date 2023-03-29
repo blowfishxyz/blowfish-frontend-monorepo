@@ -5,7 +5,7 @@ import type {
 import type { ComponentStory } from "@storybook/react";
 import React from "react";
 
-import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
+import { SlimBottomMenu, SlimBottomMenuProps } from "~components/BottomMenus";
 import {
   AccountNotConnectedScreen,
   AccountNotConnectedScreenProps,
@@ -25,8 +25,7 @@ import {
 import {
   PopupContainer,
   PopupContainerProps,
-} from "../components/PopupContainer";
-import { Providers } from "../components/Providers";
+} from "~components/PopupContainer";
 
 const DEFAULT_ARGS = {
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -51,29 +50,27 @@ export const TransactionBlocked: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="CRITICAL"
+        bottomMenuType="SLIM"
+      >
+        <TransactionBlockedScreenComponent onContinue={props.onContinue} />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="CRITICAL"
-          bottomMenuType="SLIM"
-        >
-          <TransactionBlockedScreenComponent onContinue={props.onContinue} />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -85,34 +82,32 @@ export const SimulationError: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <SimulationErrorScreen
+          headline={props.headline}
+          message={props.message}
+          onRetry={props.onRetry}
+          isRetrying={props.isRetrying}
+        />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <SimulationErrorScreen
-            headline={props.headline}
-            message={props.message}
-            onRetry={props.onRetry}
-            isRetrying={props.isRetrying}
-          />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -131,33 +126,31 @@ export const TransactionReverted: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <SimulationErrorScreen
+          headline={props.headline}
+          message={props.message}
+          errorMessage={props.errorMessage}
+        />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <SimulationErrorScreen
-            headline={props.headline}
-            message={props.message}
-            errorMessage={props.errorMessage}
-          />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -176,33 +169,31 @@ export const UnsupportedChain: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
-          style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <UnsupportedChainScreen
+          onDismissUnsupportedChain={async (value) => {
+            console.log("onToggleShowUnsupportedChain", value);
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <UnsupportedChainScreen
-            onDismissUnsupportedChain={async (value) => {
-              console.log("onToggleShowUnsupportedChain", value);
-            }}
-          />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+        />
+        <SlimBottomMenu
+          style={{
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
+          }}
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -212,32 +203,30 @@ export const UnknownError: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <UnknownErrorScreen
+          onRetry={props.onRetry}
+          isRetrying={props.isRetrying}
+        />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <UnknownErrorScreen
-            onRetry={props.onRetry}
-            isRetrying={props.isRetrying}
-          />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close this window"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close this window"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -253,41 +242,37 @@ export const AccountNotConnected: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <AccountNotConnectedScreen
+          accountToConnect={props.accountToConnect}
+          onRetry={props.onRetry}
+          isRetrying={props.isRetrying}
+        />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <AccountNotConnectedScreen
-            accountToConnect={props.accountToConnect}
-            connectedAccount={props.connectedAccount}
-            onRetry={props.onRetry}
-            isRetrying={props.isRetrying}
-          />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
 AccountNotConnected.args = {
   ...DEFAULT_ARGS,
   accountToConnect: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-  connectedAccount: "",
 };
 
 export const WrongChain: ComponentStory<
@@ -295,34 +280,32 @@ export const WrongChain: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <WrongChainScreen
+          currentChainId={props.currentChainId}
+          chainIdToConnect={props.chainIdToConnect}
+          onRetry={props.onRetry}
+          isRetrying={props.isRetrying}
+        />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <WrongChainScreen
-            currentChainId={props.currentChainId}
-            chainIdToConnect={props.chainIdToConnect}
-            onRetry={props.onRetry}
-            isRetrying={props.isRetrying}
-          />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -337,29 +320,27 @@ export const TransactionNotFound: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <TransactionNotFoundScreen />
+        <SlimBottomMenu
           style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
           }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <TransactionNotFoundScreen />
-          <SlimBottomMenu
-            style={{
-              /* NOTE: This is only applicable in the context of the storybook,
-               * in the extension we want this fixed to to bottom of the window */
-              position: "absolute",
-            }}
-            onClick={props.onClick}
-            buttonLabel="Close"
-          />
-        </PopupContainer>
-      </Providers>
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
     </div>
   );
 };
@@ -372,20 +353,18 @@ export const OutdatedExtension: ComponentStory<
 > = (props) => {
   return (
     <div style={{ width: "600px", minHeight: "768px" }}>
-      <Providers>
-        <PopupContainer
-          style={{
-            /* NOTE This is only for the story,
-             * normally we want this to take up all the available window height */
-            minHeight: "748px",
-          }}
-          {...props}
-          severity="INFO"
-          bottomMenuType="SLIM"
-        >
-          <OutdatedExtensionCTAScreen />
-        </PopupContainer>
-      </Providers>
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <OutdatedExtensionCTAScreen />
+      </PopupContainer>
     </div>
   );
 };

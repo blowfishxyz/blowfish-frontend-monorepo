@@ -161,6 +161,7 @@ const processRequestBase = async (
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   logger.debug(message);
+
   const tab = await Browser.tabs.create({
     url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}`,
     active: true,

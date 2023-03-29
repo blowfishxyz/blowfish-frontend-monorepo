@@ -98,7 +98,7 @@ export const getTransformersForVersion = (extensionVersion: string) => {
 };
 
 export enum MessageError {
-  NO_MESSAGE = "NO_MESSAGE",
+  PARAMS_NOK = "PARAMS_NOK",
   OUTDATED_EXTENSION = "OUTDATED_EXTENSION",
 }
 
@@ -106,7 +106,7 @@ export const checkVersionAndTransformMessage = (
   message: Message<DappRequest["type"], DappRequest>
 ) => {
   if (Object.keys(message).length === 0) {
-    throw new Error(MessageError.NO_MESSAGE);
+    throw new Error(MessageError.PARAMS_NOK);
   }
   const { extensionVersion } = message.data;
 
@@ -133,6 +133,8 @@ export const getScanRequestFromUrl = (
   const parsedMessage = parseRequestFromMessage(
     qs.parse(cleanedQs) as unknown as Message<DappRequest["type"], DappRequest>
   );
+
+  if (!parsedMessage) throw Error(MessageError.PARAMS_NOK);
 
   return {
     id,

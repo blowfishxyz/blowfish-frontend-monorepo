@@ -1,13 +1,18 @@
 import React from "react";
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "styled-components";
-import { WagmiConfig } from "wagmi";
-import { GlobalStyle } from "../styles/global";
-import { themes } from "../styles/theme";
-import { wagmiClient } from "../utils/wagmi";
 import Head from "next/head";
+import { WagmiConfig } from "wagmi";
+import { wagmiClient } from "~utils/wagmi";
+import { ConnectKitProvider } from "connectkit";
+import { useGetRequestParams } from "~hooks/useGetRequestParams";
+import { GlobalStyle } from "~styles/global";
+
+import { themes } from "~styles/theme";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const { chainId } = useGetRequestParams();
+
   return (
     <>
       <Head>
@@ -16,7 +21,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={themes.light}>
         <GlobalStyle />
         <WagmiConfig client={wagmiClient}>
-          <Component {...pageProps} />
+          <ConnectKitProvider
+            options={{
+              initialChainId: chainId,
+            }}
+          >
+            <Component {...pageProps} />
+          </ConnectKitProvider>
         </WagmiConfig>
       </ThemeProvider>
     </>

@@ -6,30 +6,23 @@ import type {
   ChainFamily,
   ChainNetwork,
 } from "@blowfish/utils/BlowfishApiClient";
-import { shortenHex } from "../utils/hex";
 import {
   REGULAR_BOTTOM_MENU_HEIGHT,
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
-import { TextSmall } from "./Typography";
 import {
-  EthereumIcon,
-  PolygonIcon,
   ArbitrumIcon,
   BnbChainIcon,
+  EthereumIcon,
+  PolygonIcon,
 } from "./icons/ChainIcons";
-import { WalletIcon } from "./icons/WalletIcon";
+import { CustomConnectkitButton } from "./CustomConnectkitButton";
+import { TextSmall } from "~components/Typography";
+import { shortenHex } from "~utils/hex";
+import { MaskIcon } from "./icons/MaskIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
-
-const StyledWalletIcon = styled(WalletIcon)`
-  width: 16px;
-  height: auto;
-  & > path {
-    fill: rgba(0, 0, 0, 0.33);
-  }
-`;
 
 const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
   chainFamily,
@@ -74,15 +67,25 @@ const HeaderRight = styled.div`
   }
 `;
 
+const StyledMaskIcon = styled(MaskIcon)`
+  width: 14px;
+  height: auto;
+
+  & > path {
+    fill: rgba(0, 0, 0, 0.33);
+  }
+`;
+
 export interface PopupContainerProps extends React.PropsWithChildren {
+  impersonatingWallet?: string;
   style?: React.CSSProperties;
   className?: string;
-  userAccount?: string;
   chainNetwork?: ChainNetwork;
   chainFamily?: ChainFamily;
   severity?: Severity;
   bottomMenuType?: MenuType;
 }
+
 type MenuType = "NONE" | "SLIM" | "FULL";
 const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   display: flex;
@@ -107,11 +110,16 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
         `}
 `;
 
+const WalletAddress = styled(TextSmall)`
+  margin-left: 9px;
+  color: rgba(0, 0, 0, 0.5);
+`;
+
 export const PopupContainer: React.FC<PopupContainerProps> = ({
+  impersonatingWallet,
   children,
   style,
   className,
-  userAccount,
   chainFamily,
   chainNetwork,
   severity,
@@ -124,14 +132,16 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       severity={severity}
       bottomMenuType={bottomMenuType}
     >
-      {userAccount && (
-        <HeaderLeft>
-          <StyledWalletIcon />
-          <TextSmall style={{ marginLeft: "9px" }} secondary>
-            {shortenHex(userAccount)}
-          </TextSmall>
-        </HeaderLeft>
-      )}
+      <HeaderLeft>
+        {impersonatingWallet ? (
+          <>
+            <StyledMaskIcon />
+            <WalletAddress>{shortenHex(impersonatingWallet)}</WalletAddress>
+          </>
+        ) : (
+          <CustomConnectkitButton />
+        )}
+      </HeaderLeft>
       {chainFamily && chainNetwork && (
         <HeaderRight>
           <IconForChainMemo chainFamily={chainFamily} />

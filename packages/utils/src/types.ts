@@ -84,7 +84,7 @@ interface BaseRequest {
 export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;
-  isImpersonatingWallet?: boolean;
+  isImpersonatingWallet?: boolean | string;
   extensionVersion: string;
 }
 
@@ -114,7 +114,7 @@ export type SupportedSignTypedDataPayloadVersion =
 
 export type SignTypedDataRequest = BaseRequest & {
   type: RequestType.SignTypedData;
-  isImpersonatingWallet?: boolean;
+  isImpersonatingWallet?: boolean | string;
   extensionVersion: string;
 } & SupportedSignTypedDataPayloadVersion;
 
@@ -132,7 +132,7 @@ export interface SignMessagePayload {
 export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
-  isImpersonatingWallet?: boolean;
+  isImpersonatingWallet?: boolean | string;
   extensionVersion: string;
 }
 

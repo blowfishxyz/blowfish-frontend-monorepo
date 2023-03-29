@@ -1,6 +1,10 @@
+import React from "react";
+import type { Story as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
+import { ThemeProvider } from "styled-components";
 
 import { GlobalStyle } from "../src/styles/global";
+import { themes } from "../src/styles/theme";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -16,4 +20,9 @@ export const decorators = [
   withThemeFromJSXProvider({
     GlobalStyles: GlobalStyle,
   }),
+  (Story: StoryType) => (
+    <ThemeProvider theme={themes.light}>
+      <Story />
+    </ThemeProvider>
+  ),
 ];

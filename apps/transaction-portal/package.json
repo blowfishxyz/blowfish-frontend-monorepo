@@ -22,6 +22,7 @@
     "@blowfish/utils": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@wagmi/core": "^0.10.1",
+    "connectkit": "^1.2.1",
     "decimal.js": "^10.4.3",
     "ethers": "^5",
     "framer-motion": "^10.0.2",
