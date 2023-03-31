@@ -84,7 +84,7 @@ interface BaseRequest {
 export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;
-  isImpersonatingWallet?: boolean | string;
+  isImpersonatingWallet?: boolean;
   extensionVersion: string;
 }
 
@@ -114,7 +114,7 @@ export type SupportedSignTypedDataPayloadVersion =
 
 export type SignTypedDataRequest = BaseRequest & {
   type: RequestType.SignTypedData;
-  isImpersonatingWallet?: boolean | string;
+  isImpersonatingWallet?: boolean;
   extensionVersion: string;
 } & SupportedSignTypedDataPayloadVersion;
 
@@ -132,7 +132,7 @@ export interface SignMessagePayload {
 export interface SignMessageRequest extends BaseRequest {
   type: RequestType.SignMessage;
   payload: SignMessagePayload;
-  isImpersonatingWallet?: boolean | string;
+  isImpersonatingWallet?: boolean;
   extensionVersion: string;
 }
 
@@ -225,4 +225,15 @@ export const isDappRequestMessage = (
     message.type === RequestType.SignTypedData ||
     message.type === RequestType.SignMessage
   );
+};
+
+export type ParsedScanUrl =
+  | Message<DappRequest["type"], DappRequest>
+  | { id: string; chainId: string };
+
+//TODO: We should remove the urlScan as soon as possible since it introduces a security risk
+export const isUrlScan = (
+  parsedUrl: ParsedScanUrl
+): parsedUrl is Message<DappRequest["type"], DappRequest> => {
+  return "type" in parsedUrl;
 };

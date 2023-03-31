@@ -3,12 +3,7 @@ import {
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
 import { logger } from "~utils/logger";
-import {
-  DappRequest,
-  Message,
-  parseRequestFromMessage,
-} from "@blowfish/utils/types";
-import qs from "qs";
+import { DappRequest, Message } from "@blowfish/utils/types";
 
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
@@ -37,8 +32,8 @@ export const opacify = (amount: number, hexColor: string) => {
 export const isENS = (address = "") =>
   address.endsWith(".eth") || address.endsWith(".xyz");
 
-// TODO: move to utils
-export const isVersionCompatible = (extensionVersion: string) => {
+// TODO: the default value for extensionVersion is set because extensionVersion: 0.0.9 doesn't send the extension version due to a bug
+export const isVersionCompatible = (extensionVersion = "0.0.9") => {
   const minimum = MINIMUM_SUPPORTED_EXTENSION_VERSION.split(".").map(Number);
   const provided = extensionVersion.split(".").map(Number);
 
@@ -98,7 +93,7 @@ export const getTransformersForVersion = (extensionVersion: string) => {
 };
 
 export enum MessageError {
-  PARAMS_NOK = "PARAMS_NOK",
+  PARAMS_NOT_OK = "PARAMS_NOT_OK",
   OUTDATED_EXTENSION = "OUTDATED_EXTENSION",
 }
 
@@ -106,7 +101,7 @@ export const checkVersionAndTransformMessage = (
   message: Message<DappRequest["type"], DappRequest>
 ) => {
   if (Object.keys(message).length === 0) {
-    throw new Error(MessageError.PARAMS_NOK);
+    throw new Error(MessageError.PARAMS_NOT_OK);
   }
   const { extensionVersion } = message.data;
 
@@ -121,28 +116,4 @@ export const checkVersionAndTransformMessage = (
   );
 
   return transformedMessage || message;
-};
-
-export const getScanRequestFromUrl = (
-  id: string,
-  extensionVersion = "0.0.0",
-  origin: string
-) => {
-  const windowQs = window.location.search;
-  const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
-  const parsedMessage = parseRequestFromMessage(
-    qs.parse(cleanedQs) as unknown as Message<DappRequest["type"], DappRequest>
-  );
-
-  if (!parsedMessage) throw Error(MessageError.PARAMS_NOK);
-
-  return {
-    id,
-    type: parsedMessage.type,
-    origin,
-    data: {
-      ...parsedMessage,
-      extensionVersion,
-    },
-  } as unknown as Message<DappRequest["type"], DappRequest>;
 };

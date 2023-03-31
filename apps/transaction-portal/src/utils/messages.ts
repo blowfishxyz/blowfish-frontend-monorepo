@@ -10,6 +10,7 @@ import {
   UserDecisionOpts,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
+import { MessageError } from "~utils/utils";
 
 const sendAndAwaitAck = async (
   message: BlowfishPortalBackgroundMessage
@@ -85,9 +86,12 @@ export const getScanRequestFromMessageChannel = async (messageId: string) => {
     data: { key: messageId },
     type: RequestType.GetRequestToScan,
   };
+
   const response = await sendAndAwaitAck(message);
+
   if (isDappRequestMessage(response)) {
     return response;
   }
-  throw new Error("Unsupported response type");
+
+  throw new Error(MessageError.PARAMS_NOT_OK);
 };

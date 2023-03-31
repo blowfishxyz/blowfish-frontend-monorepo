@@ -74,7 +74,7 @@ const getExtensionOptionFromTransactionPortal = async (
   return createRawMessage(message.type, pausedOptions || null);
 };
 
-// HACK(kimpers): If we don't returna Promise of something here the sender will be stuck waiting for a response indefinitely
+// HACK(kimpers): If we don't return a Promise of something here the sender will be stuck waiting for a response indefinitely
 // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
 const onBrowserMessageListener = async (
   message: BlowfishPortalBackgroundMessage
@@ -163,7 +163,7 @@ const processRequestBase = async (
   logger.debug(message);
 
   const tab = await Browser.tabs.create({
-    url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}`,
+    url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}&chainId=${chainId}`,
     active: true,
   });
   const tabId = tab.id!;

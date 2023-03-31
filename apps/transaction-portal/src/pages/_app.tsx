@@ -5,13 +5,13 @@ import Head from "next/head";
 import { WagmiConfig } from "wagmi";
 import { wagmiClient } from "~utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
-import { useGetRequestParams } from "~hooks/useGetRequestParams";
 import { GlobalStyle } from "~styles/global";
 
 import { themes } from "~styles/theme";
+import { useRequestChainId } from "~hooks/useRequestChainId";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const { chainId } = useGetRequestParams();
+  const requestChainId = useRequestChainId();
 
   return (
     <>
@@ -23,7 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <WagmiConfig client={wagmiClient}>
           <ConnectKitProvider
             options={{
-              initialChainId: chainId,
+              initialChainId: requestChainId,
             }}
           >
             <Component {...pageProps} />

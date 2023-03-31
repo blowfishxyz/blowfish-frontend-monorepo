@@ -2,19 +2,15 @@ import { useEffect, useState } from "react";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import {
   DappRequest,
+  isUrlScan,
   Message,
   parseRequestFromMessage,
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-
-import { logger } from "~utils/logger";
-import { useRouter } from "next/router";
-import {
-  checkVersionAndTransformMessage,
-  getScanRequestFromUrl,
-  MessageError,
-} from "~utils/utils";
+import { checkVersionAndTransformMessage, MessageError } from "~utils/utils";
 import { getScanRequestFromMessageChannel } from "~utils/messages";
+import { useRequestChainId } from "./useRequestChainId";
+import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
 
 type HexString = `0x${string}`;
 type RequestParams =
@@ -33,11 +29,8 @@ type RequestParams =
   | Record<string, undefined>;
 
 export const useGetRequestParams = (): RequestParams => {
-  const router = useRouter();
-  // NOTE: extensionVersion, origin, type only available on url scan
-  const { id, extensionVersion, origin, type } = router.query;
-  // NOTE: used to check if params are sent via URL
-  const isUrlScan = type !== undefined;
+  const requestChainId = useRequestChainId();
+  const requestMessage = useParsedRequestScanUrl();
   const [params, setParams] = useState<RequestParams>({});
   const [errorMessage, setErrorMessage] = useState<MessageError | null>(null);
   const [paramError, setParamError] = useState(false);
@@ -46,39 +39,29 @@ export const useGetRequestParams = (): RequestParams => {
   useEffect(() => {
     (async () => {
       try {
-        if (!id) throw Error(MessageError.PARAMS_NOK);
+        if (!requestMessage.id || !requestChainId) {
+          throw Error(MessageError.PARAMS_NOT_OK);
+        }
 
+        //TODO: We should remove the urlScan as soon as possible since it introduces a security risk
         const message = checkVersionAndTransformMessage(
-          isUrlScan
-            ? getScanRequestFromUrl(
-                String(id),
-                extensionVersion as string,
-                origin as string
-              )
-            : await getScanRequestFromMessageChannel(String(id))
+          isUrlScan(requestMessage)
+            ? requestMessage
+            : await getScanRequestFromMessageChannel(requestMessage.id)
         );
 
         const request = parseRequestFromMessage(message);
-        if (!request) throw Error(MessageError.PARAMS_NOK);
-
-        const chainId = parseInt(message.data.chainId.toString());
-        if (!chainId) throw Error(MessageError.PARAMS_NOK);
-
-        const isImpersonatingWallet = isUrlScan
-          ? request.isImpersonatingWallet === "true"
-          : !!request.isImpersonatingWallet;
-
-        // NOTE: This should never happen since we verify
-        // that the chain is supported before we create this page
-        const supportedChain = chainIdToSupportedChainMapping[chainId];
-        if (!supportedChain) {
-          logger.debug(`Blowfish unsupported chainId ${chainId}`);
+        if (!request || !message || !message.origin) {
+          throw Error(MessageError.PARAMS_NOT_OK);
         }
+
+        const isImpersonatingWallet = !!request.isImpersonatingWallet;
+        const supportedChain = chainIdToSupportedChainMapping[requestChainId];
 
         setParams({
           message,
           request,
-          chainId,
+          chainId: requestChainId,
           userAccount: request.userAccount as HexString,
           chainNetwork: supportedChain?.chainNetwork,
           chainFamily: supportedChain?.chainFamily,
@@ -95,10 +78,10 @@ export const useGetRequestParams = (): RequestParams => {
         setErrorMessage(error.message);
       }
     })();
-  }, [extensionVersion, id, isUrlScan, origin]);
+  }, [requestChainId, requestMessage]);
 
   useEffect(() => {
-    setParamError(errorMessage === MessageError.PARAMS_NOK);
+    setParamError(errorMessage === MessageError.PARAMS_NOT_OK);
     setIsExtensionOutdated(errorMessage === MessageError.OUTDATED_EXTENSION);
   }, [errorMessage]);
 

@@ -88,7 +88,7 @@ describe("checkVersionAndTransformMessage", () => {
   test("should throw PARAMS_NOK if the message is empty", () => {
     const emptyMessage = {} as Message<DappRequest["type"], DappRequest>;
     expect(() => checkVersionAndTransformMessage(emptyMessage)).toThrowError(
-      MessageError.PARAMS_NOK
+      MessageError.PARAMS_NOT_OK
     );
   });
 
