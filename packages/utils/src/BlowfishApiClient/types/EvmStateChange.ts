@@ -4,7 +4,7 @@ import type { EvmAmountDiff } from "./EvmAmountDiff";
 import type { EvmTokenMetadata } from "./EvmTokenMetadata";
 import type { Price } from "./Price";
 
-export interface TransferDataAsset {
+export interface AssetData {
   address: string;
   decimals: number;
   imageUrl: string;
@@ -22,7 +22,7 @@ export interface Erc20TransferData {
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
   assetPrice: Price | null;
-  asset: TransferDataAsset;
+  asset: AssetData;
 }
 
 export interface Erc721TransferData {
@@ -40,6 +40,7 @@ export interface Erc1155TransferData {
   contract: EvmAddressInfo;
   tokenId: string;
   metadata: EvmTokenMetadata;
+  assetPrice: Price | null;
 }
 
 export interface Erc721ApprovalForAllData {
@@ -49,6 +50,15 @@ export interface Erc721ApprovalForAllData {
   contract: EvmAddressInfo;
   owner: EvmAddressInfo;
   amount: EvmAmountDiff;
+  assetPrice: Price | null;
+}
+
+export interface ERC1155ApprovalForAllData {
+  spender: EvmAddressInfo;
+  contract: EvmAddressInfo;
+  owner: EvmAddressInfo;
+  amount: EvmAmountDiff;
+  assetPrice: Price | null;
 }
 
 export interface Erc721ApprovalData {
@@ -68,7 +78,7 @@ export interface NativeAssetTransferData {
   decimals: number;
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
-  asset: TransferDataAsset;
+  asset: AssetData;
 }
 
 export interface Erc20ApprovalData {
@@ -79,7 +89,7 @@ export interface Erc20ApprovalData {
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
   owner: EvmAddressInfo;
-  assetPrice: Price | null;
+  asset: AssetData;
 }
 
 export interface Erc20PermitData {
@@ -92,6 +102,7 @@ export interface Erc20PermitData {
   amount: string;
   nonce: string;
   deadline: null | number;
+  asset: AssetData;
 }
 
 export type EvmStateChange =
@@ -113,12 +124,7 @@ export type EvmStateChange =
     }
   | {
       kind: "ERC1155_APPROVAL_FOR_ALL";
-      data: {
-        spender: EvmAddressInfo;
-        contract: EvmAddressInfo;
-        owner: EvmAddressInfo;
-        amount: EvmAmountDiff;
-      };
+      data: ERC1155ApprovalForAllData;
     }
   | {
       kind: "ERC721_APPROVAL";

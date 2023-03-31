@@ -68,8 +68,8 @@ const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
 `;
 
 const AssetImage = ({ stateChange, isPositiveEffect }: AssetImageProps) => {
+  let altText = "Asset";
   let imageSrc;
-  let altText = "asset image";
   let showPlaceholderImage = false;
 
   if (
@@ -77,15 +77,16 @@ const AssetImage = ({ stateChange, isPositiveEffect }: AssetImageProps) => {
     stateChange.kind === "ERC721_APPROVAL" ||
     stateChange.kind === "ERC1155_TRANSFER"
   ) {
-    imageSrc = (stateChange.data as NftStateChangeWithTokenId)?.metadata
-      ?.rawImageUrl;
+    imageSrc = stateChange.data?.metadata?.rawImageUrl;
     showPlaceholderImage = !imageSrc;
-
-    if (stateChange.data.tokenId) {
-      altText = stateChange.data.tokenId;
-    }
+    altText =
+      stateChange.kind !== "ERC1155_TRANSFER"
+        ? stateChange.data.name
+        : `${altText} ${stateChange.data.tokenId}`;
   } else if (
     stateChange.kind === "ERC20_TRANSFER" ||
+    stateChange.kind === "ERC20_APPROVAL" ||
+    stateChange.kind === "ERC20_PERMIT" ||
     stateChange.kind === "NATIVE_ASSET_TRANSFER"
   ) {
     imageSrc = stateChange.data.asset?.imageUrl;

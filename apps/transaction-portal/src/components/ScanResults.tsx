@@ -48,6 +48,7 @@ import {
 import { Column } from "~components/common/Column";
 import AssetImage from "./AssetImage";
 import AssetPrice from "./AssetPrice";
+import { evmStateChangeHasImage } from "~utils/utils";
 
 const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
@@ -119,8 +120,11 @@ const PauseScanningButton = styled(BaseButton)`
   font-size: 12px;
 `;
 
-const SimulationResultsHeader = styled(Row)`
-  margin-bottom: 22px;
+const SimulationResultsHeader = styled(Row)<{
+  evmStateChangeWithImage: boolean;
+}>`
+  margin-bottom: ${({ evmStateChangeWithImage }) =>
+    evmStateChangeWithImage ? "16px" : "8px"};
 `;
 
 const StateChangeRow = styled(Row)`
@@ -456,7 +460,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         {expectedStateChangesProcessed &&
         expectedStateChangesProcessed?.length > 0 ? (
           <Section borderBottom>
-            <SimulationResultsHeader>
+            <SimulationResultsHeader
+              evmStateChangeWithImage={evmStateChangeHasImage(
+                expectedStateChangesProcessed[0]?.rawInfo.kind
+              )}
+            >
               <TextSmall secondary>Simulation Results</TextSmall>
             </SimulationResultsHeader>
             {expectedStateChangesProcessed?.map((stateChange, i) => {

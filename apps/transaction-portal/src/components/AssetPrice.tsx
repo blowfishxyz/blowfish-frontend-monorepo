@@ -12,17 +12,12 @@ interface AssetPriceProps {
 }
 
 const AssetPrice = ({ stateChange }: AssetPriceProps) => {
-  let price;
-  if (stateChange.kind === "ERC20_TRANSFER") {
-    price =
-      Number(stateChange.data?.asset?.price?.dollar_value_per_token) || null;
-  }
-  if (
-    stateChange.kind === "ERC721_TRANSFER" ||
-    stateChange.kind === "ERC20_APPROVAL"
-  ) {
-    price = Number(stateChange.data.assetPrice?.dollar_value_per_token) || null;
-  }
+  //TODO: remove "any" once the API is transitioned away from assetPrice
+  const price =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (stateChange.data as any)?.asset?.price?.dollar_value_per_token ??
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ((stateChange.data as any).assetPrice?.dollar_value_per_token || null);
 
   return (
     <>
