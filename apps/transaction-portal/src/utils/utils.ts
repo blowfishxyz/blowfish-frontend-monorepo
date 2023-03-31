@@ -32,7 +32,7 @@ export const opacify = (amount: number, hexColor: string) => {
 export const isENS = (address = "") =>
   address.endsWith(".eth") || address.endsWith(".xyz");
 
-// TODO: the default value for extensionVersion is set because extensionVersion: 0.0.9 doesn't send the extension version due to a bug
+// NOTE: the default value for extensionVersion is set to 0.0.9. It's the first version that uses the portal, but due to a bug doesn't send the version number.
 export const isVersionCompatible = (extensionVersion = "0.0.9") => {
   const minimum = MINIMUM_SUPPORTED_EXTENSION_VERSION.split(".").map(Number);
   const provided = extensionVersion.split(".").map(Number);
