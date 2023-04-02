@@ -58,7 +58,7 @@ const ScanPage: React.FC = () => {
     paramError,
   } = useGetRequestParams();
   const connectedChainId = useChainId();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
     useSwitchNetwork({ throwForSwitchChainNotSupported: true });
   const { disconnectAsync } = useDisconnect();
@@ -268,10 +268,12 @@ const ScanPage: React.FC = () => {
       );
     } else if (isExtensionOutdated) {
       return <OutdatedExtensionCTAScreen />;
-    } else if (!connectedAddress) {
+    } else if (!connectedAddress || !isConnected) {
       return (
         <>
           <AccountNotConnectedScreen
+            isConnected={isConnected}
+            impersonatingWallet={impersonatingWallet}
             accountToConnect={userAccount ?? ""}
             onRetry={async () => {
               setConnectWalletModalOpen(true);
@@ -420,7 +422,7 @@ const ScanPage: React.FC = () => {
                   chainNetwork={chainNetwork}
                 />
                 <ApproveBottomMenu
-                  isImpersonatingWallet={!!request.isImpersonatingWallet}
+                  isImpersonatingWallet={!!isImpersonatingWallet}
                   onContinue={() => handleUserDecision(true)}
                   onCancel={() => handleUserDecision(false)}
                 />

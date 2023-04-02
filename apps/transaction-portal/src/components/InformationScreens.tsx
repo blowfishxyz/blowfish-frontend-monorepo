@@ -309,20 +309,43 @@ export interface AccountNotConnectedScreenProps {
   accountToConnect: string;
   onRetry?: () => void;
   isRetrying?: boolean;
+  impersonatingWallet?: string;
+  isConnected: boolean;
 }
 
 export const AccountNotConnectedScreen: React.FC<
   AccountNotConnectedScreenProps
-> = ({ style, className, accountToConnect, onRetry, isRetrying }) => {
+> = ({
+  style,
+  className,
+  accountToConnect,
+  onRetry,
+  isRetrying,
+  impersonatingWallet,
+  isConnected,
+}) => {
   return (
     <Wrapper style={style} className={className}>
       <StyledBlowfishInvertedWarningIcon />
       <StyledTextXL>Account not connected</StyledTextXL>
       <>
-        <StyledText>
-          Please connect <StyledText semiBold>{accountToConnect}</StyledText> to
-          Blowfish&nbsp;Protect in order to proceed with the action
-        </StyledText>
+        {!isConnected && impersonatingWallet ? (
+          <>
+            <StyledText>
+              You are impersonating{" "}
+              <StyledText semiBold>{impersonatingWallet}</StyledText>.
+            </StyledText>
+            <StyledText>
+              Please connect a wallet to Blowfish Protect in order to proceed
+              with the action
+            </StyledText>
+          </>
+        ) : (
+          <StyledText>
+            Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
+            to Blowfish&nbsp;Protect in order to proceed with the action
+          </StyledText>
+        )}
         {onRetry && (
           <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
             <StyledText>Connect wallet</StyledText>

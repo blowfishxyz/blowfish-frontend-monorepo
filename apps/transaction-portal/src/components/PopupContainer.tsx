@@ -46,6 +46,7 @@ const HeaderLeft = styled.div`
   left: 16px;
   display: flex;
   align-items: center;
+  gap: 24px;
 `;
 
 const HeaderRight = styled.div`
@@ -133,14 +134,13 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       bottomMenuType={bottomMenuType}
     >
       <HeaderLeft>
-        {impersonatingWallet ? (
-          <>
+        {impersonatingWallet && (
+          <div>
             <StyledMaskIcon />
             <WalletAddress>{shortenHex(impersonatingWallet)}</WalletAddress>
-          </>
-        ) : (
-          <CustomConnectkitButton />
+          </div>
         )}
+        <CustomConnectkitButton />
       </HeaderLeft>
       {chainFamily && chainNetwork && (
         <HeaderRight>
