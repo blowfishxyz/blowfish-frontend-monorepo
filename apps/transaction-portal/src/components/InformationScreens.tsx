@@ -310,7 +310,6 @@ export interface AccountNotConnectedScreenProps {
   onRetry?: () => void;
   isRetrying?: boolean;
   impersonatingWallet?: string;
-  isConnected: boolean;
 }
 
 export const AccountNotConnectedScreen: React.FC<
@@ -322,14 +321,13 @@ export const AccountNotConnectedScreen: React.FC<
   onRetry,
   isRetrying,
   impersonatingWallet,
-  isConnected,
 }) => {
   return (
     <Wrapper style={style} className={className}>
       <StyledBlowfishInvertedWarningIcon />
       <StyledTextXL>Account not connected</StyledTextXL>
       <>
-        {!isConnected && impersonatingWallet ? (
+        {impersonatingWallet ? (
           <>
             <StyledText>
               You are impersonating{" "}

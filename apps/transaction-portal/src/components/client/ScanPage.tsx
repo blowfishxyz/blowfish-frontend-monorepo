@@ -272,7 +272,6 @@ const ScanPage: React.FC = () => {
       return (
         <>
           <AccountNotConnectedScreen
-            isConnected={isConnected}
             impersonatingWallet={impersonatingWallet}
             accountToConnect={userAccount ?? ""}
             onRetry={async () => {
