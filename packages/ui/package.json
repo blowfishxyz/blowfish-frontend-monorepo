@@ -1,0 +1,43 @@
+{
+  "name": "@blowfish/ui",
+  "license": "MIT",
+  "version": "1.0.0",
+  "description": "Package containing reusable UI components",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf build && tsup",
+    "prepare": "pnpm run build"
+  },
+  "dependencies": {
+    "@blowfish/utils": "*",
+    "react": "^18.2.0",
+    "styled-components": "^5.3.8"
+  },
+  "devDependencies": {
+    "@blowfish/tsconfig": "*",
+    "@types/node": "^18.15.3",
+    "@types/react": "^18.0.28",
+    "@types/styled-components": "^5.1.26",
+    "tsup": "^6.6.3",
+    "typescript": "4.9.5"
+  },
+  "exports": {
+    "./icons": {
+      "types": "./build/icons.d.ts",
+      "import": "./build/icons.mjs",
+      "require": "./build/icons.js"
+    },
+    "./components": {
+      "types": "./build/components.d.ts",
+      "import": "./build/components.mjs",
+      "require": "./build/components.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
+    }
+  }
+}

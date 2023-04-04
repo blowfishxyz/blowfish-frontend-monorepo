@@ -15,7 +15,7 @@ import {
   PolygonIcon,
   ArbitrumIcon,
   BnbChainIcon,
-} from "./icons/ChainIcons";
+} from "@blowfish/ui/icons";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;

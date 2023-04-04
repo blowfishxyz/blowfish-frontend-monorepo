@@ -28,7 +28,7 @@ import { BaseButton } from "./BaseButton";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
 import { WarningNotice } from "./WarningNotice";
-import { ExpandIcon } from "./icons/ExpandArrow";
+import { ExpandIcon } from "@blowfish/ui/icons";
 import PauseDurationSelector, {
   DurationButton,
   PeriodDurationContainer,

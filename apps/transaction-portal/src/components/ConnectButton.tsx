@@ -1,9 +1,8 @@
 import styled from "styled-components";
 
 import { TextButton } from "./Buttons";
-import { FaLink, FaUnlink } from "./icons/FontAwesome";
 import { TextSmall } from "./Typography";
-import { WalletIcon } from "./icons/WalletIcon";
+import { WalletIcon, FaLink, FaUnlink } from "@blowfish/ui/icons";
 import { shortenHex } from "../utils/hex";
 
 const StyledWalletIcon = styled(WalletIcon)`

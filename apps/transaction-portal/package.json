@@ -19,6 +19,7 @@
   "dependencies": {
     "@blowfish/hooks": "workspace:*",
     "@blowfish/utils": "workspace:*",
+    "@blowfish/ui": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@wagmi/core": "^0.10.1",
     "connectkit": "^1.2.1",
