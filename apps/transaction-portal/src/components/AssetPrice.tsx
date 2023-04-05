@@ -1,6 +1,4 @@
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
-import { BigNumber } from "ethers";
-import { formatUnits } from "ethers/lib/utils.js";
 import styled from "styled-components";
 import { Text } from "~components/Typography";
 import {
@@ -10,6 +8,7 @@ import {
 } from "~components/common/Tooltip";
 import Row from "~components/common/Row";
 import { InfoIcon } from "~components/icons/InfoIcon";
+import Decimal from "decimal.js";
 
 const AssetPriceWrapper = styled(Row)`
   font-size: 14px;
@@ -23,12 +22,17 @@ const StyledInfoIcon = styled(InfoIcon)`
   margin-left: 8px;
 `;
 
+const StyledRow = styled(Row)`
+  max-width: 270px;
+  text-align: center;
+`;
+
 interface AssetPriceProps {
   stateChange: EvmStateChange;
 }
 
 const AssetPrice = ({ stateChange }: AssetPriceProps) => {
-  let finalPrice;
+  let totalValue;
   let withInfoTooltip = false;
   //TODO: refactor price once the API is transitioned away from assetPrice
   const pricePerToken =
@@ -46,27 +50,27 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
   ) {
     const { before, after } = stateChange.data.amount;
 
-    const difference = BigNumber.from(before).sub(BigNumber.from(after));
-    finalPrice = Math.abs(
-      pricePerToken *
-        parseFloat(formatUnits(difference, stateChange.data.asset.decimals))
-    );
+    const difference = new Decimal(before).sub(after).abs();
+    totalValue = new Decimal(pricePerToken)
+      .times(difference)
+      .dividedBy(new Decimal(10).pow(stateChange.data.asset.decimals))
+      .toNumber();
   }
   if (
     stateChange.kind === "ERC721_TRANSFER" ||
     stateChange.kind === "ERC1155_TRANSFER" ||
     stateChange.kind === "ERC721_APPROVAL"
   ) {
-    finalPrice = pricePerToken;
+    totalValue = pricePerToken;
     withInfoTooltip = true;
   }
 
   return (
     <>
-      {finalPrice && (
+      {totalValue && (
         <AssetPriceWrapper>
           $
-          {finalPrice.toLocaleString(undefined, {
+          {totalValue.toLocaleString(undefined, {
             maximumFractionDigits: 2,
           })}
           {withInfoTooltip && (
@@ -75,7 +79,12 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
                 <StyledInfoIcon />
               </TooltipTrigger>
               <TooltipContent>
-                <Text>Floor Price</Text>
+                <StyledRow>
+                  <Text>
+                    This value represents the <b>floor price</b> of the entire
+                    collection
+                  </Text>
+                </StyledRow>
               </TooltipContent>
             </Tooltip>
           )}
