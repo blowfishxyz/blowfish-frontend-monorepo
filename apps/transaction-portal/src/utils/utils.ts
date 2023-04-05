@@ -1,3 +1,5 @@
+import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
+
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
 
@@ -24,3 +26,17 @@ export const opacify = (amount: number, hexColor: string) => {
 
 export const isENS = (address = "") =>
   address.endsWith(".eth") || address.endsWith(".xyz");
+
+const EVM_STATE_CHANGE_KIND_WITH_IMAGE = [
+  "ERC721_TRANSFER",
+  "ERC721_APPROVAL",
+  "ERC1155_TRANSFER",
+  "ERC20_TRANSFER",
+  "ERC20_APPROVAL",
+  "ERC20_PERMIT",
+  "NATIVE_ASSET_TRANSFER",
+];
+
+export const evmStateChangeHasImage = (kind: EvmStateChange["kind"]) => {
+  return EVM_STATE_CHANGE_KIND_WITH_IMAGE.includes(kind);
+};

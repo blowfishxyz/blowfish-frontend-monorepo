@@ -13,7 +13,6 @@ export * from "./EvmTransactionObject";
 export * from "./EvmTransactionRequest";
 export * from "./EvmTransactionScanResult";
 export * from "./Price";
-export * from "./PriceSource";
 export * from "./RequestMetadata";
 export * from "./Severity";
 export * from "./Warning";
