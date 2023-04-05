@@ -1,8 +1,11 @@
 import React from "react";
 import styled, { css } from "styled-components";
-
-import { PrimaryButton, SecondaryButton } from "@blowfish/ui/core";
-import { Text } from "./Typography";
+import {
+  PrimaryButton,
+  SecondaryButton,
+  GrayText,
+  RedText,
+} from "@blowfish/ui/core";
 import { breakpoint } from "~utils/breakpoints";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
@@ -63,14 +66,6 @@ export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
     </BottomMenuWrapper>
   );
 };
-
-const GrayText = styled(Text)`
-  color: rgba(0, 0, 0, 0.5);
-`;
-
-const RedText = styled(Text)`
-  color: ${({ theme }) => theme.palette.warningText};
-`;
 
 const Row = styled.div`
   display: flex;

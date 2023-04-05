@@ -6,3 +6,4 @@ export * from "./FontAwesome";
 export * from "./ExpandArrow";
 export * from "./ChainIcons";
 export * from "./BrowserIcons";
+export * from "./BlowfishWarningIcons";

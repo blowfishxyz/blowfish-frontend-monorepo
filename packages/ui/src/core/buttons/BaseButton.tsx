@@ -1,7 +1,8 @@
+import React from "react";
 import styled from "styled-components";
 
 // Button w/ full CSS resets
-export const BaseButton = styled.button`
+const StyledButton = styled.button`
   border: none;
   margin: 0;
   padding: 0;
@@ -20,3 +21,8 @@ export const BaseButton = styled.button`
     padding: 0;
   }
 `;
+
+export const BaseButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>((props, ref) => <StyledButton ref={ref} {...props} />);

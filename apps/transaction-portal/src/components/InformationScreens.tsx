@@ -1,14 +1,13 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { TextButton } from "@blowfish/ui/core";
+import { TextButton, Text, TextXL } from "@blowfish/ui/core";
 import { ContentToggle } from "./ContentToggle";
-import { Text, TextXL } from "./Typography";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
-} from "./icons/BlowfishWarningIcons";
+} from "@blowfish/ui/icons";
 import { sendPauseResumeSelection } from "~utils/messages";
 import { SlimBottomMenu } from "~components/BottomMenus";
 import { useLocalStorage } from "react-use";
@@ -66,10 +65,6 @@ const WarningMessageWrapper = styled.div`
   border-radius: 12px;
   padding: 17px 16px;
   word-break: break-word;
-
-  ${Text} {
-    color: ${({ theme }) => theme.palette.warningText};
-  }
 `;
 
 const StyledTextButton = styled(TextButton)`
@@ -240,7 +235,7 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
       {errorMessage && (
         <ContentToggle message="View error message">
           <WarningMessageWrapper>
-            <Text>{errorMessage}</Text>
+            <Text danger>{errorMessage}</Text>
           </WarningMessageWrapper>
         </ContentToggle>
       )}

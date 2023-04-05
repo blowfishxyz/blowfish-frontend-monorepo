@@ -1,6 +1,13 @@
+import React from 'react';
 import styled from "styled-components";
 
-export const Input = styled.input<{ error?: boolean; fontSize?: string }>`
+const InputComponent = React.forwardRef<HTMLInputElement, { error?: boolean; fontSize?: string } & React.InputHTMLAttributes<HTMLInputElement>>(
+  ({ error, fontSize, ...props }, ref) => (
+    <input ref={ref} {...props} />
+  )
+);
+
+export const Input = styled(InputComponent)`
   font-size: ${({ fontSize }) => fontSize || "16px"};
   outline: none;
   flex: 1 1 auto;

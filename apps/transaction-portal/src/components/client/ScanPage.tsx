@@ -23,7 +23,7 @@ import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { sendAbort, sendResult } from "~utils/messages";
-import { logger } from "~utils/logger";
+import { logger } from "@blowfish/utils/logger";
 import {
   RequestType,
   actionToSeverity,

@@ -8,7 +8,7 @@ import {
 } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 
-import { logger } from "~utils/logger";
+import { logger } from "@blowfish/utils/logger";
 
 type HexString = `0x${string}`;
 type RequestQueryParams =

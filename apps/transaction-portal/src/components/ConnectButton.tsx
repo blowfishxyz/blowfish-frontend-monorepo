@@ -1,9 +1,8 @@
 import styled from "styled-components";
 
-import { TextButton } from "@blowfish/ui/core";
-import { TextSmall } from "./Typography";
+import { TextButton, TextSmall } from "@blowfish/ui/core";
 import { WalletIcon, FaLink, FaUnlink } from "@blowfish/ui/icons";
-import { shortenHex } from "../utils/hex";
+import { shortenHex } from "@blowfish/utils/hex";
 
 const StyledWalletIcon = styled(WalletIcon)`
   width: 16px;
@@ -12,6 +11,7 @@ const StyledWalletIcon = styled(WalletIcon)`
     fill: rgba(0, 0, 0, 0.33);
   }
 `;
+
 const CustomConnectButton = styled(TextButton)`
   display: flex;
   align-items: center;

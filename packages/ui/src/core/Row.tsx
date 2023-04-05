@@ -1,14 +1,22 @@
+import React from "react";
 import styled, { DefaultTheme } from "styled-components";
 
 type Gap = keyof DefaultTheme["grids"];
 
-export const Row = styled.div<{
-  width?: string;
-  align?: string;
-  justify?: string;
-  padding?: string;
-  gap?: Gap;
-}>`
+const RowComponent = React.forwardRef<
+  HTMLDivElement,
+  {
+    width?: string;
+    align?: string;
+    justify?: string;
+    padding?: string;
+    gap?: Gap;
+  } & React.HTMLAttributes<HTMLDivElement>
+>(({ width, align, justify, padding, gap, ...props }, ref) => (
+  <div ref={ref} {...props} />
+));
+
+export const Row = styled(RowComponent)`
   display: flex;
   width: ${({ width }) => width ?? "100%"};
   align-items: ${({ align }) => align ?? "center"};

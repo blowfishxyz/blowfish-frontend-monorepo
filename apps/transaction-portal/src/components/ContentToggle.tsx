@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { BaseButton } from "@blowfish/ui/core";
-import { Text } from "./Typography";
+import { BaseButton, GrayText } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
 
 const ToggleButton = styled(BaseButton)`
@@ -18,7 +17,8 @@ const ToggleButton = styled(BaseButton)`
   & + * {
     margin-top: 16px;
   }
-  ${Text} {
+
+  ${GrayText} {
     color: rgba(0, 0, 0, 0.5);
   }
 `;
@@ -44,7 +44,7 @@ export const ContentToggle: React.FC<ContentToggleProps> = ({
         style={style}
         className={className}
       >
-        <Text>{message}</Text>
+        <GrayText>{message}</GrayText>
         <ExpandIcon expanded={showAdvancedDetails} />
       </ToggleButton>
       {showAdvancedDetails && children}
