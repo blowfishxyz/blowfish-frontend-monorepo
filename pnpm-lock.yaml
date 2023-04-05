@@ -331,23 +331,29 @@ importers:
 
   packages/ui:
     specifiers:
+      '@blowfish/hooks': '*'
       '@blowfish/tsconfig': '*'
       '@blowfish/utils': '*'
       '@types/node': ^18.15.3
       '@types/react': ^18.0.28
+      '@types/react-dom': 18.0.11
       '@types/styled-components': ^5.1.26
+      polished: ^4.2.2
       react: ^18.2.0
       styled-components: ^5.3.8
       tsup: ^6.6.3
       typescript: 4.9.5
     dependencies:
+      '@blowfish/hooks': link:../hooks
       '@blowfish/utils': link:../utils
+      polished: 4.2.2
       react: 18.2.0
       styled-components: 5.3.8_react@18.2.0
     devDependencies:
       '@blowfish/tsconfig': link:../tsconfig
       '@types/node': 18.15.3
       '@types/react': 18.0.28
+      '@types/react-dom': 18.0.11
       '@types/styled-components': 5.1.26
       tsup: 6.6.3_typescript@4.9.5
       typescript: 4.9.5
@@ -355,6 +361,7 @@ importers:
   packages/utils:
     specifiers:
       '@blowfish/tsconfig': '*'
+      '@ethersproject/address': ^5.7.0
       '@types/jest': ^29.5.0
       '@typescript-eslint/eslint-plugin': ^5.54.0
       '@typescript-eslint/parser': ^5.54.0
@@ -363,6 +370,8 @@ importers:
       ts-jest: ^29.0.5
       tsup: ^6.6.3
       typescript: 4.9.5
+    dependencies:
+      '@ethersproject/address': 5.7.0
     devDependencies:
       '@blowfish/tsconfig': link:../tsconfig
       '@types/jest': 29.5.0

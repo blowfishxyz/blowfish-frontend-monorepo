@@ -3,8 +3,7 @@ import type { Story as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
 import { ThemeProvider } from "styled-components";
 
-import { GlobalStyle } from "../src/styles/global";
-import { themes } from "../src/styles/theme";
+import { themes, GlobalStyle } from "@blowfish/ui/core";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },

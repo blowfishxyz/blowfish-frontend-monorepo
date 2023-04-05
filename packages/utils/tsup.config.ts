@@ -12,5 +12,8 @@ export default defineConfig((options) => ({
     BlowfishApiClient: "./src/BlowfishApiClient/index.ts",
     chains: "./src/chains.ts",
     messages: "./src/messages.ts",
+    hex: "./src/hex.ts",
+    logger: "./src/logger.ts",
+    workers: "./src/workers.ts",
   },
 }));

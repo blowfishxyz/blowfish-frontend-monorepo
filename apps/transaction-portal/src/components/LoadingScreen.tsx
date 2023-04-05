@@ -3,7 +3,7 @@ import { useInterval } from "react-use";
 import styled from "styled-components";
 
 import { Text, TextSmall } from ".//Typography";
-import { UnstyledA } from "./Links";
+import { UnstyledA } from "@blowfish/ui/core";
 import { LoadingAnimation } from "./LoadingAnimation";
 import { BlowfishIconFull } from "@blowfish/ui/icons";
 

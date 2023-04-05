@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { TextButton } from "./Buttons";
+import { TextButton } from "@blowfish/ui/core";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
 import { chainIdToName } from "@blowfish/utils/chains";

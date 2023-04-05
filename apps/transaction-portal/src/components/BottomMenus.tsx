@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { PrimaryButton, SecondaryButton } from "./Buttons";
+import { PrimaryButton, SecondaryButton } from "@blowfish/ui/core";
 import { Text } from "./Typography";
 import { breakpoint } from "~utils/breakpoints";
 

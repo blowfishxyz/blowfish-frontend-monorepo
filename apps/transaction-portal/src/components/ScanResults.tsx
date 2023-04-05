@@ -24,7 +24,7 @@ import styled from "styled-components";
 
 import { isNativeAsset, shortenHex } from "../utils/hex";
 import { logger } from "../utils/logger";
-import { BaseButton } from "./BaseButton";
+import { BaseButton } from "@blowfish/ui/core";
 import { BlockExplorerLink, LinkWithArrow } from "./Links";
 import { Text, TextSmall } from "./Typography";
 import { WarningNotice } from "./WarningNotice";

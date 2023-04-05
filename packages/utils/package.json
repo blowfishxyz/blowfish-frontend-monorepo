@@ -9,6 +9,9 @@
     "prepare": "pnpm run build",
     "test": "pnpm jest"
   },
+  "dependencies": {
+    "@ethersproject/address": "^5.7.0"
+  },
   "devDependencies": {
     "@blowfish/tsconfig": "*",
     "@types/jest": "^29.5.0",
@@ -40,6 +43,21 @@
       "types": "./build/messges.d.ts",
       "import": "./build/messages.mjs",
       "require": "./build/messages.js"
+    },
+    "./hex": {
+      "types": "./build/hex.d.ts",
+      "import": "./build/hex.mjs",
+      "require": "./build/hex.js"
+    },
+    "./logger": {
+      "types": "./build/logger.d.ts",
+      "import": "./build/logger.mjs",
+      "require": "./build/logger.js"
+    },
+    "./workers": {
+      "types": "./build/workers.d.ts",
+      "import": "./build/workers.mjs",
+      "require": "./build/workers.js"
     }
   },
   "typesVersions": {

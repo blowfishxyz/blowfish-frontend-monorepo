@@ -6,6 +6,6 @@ export default defineConfig({
   dts: true,
   entry: {
     icons: "./src/icons/index.ts",
-    components: "./src/components/index.ts",
+    core: "./src/core/index.ts",
   },
 });
