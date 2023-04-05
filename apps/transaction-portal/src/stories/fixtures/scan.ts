@@ -198,6 +198,11 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
             name: "PudgyPenguins",
             symbol: "PPG",
             tokenId: "7238",
+            assetPrice: {
+              source: "Coingecko",
+              last_updated_at: 1680006487,
+              dollar_value_per_token: 4886.162862975,
+            },
           },
           kind: "ERC721_TRANSFER",
         },
@@ -217,6 +222,21 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
             decimals: 18,
             name: "Ether",
             symbol: "ETH",
+            asset: {
+              address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              symbol: "ETH",
+              name: "Ether",
+              decimals: 18,
+              verified: true,
+              lists: [],
+              imageUrl:
+                "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+              price: {
+                source: "Coingecko",
+                last_updated_at: 1670252058,
+                dollar_value_per_token: 1288.41,
+              },
+            },
           },
           kind: "NATIVE_ASSET_TRANSFER",
         },
@@ -254,6 +274,7 @@ export const transactionWarningScanResult: EvmTransactionScanResult = {
               kind: "ACCOUNT",
             },
             symbol: "BAYC",
+            assetPrice: null,
           },
           kind: "ERC721_APPROVAL_FOR_ALL",
         },
@@ -297,6 +318,7 @@ export const transactionBlockScanResult: EvmTransactionScanResult = {
               kind: "ACCOUNT",
             },
             symbol: "BAYC",
+            assetPrice: null,
           },
           kind: "ERC721_APPROVAL_FOR_ALL",
         },
@@ -333,6 +355,21 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
             decimals: 18,
             name: "Ether",
             symbol: "ETH",
+            asset: {
+              address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              symbol: "ETH",
+              name: "Ether",
+              decimals: 18,
+              verified: true,
+              lists: [],
+              imageUrl:
+                "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+              price: {
+                source: "Coingecko",
+                last_updated_at: 1670252058,
+                dollar_value_per_token: 1288.41,
+              },
+            },
           },
           kind: "NATIVE_ASSET_TRANSFER",
         },
@@ -351,11 +388,16 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
             },
             metadata: {
               rawImageUrl:
-                "ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
+                "https://ipfs.io/ipfs/QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
             },
             name: "BoredApeYachtClub",
             symbol: "BAYC",
             tokenId: "1726",
+            assetPrice: {
+              source: "Coingecko",
+              last_updated_at: 1680006487,
+              dollar_value_per_token: 4886.162862975,
+            },
           },
           kind: "ERC721_TRANSFER",
         },
@@ -379,7 +421,7 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
     expectedStateChanges: [
       {
         humanReadableDiff:
-          "Permit to transfer up to 123000 USDC anytime in the future",
+          "Permit to transfer any amount of your USDC anytime in the future",
         rawInfo: {
           kind: "ERC20_PERMIT",
           data: {
@@ -387,7 +429,7 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
               kind: "ACCOUNT",
               address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             },
-            name: "USD Coin",
+            name: "USDCoin",
             symbol: "USDC",
             decimals: 6,
             owner: {
@@ -396,11 +438,33 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
             },
             spender: {
               kind: "ACCOUNT",
-              address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+              address: "0x0000000000000000000000000000000000000001",
             },
-            amount: "123000000000",
-            nonce: "7",
-            deadline: null,
+            amount: "1461501637330902918203684832716283019655932542975",
+            nonce: "281474976710655",
+            deadline: 281474976710655,
+            asset: {
+              address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              symbol: "USDC",
+              name: "USDCoin",
+              decimals: 6,
+              verified: true,
+              lists: [
+                "COINGECKO",
+                "ZERION",
+                "ONE_INCH",
+                "UNISWAP",
+                "MY_CRYPTO_API",
+                "KLEROS_TOKENS",
+              ],
+              imageUrl:
+                "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+              price: {
+                source: "Defillama",
+                last_updated_at: 1680508934,
+                dollar_value_per_token: 1.001,
+              },
+            },
           },
         },
       },
