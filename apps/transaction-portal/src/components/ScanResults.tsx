@@ -30,6 +30,7 @@ import {
   Text,
   TextSmall,
   Row,
+  Column
 } from "@blowfish/ui/core"
 import { WarningNotice } from "./WarningNotice";
 import { ExpandIcon } from "@blowfish/ui/icons";
@@ -49,7 +50,6 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
-import { Column } from "~components/common/Column";
 import AssetImage from "./AssetImage";
 import AssetPrice from "./AssetPrice";
 import { evmStateChangeHasImage } from "~utils/utils";
