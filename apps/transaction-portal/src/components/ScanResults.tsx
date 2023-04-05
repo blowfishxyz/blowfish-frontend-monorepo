@@ -491,25 +491,19 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                     isPositiveEffect={isPositiveEffect}
                   />
                   <StateChangeTextBlock>
-                    {isNativeAsset(address) ? (
+                    <Column>
                       <StateChangeText isPositiveEffect={isPositiveEffect}>
                         {stateChange.humanReadableDiff}
                       </StateChangeText>
-                    ) : (
-                      <>
-                        <Column>
-                          <StateChangeText isPositiveEffect={isPositiveEffect}>
-                            {stateChange.humanReadableDiff}
-                          </StateChangeText>
-                          <AssetPrice stateChange={stateChange.rawInfo} />
-                        </Column>
-                        <BlockExplorerLink
-                          address={address}
-                          chainFamily={chainFamily}
-                          chainNetwork={chainNetwork}
-                          nftTokenId={nftTokenId}
-                        ></BlockExplorerLink>
-                      </>
+                      <AssetPrice stateChange={stateChange.rawInfo} />
+                    </Column>
+                    {!isNativeAsset(address) && (
+                      <BlockExplorerLink
+                        address={address}
+                        chainFamily={chainFamily}
+                        chainNetwork={chainNetwork}
+                        nftTokenId={nftTokenId}
+                      ></BlockExplorerLink>
                     )}
                   </StateChangeTextBlock>
                 </StateChangeRow>
