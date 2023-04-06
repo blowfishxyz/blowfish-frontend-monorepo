@@ -1,12 +1,15 @@
+import {
+  GrayText,
+  PrimaryButton,
+  RedText,
+  SecondaryButton,
+} from "@blowfish/ui/core";
 import React from "react";
 import styled, { css } from "styled-components";
 
 import { useStorage } from "@plasmohq/storage/hook";
 
 import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
-
-import { PrimaryButton, SecondaryButton } from "./Buttons";
-import { Text } from "./Typography";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
@@ -60,14 +63,6 @@ export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
     </BottomMenuWrapper>
   );
 };
-
-const GrayText = styled(Text)`
-  color: rgba(0, 0, 0, 0.5);
-`;
-
-const RedText = styled(Text)`
-  color: ${({ theme }) => theme.palette.warningText};
-`;
 
 const Row = styled.div`
   display: flex;

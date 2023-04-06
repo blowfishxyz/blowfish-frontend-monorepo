@@ -1,5 +1,6 @@
 import type { BlowfishPausedOptionType } from "@blowfish/hooks";
 import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
+import { logger } from "@blowfish/utils/logger";
 import {
   Message,
   RequestType,
@@ -16,7 +17,6 @@ import { BLOWFISH_EXTENSION_VERSION } from "~config";
 
 import { createTransactionPortalTab } from "./utils/browser";
 import { chainIdToSupportedChainMapping } from "./utils/constants";
-import { logger } from "./utils/logger";
 import { createRawMessage, postResponseToPort } from "./utils/messages";
 import {
   getBlowfishImpersonationWallet,

@@ -1,18 +1,18 @@
+import { TextSmall } from "@blowfish/ui/core";
 import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
 import type {
   ChainFamily,
   ChainNetwork,
 } from "@blowfish/utils/BlowfishApiClient";
+import { shortenHex } from "@blowfish/utils/hex";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { shortenHex } from "../utils/hex";
 import {
   REGULAR_BOTTOM_MENU_HEIGHT,
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
-import { TextSmall } from "./Typography";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;

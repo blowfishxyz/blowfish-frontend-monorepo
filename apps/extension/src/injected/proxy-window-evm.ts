@@ -3,6 +3,7 @@
 // The RevokeCash/browser-extension code is MIT licensed
 
 import { isSupportedChainId } from "@blowfish/utils/chains";
+import { logger } from "@blowfish/utils/logger";
 import {
   Identifier,
   Message,
@@ -21,7 +22,6 @@ import { EthereumProviderError, ethErrors } from "eth-rpc-errors";
 import { providers } from "ethers";
 
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
-import { logger } from "~utils/logger";
 import {
   createSignMessageRequestMessage,
   createSignTypedDataRequestMessage,
