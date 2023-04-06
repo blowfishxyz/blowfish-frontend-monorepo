@@ -6,6 +6,7 @@ importers:
     specifiers:
       '@babel/core': ^7.20.7
       '@blowfish/hooks': workspace:*
+      '@blowfish/ui': workspace:*
       '@blowfish/utils': workspace:*
       '@ethersproject/address': ^5.7.0
       '@metamask/post-message-stream': ^6.1.0
@@ -54,6 +55,7 @@ importers:
       webpack: ^5.75.0
     dependencies:
       '@blowfish/hooks': link:../../packages/hooks
+      '@blowfish/ui': link:../../packages/ui
       '@blowfish/utils': link:../../packages/utils
       '@ethersproject/address': 5.7.0
       '@metamask/post-message-stream': 6.1.0
@@ -161,6 +163,8 @@ importers:
   apps/extension-landing-page:
     specifiers:
       '@blowfish/tsconfig': workspace:*
+      '@blowfish/ui': workspace:*
+      '@blowfish/utils': workspace:*
       '@next/font': 13.1.5
       '@types/jest': ^29.4.0
       '@types/node': 18.11.18
@@ -182,6 +186,8 @@ importers:
       ts-jest: ^29.0.5
       typescript: 4.9.4
     dependencies:
+      '@blowfish/ui': link:../../packages/ui
+      '@blowfish/utils': link:../../packages/utils
       '@next/font': 13.1.5
       '@types/node': 18.11.18
       '@types/react': 18.0.26

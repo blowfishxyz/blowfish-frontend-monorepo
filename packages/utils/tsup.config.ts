@@ -15,5 +15,6 @@ export default defineConfig((options) => ({
     hex: "./src/hex.ts",
     logger: "./src/logger.ts",
     helpers: "./src/helpers.ts",
+    breakpoints: "./src/breakpoints.ts",
   },
 }));

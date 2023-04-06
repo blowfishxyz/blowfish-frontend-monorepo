@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { breakpoint } from "../utils/breakpoints";
+import { breakpoint } from "@blowfish/utils/breakpoints";
 
 const StatsSection = styled.div`
   margin-top: 50px;

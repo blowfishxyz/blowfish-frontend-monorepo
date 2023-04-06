@@ -1,17 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { breakpoint } from "../utils/breakpoints";
-import { PrimaryButton } from "../components/Buttons";
+import { breakpoint } from "@blowfish/utils/breakpoints";
 import {
   EthereumIcon,
   PolygonIcon,
   BnbChainIcon,
   ArbitrumIcon,
   OptimismIcon,
-} from "./icons/ChainIcons";
+} from "@blowfish/ui/icons";
 import { CHROME_EXTENSION_STORE_URL } from "../config";
-import { TextSmall } from "./Typography";
+import { TextSmall, PrimaryButton } from "@blowfish/ui/core";
 
 const H1 = styled.h1`
   font-size: 40px;

@@ -31,7 +31,7 @@ import { opacify, transformDate } from "~utils/utils";
 import { PopupContainer } from "./components/PopupContainer";
 import { Providers } from "./components/Providers";
 import { Text, TextXL } from "./components/Typography";
-import { BlowfishIcon } from "./components/icons/BlowfishIcon";
+import { BlowfishIcon } from "@blowfish/ui/icons";
 
 const StyledPopupContainer = styled(PopupContainer)`
   position: relative;

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-import { breakpoint } from "../utils/breakpoints";
+import { breakpoint } from "@blowfish/utils/breakpoints";
 
 const Logo = styled(Link)`
   display: flex;

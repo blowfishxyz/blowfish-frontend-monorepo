@@ -25,6 +25,7 @@
   "dependencies": {
     "@blowfish/hooks": "workspace:*",
     "@blowfish/utils": "workspace:*",
+    "@blowfish/ui": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@metamask/post-message-stream": "^6.1.0",
     "@plasmohq/storage": "^1.2.0",

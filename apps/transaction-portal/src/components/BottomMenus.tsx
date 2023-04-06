@@ -6,7 +6,7 @@ import {
   GrayText,
   RedText,
 } from "@blowfish/ui/core";
-import { breakpoint } from "~utils/breakpoints";
+import { breakpoint } from "@blowfish/utils/breakpoints";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
