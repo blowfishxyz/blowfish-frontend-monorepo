@@ -5,7 +5,7 @@ import {
 } from "@blowfish/utils/chains";
 
 import { ArrowIcon } from "../icons";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 const SyledArrowIcon = styled(ArrowIcon)`
   margin-left: 4px;

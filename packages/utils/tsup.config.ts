@@ -14,6 +14,6 @@ export default defineConfig((options) => ({
     messages: "./src/messages.ts",
     hex: "./src/hex.ts",
     logger: "./src/logger.ts",
-    workers: "./src/workers.ts",
+    helpers: "./src/helpers.ts",
   },
 }));

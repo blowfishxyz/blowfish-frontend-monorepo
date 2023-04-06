@@ -55,10 +55,10 @@
       "import": "./build/logger.mjs",
       "require": "./build/logger.js"
     },
-    "./workers": {
-      "types": "./build/workers.d.ts",
-      "import": "./build/workers.mjs",
-      "require": "./build/workers.js"
+    "./helpers": {
+      "types": "./build/helpers.d.ts",
+      "import": "./build/helpers.mjs",
+      "require": "./build/helpers.js"
     }
   },
   "typesVersions": {

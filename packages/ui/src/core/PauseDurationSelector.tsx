@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
+import { styled, keyframes } from "styled-components";
 import { SmallButtonPrimary } from "./buttons";
 import { Row } from "./Row";
 import { PauseDuration } from "@blowfish/hooks";
@@ -44,5 +44,3 @@ export const PauseDurationSelector = ({
     </PeriodDurationContainer>
   );
 };
-
-
