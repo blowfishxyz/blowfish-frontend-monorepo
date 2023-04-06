@@ -22,7 +22,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 
 import { isNativeAsset, shortenHex } from "@blowfish/utils/hex";
-import { logger,  } from "@blowfish/utils/logger";
+import { logger } from "@blowfish/utils/logger";
 import {
   BaseButton,
   BlockExplorerLink,
@@ -30,8 +30,8 @@ import {
   Text,
   TextSmall,
   Row,
-  Column
-} from "@blowfish/ui/core"
+  Column,
+} from "@blowfish/ui/core";
 import { WarningNotice } from "./WarningNotice";
 import { ExpandIcon } from "@blowfish/ui/icons";
 import PauseDurationSelector, {
