@@ -10,6 +10,7 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
+import { BlowfishIcon } from "@blowfish/ui/icons";
 
 import { useStorage } from "@plasmohq/storage/hook";
 
@@ -31,7 +32,6 @@ import { opacify, transformDate } from "~utils/utils";
 import { PopupContainer } from "./components/PopupContainer";
 import { Providers } from "./components/Providers";
 import { Text, TextXL } from "./components/Typography";
-import { BlowfishIcon } from "@blowfish/ui/icons";
 
 const StyledPopupContainer = styled(PopupContainer)`
   position: relative;

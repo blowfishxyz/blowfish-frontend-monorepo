@@ -1,9 +1,9 @@
+import { BlowfishWarningIcon } from "@blowfish/ui/icons";
 import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
 import { Text } from "./Typography";
-import { BlowfishWarningIcon } from "@blowfish/ui/icons";
 
 const Wrapper = styled.div<{ severity: WarningSeverity }>`
   box-sizing: border-box;

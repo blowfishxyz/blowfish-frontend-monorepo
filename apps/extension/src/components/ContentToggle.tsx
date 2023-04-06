@@ -1,9 +1,9 @@
+import { ExpandIcon } from "@blowfish/ui/icons";
 import React, { useState } from "react";
 import styled from "styled-components";
 
 import { BaseButton } from "./BaseButton";
 import { Text } from "./Typography";
-import { ExpandIcon } from "@blowfish/ui/icons";
 
 const ToggleButton = styled(BaseButton)`
   /* Increase clickable area slightly without messing with alignment */

@@ -1,7 +1,6 @@
+import { ArrowIcon } from "@blowfish/ui/icons";
 import React from "react";
 import styled from "styled-components";
-
-import { ArrowIcon } from "@blowfish/ui/icons";
 
 const SyledArrowIcon = styled(ArrowIcon)`
   margin-left: 4px;

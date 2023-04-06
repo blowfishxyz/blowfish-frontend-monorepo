@@ -1,3 +1,4 @@
+import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
 import type {
   ChainFamily,
   ChainNetwork,
@@ -12,7 +13,6 @@ import {
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
 import { TextSmall } from "./Typography";
-import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;

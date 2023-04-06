@@ -7,13 +7,20 @@ interface TypographyProps {
   secondary?: boolean;
   danger?: boolean;
   semiBold?: boolean;
+  as?: keyof JSX.IntrinsicElements;
 }
 
 const TextXLComponent = React.forwardRef<
   HTMLSpanElement,
   TypographyProps & React.HTMLAttributes<HTMLSpanElement>
 >(({ className, style, ...props }, ref) => (
-  <span className={className} style={style} ref={ref} {...props} />
+  <span
+    className={className}
+    style={style}
+    ref={ref}
+    as={props.as}
+    {...props}
+  />
 ));
 
 export const TextXL = styled(TextXLComponent)`
@@ -40,7 +47,7 @@ export const Text = React.forwardRef<
   HTMLSpanElement,
   TypographyProps & React.HTMLAttributes<HTMLSpanElement>
 >((props, ref) => {
-  return <StyledText {...props} ref={ref} />;
+  return <StyledText ref={ref} as={props.as} {...props} />;
 });
 
 const TextSmallComponent = React.forwardRef<
