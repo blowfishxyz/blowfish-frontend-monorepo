@@ -1,11 +1,11 @@
 import React from "react";
 import type { AppProps } from "next/app";
+import { ThemeProvider } from "styled-components";
 import Head from "next/head";
 import { WagmiConfig } from "wagmi";
 import { wagmiClient } from "../utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
 import { useRequestQueryParams } from "../hooks/useRequestQueryParams";
-import { ThemeProvider } from "styled-components";
 import { GlobalStyle } from "../styles/global";
 import { themes } from "../styles/theme";
 

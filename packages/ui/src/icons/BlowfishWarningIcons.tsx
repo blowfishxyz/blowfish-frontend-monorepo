@@ -15,9 +15,12 @@ const BlowfishWarningIcon: React.FC<BlowfishWarningIconProps> = ({
   severity,
 }) => {
   const theme = useTheme();
-  
-  const color =
-    severity === "WARNING" ? theme?.palette.yellow : theme?.palette.red;
+  let color;
+
+  if (theme) {
+    color =
+      severity === "WARNING" ? theme.palette.yellow : theme.palette.red;
+  }
   return (
     <svg
       style={style}
