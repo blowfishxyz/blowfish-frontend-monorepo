@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { breakpoint } from "@blowfish/utils/breakpoints";
+import { device } from "@blowfish/ui/core";
 
 const StatsSection = styled.div`
   margin-top: 50px;
@@ -16,10 +16,10 @@ const StatsSection = styled.div`
   border-left-width: 0px;
   border-right-width: 0px;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     display: flex;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     display: flex;
   }
 `;
@@ -29,10 +29,10 @@ const StatsGroup = styled.div`
   justify-content: space-around;
   padding-top: 30px;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     padding-top: 0px;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     padding-top: 0px;
   }
 `;
@@ -75,10 +75,10 @@ const Date = styled.span`
   color: black;
   display: in-line;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     display: block;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     display: block;
   }
 `;

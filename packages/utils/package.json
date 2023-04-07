@@ -59,11 +59,6 @@
       "types": "./build/helpers.d.ts",
       "import": "./build/helpers.mjs",
       "require": "./build/helpers.js"
-    },
-    "./breakpoints": {
-      "types": "./build/breakpoints.d.ts",
-      "import": "./build/breakpoints.mjs",
-      "require": "./build/breakpoints.js"
     }
   },
   "typesVersions": {
