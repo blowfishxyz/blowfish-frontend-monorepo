@@ -1,3 +1,5 @@
+declare module "@blowfish/ui/core";
+
 // Add support for theme inside styled-components
 import "styled-components";
 

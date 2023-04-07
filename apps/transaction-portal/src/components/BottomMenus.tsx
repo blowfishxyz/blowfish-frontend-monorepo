@@ -6,7 +6,7 @@ import {
   GrayText,
   RedText,
 } from "@blowfish/ui/core";
-import { breakpoint } from "@blowfish/ui/core";
+import { size } from "@blowfish/ui/core";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
@@ -42,7 +42,7 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
             margin-top: 24px;
           }
         `};
-  @media only screen and (max-width: ${breakpoint.size.md}) {
+  @media only screen and (max-width: ${size.md}) {
     max-width: calc(100% - 24px);
   }
 `;
