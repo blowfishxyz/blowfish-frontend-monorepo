@@ -48,7 +48,7 @@ import {
 import { Column } from "~components/common/Column";
 import AssetImage from "./AssetImage";
 import AssetPrice from "./AssetPrice";
-import { evmStateChangeHasImage } from "~utils/utils";
+import { containsPunycode, evmStateChangeHasImage } from "~utils/utils";
 
 const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
@@ -241,6 +241,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   ...props
 }) => {
   const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
+
+  const hasPunycode = containsPunycode(dappUrl.hostname);
+
   const [showAdvancedDetails, setShowAdvancedDetails] =
     useState<boolean>(false);
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
@@ -369,6 +372,12 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
           };
       }
+    } else if (hasPunycode) {
+      return {
+        severity: "WARNING",
+        message:
+          "The dApp uses non-ascii characters in the URL. This can be used to impersonate other dApps, proceed with caution.",
+      };
     } else if (
       (isSignTypedDataRequest(request) || isSignMessageRequest(request)) &&
       !simulationResults
@@ -378,7 +387,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         message: `We are unable to simulate this message. Proceed with caution`,
       };
     }
-  }, [scanResults, requestTypeStr, request]);
+  }, [scanResults, requestTypeStr, request, hasPunycode]);
 
   const simulationFailedMessage = useMemo(() => {
     return (

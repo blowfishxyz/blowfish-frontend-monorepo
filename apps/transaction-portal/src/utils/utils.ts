@@ -1,4 +1,6 @@
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const punycode = require('punycode/');
 
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
@@ -39,4 +41,13 @@ const EVM_STATE_CHANGE_KIND_WITH_IMAGE = [
 
 export const evmStateChangeHasImage = (kind: EvmStateChange["kind"]) => {
   return EVM_STATE_CHANGE_KIND_WITH_IMAGE.includes(kind);
+};
+
+export const containsPunycode = (url: string): boolean => {
+  try {
+    const decoded = punycode.toUnicode(url);
+    return decoded !== url;
+  } catch (err) {
+    return false;
+  }
 };

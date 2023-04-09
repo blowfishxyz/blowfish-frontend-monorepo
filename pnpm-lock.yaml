@@ -246,6 +246,7 @@ importers:
       next: 13.2.3
       polished: ^4.2.2
       prettier: ^2.8.4
+      punycode: ^2.3.0
       qs: ^6.11.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -271,6 +272,7 @@ importers:
       lottie-react: 2.4.0_biqbaboplfbrettd7655fr4n2y
       next: 13.2.3_biqbaboplfbrettd7655fr4n2y
       polished: 4.2.2
+      punycode: 2.3.0
       qs: 6.11.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
