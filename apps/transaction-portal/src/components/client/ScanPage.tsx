@@ -254,7 +254,33 @@ const ScanPage: React.FC = () => {
       mutate();
     };
 
-    if (!connectedAddress) {
+    // NOTE: First check if the chain is supported
+    // No need to ask them to connect if not
+    if (isUnsupportedChain && message) {
+      const onToggleShowUnsupportedChain = (value: boolean) => {
+        setSkipUnsupportedChainWarning(value);
+      };
+
+      const chainId = message?.data?.chainId as string | undefined;
+      return (
+        <>
+          <UnsupportedChainScreen
+            onDismissUnsupportedChain={onToggleShowUnsupportedChain}
+          />
+          <SlimBottomMenu
+            onClick={async () => {
+              const opts = chainId
+                ? { skipUnsupportedChainWarning, chainId }
+                : undefined;
+              // NOTE: For unsupported chains we don't differentiate between proceed and abort
+              await sendAbort(message.id, opts);
+              closeWindow();
+            }}
+            buttonLabel="Continue"
+          />
+        </>
+      );
+    } else if (!connectedAddress) {
       return (
         <>
           <AccountNotConnectedScreen
@@ -288,30 +314,6 @@ const ScanPage: React.FC = () => {
             }}
           />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
-        </>
-      );
-    } else if (isUnsupportedChain && message) {
-      const onToggleShowUnsupportedChain = (value: boolean) => {
-        setSkipUnsupportedChainWarning(value);
-      };
-
-      const chainId = message?.data?.chainId as string | undefined;
-      return (
-        <>
-          <UnsupportedChainScreen
-            onDismissUnsupportedChain={onToggleShowUnsupportedChain}
-          />
-          <SlimBottomMenu
-            onClick={async () => {
-              const opts = chainId
-                ? { skipUnsupportedChainWarning, chainId }
-                : undefined;
-              // NOTE: For unsupported chains we don't differentiate between proceed and abort
-              await sendAbort(message.id, opts);
-              closeWindow();
-            }}
-            buttonLabel="Continue"
-          />
         </>
       );
     } else if (isLoading) {

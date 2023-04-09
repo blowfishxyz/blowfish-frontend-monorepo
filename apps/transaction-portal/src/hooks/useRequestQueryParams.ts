@@ -39,10 +39,15 @@ export const useRequestQueryParams = (): RequestQueryParams => {
     const chainId = parseInt(message.data.chainId.toString());
     const userAccount = request.userAccount as HexString;
 
-    // NOTE: This should never happen since we verify
-    // that the chain is supported before we create this page
     if (!chainIdToSupportedChainMapping[chainId]) {
       logger.debug(`Blowfish unsupported chainId ${chainId}`);
+      setParams({
+        message,
+        request,
+        chainId,
+        userAccount,
+      });
+      return;
     }
 
     const { chainFamily, chainNetwork } =
