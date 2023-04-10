@@ -1,6 +1,6 @@
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const punycode = require('punycode/');
+const punycode = require("punycode/");
 
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
