@@ -224,12 +224,13 @@ const ScanPage: React.FC = () => {
     connectedAddress && userAccount && connectedAddress !== userAccount;
 
   useEffect(() => {
-    if (isConnectedToWrongAccount) {
+    // NOTE: We only want to disconnect if we are connected to the wrong account and NOT impersonating a wallet
+    if (isConnectedToWrongAccount && !isImpersonatingWallet) {
       disconnectAsync().catch((err) =>
         logger.error("Error disconnecting wallet", err)
       );
     }
-  }, [isConnectedToWrongAccount, disconnectAsync]);
+  }, [isConnectedToWrongAccount, disconnectAsync, isImpersonatingWallet]);
 
   const maybeInformationScreen = useMemo(() => {
     const isLoading = !scanResults && !scanError;

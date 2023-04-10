@@ -275,6 +275,47 @@ AccountNotConnected.args = {
   accountToConnect: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
 };
 
+export const AccountNotConnectedWhileImpersonating: ComponentStory<
+  React.FC<
+    PopupContainerProps & AccountNotConnectedScreenProps & SlimBottomMenuProps
+  >
+> = (props) => {
+  return (
+    <div style={{ width: "600px", minHeight: "768px" }}>
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <AccountNotConnectedScreen
+          impersonatingWallet={props.impersonatingWallet}
+          accountToConnect={props.accountToConnect}
+          onRetry={props.onRetry}
+          isRetrying={props.isRetrying}
+        />
+        <SlimBottomMenu
+          style={{
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
+          }}
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
+    </div>
+  );
+};
+AccountNotConnectedWhileImpersonating.args = {
+  ...DEFAULT_ARGS,
+  impersonatingWallet: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+};
+
 export const WrongChain: ComponentStory<
   React.FC<PopupContainerProps & WrongChainScreenProps & SlimBottomMenuProps>
 > = (props) => {

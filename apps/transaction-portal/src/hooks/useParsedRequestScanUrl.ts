@@ -13,7 +13,6 @@ const booleanDecoder = (value: string): boolean | string => {
   }
 };
 
-//TODO: we can delete this hook once urlScan is removed
 export const useParsedRequestScanUrl = () => {
   const router = useRouter();
   return useMemo(() => {
