@@ -4,12 +4,12 @@ import styled, { css, keyframes } from "styled-components";
 
 import "./style.css";
 
-import type { BlowfishPausedOptionType } from "@blowfish/hooks";
 import {
-  PREFERENCES_BLOWFISH_PAUSED,
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
+import type { BlowfishPausedOptionType } from "@blowfish/utils/types";
+import { BlowfishOption } from "@blowfish/utils/types";
 
 import { useStorage } from "@plasmohq/storage/hook";
 
@@ -124,6 +124,7 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
       }
     }};
   }
+
   color: ${({ paused, theme }) =>
     paused ? `${theme.palette.red}` : `${opacify(80, theme.palette.green)}`};
 `;
@@ -158,7 +159,7 @@ const StatusIndicator = ({
 
 const Popup: React.FC = () => {
   const [scanPaused, setScanPaused] = useStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
   const { pauseScan, resumeScan, isScanPaused, scanPausedUntil } =
     useTransactionScannerPauseResume(scanPaused, setScanPaused);

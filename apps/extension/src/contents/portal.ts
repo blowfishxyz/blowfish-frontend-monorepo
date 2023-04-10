@@ -1,7 +1,7 @@
 import {
+  BlowfishPortalBackgroundMessage,
   Message,
   RequestType,
-  UntypedMessageData,
 } from "@blowfish/utils/types";
 import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
@@ -11,6 +11,7 @@ const REQUEST_TYPES_TO_PROXY = new Set([
   RequestType.UserDecision,
   RequestType.SetBlowfishOptions,
   RequestType.BlowfishOptions,
+  RequestType.GetRequestToScan,
 ]);
 
 // NOTE: This should only be injected into the transaction portal website
@@ -29,10 +30,14 @@ window.addEventListener("message", async (event) => {
   ) {
     return;
   }
-  const data = event.data as Message<UntypedMessageData>;
+
+  const data = event.data as BlowfishPortalBackgroundMessage;
 
   const response = await Browser.runtime.sendMessage(data);
-  const ack: Message<UntypedMessageData> = {
+  const ack: Message<
+    RequestType.MessageAck,
+    BlowfishPortalBackgroundMessage["data"]
+  > = {
     type: RequestType.MessageAck,
     id: data.id,
     data: response.data,

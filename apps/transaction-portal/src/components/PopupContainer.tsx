@@ -11,12 +11,15 @@ import {
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
 import {
-  EthereumIcon,
-  PolygonIcon,
   ArbitrumIcon,
   BnbChainIcon,
+  EthereumIcon,
+  PolygonIcon,
 } from "./icons/ChainIcons";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
+import { TextSmall } from "~components/Typography";
+import { shortenHex } from "~utils/hex";
+import { MaskIcon } from "./icons/MaskIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
@@ -43,6 +46,7 @@ const HeaderLeft = styled.div`
   left: 16px;
   display: flex;
   align-items: center;
+  gap: 24px;
 `;
 
 const HeaderRight = styled.div`
@@ -64,15 +68,25 @@ const HeaderRight = styled.div`
   }
 `;
 
+const StyledMaskIcon = styled(MaskIcon)`
+  width: 14px;
+  height: auto;
+
+  & > path {
+    fill: rgba(0, 0, 0, 0.33);
+  }
+`;
+
 export interface PopupContainerProps extends React.PropsWithChildren {
+  impersonatingWallet?: string;
   style?: React.CSSProperties;
   className?: string;
-  userAccount?: string;
   chainNetwork?: ChainNetwork;
   chainFamily?: ChainFamily;
   severity?: Severity;
   bottomMenuType?: MenuType;
 }
+
 type MenuType = "NONE" | "SLIM" | "FULL";
 const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   display: flex;
@@ -97,7 +111,13 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
         `}
 `;
 
+const WalletAddress = styled(TextSmall)`
+  margin-left: 9px;
+  color: rgba(0, 0, 0, 0.5);
+`;
+
 export const PopupContainer: React.FC<PopupContainerProps> = ({
+  impersonatingWallet,
   children,
   style,
   className,
@@ -114,6 +134,12 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       bottomMenuType={bottomMenuType}
     >
       <HeaderLeft>
+        {impersonatingWallet && (
+          <div>
+            <StyledMaskIcon />
+            <WalletAddress>{shortenHex(impersonatingWallet)}</WalletAddress>
+          </div>
+        )}
         <CustomConnectkitButton />
       </HeaderLeft>
       {chainFamily && chainNetwork && (
