@@ -7,6 +7,12 @@ module.exports = {
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
     "@storybook/addon-styling",
+    {
+      name: "storybook-addon-next",
+      options: {
+        nextConfigPath: path.resolve(__dirname, "../next.config.js"),
+      },
+    },
   ],
   staticDirs: ["../public"],
   framework: "@storybook/react",

@@ -193,7 +193,7 @@ export const TransactionUnsupportedScreen = ({
     <>
       <TransactionBlockedScreen
         headline="Dangerous unsupported action"
-        message="Signing messages with the eth_sign method is dangerous and should be avoided at all times. We cannot simulate the outcomes of this action"
+        message="Signing messages with the eth_sign method is dangerous. This dApp is trying to get you to sign a message that looks like a transaction. We cannot scan the transaction and have no way of knowing what it does. Do not sign it unless you’re absolutely sure of what you’re doing."
         continueButtonLabel="Ignore warning and turn off Blowfish Protect for 1 hour"
         confirmationText={`Pausing scanning for ${PauseDuration.OneHour}`}
         onContinue={pauseScannerAndCloseWindow}
