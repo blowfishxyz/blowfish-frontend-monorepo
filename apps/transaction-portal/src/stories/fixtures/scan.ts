@@ -13,6 +13,7 @@ import {
 export const exampleTransactionRequest: TransactionRequest = {
   type: RequestType.Transaction,
   chainId: "1",
+  extensionVersion: "10.0.0",
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
   payload: {
     from: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -26,6 +27,7 @@ export const exampleNftSignTypedDataRequest: SignTypedDataRequest = {
   type: RequestType.SignTypedData,
   signTypedDataVersion: SignTypedDataVersion.V4,
   chainId: "1",
+  extensionVersion: "10.0.0",
   userAccount: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
   payload: {
     types: {
@@ -128,6 +130,7 @@ export const examplePermitSignTypeDataRequest: SignTypedDataRequest = {
   signTypedDataVersion: SignTypedDataVersion.V4,
   chainId: "1",
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  extensionVersion: "10.0.0",
   payload: {
     types: {
       EIP712Domain: [
@@ -171,7 +174,8 @@ export const exampleEthSignRequest: SignMessageRequest = {
   },
   chainId: "1",
   userAccount: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-  isImpersonatingWallet: "true",
+  isImpersonatingWallet: true,
+  extensionVersion: "10.0.0",
 };
 
 export const transactionNoActionScanResult: EvmTransactionScanResult = {

@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { TextButton } from "./Buttons";
+import { PrimaryButton, TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
 import { chainIdToName } from "@blowfish/utils/chains";
@@ -13,12 +13,17 @@ import { sendPauseResumeSelection } from "~utils/messages";
 import { SlimBottomMenu } from "~components/BottomMenus";
 import { useLocalStorage } from "react-use";
 import {
-  BlowfishPausedOptionType,
   PAUSE_DURATIONS,
   PauseDuration,
-  PREFERENCES_BLOWFISH_PAUSED,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
+import { MINIMUM_SUPPORTED_EXTENSION_VERSION } from "~config";
+import Row from "./common/Row";
+import { getExtensionInstallationUrl } from "~utils/utils";
+import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
+} from "@blowfish/utils/types";
 
 interface SharedProps {
   darkMode?: boolean;
@@ -97,6 +102,10 @@ const StyledTextWithEllipsisAnimation = styled(StyledText)`
   }
 `;
 
+const Spacer = styled(Row)`
+  flex: 2;
+`;
+
 export interface TransactionBlockedScreenProps {
   onContinue: () => void;
   headline?: string;
@@ -159,7 +168,7 @@ export const TransactionUnsupportedScreen = ({
 }: TransactionUnsupportedScreenProps) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
   const { pauseScan } = useTransactionScannerPauseResume(
     scanPaused,
@@ -300,20 +309,41 @@ export interface AccountNotConnectedScreenProps {
   accountToConnect: string;
   onRetry?: () => void;
   isRetrying?: boolean;
+  impersonatingWallet?: string;
 }
 
 export const AccountNotConnectedScreen: React.FC<
   AccountNotConnectedScreenProps
-> = ({ style, className, accountToConnect, onRetry, isRetrying }) => {
+> = ({
+  style,
+  className,
+  accountToConnect,
+  onRetry,
+  isRetrying,
+  impersonatingWallet,
+}) => {
   return (
     <Wrapper style={style} className={className}>
       <StyledBlowfishInvertedWarningIcon />
       <StyledTextXL>Account not connected</StyledTextXL>
       <>
-        <StyledText>
-          Please connect <StyledText semiBold>{accountToConnect}</StyledText> to
-          Blowfish&nbsp;Protect in order to proceed with the action
-        </StyledText>
+        {impersonatingWallet ? (
+          <>
+            <StyledText>
+              You are impersonating{" "}
+              <StyledText semiBold>{impersonatingWallet}</StyledText>.
+            </StyledText>
+            <StyledText>
+              Please connect a wallet to Blowfish Protect in order to proceed
+              with the action
+            </StyledText>
+          </>
+        ) : (
+          <StyledText>
+            Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
+            to Blowfish&nbsp;Protect in order to proceed with the action
+          </StyledText>
+        )}
         {onRetry && (
           <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
             <StyledText>Connect wallet</StyledText>
@@ -391,6 +421,51 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
       <RetryButton onRetry={onRetry} isRetrying={isRetrying}>
         <StyledText>Retry this transaction</StyledText>
       </RetryButton>
+    </Wrapper>
+  );
+};
+
+export const OutdatedExtensionCTAScreen: React.FC = () => {
+  const [extensionInstallationUrl, setExtensionInstallationUrl] = useState<
+    string | null
+  >();
+
+  useEffect(() => {
+    (async () => {
+      setExtensionInstallationUrl(await getExtensionInstallationUrl());
+    })();
+  }, []);
+
+  return (
+    <Wrapper>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Outdated Extension</StyledTextXL>
+      <StyledText>
+        The minimum supported extension version is{" "}
+        <b>{MINIMUM_SUPPORTED_EXTENSION_VERSION}</b>. Please update the Blowfish
+        extension to the latest version and retry the transaction.
+      </StyledText>
+      <Spacer />
+      {extensionInstallationUrl && (
+        <PrimaryButton
+          onClick={() =>
+            // use location replace so the user can't go back
+            location.replace(extensionInstallationUrl)
+          }
+        >
+          Update
+        </PrimaryButton>
+      )}
+    </Wrapper>
+  );
+};
+
+export const TransactionNotFoundScreen: React.FC = () => {
+  return (
+    <Wrapper>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Something went wrong</StyledTextXL>
+      <StyledText>Please close the window and try again.</StyledText>
     </Wrapper>
   );
 };
