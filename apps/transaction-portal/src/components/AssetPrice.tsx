@@ -13,6 +13,9 @@ import Decimal from "decimal.js";
 const AssetPriceWrapper = styled(Row)`
   font-size: 14px;
   opacity: 0.4;
+  word-break: break-word;
+  display: block;
+  position: relative;
 `;
 
 const StyledInfoIcon = styled(InfoIcon)`
@@ -20,6 +23,8 @@ const StyledInfoIcon = styled(InfoIcon)`
   height: auto;
   fill: rgba(0, 0, 0, 0.4);
   margin-left: 8px;
+  position: absolute;
+  bottom: 0;
 `;
 
 const StyledRow = styled(Row)`
