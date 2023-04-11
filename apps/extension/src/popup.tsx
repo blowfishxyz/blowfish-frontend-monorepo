@@ -18,6 +18,10 @@ import {
 } from "@blowfish/ui/core";
 import { BlowfishIcon } from "@blowfish/ui/icons";
 import { transformDate } from "@blowfish/utils/helpers";
+import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
+} from "@blowfish/utils/types";
 
 import { useStorage } from "@plasmohq/storage/hook";
 

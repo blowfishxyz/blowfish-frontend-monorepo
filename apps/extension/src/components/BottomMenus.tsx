@@ -4,12 +4,11 @@ import {
   RedText,
   SecondaryButton,
 } from "@blowfish/ui/core";
+import { BlowfishOption } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
 import { useStorage } from "@plasmohq/storage/hook";
-
-import { PREFERENCES_BLOWFISH_IMPERSONATION_WALLET } from "~utils/storage";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;

@@ -1,4 +1,3 @@
-import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import { logger } from "@blowfish/utils/logger";
 import {
   BlowfishOption,
@@ -19,17 +18,16 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import { BLOWFISH_EXTENSION_VERSION } from "~config";
-
-import { createTransactionPortalTab } from "./utils/browser";
-import { chainIdToSupportedChainMapping } from "./utils/constants";
-import { createRawMessage, postResponseToPort } from "./utils/messages";
+import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
 import {
   getBlowfishImpersonationWallet,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
 } from "~utils/storage";
+
+import { chainIdToSupportedChainMapping } from "./utils/constants";
+import { createRawMessage, postResponseToPort } from "./utils/messages";
 
 logger.debug("BACKGROUND RUNNING");
 
