@@ -2,7 +2,6 @@ import { BlowfishIcon } from "~components/icons/BlowfishIcon";
 import { ArrowRightIcon } from "~components/icons/ArrowRightIcon";
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 import styled, { css } from "styled-components";
-import type { NftStateChangeWithTokenId } from "@blowfish/utils/types";
 import Image from "next/image";
 
 interface AssetImageProps {

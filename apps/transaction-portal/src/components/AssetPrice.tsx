@@ -9,6 +9,7 @@ import {
 import Row from "~components/common/Row";
 import { InfoIcon } from "~components/icons/InfoIcon";
 import Decimal from "decimal.js";
+import { U256_MAX_VALUE } from "~constants";
 
 const AssetPriceWrapper = styled(Row)`
   font-size: 14px;
@@ -46,7 +47,7 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ((stateChange.data as any).assetPrice?.dollar_value_per_token || null);
 
-  if (!pricePerToken) return <></>;
+  if (!pricePerToken) return null;
 
   if (
     stateChange.kind === "ERC20_TRANSFER" ||
@@ -59,10 +60,10 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
 
     if (
       stateChange.kind === "ERC20_APPROVAL" &&
-      // MaxUint256 - unlimited approval
-      difference.eq(new Decimal(2).pow(256).sub(1))
+      // U256_MAX_VALUE - unlimited approval
+      difference.eq(U256_MAX_VALUE)
     ) {
-      return <></>;
+      return null;
     }
     totalValue = new Decimal(pricePerToken)
       .times(difference)
