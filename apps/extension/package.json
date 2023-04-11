@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "plasmo dev",
     "build": "plasmo build",
-    "build-all": "pnpm run --parallel --filter \"@blowfish/extension\" --filter \"@blowfish/transaction-portal\" build",
     "package": "plasmo package",
     "test": "pnpm jest --passWithNoTests",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",

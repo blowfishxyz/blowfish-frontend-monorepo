@@ -5,6 +5,8 @@
 import { isSupportedChainId } from "@blowfish/utils/chains";
 import { logger } from "@blowfish/utils/logger";
 import {
+  BlowfishOption,
+  BlowfishOptionKeyValue,
   Identifier,
   Message,
   RequestType,
@@ -14,7 +16,6 @@ import {
   SignTypedDataVersion,
   TransactionRequest,
   TypedDataV1Field,
-  UntypedMessageData,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
@@ -83,7 +84,9 @@ const getChainIdAndUserAccount = async (
   return { chainId, userAccount };
 };
 
-const isScanningPaused = (response: Message<UserDecisionResponse>) => {
+const isScanningPaused = (
+  response: Message<RequestType, UserDecisionResponse>
+) => {
   return !!response.data.opts?.pauseScan;
 };
 
@@ -125,7 +128,7 @@ const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
 };
 
 const shouldForwardToWallet = (
-  response: Message<UserDecisionResponse>,
+  response: Message<RequestType, UserDecisionResponse>,
   chainId: number
 ) => {
   // NOTE: Scanning paused by user
@@ -525,12 +528,21 @@ const overrideWindowEthereum = () => {
 };
 
 if (IS_IMPERSONATION_AVAILABLE) {
-  stream.on("data", async (message: Message<UntypedMessageData>) => {
-    // Set the impersonating address on window to be used on eth_requestAccounts and eth_accounts
-    if (message.type === RequestType.BlowfishOptions) {
-      impersonatingAddress = message.data.address;
+  stream.on(
+    "data",
+    async (
+      message: Message<RequestType.BlowfishOptions, BlowfishOptionKeyValue>
+    ) => {
+      // Set the impersonating address on window to be used on eth_requestAccounts and eth_accounts
+      if (
+        message.type === RequestType.BlowfishOptions &&
+        message.data.key ===
+          BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+      ) {
+        impersonatingAddress = message.data.value;
+      }
     }
-  });
+  );
 }
 
 const overrideInterval = setInterval(overrideWindowEthereum, 100);

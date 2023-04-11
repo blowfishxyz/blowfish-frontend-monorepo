@@ -5,25 +5,27 @@ import type {
 import type { ComponentStory } from "@storybook/react";
 import React from "react";
 
-import { SlimBottomMenu, SlimBottomMenuProps } from "../components/BottomMenus";
+import { SlimBottomMenu, SlimBottomMenuProps } from "~components/BottomMenus";
 import {
+  AccountNotConnectedScreen,
+  AccountNotConnectedScreenProps,
+  OutdatedExtensionCTAScreen,
   SimulationErrorScreen,
   SimulationErrorScreenProps,
   TransactionBlockedScreen as TransactionBlockedScreenComponent,
   TransactionBlockedScreenProps,
+  TransactionNotFoundScreen,
   UnknownErrorScreen,
   UnknownErrorScreenProps,
   UnsupportedChainScreen,
   UnsupportedChainScreenProps,
-  AccountNotConnectedScreenProps,
-  AccountNotConnectedScreen,
   WrongChainScreen,
   WrongChainScreenProps,
 } from "../components/InformationScreens";
 import {
   PopupContainer,
   PopupContainerProps,
-} from "../components/PopupContainer";
+} from "~components/PopupContainer";
 
 const DEFAULT_ARGS = {
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -273,6 +275,47 @@ AccountNotConnected.args = {
   accountToConnect: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
 };
 
+export const AccountNotConnectedWhileImpersonating: ComponentStory<
+  React.FC<
+    PopupContainerProps & AccountNotConnectedScreenProps & SlimBottomMenuProps
+  >
+> = (props) => {
+  return (
+    <div style={{ width: "600px", minHeight: "768px" }}>
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <AccountNotConnectedScreen
+          impersonatingWallet={props.impersonatingWallet}
+          accountToConnect={props.accountToConnect}
+          onRetry={props.onRetry}
+          isRetrying={props.isRetrying}
+        />
+        <SlimBottomMenu
+          style={{
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
+          }}
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
+    </div>
+  );
+};
+AccountNotConnectedWhileImpersonating.args = {
+  ...DEFAULT_ARGS,
+  impersonatingWallet: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+};
+
 export const WrongChain: ComponentStory<
   React.FC<PopupContainerProps & WrongChainScreenProps & SlimBottomMenuProps>
 > = (props) => {
@@ -311,4 +354,61 @@ WrongChain.args = {
   ...DEFAULT_ARGS,
   currentChainId: 1,
   chainIdToConnect: 137,
+};
+
+export const TransactionNotFound: ComponentStory<
+  React.FC<PopupContainerProps & SlimBottomMenuProps>
+> = (props) => {
+  return (
+    <div style={{ width: "600px", minHeight: "768px" }}>
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <TransactionNotFoundScreen />
+        <SlimBottomMenu
+          style={{
+            /* NOTE: This is only applicable in the context of the storybook,
+             * in the extension we want this fixed to to bottom of the window */
+            position: "absolute",
+          }}
+          onClick={props.onClick}
+          buttonLabel="Close"
+        />
+      </PopupContainer>
+    </div>
+  );
+};
+TransactionNotFound.args = {
+  ...DEFAULT_ARGS,
+};
+
+export const OutdatedExtension: ComponentStory<
+  React.FC<PopupContainerProps>
+> = (props) => {
+  return (
+    <div style={{ width: "600px", minHeight: "768px" }}>
+      <PopupContainer
+        style={{
+          /* NOTE This is only for the story,
+           * normally we want this to take up all the available window height */
+          minHeight: "748px",
+        }}
+        {...props}
+        severity="INFO"
+        bottomMenuType="SLIM"
+      >
+        <OutdatedExtensionCTAScreen />
+      </PopupContainer>
+    </div>
+  );
+};
+OutdatedExtension.args = {
+  ...DEFAULT_ARGS,
 };

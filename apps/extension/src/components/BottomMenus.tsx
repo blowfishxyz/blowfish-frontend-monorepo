@@ -84,7 +84,7 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   className,
 }) => {
   const [blowfishImpersonationWallet] = useStorage(
-    PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
+    BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
   );
 
   return (
