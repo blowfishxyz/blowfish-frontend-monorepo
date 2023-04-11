@@ -56,6 +56,14 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
     const { before, after } = stateChange.data.amount;
 
     const difference = new Decimal(before).sub(after).abs();
+
+    if (
+      stateChange.kind === "ERC20_APPROVAL" &&
+      // MaxUint256 - unlimited approval
+      difference.eq(new Decimal(2).pow(256).sub(1))
+    ) {
+      return <></>;
+    }
     totalValue = new Decimal(pricePerToken)
       .times(difference)
       .dividedBy(new Decimal(10).pow(stateChange.data.asset.decimals))
