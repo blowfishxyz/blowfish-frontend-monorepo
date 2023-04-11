@@ -1,35 +1,42 @@
-import type { BlowfishPausedOptionType } from "@blowfish/hooks";
-import { PREFERENCES_BLOWFISH_PAUSED } from "@blowfish/hooks";
 import {
+  BlowfishOption,
+  BlowfishOptionKey,
+  BlowfishPausedOptionType,
+  BlowfishPortalBackgroundMessage,
+  DappRequest,
   Message,
   RequestType,
   SignMessageRequest,
   SignTypedDataRequest,
   TransactionRequest,
-  UntypedMessageData,
   UserDecisionResponse,
+  isSignRequestMessage,
+  isSignTypedDataRequestMessage,
+  isTransactionRequestMessage,
   isUserDecisionResponseMessage,
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import {
-  BLOWFISH_EXTENSION_VERSION,
-  BLOWFISH_TRANSACTION_PORTAL_URL,
-} from "~config";
-
-import { createTransactionPortalTab } from "./utils/browser";
-import { chainIdToSupportedChainMapping } from "./utils/constants";
-import { logger } from "./utils/logger";
-import { createRawMessage, postResponseToPort } from "./utils/messages";
+import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
+import { chainIdToSupportedChainMapping } from "~utils/constants";
+import { logger } from "~utils/logger";
+import { createRawMessage, postResponseToPort } from "~utils/messages";
 import {
   getBlowfishImpersonationWallet,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
-} from "./utils/storage";
+} from "~utils/storage";
 
 logger.debug("BACKGROUND RUNNING");
-const messageToPortMapping: Map<string, Browser.Runtime.Port> = new Map();
+
+const messageIdToPortAndMessageMapping: Map<
+  string,
+  {
+    remotePort: Browser.Runtime.Port;
+    message: Message<RequestType, DappRequest>;
+  }
+> = new Map();
 
 // Add a form for uninstalls to see if we can improve the product.
 // TODO(andrei) - Add the real form
@@ -46,30 +53,23 @@ Browser.runtime.onInstalled.addListener((obj) => {
 });
 
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
-  remotePort.onMessage.addListener((message: Message<UntypedMessageData>) => {
-    logger.debug(message);
+  remotePort.onMessage.addListener(
+    (message: Message<DappRequest["type"], DappRequest>) => {
+      logger.debug(message);
 
-    if (message.type === RequestType.Transaction) {
-      return processTransactionRequest(
-        message as Message<TransactionRequest>,
-        remotePort
-      );
-    } else if (message.type === RequestType.SignTypedData) {
-      return processSignTypedDataRequest(
-        message as Message<SignTypedDataRequest>,
-        remotePort
-      );
-    } else if (message.type === RequestType.SignMessage) {
-      return processSignMessageRequest(
-        message as Message<SignMessageRequest>,
-        remotePort
-      );
+      if (isTransactionRequestMessage(message)) {
+        return processTransactionRequest(message, remotePort);
+      } else if (isSignTypedDataRequestMessage(message)) {
+        return processSignTypedDataRequest(message, remotePort);
+      } else if (isSignRequestMessage(message)) {
+        return processSignMessageRequest(message, remotePort);
+      }
     }
-  });
+  );
 };
 
 const responseProcessingMiddleware = async (
-  message: Message<UntypedMessageData>
+  message: BlowfishPortalBackgroundMessage
 ) => {
   if (isUserDecisionResponseMessage(message)) {
     if (message.data.opts?.skipUnsupportedChainWarning) {
@@ -80,7 +80,7 @@ const responseProcessingMiddleware = async (
 };
 
 const getExtensionOptionFromTransactionPortal = async (
-  message: Message<UntypedMessageData>
+  message: Message<RequestType.BlowfishOptions, BlowfishOptionKey>
 ) => {
   const pausedOptions = await storage.get<BlowfishPausedOptionType>(
     message.data.key
@@ -88,11 +88,13 @@ const getExtensionOptionFromTransactionPortal = async (
   return createRawMessage(message.type, pausedOptions || null);
 };
 
-// HACK(kimpers): If we don't returna Promise of something here the sender will be stuck waiting for a response indefinitely
+// HACK(kimpers): If we don't return a Promise of something here the sender will be stuck waiting for a response indefinitely
 // see https://github.com/mozilla/webextension-polyfill/issues/130#issuecomment-484772327
 const onBrowserMessageListener = async (
-  message: Message<UntypedMessageData>
-): Promise<Message<UntypedMessageData> | true> => {
+  message: BlowfishPortalBackgroundMessage
+): Promise<
+  Message<RequestType, BlowfishPausedOptionType | Record<string, never>> | true
+> => {
   if (message.type === RequestType.BlowfishOptions) {
     return getExtensionOptionFromTransactionPortal(message);
   }
@@ -102,11 +104,20 @@ const onBrowserMessageListener = async (
     return true;
   }
 
-  const responseRemotePort = messageToPortMapping.get(message.id);
+  if (message.type === RequestType.GetRequestToScan) {
+    return createRawMessage(
+      message.type,
+      messageIdToPortAndMessageMapping.get(message.data.key)?.message || {}
+    );
+  }
+
+  const responseRemotePort = messageIdToPortAndMessageMapping.get(
+    message.id
+  )?.remotePort;
 
   if (responseRemotePort) {
     responseRemotePort.postMessage(message);
-    messageToPortMapping.delete(message.id);
+    messageIdToPortAndMessageMapping.delete(message.id);
     responseProcessingMiddleware(message).catch((err) => {
       logger.error(err);
     });
@@ -122,23 +133,24 @@ Browser.runtime.onConnect.addListener(setupRemoteConnection);
 Browser.runtime.onMessage.addListener(onBrowserMessageListener);
 
 const processRequestBase = async (
-  message: Message<
-    TransactionRequest | SignTypedDataRequest | SignMessageRequest
-  >,
+  message: Message<RequestType, DappRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   const { address } = (await getBlowfishImpersonationWallet()) || {};
   const isImpersonatingWallet = !!address;
   const pausedOption = await storage.get<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
+  const { chainId } = message.data;
 
   if (pausedOption && pausedOption.isPaused) {
-    postResponseToPort(remotePort, message, { opts: { pauseScan: true } });
+    postResponseToPort(remotePort, message, {
+      isOk: false,
+      opts: { pauseScan: true, chainId },
+    });
     return;
   }
 
-  const { chainId } = message.data;
   // Just proxy the request if we don't support the current chain
   // and the user dismissed the notice
   const isUnsupportedChain = !chainIdToSupportedChainMapping[chainId];
@@ -162,27 +174,32 @@ const processRequestBase = async (
   const currentTabId = currentTab?.id;
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
-  // and send the scan results via a message to the window for a snappier user experience
   logger.debug(message);
-  const tabPromise = createTransactionPortalTab({
-    ...message,
-    extensionVersion: BLOWFISH_EXTENSION_VERSION!,
-    data: {
-      ...message.data,
-      isImpersonatingWallet,
+
+  const tab = await Browser.tabs.create({
+    url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}&chainId=${chainId}`,
+    active: true,
+  });
+  const tabId = tab.id!;
+
+  // Store port and message to id mapping so we can respond to the message later on and get the stored message
+  messageIdToPortAndMessageMapping.set(message.id, {
+    remotePort,
+    message: {
+      ...message,
+      data: {
+        ...message.data,
+        isImpersonatingWallet,
+      },
     },
   });
 
-  // Store port to id mapping so we can respond to the message later on
-  messageToPortMapping.set(message.id, remotePort);
-  const tab = await tabPromise;
-  const tabId = tab.id!;
   const handleRemovedTab = (removedTabId: number) => {
     if (removedTabId === tabId) {
       // If the window is closed before we received a response we assume cancel
       // as the user probably just closed the window
-      if (messageToPortMapping.has(message.id)) {
-        messageToPortMapping.delete(message.id);
+      if (messageIdToPortAndMessageMapping.has(message.id)) {
+        messageIdToPortAndMessageMapping.delete(message.id);
         logger.debug(
           "Window closed without response, assuming the user wants to cancel"
         );
@@ -207,21 +224,21 @@ const processRequestBase = async (
 };
 
 const processTransactionRequest = async (
-  message: Message<TransactionRequest>,
+  message: Message<RequestType.Transaction, TransactionRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
 };
 
 const processSignTypedDataRequest = async (
-  message: Message<SignTypedDataRequest>,
+  message: Message<RequestType.SignTypedData, SignTypedDataRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
 };
 
 const processSignMessageRequest = async (
-  message: Message<SignMessageRequest>,
+  message: Message<RequestType.SignMessage, SignMessageRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);

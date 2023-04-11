@@ -1,25 +1,20 @@
-import qs from "qs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useModal } from "connectkit";
 import styled from "styled-components";
-import {
-  useAccount,
-  useChainId,
-  useConnect,
-  useDisconnect,
-  useSwitchNetwork,
-} from "wagmi";
+import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
 import {
   prepareSendTransaction,
   sendTransaction,
   signTypedData,
 } from "@wagmi/core";
-import { InjectedConnector } from "wagmi/connectors/injected";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../BottomMenus";
 import {
   AccountNotConnectedScreen,
+  OutdatedExtensionCTAScreen,
   SimulationErrorScreen,
   TransactionBlockedScreen,
+  TransactionNotFoundScreen,
   TransactionUnsupportedScreen,
   UnknownErrorScreen,
   UnsupportedChainScreen,
@@ -30,21 +25,16 @@ import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { sendAbort, sendResult } from "~utils/messages";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
-import { logger } from "~utils/logger";
 import {
   actionToSeverity,
-  DappRequest,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
-  Message,
-  parseRequestFromMessage,
   Severity,
   SignTypedDataVersion,
-  UntypedMessageData,
 } from "@blowfish/utils/types";
+import { logger } from "~utils/logger";
+import { useGetRequestParams } from "~hooks/useGetRequestParams";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -55,65 +45,32 @@ const ScanPageContainer = styled.div<{ severity?: Severity }>`
 `;
 
 const ScanPage: React.FC = () => {
-  const [chainNetwork, setChainNetwork] = useState<ChainNetwork | undefined>(
-    undefined
-  );
-  const [chainFamily, setChainFamily] = useState<ChainFamily | undefined>(
-    undefined
-  );
-  const [userAccount, setUserAccount] = useState<string | undefined>(undefined);
-  const [chainId, setChainId] = useState<number | undefined>(undefined);
-  const [message, setMessage] = useState<
-    Message<UntypedMessageData> | undefined
-  >(undefined);
-  const [request, setRequest] = useState<DappRequest | undefined>(undefined);
-  const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
-  const [isRetrying, setIsRetrying] = useState<boolean>(false);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
-  const [skipUnsupportedChainWarning, setSkipUnsupportedChainWarning] =
-    useState<boolean>(false);
-  const [impersonatingWallet, setImpersonatingWallet] = useState<
-    string | undefined
-  >();
-  const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
-
-  const { address } = useAccount();
+  const {
+    message,
+    request,
+    chainId,
+    userAccount,
+    chainFamily,
+    chainNetwork,
+    isImpersonatingWallet,
+    impersonatingWallet,
+    isExtensionOutdated,
+    paramError,
+  } = useGetRequestParams();
   const connectedChainId = useChainId();
+  const { address, isConnected } = useAccount();
   const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
     useSwitchNetwork({ throwForSwitchChainNotSupported: true });
-  const { connectAsync } = useConnect({
-    connector: new InjectedConnector(),
-  });
   const { disconnectAsync } = useDisconnect();
+  const { setOpen: setConnectWalletModalOpen } = useModal();
 
-  useEffect(() => {
-    const windowQs = window.location.search;
-    const cleanedQs = windowQs.startsWith("?") ? windowQs.slice(1) : windowQs;
-    // NOTE: We only pass Message through the query params
-    const _message = qs.parse(cleanedQs) as unknown as Message<DappRequest>;
-    const _request = parseRequestFromMessage(_message);
-    const _chainId = _message.data.chainId.toString();
-
-    setChainId(parseInt(_chainId));
-    setMessage(_message);
-    setRequest(_request);
-    setUserAccount(_request.userAccount);
-
-    if (_request.isImpersonatingWallet === "true") {
-      setImpersonatingWallet(_request.userAccount);
-    }
-
-    // NOTE: This should never happen since we verify
-    // that the chain is supported before we create this page
-    if (!chainIdToSupportedChainMapping[_chainId]) {
-      logger.debug(`Blowfish unsupported chainId ${_chainId}`);
-      return;
-    }
-    const { chainFamily: _chainFamily, chainNetwork: _chainNetwork } =
-      chainIdToSupportedChainMapping[_chainId];
-    setChainFamily(_chainFamily);
-    setChainNetwork(_chainNetwork);
-  }, []);
+  const [hasDismissedScreen, setHasDismissedScreen] = useState<boolean>(false);
+  const [isRetrying, setIsRetrying] = useState<boolean>(false);
+  const [skipUnsupportedChainWarning, setSkipUnsupportedChainWarning] =
+    useState<boolean>(false);
+  const [connectedAddress, setConnectedAddress] = useState<
+    string | undefined
+  >();
 
   const {
     data: scanResults,
@@ -130,17 +87,16 @@ const ScanPage: React.FC = () => {
   }, [isValidating, isRetrying]);
 
   useEffect(() => {
-    if (impersonatingWallet) {
+    if (isImpersonatingWallet) {
       setConnectedAddress(impersonatingWallet);
     } else {
       setConnectedAddress(address as string);
     }
-  }, [address, impersonatingWallet]);
+  }, [address, impersonatingWallet, isImpersonatingWallet]);
 
   const closeWindow = useCallback(() => window.close(), []);
 
   const handleUserDecision = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async (shouldProceed: boolean) => {
       if (!message) {
         logger.error("Error: Cannot proceed, no message to respond to ");
@@ -264,6 +220,17 @@ const ScanPage: React.FC = () => {
       (isSignMessageRequest(request) || isSignTypedDataRequest(request)),
     [request]
   );
+  const isConnectedToWrongAccount =
+    connectedAddress && userAccount && connectedAddress !== userAccount;
+
+  useEffect(() => {
+    // NOTE: We only want to disconnect if we are connected to the wrong account and NOT impersonating a wallet
+    if (isConnectedToWrongAccount && !isImpersonatingWallet) {
+      disconnectAsync().catch((err) =>
+        logger.error("Error disconnecting wallet", err)
+      );
+    }
+  }, [isConnectedToWrongAccount, disconnectAsync, isImpersonatingWallet]);
 
   const maybeInformationScreen = useMemo(() => {
     const isLoading = !scanResults && !scanError;
@@ -271,14 +238,14 @@ const ScanPage: React.FC = () => {
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
     const simulationError = scanResults && scanResults.simulationResults?.error;
     const isUnsupportedChain = !chainFamily || !chainNetwork;
-    const isWrongAccount =
-      connectedAddress && userAccount && connectedAddress !== userAccount;
     const isWrongChainId =
       !!(chainId && connectedChainId) &&
       !isUnsupportedChain &&
       chainId !== connectedChainId;
     const isUnsupportedDangerousRequest =
-      message?.data.payload.method === "eth_sign";
+      message && isSignMessageRequest(message.data)
+        ? message?.data.payload.method === "eth_sign"
+        : false;
 
     if (isError) {
       logger.error(scanError);
@@ -293,74 +260,18 @@ const ScanPage: React.FC = () => {
       mutate();
     };
 
-    if (!connectedAddress) {
+    if (paramError) {
       return (
         <>
-          <AccountNotConnectedScreen
-            accountToConnect={userAccount ?? ""}
-            isRetrying={isConnecting}
-            onRetry={async () => {
-              setIsConnecting(true);
-              try {
-                await connectAsync();
-              } catch (err) {
-                logger.error(err);
-              } finally {
-                setIsConnecting(false);
-              }
-            }}
-          />
+          <TransactionNotFoundScreen />
           <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
       );
-    } else if (isUnsupportedDangerousRequest) {
-      return (
-        <TransactionUnsupportedScreen
-          closeWindow={() => handleUserDecision(false)}
-        />
-      );
-    } else if (isWrongAccount) {
-      return (
-        <>
-          <AccountNotConnectedScreen
-            accountToConnect={userAccount ?? ""}
-            connectedAccount={connectedAddress}
-            isRetrying={isConnecting}
-            onRetry={async () => {
-              setIsConnecting(true);
-              try {
-                await disconnectAsync();
-                await connectAsync();
-                setConnectedAddress(null);
-              } catch (err) {
-                logger.error(err);
-              } finally {
-                setIsConnecting(false);
-              }
-            }}
-          />
-          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
-        </>
-      );
-    } else if (isWrongChainId && chainId) {
-      return (
-        <>
-          <WrongChainScreen
-            currentChainId={connectedChainId}
-            chainIdToConnect={chainId}
-            isRetrying={isSwitchingNetworks}
-            onRetry={async () => {
-              try {
-                await switchNetworkAsync?.(chainId);
-              } catch (err) {
-                logger.error(err);
-              }
-            }}
-          />
-          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
-        </>
-      );
+    } else if (isExtensionOutdated) {
+      return <OutdatedExtensionCTAScreen />;
     } else if (isUnsupportedChain && message) {
+      // NOTE: First check if the chain is supported
+      // No need to ask them to connect if not
       const onToggleShowUnsupportedChain = (value: boolean) => {
         setSkipUnsupportedChainWarning(value);
       };
@@ -382,6 +293,43 @@ const ScanPage: React.FC = () => {
             }}
             buttonLabel="Continue"
           />
+        </>
+      );
+    } else if (!connectedAddress || !isConnected) {
+      return (
+        <>
+          <AccountNotConnectedScreen
+            impersonatingWallet={impersonatingWallet}
+            accountToConnect={userAccount ?? ""}
+            onRetry={async () => {
+              setConnectWalletModalOpen(true);
+            }}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
+        </>
+      );
+    } else if (isUnsupportedDangerousRequest) {
+      return (
+        <TransactionUnsupportedScreen
+          closeWindow={() => handleUserDecision(false)}
+        />
+      );
+    } else if (isWrongChainId && chainId) {
+      return (
+        <>
+          <WrongChainScreen
+            currentChainId={connectedChainId}
+            chainIdToConnect={chainId}
+            isRetrying={isSwitchingNetworks}
+            onRetry={async () => {
+              try {
+                await switchNetworkAsync?.(chainId);
+              } catch (err) {
+                logger.error(err);
+              }
+            }}
+          />
+          <SlimBottomMenu onClick={closeWindow} buttonLabel="Close" />
         </>
       );
     } else if (isLoading) {
@@ -436,21 +384,23 @@ const ScanPage: React.FC = () => {
     scanError,
     chainFamily,
     chainNetwork,
-    connectedAddress,
-    userAccount,
     chainId,
     connectedChainId,
     message,
+    paramError,
+    isExtensionOutdated,
+    connectedAddress,
+    isConnected,
     hasDismissedScreen,
     mutate,
-    isConnecting,
     closeWindow,
-    connectAsync,
+    skipUnsupportedChainWarning,
+    impersonatingWallet,
+    userAccount,
+    setConnectWalletModalOpen,
     handleUserDecision,
-    disconnectAsync,
     isSwitchingNetworks,
     switchNetworkAsync,
-    skipUnsupportedChainWarning,
     isMessageSignatureRequest,
     isRetrying,
   ]);
@@ -458,7 +408,7 @@ const ScanPage: React.FC = () => {
   return (
     <ScanPageContainer severity={severity}>
       <PopupContainer
-        userAccount={userAccount}
+        impersonatingWallet={impersonatingWallet}
         chainNetwork={chainNetwork}
         chainFamily={chainFamily}
         severity={severity}
@@ -476,9 +426,7 @@ const ScanPage: React.FC = () => {
                   chainNetwork={chainNetwork}
                 />
                 <ApproveBottomMenu
-                  isImpersonatingWallet={
-                    request.isImpersonatingWallet === "true"
-                  }
+                  isImpersonatingWallet={!!isImpersonatingWallet}
                   onContinue={() => handleUserDecision(true)}
                   onCancel={() => handleUserDecision(false)}
                 />

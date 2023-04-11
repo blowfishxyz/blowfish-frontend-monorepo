@@ -46,20 +46,33 @@ const fetcher = async (
     undefined,
     BLOWFISH_API_BASE_URL
   );
+
   if (isTransactionRequest(request)) {
     return client.scanTransaction(request.payload, request.userAccount, {
       origin,
     });
   } else if (isSignTypedDataRequest(request)) {
-    // NOTE: We need to make the SignTypedDataVersion.V1 payload EIP712 compliant
     const payload =
       request.signTypedDataVersion === SignTypedDataVersion.V1
         ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
         : request.payload;
 
-    return client.scanSignTypedData(payload, request.userAccount, {
-      origin,
-    });
+    // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
+    return client.scanSignTypedData(
+      {
+        ...payload,
+        domain: {
+          ...payload.domain,
+          ...(payload.domain.chainId && {
+            chainId: payload.domain.chainId.toString(),
+          }),
+        },
+      },
+      request.userAccount,
+      {
+        origin,
+      }
+    );
   } else if (isSignMessageRequest(request)) {
     return client.scanSignMessage(
       request.payload.message,

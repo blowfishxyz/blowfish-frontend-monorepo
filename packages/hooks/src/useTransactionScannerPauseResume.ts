@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from "react";
-
-export const PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED";
+import type { BlowfishPausedOptionType } from "@blowfish/utils/types";
 
 export enum PauseDuration {
   OneHour = "1h",
@@ -12,11 +11,6 @@ export const PAUSE_DURATIONS = {
   [PauseDuration.OneHour]: 60 * 60 * 1000,
   [PauseDuration.ThreeHours]: 3 * 60 * 60 * 1000,
   [PauseDuration.OneDay]: 24 * 60 * 60 * 1000,
-};
-
-export type BlowfishPausedOptionType = {
-  until: number | null;
-  isPaused: boolean;
 };
 
 const useTransactionScannerPauseResume = (

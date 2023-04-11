@@ -1,10 +1,9 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { TextButton } from "./Buttons";
+import { PrimaryButton, TextButton } from "./Buttons";
 import { ContentToggle } from "./ContentToggle";
 import { Text, TextXL } from "./Typography";
-import { shortenHex } from "../utils/hex";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
@@ -14,12 +13,17 @@ import { sendPauseResumeSelection } from "~utils/messages";
 import { SlimBottomMenu } from "~components/BottomMenus";
 import { useLocalStorage } from "react-use";
 import {
-  BlowfishPausedOptionType,
   PAUSE_DURATIONS,
   PauseDuration,
-  PREFERENCES_BLOWFISH_PAUSED,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
+import { MINIMUM_SUPPORTED_EXTENSION_VERSION } from "~config";
+import Row from "./common/Row";
+import { getExtensionInstallationUrl } from "~utils/utils";
+import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
+} from "@blowfish/utils/types";
 
 interface SharedProps {
   darkMode?: boolean;
@@ -98,6 +102,10 @@ const StyledTextWithEllipsisAnimation = styled(StyledText)`
   }
 `;
 
+const Spacer = styled(Row)`
+  flex: 2;
+`;
+
 export interface TransactionBlockedScreenProps {
   onContinue: () => void;
   headline?: string;
@@ -160,7 +168,7 @@ export const TransactionUnsupportedScreen = ({
 }: TransactionUnsupportedScreenProps) => {
   const timeoutRef = useRef<NodeJS.Timeout>();
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
-    PREFERENCES_BLOWFISH_PAUSED
+    BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
   const { pauseScan } = useTransactionScannerPauseResume(
     scanPaused,
@@ -185,7 +193,7 @@ export const TransactionUnsupportedScreen = ({
     <>
       <TransactionBlockedScreen
         headline="Dangerous unsupported action"
-        message="Signing messages with the eth_sign method is dangerous and should be avoided at all times. We cannot simulate the outcomes of this action"
+        message="Signing messages with the eth_sign method is dangerous. This dApp is trying to get you to sign a message that looks like a transaction. We cannot scan the transaction and have no way of knowing what it does. Do not sign it unless you’re absolutely sure of what you’re doing."
         continueButtonLabel="Ignore warning and turn off Blowfish Protect for 1 hour"
         confirmationText={`Pausing scanning for ${PauseDuration.OneHour}`}
         onContinue={pauseScannerAndCloseWindow}
@@ -299,9 +307,9 @@ export interface AccountNotConnectedScreenProps {
   style?: React.CSSProperties;
   className?: string;
   accountToConnect: string;
-  connectedAccount?: string;
   onRetry?: () => void;
   isRetrying?: boolean;
+  impersonatingWallet?: string;
 }
 
 export const AccountNotConnectedScreen: React.FC<
@@ -310,38 +318,38 @@ export const AccountNotConnectedScreen: React.FC<
   style,
   className,
   accountToConnect,
-  connectedAccount,
   onRetry,
   isRetrying,
+  impersonatingWallet,
 }) => {
   return (
     <Wrapper style={style} className={className}>
       <StyledBlowfishInvertedWarningIcon />
-      <StyledTextXL>
-        {connectedAccount ? "Wrong account connected" : "Account not connected"}
-      </StyledTextXL>
-
-      {connectedAccount ? (
-        <StyledText>
-          You are connected with{" "}
-          <StyledText semiBold>{shortenHex(connectedAccount, 5)}</StyledText>,
-          but are trying to perform an action for{" "}
-          <StyledText semiBold>{accountToConnect}</StyledText>. Please switch to
-          the correct account in your wallet
-        </StyledText>
-      ) : (
-        <>
+      <StyledTextXL>Account not connected</StyledTextXL>
+      <>
+        {impersonatingWallet ? (
+          <>
+            <StyledText>
+              You are impersonating{" "}
+              <StyledText semiBold>{impersonatingWallet}</StyledText>.
+            </StyledText>
+            <StyledText>
+              Please connect a wallet to Blowfish Protect in order to proceed
+              with the action
+            </StyledText>
+          </>
+        ) : (
           <StyledText>
             Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
             to Blowfish&nbsp;Protect in order to proceed with the action
           </StyledText>
-          {onRetry && (
-            <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
-              <StyledText>Connect account</StyledText>
-            </RetryButton>
-          )}
-        </>
-      )}
+        )}
+        {onRetry && (
+          <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+            <StyledText>Connect wallet</StyledText>
+          </RetryButton>
+        )}
+      </>
     </Wrapper>
   );
 };
@@ -413,6 +421,51 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
       <RetryButton onRetry={onRetry} isRetrying={isRetrying}>
         <StyledText>Retry this transaction</StyledText>
       </RetryButton>
+    </Wrapper>
+  );
+};
+
+export const OutdatedExtensionCTAScreen: React.FC = () => {
+  const [extensionInstallationUrl, setExtensionInstallationUrl] = useState<
+    string | null
+  >();
+
+  useEffect(() => {
+    (async () => {
+      setExtensionInstallationUrl(await getExtensionInstallationUrl());
+    })();
+  }, []);
+
+  return (
+    <Wrapper>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Outdated Extension</StyledTextXL>
+      <StyledText>
+        The minimum supported extension version is{" "}
+        <b>{MINIMUM_SUPPORTED_EXTENSION_VERSION}</b>. Please update the Blowfish
+        extension to the latest version and retry the transaction.
+      </StyledText>
+      <Spacer />
+      {extensionInstallationUrl && (
+        <PrimaryButton
+          onClick={() =>
+            // use location replace so the user can't go back
+            location.replace(extensionInstallationUrl)
+          }
+        >
+          Update
+        </PrimaryButton>
+      )}
+    </Wrapper>
+  );
+};
+
+export const TransactionNotFoundScreen: React.FC = () => {
+  return (
+    <Wrapper>
+      <StyledBlowfishInvertedWarningIcon />
+      <StyledTextXL>Something went wrong</StyledTextXL>
+      <StyledText>Please close the window and try again.</StyledText>
     </Wrapper>
   );
 };

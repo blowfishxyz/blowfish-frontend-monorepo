@@ -1,8 +1,10 @@
 import {
+  BlowfishOption,
+  BlowfishOptionKeyValue,
+  DappRequest,
   Identifier,
   Message,
   RequestType,
-  UntypedMessageData,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
 import type { PlasmoContentScript } from "plasmo";
@@ -13,11 +15,7 @@ import {
   createRawMessage,
   sendAndAwaitResponseFromPort,
 } from "~utils/messages";
-import {
-  PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
-  getBlowfishImpersonationWallet,
-  storage,
-} from "~utils/storage";
+import { getBlowfishImpersonationWallet, storage } from "~utils/storage";
 
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
@@ -30,7 +28,7 @@ const stream = new WindowPostMessageStream({
   target: Identifier.Inpage,
 });
 
-stream.on("data", (message: Message<UntypedMessageData>) => {
+stream.on("data", (message: Message<DappRequest["type"], DappRequest>) => {
   // Connect to background script
   const extensionPort = Browser.runtime.connect({
     name: Identifier.ContentScript,
@@ -38,7 +36,10 @@ stream.on("data", (message: Message<UntypedMessageData>) => {
 
   // Forward received messages to background.js with origin
   const { origin } = location;
-  const messageWithOrigin: Message<UntypedMessageData> = { ...message, origin };
+  const messageWithOrigin: Message<DappRequest["type"], DappRequest> = {
+    ...message,
+    origin,
+  };
 
   // Send message to background.js and pipe response back to stream
   sendAndAwaitResponseFromPort(extensionPort, messageWithOrigin).then(
@@ -53,10 +54,11 @@ if (IS_IMPERSONATION_AVAILABLE) {
     const impersonatingWallet = await getBlowfishImpersonationWallet();
     if (impersonatingWallet) {
       const { address } = impersonatingWallet;
-      const message: Message<UntypedMessageData> = createRawMessage(
-        RequestType.BlowfishOptions,
-        { address }
-      );
+      const message: Message<RequestType, BlowfishOptionKeyValue> =
+        createRawMessage(RequestType.BlowfishOptions, {
+          key: BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
+          value: address,
+        });
       // Send impersonating wallet address to proxy-window-evm
       stream.write(message);
     }
@@ -65,7 +67,7 @@ if (IS_IMPERSONATION_AVAILABLE) {
 
   // Watch extension storage for changes to the impersonating wallet
   storage.watch({
-    [PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]: () => {
+    [BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]: () => {
       window.location.reload();
     },
   });
