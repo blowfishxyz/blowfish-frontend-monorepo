@@ -6,6 +6,10 @@ import { logger } from "~utils/logger";
 import { DappRequest, Message } from "@blowfish/utils/types";
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 
+// NOTE: the require statement below is to ensure we are using the punycode userland modules and not the deprecated core modules.
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const punycode = require("punycode/");
+
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
 
@@ -131,4 +135,13 @@ const EVM_STATE_CHANGE_KIND_WITH_IMAGE = [
 
 export const evmStateChangeHasImage = (kind: EvmStateChange["kind"]) => {
   return EVM_STATE_CHANGE_KIND_WITH_IMAGE.includes(kind);
+};
+
+export const containsPunycode = (url: string): boolean => {
+  try {
+    const decoded = punycode.toUnicode(url);
+    return decoded !== url;
+  } catch (err) {
+    return false;
+  }
 };

@@ -13,6 +13,7 @@ const Wrapper = styled.div<{ severity: WarningSeverity }>`
   align-items: center;
   padding: 25px;
   width: 100%;
+  margin-bottom: 5px;
 
   ${({ severity, theme }) =>
     severity === "WARNING"
