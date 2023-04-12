@@ -1,3 +1,4 @@
+import { logger } from "@blowfish/utils/logger";
 import {
   BlowfishOption,
   BlowfishOptionKey,
@@ -18,15 +19,15 @@ import {
 import Browser from "webextension-polyfill";
 
 import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
-import { chainIdToSupportedChainMapping } from "~utils/constants";
-import { logger } from "~utils/logger";
-import { createRawMessage, postResponseToPort } from "~utils/messages";
 import {
   getBlowfishImpersonationWallet,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
 } from "~utils/storage";
+
+import { chainIdToSupportedChainMapping } from "./utils/constants";
+import { createRawMessage, postResponseToPort } from "./utils/messages";
 
 logger.debug("BACKGROUND RUNNING");
 

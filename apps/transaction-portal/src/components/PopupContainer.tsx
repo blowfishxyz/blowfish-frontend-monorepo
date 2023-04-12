@@ -15,9 +15,9 @@ import {
   BnbChainIcon,
   EthereumIcon,
   PolygonIcon,
-} from "./icons/ChainIcons";
+} from "@blowfish/ui/icons";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
-import { TextSmall } from "~components/Typography";
+import { TextSmall } from "@blowfish/ui/core";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
 

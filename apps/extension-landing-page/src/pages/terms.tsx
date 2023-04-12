@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Footer } from "../components/Footer";
-import { TextXL, Text } from "../components/Typography";
+import { TextXL, Text } from "@blowfish/ui/core";
 
 const Main = styled.main`
   max-width: 1280px;

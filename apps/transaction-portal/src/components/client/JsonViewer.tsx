@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import ReactJson from "react-json-view";
 import styled, { css } from "styled-components";
 
-import { TextSmall } from "../Typography";
+import { TextSmall } from "@blowfish/ui/core";
 
 const Wrapper = styled.div`
   margin: 16px 0;

@@ -1,18 +1,21 @@
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 import styled from "styled-components";
-import { Text } from "~components/Typography";
+import { Text, Row } from "@blowfish/ui/core";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "~components/common/Tooltip";
-import Row from "~components/common/Row";
-import { InfoIcon } from "~components/icons/InfoIcon";
+import { InfoIcon } from "@blowfish/ui/icons";
 import Decimal from "decimal.js";
+import { U256_MAX_VALUE } from "~constants";
 
 const AssetPriceWrapper = styled(Row)`
   font-size: 14px;
   opacity: 0.4;
+  word-break: break-word;
+  display: block;
+  position: relative;
 `;
 
 const StyledInfoIcon = styled(InfoIcon)`
@@ -20,6 +23,8 @@ const StyledInfoIcon = styled(InfoIcon)`
   height: auto;
   fill: rgba(0, 0, 0, 0.4);
   margin-left: 8px;
+  position: absolute;
+  bottom: 0;
 `;
 
 const StyledRow = styled(Row)`
@@ -41,7 +46,7 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ((stateChange.data as any).assetPrice?.dollar_value_per_token || null);
 
-  if (!pricePerToken) return <></>;
+  if (!pricePerToken) return null;
 
   if (
     stateChange.kind === "ERC20_TRANSFER" ||
@@ -51,6 +56,14 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
     const { before, after } = stateChange.data.amount;
 
     const difference = new Decimal(before).sub(after).abs();
+
+    if (
+      stateChange.kind === "ERC20_APPROVAL" &&
+      // U256_MAX_VALUE - unlimited approval
+      difference.eq(U256_MAX_VALUE)
+    ) {
+      return null;
+    }
     totalValue = new Decimal(pricePerToken)
       .times(difference)
       .dividedBy(new Decimal(10).pow(stateChange.data.asset.decimals))

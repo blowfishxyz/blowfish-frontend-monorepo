@@ -1,9 +1,12 @@
 import React from "react";
 import styled, { css } from "styled-components";
-
-import { PrimaryButton, SecondaryButton } from "./Buttons";
-import { Text } from "./Typography";
-import { breakpoint } from "~utils/breakpoints";
+import {
+  PrimaryButton,
+  SecondaryButton,
+  GrayText,
+  RedText,
+} from "@blowfish/ui/core";
+import { size } from "@blowfish/ui/core";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
@@ -39,7 +42,7 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
             margin-top: 24px;
           }
         `};
-  @media only screen and (max-width: ${breakpoint.size.md}) {
+  @media only screen and (max-width: ${size.md}) {
     max-width: calc(100% - 24px);
   }
 `;
@@ -63,14 +66,6 @@ export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
     </BottomMenuWrapper>
   );
 };
-
-const GrayText = styled(Text)`
-  color: rgba(0, 0, 0, 0.5);
-`;
-
-const RedText = styled(Text)`
-  color: ${({ theme }) => theme.palette.warningText};
-`;
 
 const Row = styled.div`
   display: flex;

@@ -1,18 +1,17 @@
+import { SmallButtonPrimary, Text } from "@blowfish/ui/core";
+import { isENS } from "@blowfish/utils/helpers";
+import { shortenHex } from "@blowfish/utils/hex";
+import { logger } from "@blowfish/utils/logger";
 import { ethers } from "ethers";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
-import { SmallButtonPrimary } from "~components/Buttons";
 import { Input } from "~components/Input";
 import Toggle from "~components/Toggle";
-import { Text } from "~components/Typography";
-import { shortenHex } from "~utils/hex";
-import { logger } from "~utils/logger";
 import {
   getBlowfishImpersonationWallet,
   setBlowfishImpersonationWallet,
 } from "~utils/storage";
-import { isENS } from "~utils/utils";
 
 const Row = styled.div`
   display: flex;
