@@ -1,8 +1,7 @@
+import { TextSmall, UnstyledA } from "@blowfish/ui/core";
 import React from "react";
 import styled from "styled-components";
 
-import { UnstyledA } from "~components/Links";
-import { TextSmall } from "~components/Typography";
 import {
   BLOWFISH_FEEDBACK_URL,
   BLOWFISH_TWITTER_URL,

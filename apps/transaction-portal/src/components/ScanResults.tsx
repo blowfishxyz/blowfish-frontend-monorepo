@@ -22,19 +22,24 @@ import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { Decimal } from "decimal.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { isNativeAsset, shortenHex } from "~utils/hex";
-import { logger } from "~utils/logger";
-import { BaseButton } from "./BaseButton";
-import { BlockExplorerLink, LinkWithArrow } from "./Links";
-import { Text, TextSmall } from "./Typography";
+
+import { isNativeAsset, shortenHex } from "@blowfish/utils/hex";
+import { logger } from "@blowfish/utils/logger";
+import {
+  BaseButton,
+  BlockExplorerLink,
+  LinkWithArrow,
+  Text,
+  TextSmall,
+  Row,
+  Column,
+} from "@blowfish/ui/core";
 import { WarningNotice } from "./WarningNotice";
-import { ExpandIcon } from "./icons/ExpandArrow";
+import { ExpandIcon } from "@blowfish/ui/icons";
 import PauseDurationSelector, {
   DurationButton,
   PeriodDurationContainer,
 } from "~components/PauseDurationSelector";
-import Row from "~components/common/Row";
-
 import { useInterval, useLocalStorage } from "react-use";
 import {
   PAUSE_DURATIONS,
@@ -45,7 +50,6 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
-import { Column } from "~components/common/Column";
 import AssetImage from "./AssetImage";
 import AssetPrice from "./AssetPrice";
 import { containsPunycode, evmStateChangeHasImage } from "~utils/utils";
@@ -144,16 +148,17 @@ const AdvancedDetailsToggleButton = styled(BaseButton)`
   padding: 3px;
   margin: -3px;
   cursor: pointer;
+  font-weight: 500;
+`;
 
-  ${Text} {
-    font-weight: 500;
-    margin-right: 5px;
-  }
+const StyledExpandIcon = styled(ExpandIcon)`
+  margin-left: 5px;
 `;
 
 const TitleText = styled(Text)`
   font-weight: 500;
   text-transform: capitalize;
+  font-size: 16px;
 `;
 
 const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
@@ -214,7 +219,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >
           <Text semiBold>Advanced Details</Text>
-          <ExpandIcon expanded={showAdvancedDetails} />
+          <StyledExpandIcon expanded={showAdvancedDetails} />
         </AdvancedDetailsToggleButton>
         <LinkWithArrow href={BLOWFISH_FEEDBACK_URL}>
           <Text>Feedback</Text>

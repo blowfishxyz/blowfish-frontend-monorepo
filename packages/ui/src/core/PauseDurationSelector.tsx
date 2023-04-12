@@ -1,7 +1,7 @@
+import { styled, keyframes } from "styled-components";
+import { SmallButtonPrimary } from "./buttons/MainButtons";
+import { Row } from "./Row";
 import { PauseDuration } from "@blowfish/hooks";
-import { Row, SmallButtonPrimary } from "@blowfish/ui/core";
-import React from "react";
-import styled, { keyframes } from "styled-components";
 
 const fadeIn = keyframes`
   to {
@@ -28,7 +28,7 @@ export const DurationButton = styled(SmallButtonPrimary)<{ index: number }>`
   animation-fill-mode: forwards;
 `;
 
-const PauseDurationSelector = ({
+export const PauseDurationSelector = ({
   onClick,
 }: {
   onClick: (period: PauseDuration) => void;
@@ -43,4 +43,3 @@ const PauseDurationSelector = ({
     </PeriodDurationContainer>
   );
 };
-export default PauseDurationSelector;

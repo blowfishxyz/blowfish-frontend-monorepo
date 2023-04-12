@@ -1,7 +1,7 @@
 import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
 
-import { PrimaryButton, SecondaryButton } from "../components/Buttons";
+import { PrimaryButton, SecondaryButton } from "@blowfish/ui/core";
 
 export default {
   title: "Buttons",

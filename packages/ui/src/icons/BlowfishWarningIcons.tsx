@@ -1,6 +1,7 @@
-import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";
 import { useTheme } from "styled-components";
+
+import type { WarningSeverity } from "@blowfish/utils/types";
 
 interface BlowfishWarningIconProps {
   className?: string;
@@ -14,8 +15,12 @@ const BlowfishWarningIcon: React.FC<BlowfishWarningIconProps> = ({
   severity,
 }) => {
   const theme = useTheme();
-  const color =
-    severity === "WARNING" ? theme.palette.yellow : theme.palette.red;
+  let color;
+
+  if (theme) {
+    color =
+      severity === "WARNING" ? theme.palette.yellow : theme.palette.red;
+  }
   return (
     <svg
       style={style}

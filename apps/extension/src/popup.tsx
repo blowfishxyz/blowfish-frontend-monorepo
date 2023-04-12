@@ -8,17 +8,26 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import type { BlowfishPausedOptionType } from "@blowfish/utils/types";
-import { BlowfishOption } from "@blowfish/utils/types";
+import {
+  Column,
+  PrimaryButton,
+  Row,
+  Text,
+  TextXL,
+  opacify,
+} from "@blowfish/ui/core";
+import { BlowfishIcon } from "@blowfish/ui/icons";
+import { transformDate } from "@blowfish/utils/helpers";
+import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
+} from "@blowfish/utils/types";
 
 import { useStorage } from "@plasmohq/storage/hook";
 
-import { PrimaryButton } from "~components/Buttons";
 import PauseDurationSelector from "~components/PauseDurationSelector";
 import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
-import { Column } from "~components/common/Column";
-import Row from "~components/common/Row";
 import { CloseIcon } from "~components/icons/CloseIcon";
 import { PauseIcon } from "~components/icons/PauseIcon";
 import { PlayIcon } from "~components/icons/PlayIcon";
@@ -26,12 +35,9 @@ import {
   BLOWFISH_EXTENSION_VERSION,
   IS_IMPERSONATION_AVAILABLE,
 } from "~config";
-import { opacify, transformDate } from "~utils/utils";
 
 import { PopupContainer } from "./components/PopupContainer";
 import { Providers } from "./components/Providers";
-import { Text, TextXL } from "./components/Typography";
-import { BlowfishIcon } from "./components/icons/BlowfishIcon";
 
 const StyledPopupContainer = styled(PopupContainer)`
   position: relative;
