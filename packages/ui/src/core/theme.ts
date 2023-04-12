@@ -1,6 +1,6 @@
 import type { Severity } from "@blowfish/utils/types";
 import { lighten } from "polished";
-import { opacify } from "../utils/opacify";
+import { opacify } from "./utils/opacify";
 
 const palette = {
   warningBackground: "#FFFCF2",
