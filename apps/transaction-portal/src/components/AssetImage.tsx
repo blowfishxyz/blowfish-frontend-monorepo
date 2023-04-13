@@ -45,6 +45,7 @@ const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
   border-radius: 50%;
   top: -10px;
   right: -10px;
+  box-sizing: initial;
   background: ${({ isPositiveEffect }) =>
     isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
 

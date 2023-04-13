@@ -33,6 +33,7 @@ interface TooltipOptions {
   placement?: Placement;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  shouldCloseOnOutsideClick?: boolean;
 }
 
 const useTooltip = ({
@@ -40,6 +41,7 @@ const useTooltip = ({
   placement = "top",
   open: controlledOpen,
   onOpenChange: setControlledOpen,
+  shouldCloseOnOutsideClick = true,
 }: TooltipOptions) => {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(initialOpen);
   const arrowRef = useRef(null);
@@ -70,7 +72,9 @@ const useTooltip = ({
     enabled: controlledOpen == null,
   });
 
-  const dismiss = useDismiss(context);
+  const dismiss = useDismiss(context, {
+    outsidePress: shouldCloseOnOutsideClick,
+  });
   const role = useRole(context, { role: "tooltip" });
   const interactions = useInteractions([hover, focus, dismiss, role]);
 
