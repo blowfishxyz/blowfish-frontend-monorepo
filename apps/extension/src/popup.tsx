@@ -43,15 +43,49 @@ const StyledPopupContainer = styled(PopupContainer)`
   position: relative;
   width: 392px;
   height: 600px;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+`;
+
+const Content = styled.div`
+  position: relative;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
+  overflow-y: auto;
+  width: 100%;
+  padding: 58px 20px 0;
+  box-sizing: border-box;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+`;
+
+const Header = styled(Row)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  padding: 20px 20px 8px;
+  box-sizing: border-box;
+  background-color: ${({ theme }) => theme.contextBackgroundColors["INFO"]};
 `;
 
 const WalletHeroImage = styled.img<{ isScanPaused: boolean }>`
-  padding: 20px 0;
+  margin-bottom: 20px;
   transition: all 0.2s linear;
   filter: ${({ isScanPaused }) => (isScanPaused ? `grayscale(1)` : `none`)};
 `;
@@ -190,58 +224,60 @@ const Popup: React.FC = () => {
   };
   return (
     <StyledPopupContainer>
-      <Row>
+      <Header>
         <StatusIndicator
           paused={isScanPaused ?? false}
           until={scanPausedUntil ?? null}
         />
         <ExtensionVersion>v.{BLOWFISH_EXTENSION_VERSION}</ExtensionVersion>
-      </Row>
-      <WalletHeroImage
-        src={walletHero}
-        alt="wallet"
-        width={160}
-        height={160}
-        isScanPaused={isScanPaused ?? false}
-      />
-      <Row gap="sm">
-        <BlowfishIcon />
-        <TextXL>Blowfish</TextXL>
-      </Row>
-      <Column flex={1}>
-        <StyledOl>
-          <Text as="li">Invoke a transaction on web3</Text>
-          <Text as="li">Check Blowfish before your wallet</Text>
-          <Text as="li">Confirm transaction with confidence</Text>
-        </StyledOl>
-        <ScannerActionsContainer gap="md">
-          <ScannerActionButton
-            paused={isScanPaused ?? false}
-            onClick={onActionClick}
-          >
-            {showDurationSelector ? (
-              <CloseIcon />
-            ) : isScanPaused ? (
-              <PlayIcon />
-            ) : (
-              <PauseIcon />
+      </Header>
+      <Content>
+        <WalletHeroImage
+          src={walletHero}
+          alt="wallet"
+          width={160}
+          height={160}
+          isScanPaused={isScanPaused ?? false}
+        />
+        <Row gap="sm">
+          <BlowfishIcon />
+          <TextXL>Blowfish</TextXL>
+        </Row>
+        <Column flex={1}>
+          <StyledOl>
+            <Text as="li">Invoke a transaction on web3</Text>
+            <Text as="li">Check Blowfish before your wallet</Text>
+            <Text as="li">Confirm transaction with confidence</Text>
+          </StyledOl>
+          <ScannerActionsContainer gap="md">
+            <ScannerActionButton
+              paused={isScanPaused ?? false}
+              onClick={onActionClick}
+            >
+              {showDurationSelector ? (
+                <CloseIcon />
+              ) : isScanPaused ? (
+                <PlayIcon />
+              ) : (
+                <PauseIcon />
+              )}
+            </ScannerActionButton>
+            {!showDurationSelector && (
+              <InfoContainer>
+                {isScanPaused && <Text>Click to start scanning</Text>}
+                {!isScanPaused && <Text>Click to pause scanning</Text>}
+              </InfoContainer>
             )}
-          </ScannerActionButton>
-          {!showDurationSelector && (
-            <InfoContainer>
-              {isScanPaused && <Text>Click to start scanning</Text>}
-              {!isScanPaused && <Text>Click to pause scanning</Text>}
-            </InfoContainer>
-          )}
-          {showDurationSelector && (
-            <PauseDurationSelector
-              onClick={(period) => onDurationSelect(period)}
-            />
-          )}
-        </ScannerActionsContainer>
-      </Column>
-      {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
-      <PopupFooter />
+            {showDurationSelector && (
+              <PauseDurationSelector
+                onClick={(period) => onDurationSelect(period)}
+              />
+            )}
+          </ScannerActionsContainer>
+        </Column>
+        {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
+        <PopupFooter />
+      </Content>
     </StyledPopupContainer>
   );
 };

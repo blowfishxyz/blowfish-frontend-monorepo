@@ -77,7 +77,6 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   position: relative;
   background-color: ${({ severity, theme }) =>
     theme.contextBackgroundColors[severity ?? "INFO"]};
-  padding: 48px 12px 12px 12px;
   min-height: 100vh;
   height: 100%;
   width: 100%;
