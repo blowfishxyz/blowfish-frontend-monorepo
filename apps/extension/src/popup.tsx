@@ -26,6 +26,7 @@ import {
 import { useStorage } from "@plasmohq/storage/hook";
 
 import PauseDurationSelector from "~components/PauseDurationSelector";
+import { CustomPortalUrl } from "~components/Popup/CustomPortalUrl";
 import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
 import { CloseIcon } from "~components/icons/CloseIcon";
@@ -33,6 +34,7 @@ import { PauseIcon } from "~components/icons/PauseIcon";
 import { PlayIcon } from "~components/icons/PlayIcon";
 import {
   BLOWFISH_EXTENSION_VERSION,
+  CUSTOM_PORTAL_URL_AVAILABLE,
   IS_IMPERSONATION_AVAILABLE,
 } from "~config";
 
@@ -276,6 +278,7 @@ const Popup: React.FC = () => {
           </ScannerActionsContainer>
         </Column>
         {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
+        {CUSTOM_PORTAL_URL_AVAILABLE && <CustomPortalUrl />}
         <PopupFooter />
       </Content>
     </StyledPopupContainer>

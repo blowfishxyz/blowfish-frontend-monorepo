@@ -18,9 +18,9 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
 import {
   getBlowfishImpersonationWallet,
+  getBlowfishPortalUrl,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
@@ -162,9 +162,9 @@ const processRequestBase = async (
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   logger.debug(message);
-
+  const portalUrl = (await getBlowfishPortalUrl()).url;
   const tab = await Browser.tabs.create({
-    url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}&chainId=${chainId}`,
+    url: `${portalUrl}/scan?id=${message.id}&chainId=${chainId}`,
     active: true,
   });
   const tabId = tab.id!;
