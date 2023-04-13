@@ -1,5 +1,4 @@
-import React from "react";
-import type { Preview } from "@storybook/react";
+import React from 'react'
 import type { StoryFn as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
 import { ThemeProvider } from "styled-components";
@@ -7,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import { GlobalStyle } from "../src/core/global";
 import { themes } from "../src/core/theme";
 
-export const preview: Preview = {
+export const preview = {
   parameters: {
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: {
@@ -19,7 +18,7 @@ export const preview: Preview = {
   },
 };
 
-export const decorators = [
+export const decorators = [ 
   withThemeFromJSXProvider({
     GlobalStyles: GlobalStyle,
   }),
@@ -29,3 +28,4 @@ export const decorators = [
     </ThemeProvider>
   ),
 ];
+

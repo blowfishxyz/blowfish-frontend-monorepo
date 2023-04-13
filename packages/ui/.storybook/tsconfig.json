@@ -2,7 +2,8 @@
     "compilerOptions": {
       "module": "commonjs",
       "target": "ES2017",
-      "esModuleInterop": true
+      "esModuleInterop": true,
+      "jsx": "react"
     }
   }
   
