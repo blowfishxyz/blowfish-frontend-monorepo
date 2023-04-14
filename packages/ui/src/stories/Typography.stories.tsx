@@ -8,7 +8,7 @@ export default {
 const TextTemplate: Story = () => <Text>Default Text</Text>;
 export const DefaultText = TextTemplate.bind({});
 
-const TextXLTemplate: Story = () => <TextXL>Extra Large Text</TextXL>;
+const TextXLTemplate: Story = () => <TextXL>Send 0.00001 ETH</TextXL>;
 export const DefaultTextXL = TextXLTemplate.bind({});
 
 const TextSmallTemplate: Story = () => (
