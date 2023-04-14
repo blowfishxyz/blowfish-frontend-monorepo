@@ -1,4 +1,4 @@
-import { SmallButtonPrimary, Text } from "@blowfish/ui/core";
+import { Row, SmallButtonPrimary, Text } from "@blowfish/ui/core";
 import React, { useState } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
@@ -59,11 +59,9 @@ const CustomPortalUrlInner: React.FC<{
     setState("success");
   };
 
-  console.log("@@ RENDER", state, customUrl, initialUrl, checkUrl(customUrl));
-
   return (
     <Wrapper>
-      <Row>
+      <Row gap="sm">
         <Text semiBold>Set Custom Protal URL</Text>
         <Toggle isActive={isEnabled} toggle={handleToggle} />
       </Row>
@@ -79,12 +77,7 @@ const CustomPortalUrlInner: React.FC<{
           />
           <SmallButtonPrimary
             type="submit"
-            disabled={
-              !isEnabled ||
-              customUrl === initialUrl ||
-              state !== "initial" ||
-              invalidUrl
-            }
+            disabled={!isEnabled || state !== "initial" || invalidUrl}
           >
             {state === "success" ? "Updated!" : "Confirm"}
           </SmallButtonPrimary>
@@ -102,12 +95,6 @@ function checkUrl(url: string) {
     return false;
   }
 }
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1em;
-`;
 
 const Wrapper = styled.div`
   display: flex;

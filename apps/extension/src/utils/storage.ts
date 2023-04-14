@@ -68,7 +68,7 @@ export const getBlowfishPortalUrl = async () => {
 
     return {
       url: fetched?.url ?? BLOWFISH_TRANSACTION_PORTAL_URL,
-      enabled: fetched ? fetched.enabled === true : false,
+      enabled: fetched ? fetched.enabled : false,
     };
   } catch (error) {
     return {
@@ -87,6 +87,6 @@ export const setBlowfishPortalUrl = async ({
 }) => {
   await storage.set(BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL, {
     url: url ?? BLOWFISH_TRANSACTION_PORTAL_URL,
-    enabled: !!enabled,
+    enabled,
   });
 };
