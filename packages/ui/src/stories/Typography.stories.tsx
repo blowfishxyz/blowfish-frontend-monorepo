@@ -21,5 +21,5 @@ const GrayTextTemplate: Story = () => (
 );
 export const DefaultGrayText = GrayTextTemplate.bind({});
 
-const RedTextTemplate: Story = () => <RedText>Red Text</RedText>;
+const RedTextTemplate: Story = () => <RedText>Send 0.00001 ETH</RedText>;
 export const DefaultRedText = RedTextTemplate.bind({});
