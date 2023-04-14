@@ -5,58 +5,51 @@ import useSWR from "swr";
 
 import { Input } from "~components/Input";
 import Toggle from "~components/Toggle";
+import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
 import { getBlowfishPortalUrl, setBlowfishPortalUrl } from "~utils/storage";
 
 export const CustomPortalUrl: React.FC = () => {
-  const { data } = useSWR("customPortalUrl", getBlowfishPortalUrl);
+  const { data: url } = useSWR("customPortalUrl", getBlowfishPortalUrl);
 
-  if (!data) return null;
+  if (!url) return null;
 
-  return (
-    <CustomPortalUrlInner initialUrl={data.url} initialEnabled={data.enabled} />
-  );
+  return <CustomPortalUrlInner initialUrl={url} />;
 };
 
 const CustomPortalUrlInner: React.FC<{
   initialUrl: string;
-  initialEnabled: boolean;
-}> = ({ initialUrl, initialEnabled }) => {
+}> = ({ initialUrl }) => {
   const [customUrl, setCutomUrl] = useState(initialUrl);
 
-  const [isEnabled, setIsEnabled] = useState(initialEnabled);
-  const [state, setState] = useState<"success" | "initial">("initial");
+  const [isEnabled, setIsEnabled] = useState(
+    initialUrl !== BLOWFISH_TRANSACTION_PORTAL_URL
+  );
+  const [isOverriden, setIsOverriden] = useState(false);
   const invalidUrl = !checkUrl(customUrl);
 
   const handleToggle = () => {
     setIsEnabled((prev) => {
       const enabled = !prev;
-      setBlowfishPortalUrl({
-        enabled,
-        url: enabled ? customUrl : undefined,
-      });
+      setBlowfishPortalUrl(enabled ? customUrl : undefined);
       return enabled;
     });
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setCutomUrl(e.target.value);
-    if (state === "success") {
-      setState("initial");
+    if (isOverriden) {
+      setIsOverriden(false);
     }
   };
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
-    if (!isEnabled) {
+    if (!isEnabled || isOverriden) {
       return;
     }
 
-    if (state !== "initial") {
-      return;
-    }
-
-    setBlowfishPortalUrl({ url: customUrl, enabled: true });
-    setState("success");
+    setBlowfishPortalUrl(customUrl);
+    setIsOverriden(true);
   };
 
   return (
@@ -77,9 +70,9 @@ const CustomPortalUrlInner: React.FC<{
           />
           <SmallButtonPrimary
             type="submit"
-            disabled={!isEnabled || state !== "initial" || invalidUrl}
+            disabled={!isEnabled || isOverriden || invalidUrl}
           >
-            {state === "success" ? "Updated!" : "Confirm"}
+            {isOverriden ? "Updated!" : "Confirm"}
           </SmallButtonPrimary>
         </FormWrapper>
       )}
