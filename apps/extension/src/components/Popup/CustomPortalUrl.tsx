@@ -30,7 +30,9 @@ const CustomPortalUrlInner: React.FC<{
   const handleToggle = () => {
     setIsEnabled((prev) => {
       const enabled = !prev;
-      setBlowfishPortalUrl(enabled ? customUrl : undefined);
+      if (!enabled) {
+        setBlowfishPortalUrl(undefined);
+      }
       return enabled;
     });
   };

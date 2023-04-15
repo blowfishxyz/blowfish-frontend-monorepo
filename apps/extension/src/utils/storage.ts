@@ -4,7 +4,7 @@ import { Storage } from "@plasmohq/storage";
 
 import {
   BLOWFISH_TRANSACTION_PORTAL_URL,
-  CUSTOM_PORTAL_URL_AVAILABLE,
+  CUSTOM_PORTAL_URL_ENABLED,
 } from "~config";
 
 const PREFERENCES_UNSUPPORTED_CHAINS_DISMISSED_KEY =
@@ -59,7 +59,7 @@ export const setBlowfishImpersonationWallet = async (
 };
 
 export const getBlowfishPortalUrl = async () => {
-  if (!CUSTOM_PORTAL_URL_AVAILABLE) {
+  if (!CUSTOM_PORTAL_URL_ENABLED) {
     return BLOWFISH_TRANSACTION_PORTAL_URL;
   }
   try {
@@ -73,5 +73,13 @@ export const getBlowfishPortalUrl = async () => {
 };
 
 export const setBlowfishPortalUrl = async (url: string | undefined) => {
-  await storage.set(BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL, url);
+  if (!url) {
+    return storage.remove(
+      BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL
+    );
+  }
+  return storage.set(
+    BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL,
+    url
+  );
 };

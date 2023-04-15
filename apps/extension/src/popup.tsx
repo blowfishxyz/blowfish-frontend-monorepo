@@ -34,7 +34,7 @@ import { PauseIcon } from "~components/icons/PauseIcon";
 import { PlayIcon } from "~components/icons/PlayIcon";
 import {
   BLOWFISH_EXTENSION_VERSION,
-  CUSTOM_PORTAL_URL_AVAILABLE,
+  CUSTOM_PORTAL_URL_ENABLED,
   IS_IMPERSONATION_AVAILABLE,
 } from "~config";
 
@@ -278,7 +278,7 @@ const Popup: React.FC = () => {
           </ScannerActionsContainer>
         </Column>
         {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
-        {CUSTOM_PORTAL_URL_AVAILABLE && <CustomPortalUrl />}
+        {CUSTOM_PORTAL_URL_ENABLED && <CustomPortalUrl />}
         <PopupFooter />
       </Content>
     </StyledPopupContainer>
