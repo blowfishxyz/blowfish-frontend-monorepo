@@ -37,7 +37,7 @@ export const A = styled(AComponent)`
   color: ${(props) => props.theme.colors.primaryText};
 `;
 
-interface LinkWithArrowProps
+export interface LinkWithArrowProps
   extends React.PropsWithChildren<
     React.AnchorHTMLAttributes<HTMLAnchorElement>
   > {
@@ -65,7 +65,7 @@ export const LinkWithArrow = React.forwardRef<
 
 LinkWithArrow.displayName = "LinkWithArrow";
 
-interface BlockExplorerLinkProps
+export interface BlockExplorerLinkProps
   extends Omit<LinkWithArrowProps, "href">,
     BlockExplorerUrlOptions {}
 

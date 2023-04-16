@@ -6,7 +6,9 @@
   "private": true,
   "scripts": {
     "build": "rm -rf build && tsup",
-    "prepare": "pnpm run build"
+    "prepare": "pnpm run build",
+    "storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json start-storybook -p 6006",
+    "build-storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json build-storybook"
   },
   "dependencies": {
     "@blowfish/hooks": "*",
@@ -18,9 +20,20 @@
   },
   "devDependencies": {
     "@blowfish/tsconfig": "*",
+    "@storybook/addon-actions": "^6.5.16",
+    "@storybook/addon-essentials": "6.5.16",
+    "@storybook/addon-interactions": "6.5.16",
+    "@storybook/addon-links": "6.5.16",
+    "@storybook/addon-styling": "^0.3.1",
+    "@storybook/react": "6.5.16",
+    "@storybook/builder-webpack5": "^6.5.16",
+    "@storybook/manager-webpack5": "^6.5.16",
+    "@storybook/testing-library": "^0.0.13",
     "@types/node": "^18.15.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "18.0.11",
+    "prop-types": "^15.8.1",
+    "storybook": "6.5.16",
     "tsup": "^6.6.3",
     "typescript": "4.9.5"
   },
