@@ -1,13 +1,13 @@
+import { InfoIcon } from "@blowfish/ui/icons";
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
+import Decimal from "decimal.js";
 import styled from "styled-components";
-import { Text, Row } from "@blowfish/ui/core";
+import { Row, Text } from "@blowfish/ui/core";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "~components/common/Tooltip";
-import { InfoIcon } from "@blowfish/ui/icons";
-import Decimal from "decimal.js";
 import { U256_MAX_VALUE } from "~constants";
 
 const AssetPriceWrapper = styled(Row)`
@@ -25,11 +25,6 @@ const StyledInfoIcon = styled(InfoIcon)`
   margin-left: 8px;
   position: absolute;
   bottom: 0;
-`;
-
-const StyledRow = styled(Row)`
-  max-width: 270px;
-  text-align: center;
 `;
 
 interface AssetPriceProps {
@@ -91,13 +86,11 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
               <TooltipTrigger>
                 <StyledInfoIcon />
               </TooltipTrigger>
-              <TooltipContent>
-                <StyledRow>
-                  <Text>
-                    This value represents the <b>floor price</b> of the entire
-                    collection
-                  </Text>
-                </StyledRow>
+              <TooltipContent maxWidth={270}>
+                <Text>
+                  This value represents the <b>floor price</b> of the entire
+                  collection
+                </Text>
               </TooltipContent>
             </Tooltip>
           )}

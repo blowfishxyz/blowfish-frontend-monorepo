@@ -1,5 +1,22 @@
 // NOTE: Created from floating-ui's example of reusable tooltip component
 // https://codesandbox.io/s/xenodochial-grass-js3bo9?file=/src/App.tsx
+
+import { Placement, shift } from "@floating-ui/react";
+import {
+  FloatingArrow,
+  FloatingPortal,
+  arrow,
+  autoUpdate,
+  flip,
+  offset,
+  useDismiss,
+  useFloating,
+  useFocus,
+  useHover,
+  useInteractions,
+  useMergeRefs,
+  useRole,
+} from "@floating-ui/react";
 import {
   cloneElement,
   createContext,
@@ -10,22 +27,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { Placement, shift } from "@floating-ui/react";
-import {
-  arrow,
-  autoUpdate,
-  flip,
-  FloatingArrow,
-  FloatingPortal,
-  offset,
-  useDismiss,
-  useFloating,
-  useFocus,
-  useHover,
-  useInteractions,
-  useMergeRefs,
-  useRole,
-} from "@floating-ui/react";
 import styled from "styled-components";
 
 interface TooltipOptions {
@@ -155,41 +156,46 @@ const StyledTooltip = styled.div`
   padding: 8px 12px;
 `;
 
-export const TooltipContent = forwardRef<
-  HTMLDivElement,
-  React.HTMLProps<HTMLDivElement>
->(function TooltipContent(props, propRef) {
-  const context = useTooltipContext();
-  const ref = useMergeRefs([context.refs.setFloating, propRef]);
+type TooltipContentProps = React.HTMLProps<HTMLDivElement> & {
+  maxWidth?: number;
+};
 
-  return (
-    <FloatingPortal>
-      {context.open && (
-        <>
-          <StyledTooltip
-            ref={ref}
-            style={{
-              position: context.strategy,
-              top: context.y ?? 0,
-              left: context.x ?? 0,
-              visibility: context.x == null ? "hidden" : "visible",
-              ...props.style,
-            }}
-            {...context.getFloatingProps(props)}
-          >
-            {props.children}
-            <FloatingArrow
-              ref={context.arrowRef}
-              context={context.context}
-              width={12}
-              height={5}
-              fill="white"
-              stroke="rgba(0, 0, 0, 0.1)"
-              strokeWidth={1}
-            />
-          </StyledTooltip>
-        </>
-      )}
-    </FloatingPortal>
-  );
-});
+export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
+  function TooltipContent(props, propRef) {
+    const { style, children, maxWidth, ...rest } = props;
+    const context = useTooltipContext();
+    const ref = useMergeRefs([context.refs.setFloating, propRef]);
+
+    return (
+      <FloatingPortal>
+        {context.open && (
+          <>
+            <StyledTooltip
+              ref={ref}
+              {...context.getFloatingProps(rest)}
+              style={{
+                position: context.strategy,
+                top: context.y ?? 0,
+                left: context.x ?? 0,
+                visibility: context.x == null ? "hidden" : "visible",
+                maxWidth: `${maxWidth ?? 240}px`,
+                ...style,
+              }}
+            >
+              {children}
+              <FloatingArrow
+                ref={context.arrowRef}
+                context={context.context}
+                width={12}
+                height={5}
+                fill="white"
+                stroke="rgba(0, 0, 0, 0.1)"
+                strokeWidth={1}
+              />
+            </StyledTooltip>
+          </>
+        )}
+      </FloatingPortal>
+    );
+  }
+);

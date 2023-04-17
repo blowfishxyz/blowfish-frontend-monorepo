@@ -1,58 +1,56 @@
-import { BLOWFISH_FEEDBACK_URL } from "~constants";
-import dynamic from "next/dynamic";
-import {
-  ChainFamily,
-  ChainNetwork,
-  EvmMessageScanResult,
-  EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
-import type { NftStateChangeWithTokenId } from "@blowfish/utils/types";
-import {
-  BlowfishOption,
-  BlowfishPausedOptionType,
-  DappRequest,
-  isSignMessageRequest,
-  isSignTypedDataRequest,
-  isTransactionRequest,
-  SignTypedDataVersion,
-  TransactionPayload,
-} from "@blowfish/utils/types";
-
-import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
-import { Decimal } from "decimal.js";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
-
-import { isNativeAsset, shortenHex } from "@blowfish/utils/hex";
-import { logger } from "@blowfish/utils/logger";
-import {
-  BaseButton,
-  BlockExplorerLink,
-  LinkWithArrow,
-  Text,
-  TextSmall,
-  Row,
-  Column,
-} from "@blowfish/ui/core";
-import { WarningNotice } from "./WarningNotice";
-import { ExpandIcon } from "@blowfish/ui/icons";
-import PauseDurationSelector, {
-  DurationButton,
-  PeriodDurationContainer,
-} from "~components/PauseDurationSelector";
-import { useInterval, useLocalStorage } from "react-use";
 import {
   PAUSE_DURATIONS,
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
 import {
+  BaseButton,
+  BlockExplorerLink,
+  Column,
+  LinkWithArrow,
+  Row,
+  Text,
+  TextSmall,
+} from "@blowfish/ui/core";
+import { ExpandIcon } from "@blowfish/ui/icons";
+import {
+  ChainFamily,
+  ChainNetwork,
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
+} from "@blowfish/utils/BlowfishApiClient";
+import { shortenHex } from "@blowfish/utils/hex";
+import { logger } from "@blowfish/utils/logger";
+import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
+import {
+  BlowfishOption,
+  BlowfishPausedOptionType,
+  DappRequest,
+  SignTypedDataVersion,
+  TransactionPayload,
+  isSignMessageRequest,
+  isSignTypedDataRequest,
+  isTransactionRequest,
+} from "@blowfish/utils/types";
+import { Decimal } from "decimal.js";
+import dynamic from "next/dynamic";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useInterval, useLocalStorage } from "react-use";
+import styled from "styled-components";
+
+import PauseDurationSelector, {
+  DurationButton,
+  PeriodDurationContainer,
+} from "~components/PauseDurationSelector";
+import { EnrichedSimulationResult } from "~components/simulation-results/EnrichedSimulationResult";
+import { BLOWFISH_FEEDBACK_URL } from "~constants";
+import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
-import AssetImage from "./AssetImage";
-import AssetPrice from "./AssetPrice";
 import { containsPunycode, evmStateChangeHasImage } from "~utils/utils";
+
+import { WarningNotice } from "./WarningNotice";
 
 const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
@@ -124,23 +122,13 @@ const PauseScanningButton = styled(BaseButton)`
   font-size: 12px;
 `;
 
-const SimulationResultsHeader = styled(Row)<{
+type SimulationResultsHeaderProps = {
   evmStateChangeWithImage: boolean;
-}>`
+};
+
+const SimulationResultsHeader = styled(Row)<SimulationResultsHeaderProps>`
   margin-bottom: ${({ evmStateChangeWithImage }) =>
     evmStateChangeWithImage ? "16px" : "8px"};
-`;
-
-const StateChangeRow = styled(Row)`
-  gap: 12px;
-
-  & + & {
-    margin-top: 11px;
-  }
-`;
-
-const StateChangeTextBlock = styled.div`
-  display: flex;
 `;
 
 const AdvancedDetailsToggleButton = styled(BaseButton)`
@@ -272,26 +260,8 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     getPauseResumeSelectionStatus();
   }, 3000);
 
-  const expectedStateChangesProcessed = useMemo(
-    () =>
-      scanResults?.simulationResults?.expectedStateChanges.map(
-        (expectedStateChange) => {
-          const { amount } = expectedStateChange.rawInfo.data;
-          let diff;
-          if (typeof amount === "object") {
-            diff = new Decimal(amount.before).sub(amount.after);
-          } else {
-            diff = new Decimal(amount);
-          }
-
-          return {
-            ...expectedStateChange,
-            diff,
-          };
-        }
-      ),
-    [scanResults?.simulationResults?.expectedStateChanges]
-  );
+  const expectedStateChanges =
+    scanResults?.simulationResults?.expectedStateChanges;
 
   useEffect(() => {
     if (scanResults.simulationResults == null) {
@@ -472,58 +442,25 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             </Text>
           </Section>
         )}
-        {expectedStateChangesProcessed &&
-        expectedStateChangesProcessed?.length > 0 ? (
+        {expectedStateChanges && expectedStateChanges.length > 0 ? (
           <Section borderBottom>
             <SimulationResultsHeader
               evmStateChangeWithImage={evmStateChangeHasImage(
-                expectedStateChangesProcessed[0]?.rawInfo.kind
+                expectedStateChanges[0]?.rawInfo.kind
               )}
             >
               <TextSmall secondary>Simulation Results</TextSmall>
             </SimulationResultsHeader>
-            {expectedStateChangesProcessed?.map((stateChange, i) => {
-              const address = stateChange.rawInfo.data.contract.address;
-              const { kind } = stateChange.rawInfo;
-              const isApproval = kind.includes("APPROVAL");
-              const isNft = kind.includes("ERC721") || kind.includes("ERC1155");
-              let nftTokenId: string | undefined;
-              if (isNft) {
-                const nftData = stateChange.rawInfo
-                  .data as NftStateChangeWithTokenId;
-                nftTokenId = nftData.tokenId || undefined;
-              }
-
-              // NOTE(kimpers): We define positive as decreased approval or increased balance
-              const isPositiveEffect =
-                (isApproval && stateChange.diff.gt(0)) ||
-                (!isApproval && stateChange.diff.lt(0));
-              // TODO(kimpers): What to link to for native assets?
-              return (
-                <StateChangeRow key={`state-change-${i}`}>
-                  <AssetImage
-                    stateChange={stateChange.rawInfo}
-                    isPositiveEffect={isPositiveEffect}
-                  />
-                  <StateChangeTextBlock>
-                    <Column>
-                      <StateChangeText isPositiveEffect={isPositiveEffect}>
-                        {stateChange.humanReadableDiff}
-                      </StateChangeText>
-                      <AssetPrice stateChange={stateChange.rawInfo} />
-                    </Column>
-                    {!isNativeAsset(address) && (
-                      <BlockExplorerLink
-                        address={address}
-                        chainFamily={chainFamily}
-                        chainNetwork={chainNetwork}
-                        nftTokenId={nftTokenId}
-                      ></BlockExplorerLink>
-                    )}
-                  </StateChangeTextBlock>
-                </StateChangeRow>
-              );
-            })}
+            <Column gap="md">
+              {expectedStateChanges.map((stateChange, i) => (
+                <EnrichedSimulationResult
+                  stateChange={stateChange}
+                  key={`state-change-${i}`}
+                  chainFamily={chainFamily}
+                  chainNetwork={chainNetwork}
+                />
+              ))}
+            </Column>
           </Section>
         ) : (
           <Section borderBottom>
