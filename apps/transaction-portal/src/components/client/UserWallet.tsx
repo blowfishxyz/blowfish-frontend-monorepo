@@ -1,8 +1,6 @@
+import { Column, Row, Text } from "@blowfish/ui/core";
 import { ConnectKitButton, ChainIcon } from "connectkit";
 import styled from "styled-components";
-import { Column } from "~components/common/Column";
-import { Text } from "~components/Typography";
-import Row from "~components/common/Row";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { shortenEnsName } from "~utils/utils";
 
@@ -39,7 +37,8 @@ const ChainContainer = styled(Row)`
 const AddressColumn = styled(Column)`
   text-align: left;
   line-height: 17px;
-  ${Text}:nth-child(2) {
+
+  span:nth-child(2) {
     opacity: 0.5;
     font-size: 11px;
     line-height: 13px;

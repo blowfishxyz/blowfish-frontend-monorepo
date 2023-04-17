@@ -1,5 +1,5 @@
+import { PrimaryButton } from "@blowfish/ui/core";
 import { ConnectKitButton } from "connectkit";
-import { PrimaryButton } from "~components/Buttons";
 
 const SimpleConnectButton = () => {
   return (

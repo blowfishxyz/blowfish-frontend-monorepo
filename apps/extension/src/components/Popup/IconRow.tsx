@@ -1,8 +1,7 @@
+import { TextSmall, UnstyledA } from "@blowfish/ui/core";
 import React from "react";
 import styled from "styled-components";
 
-import { UnstyledA } from "~components/Links";
-import { TextSmall } from "~components/Typography";
 import {
   BLOWFISH_FEEDBACK_URL,
   BLOWFISH_TWITTER_URL,
@@ -76,9 +75,6 @@ const BottomLink = styled(UnstyledA)`
 `;
 
 const IconRow = styled.div`
-  bottom: 0;
-  left: 0;
-  right: 0;
   height: 32px;
   display: flex;
   gap: 16px;
@@ -91,22 +87,31 @@ const IconRow = styled.div`
   }
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-bottom: 20px;
+  background-color: ${({ theme }) => theme.contextBackgroundColors["INFO"]};
+`;
+
 const PopupFooter = () => {
   return (
-    <IconRow>
-      <BottomLink href={BLOWFISH_WEBSITE_URL} target="_blank" rel="noopener">
-        <WebsiteIcon />
-        <TextSmall>Website</TextSmall>
-      </BottomLink>
-      <BottomLink href={BLOWFISH_TWITTER_URL} target="_blank" rel="noopener">
-        <TwitterIcon />
-        <TextSmall>Twitter</TextSmall>
-      </BottomLink>
-      <BottomLink href={BLOWFISH_FEEDBACK_URL} target="_blank" rel="noopener">
-        <ContactIcon />
-        <TextSmall>Feedback</TextSmall>
-      </BottomLink>
-    </IconRow>
+    <Wrapper>
+      <IconRow>
+        <BottomLink href={BLOWFISH_WEBSITE_URL} target="_blank" rel="noopener">
+          <WebsiteIcon />
+          <TextSmall>Website</TextSmall>
+        </BottomLink>
+        <BottomLink href={BLOWFISH_TWITTER_URL} target="_blank" rel="noopener">
+          <TwitterIcon />
+          <TextSmall>Twitter</TextSmall>
+        </BottomLink>
+        <BottomLink href={BLOWFISH_FEEDBACK_URL} target="_blank" rel="noopener">
+          <ContactIcon />
+          <TextSmall>Feedback</TextSmall>
+        </BottomLink>
+      </IconRow>
+    </Wrapper>
   );
 };
 

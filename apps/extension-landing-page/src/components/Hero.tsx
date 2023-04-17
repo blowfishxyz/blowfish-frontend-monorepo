@@ -1,17 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { breakpoint } from "../utils/breakpoints";
-import { PrimaryButton } from "../components/Buttons";
+import { device } from "@blowfish/ui/core";
 import {
   EthereumIcon,
   PolygonIcon,
   BnbChainIcon,
   ArbitrumIcon,
   OptimismIcon,
-} from "./icons/ChainIcons";
+} from "@blowfish/ui/icons";
 import { CHROME_EXTENSION_STORE_URL } from "../config";
-import { TextSmall } from "./Typography";
+import { TextSmall, PrimaryButton } from "@blowfish/ui/core";
 
 const H1 = styled.h1`
   font-size: 40px;
@@ -21,11 +20,11 @@ const H1 = styled.h1`
   letter-spacing: -0.02em;
   margin-top: 15px;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     font-size: 55px;
     margin-top: 43px;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     font-size: 65px;
     margin-top: 43px;
   }
@@ -33,12 +32,12 @@ const H1 = styled.h1`
 const HeroContainer = styled.div`
   padding-top: 10px;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     display: flex;
     justify-content: space-between;
     padding-top: 0px;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     display: flex;
     justify-content: space-between;
     padding-top: 0px;
@@ -48,10 +47,10 @@ const HeroSide = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     padding-left: 70px;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     padding-left: 70px;
   }
 `;
@@ -59,10 +58,10 @@ const LeftSide = styled.div`
   flex: 1;
   display: none;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     display: block;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     display: block;
   }
 `;
@@ -75,10 +74,10 @@ const Description = styled.div`
   line-height: 34px;
   letter-spacing: 0em;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     font-size: 18px;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     font-size: 22px;
   }
 `;
@@ -86,10 +85,10 @@ const MobileImage = styled.div`
   display: block;
   padding-bottom: 20px;
 
-  @media only screen and ${breakpoint.device.md} {
+  @media only screen and (${device.md}) {
     display: none;
   }
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     display: none;
   }
 `;
@@ -106,10 +105,10 @@ const IconGroup = styled.div`
     width: auto;
     height: 16px;
 
-    @media only screen and ${breakpoint.device.md} {
+    @media only screen and (${device.md}) {
       height: 43px;
     }
-    @media only screen and ${breakpoint.device.lg} {
+    @media only screen and (${device.lg}) {
       height: 43px;
     }
   }
@@ -120,7 +119,7 @@ const BrowserSupportNotice = styled(TextSmall)`
   font-size: 14px;
   line-height: 16px;
 
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     text-align: center;
   }
 `;
@@ -129,7 +128,7 @@ const InstallLink = styled.a.attrs({ target: "_blank", rel: "noopener" })`
   max-width: 400px;
   width: 100%;
   margin-top: 20px;
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${device.lg}) {
     align-self: center;
   }
 `;

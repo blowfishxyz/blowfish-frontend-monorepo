@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { PrimaryButton, SecondaryButton } from "~components/Buttons";
 import { OnboardingStep } from "~components/OnboardingWizard";
 import { breakpoint } from "~utils/breakpoints";
 import SimpleConnectButton from "~components/SimpleConnectButton";
 import { useAccount } from "wagmi";
+import { PrimaryButton, SecondaryButton } from "@blowfish/ui/core";
 
 const ButtonRow = styled.div`
   display: grid;

@@ -25,6 +25,7 @@ import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { sendAbort, sendResult } from "~utils/messages";
+import { logger } from "@blowfish/utils/logger";
 import {
   actionToSeverity,
   isSignMessageRequest,
@@ -33,7 +34,6 @@ import {
   Severity,
   SignTypedDataVersion,
 } from "@blowfish/utils/types";
-import { logger } from "~utils/logger";
 import { useGetRequestParams } from "~hooks/useGetRequestParams";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`

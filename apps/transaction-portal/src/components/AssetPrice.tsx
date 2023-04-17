@@ -1,13 +1,12 @@
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 import styled from "styled-components";
-import { Text } from "~components/Typography";
+import { Text, Row } from "@blowfish/ui/core";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "~components/common/Tooltip";
-import Row from "~components/common/Row";
-import { InfoIcon } from "~components/icons/InfoIcon";
+import { InfoIcon } from "@blowfish/ui/icons";
 import Decimal from "decimal.js";
 import { U256_MAX_VALUE } from "~constants";
 

@@ -1,18 +1,8 @@
-import Row from "~components/common/Row";
-import { Column } from "~components/common/Column";
-import { breakpoint } from "~utils/breakpoints";
-import { Text, TextXL } from "~components/Typography";
-import { PrimaryButton } from "~components/Buttons";
 import styled, { css, keyframes } from "styled-components";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import {
-  ArbitrumIcon,
-  BnbChainIcon,
-  EthereumIcon,
-  PolygonIcon,
-} from "~components/icons/ChainIcons";
+
 import {
   Tooltip,
   TooltipContent,
@@ -21,6 +11,14 @@ import {
 import { useTimeout } from "react-use";
 import dynamic from "next/dynamic";
 import UserWallet from "./client/UserWallet";
+import { Column, PrimaryButton, Row, Text, TextXL } from "@blowfish/ui/core";
+import { breakpoint } from "~utils/breakpoints";
+import {
+  ArbitrumIcon,
+  BnbChainIcon,
+  EthereumIcon,
+  PolygonIcon,
+} from "@blowfish/ui/icons";
 
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,

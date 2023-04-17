@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@blowfish/hooks": "workspace:*",
+    "@blowfish/ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@floating-ui/react": "^0.22.3",
@@ -36,7 +37,7 @@
     "react-is": "^18.2.0",
     "react-json-view": "^1.21.3",
     "react-use": "^17.4.0",
-    "styled-components": "^5.3.8",
+    "styled-components": "6.0.0-beta.14",
     "swr": "^2.0.4",
     "wagmi": "^0.12.1"
   },
@@ -57,7 +58,6 @@
     "@types/qs": "^6.9.7",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "eslint": "8.35.0",

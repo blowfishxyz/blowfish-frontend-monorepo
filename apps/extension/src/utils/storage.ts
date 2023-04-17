@@ -2,6 +2,11 @@ import { BlowfishOption } from "@blowfish/utils/types";
 
 import { Storage } from "@plasmohq/storage";
 
+import {
+  BLOWFISH_TRANSACTION_PORTAL_URL,
+  CUSTOM_PORTAL_URL_ENABLED,
+} from "~config";
+
 const PREFERENCES_UNSUPPORTED_CHAINS_DISMISSED_KEY =
   "PREFERENCES_UNSUPPORTED_CHAINS_DISMISSED";
 
@@ -51,4 +56,30 @@ export const setBlowfishImpersonationWallet = async (
     address,
     ens,
   });
+};
+
+export const getBlowfishPortalUrl = async () => {
+  if (!CUSTOM_PORTAL_URL_ENABLED) {
+    return BLOWFISH_TRANSACTION_PORTAL_URL;
+  }
+  try {
+    const url = await storage.get<string | undefined>(
+      BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL
+    );
+    return url || BLOWFISH_TRANSACTION_PORTAL_URL;
+  } catch (error) {
+    return BLOWFISH_TRANSACTION_PORTAL_URL;
+  }
+};
+
+export const setBlowfishPortalUrl = async (url: string | undefined) => {
+  if (!url) {
+    return storage.remove(
+      BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL
+    );
+  }
+  return storage.set(
+    BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL,
+    url
+  );
 };

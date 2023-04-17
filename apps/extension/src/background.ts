@@ -1,3 +1,4 @@
+import { logger } from "@blowfish/utils/logger";
 import {
   BlowfishOption,
   BlowfishOptionKey,
@@ -17,16 +18,16 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import { BLOWFISH_TRANSACTION_PORTAL_URL } from "~config";
-import { chainIdToSupportedChainMapping } from "~utils/constants";
-import { logger } from "~utils/logger";
-import { createRawMessage, postResponseToPort } from "~utils/messages";
 import {
   getBlowfishImpersonationWallet,
+  getBlowfishPortalUrl,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
 } from "~utils/storage";
+
+import { chainIdToSupportedChainMapping } from "./utils/constants";
+import { createRawMessage, postResponseToPort } from "./utils/messages";
 
 logger.debug("BACKGROUND RUNNING");
 
@@ -175,9 +176,9 @@ const processRequestBase = async (
 
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   logger.debug(message);
-
+  const portalUrl = await getBlowfishPortalUrl();
   const tab = await Browser.tabs.create({
-    url: `${BLOWFISH_TRANSACTION_PORTAL_URL}/scan?id=${message.id}&chainId=${chainId}`,
+    url: `${portalUrl}/scan?id=${message.id}&chainId=${chainId}`,
     active: true,
   });
   const tabId = tab.id!;

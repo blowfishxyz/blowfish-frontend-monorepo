@@ -1,5 +1,4 @@
-import { BlowfishIcon } from "~components/icons/BlowfishIcon";
-import { ArrowRightIcon } from "~components/icons/ArrowRightIcon";
+import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 import styled, { css } from "styled-components";
 import Image from "next/image";

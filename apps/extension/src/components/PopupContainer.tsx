@@ -1,19 +1,18 @@
+import { TextSmall } from "@blowfish/ui/core";
+import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
 import type {
   ChainFamily,
   ChainNetwork,
 } from "@blowfish/utils/BlowfishApiClient";
+import { shortenHex } from "@blowfish/utils/hex";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import { shortenHex } from "../utils/hex";
 import {
   REGULAR_BOTTOM_MENU_HEIGHT,
   SLIM_BOTTOM_MENU_HEIGHT,
 } from "./BottomMenus";
-import { TextSmall } from "./Typography";
-import { EthereumIcon, PolygonIcon } from "./icons/ChainIcons";
-import { WalletIcon } from "./icons/WalletIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
@@ -78,7 +77,6 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   position: relative;
   background-color: ${({ severity, theme }) =>
     theme.contextBackgroundColors[severity ?? "INFO"]};
-  padding: 48px 12px 12px 12px;
   min-height: 100vh;
   height: 100%;
   width: 100%;
