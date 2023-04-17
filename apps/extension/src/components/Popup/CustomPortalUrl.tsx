@@ -19,7 +19,7 @@ export const CustomPortalUrl: React.FC = () => {
 const CustomPortalUrlInner: React.FC<{
   initialUrl: string;
 }> = ({ initialUrl }) => {
-  const [customUrl, setCutomUrl] = useState(initialUrl);
+  const [customUrl, setCustomUrl] = useState(initialUrl);
 
   const [isEnabled, setIsEnabled] = useState(
     initialUrl !== BLOWFISH_TRANSACTION_PORTAL_URL
@@ -38,7 +38,7 @@ const CustomPortalUrlInner: React.FC<{
   };
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setCutomUrl(e.target.value);
+    setCustomUrl(e.target.value);
     if (isOverriden) {
       setIsOverriden(false);
     }
