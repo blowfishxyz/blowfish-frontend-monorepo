@@ -1,8 +1,8 @@
 import type {
   Action,
-  Erc1155TransferData,
   Erc721ApprovalData,
   Erc721TransferData,
+  Erc1155TransferData,
   SignTypedDataPayload,
 } from "./BlowfishApiClient";
 
@@ -172,6 +172,7 @@ export interface TypedDataV1Field {
 export enum BlowfishOption {
   PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED",
   PREFERENCES_BLOWFISH_IMPERSONATION_WALLET = "PREFERENCES_BLOWFISH_IMPERSONATION_WALLET",
+  PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL = "PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL",
 }
 
 export type BlowfishPausedOptionType = {
@@ -248,4 +249,3 @@ export type NftStateChangeWithTokenId =
   | Erc721TransferData
   | Erc1155TransferData
   | Erc721ApprovalData;
-

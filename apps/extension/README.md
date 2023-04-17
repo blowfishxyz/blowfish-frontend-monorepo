@@ -22,7 +22,8 @@ You can either develop UI components separately with [Storybook](https://storybo
 
 1. Copy `default.env` to `.env.development` and `.env.production`
    1. `PLASMO_PUBLIC_BLOWFISH_API_BASE_URL` Blowfish API URL
-   2. `PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE` can be used to impersonate an account in development
+   1. `PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE` can be used to impersonate an account in development
+   1. `PLASMO_PUBLIC_BLOWFISH_WALLET_PORTAL_URL_OVERRIDE_ENABLED` can be used to override the portal URL (`PLASMO_PUBLIC_BLOWFISH_TRANSACTION_PORTAL_URL`) in development
 1. Install dependencies with `pnpm install`
 1. Run the local development environment with `pnpm dev`
 1. Install `Metamask` into your Chrome browser. You can import our testing wallet seed phrase which is available in 1Password under `Seedphrase Development & Scam evaluation EVM`
