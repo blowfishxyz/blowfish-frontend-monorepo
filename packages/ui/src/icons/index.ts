@@ -8,3 +8,4 @@ export * from "./ChainIcons";
 export * from "./BrowserIcons";
 export * from "./BlowfishWarningIcons";
 export * from "./InfoIcon";
+export * from "./VerifiedIcon";

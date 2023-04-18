@@ -1,4 +1,5 @@
 import { BlockExplorerLink, Text } from "@blowfish/ui/core";
+import { VerifiedIcon } from "@blowfish/ui/icons";
 import {
   AssetData,
   ChainFamily,
@@ -113,6 +114,7 @@ const EnhancedCurrencySymbol: React.FC<{
           hideArrow
         >
           {symbol}
+          {verified && <Icon />}
         </CurrencySymbol>
       </TooltipTrigger>
       <TooltipContent>{tooltipText}</TooltipContent>
@@ -125,8 +127,15 @@ function nameToText(name: string) {
 }
 
 const CurrencySymbol = styled(BlockExplorerLink)`
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
   text-decoration: underline;
   color: inherit;
+`;
+
+const Icon = styled(VerifiedIcon)`
+  width: 12px;
+  height: 12px;
+  margin-left: 2px;
 `;

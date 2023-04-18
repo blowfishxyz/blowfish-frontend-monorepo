@@ -206,3 +206,34 @@ export const permitErc20NoExpiration: EvmExpectedStateChange = {
     },
   },
 };
+
+export const erc20UnverifedTransfer: EvmExpectedStateChange = {
+  humanReadableDiff: "Receive 12 SQUID",
+  rawInfo: {
+    kind: "ERC20_TRANSFER",
+    data: {
+      symbol: "SQUID",
+      name: "Squid DAO Governance Token",
+      decimals: 6,
+      amount: {
+        before: "0",
+        after: "12000000",
+      },
+      contract: {
+        kind: "ACCOUNT",
+        address: "0x21ad647b8F4Fe333212e735bfC1F36B4941E6Ad2",
+      },
+      asset: {
+        address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        symbol: "SQUID",
+        name: "Squid DAO Governance Token",
+        decimals: 6,
+        verified: false,
+        lists: [],
+        imageUrl: "",
+        price: null,
+      },
+      assetPrice: null,
+    },
+  },
+};

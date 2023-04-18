@@ -61,3 +61,10 @@ export const SendErc721 = EnrichedSimulationResultComponent.bind({});
 SendErc721.args = {
   stateChange: stateChangesMap.sendErc721,
 };
+
+export const Erc20UnverifedTransfer = EnrichedSimulationResultComponent.bind(
+  {}
+);
+Erc20UnverifedTransfer.args = {
+  stateChange: stateChangesMap.erc20UnverifedTransfer,
+};
