@@ -130,7 +130,7 @@ const CurrencySymbol = styled(BlockExplorerLink)`
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  text-decoration: underline;
+  border-bottom: 1.5px solid currentColor;
   color: inherit;
 `;
 
