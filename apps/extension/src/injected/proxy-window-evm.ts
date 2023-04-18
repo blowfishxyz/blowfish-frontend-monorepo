@@ -553,7 +553,9 @@ if (IS_IMPERSONATION_AVAILABLE) {
           BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
       ) {
         impersonatingAddress = message.data.value;
-        window.ethereum.selectedAddress = impersonatingAddress;
+        if (impersonatingAddress) {
+          window.ethereum.selectedAddress = impersonatingAddress;
+        }
       }
     }
   );
