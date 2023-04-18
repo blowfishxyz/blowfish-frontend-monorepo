@@ -67,7 +67,7 @@ const EnhancedCurrencySymbol: React.FC<{
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }> = ({ asset, chainFamily, chainNetwork }) => {
-  const { symbol, verified, address, lists } = asset;
+  const { symbol, verified, address, lists = [] } = asset;
 
   const tooltipText = useMemo(() => {
     if (!verified) {
