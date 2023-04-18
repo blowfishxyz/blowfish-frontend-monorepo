@@ -1,4 +1,4 @@
-import styled, { css, keyframes } from "styled-components";
+import styled, { css } from "styled-components";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -10,8 +10,14 @@ import {
 } from "~components/common/Tooltip";
 import { useTimeout } from "react-use";
 import dynamic from "next/dynamic";
-import UserWallet from "./client/UserWallet";
-import { Column, PrimaryButton, Row, Text, TextXL } from "@blowfish/ui/core";
+import {
+  Column,
+  fadeIn,
+  PrimaryButton,
+  Row,
+  Text,
+  TextXL,
+} from "@blowfish/ui/core";
 import { breakpoint } from "~utils/breakpoints";
 import {
   ArbitrumIcon,
@@ -19,6 +25,7 @@ import {
   EthereumIcon,
   PolygonIcon,
 } from "@blowfish/ui/icons";
+import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,
@@ -142,17 +149,6 @@ const CenterColumn = styled(Column)`
 
   img {
     border-radius: 12px;
-  }
-`;
-
-//todo move to ui
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
   }
 `;
 
@@ -298,7 +294,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.ConnectWallet) {
     content = (
       <CenterColumn gap="lg">
-        <UserWallet />
+        <UserWalletConnectKitWrapper />
       </CenterColumn>
     );
   }

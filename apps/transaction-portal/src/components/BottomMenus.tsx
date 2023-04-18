@@ -5,8 +5,8 @@ import {
   SecondaryButton,
   GrayText,
   RedText,
+  device,
 } from "@blowfish/ui/core";
-import { size } from "@blowfish/ui/core";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
@@ -17,7 +17,7 @@ interface BottomMenuWrapperProps {
 
 export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   position: absolute;
-  max-width: 576px;
+  max-width: calc(100% - 24px);
   margin: 0 auto;
   left: 0;
   right: 0;
@@ -41,8 +41,9 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
             margin-top: 24px;
           }
         `};
-  @media only screen and (max-width: ${size.md}) {
-    max-width: calc(100% - 24px);
+
+  @media only screen and (${device.md}) {
+    max-width: 576px;
   }
 `;
 

@@ -35,6 +35,10 @@ module.exports = {
         __dirname,
         "../src/__mocks__/CustomConnectkitButton"
       ),
+      "./UserWalletConnectKitWrapper": path.resolve(
+        __dirname,
+        "../src/__mocks__/UserWalletConnectKitWrapper"
+      ),
     };
 
     return config;
