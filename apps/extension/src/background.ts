@@ -40,8 +40,7 @@ const messageIdToPortAndMessageMapping: Map<
 > = new Map();
 
 // Add a form for uninstalls to see if we can improve the product.
-// TODO(andrei) - Add the real form
-Browser.runtime.setUninstallURL("https://airtable.com/shrfiHgViyh1OekUu");
+Browser.runtime.setUninstallURL("https://airtable.com/shr8iCQakDgw2HAkq");
 
 // Add an onboarding URL on install.
 Browser.runtime.onInstalled.addListener(async (obj) => {
