@@ -28,7 +28,7 @@ export const VerifiedTokenTooltip: React.FC<
   const { address, verified } = asset;
 
   return (
-    <Tooltip>
+    <Tooltip placement="bottom">
       <TooltipTrigger>
         <BlockExplorerLink
           chainFamily={chainFamily}
