@@ -1,11 +1,11 @@
-import React from "react";
 import {
-  chainToBlockExplorerUrl,
   BlockExplorerUrlOptions,
+  chainToBlockExplorerUrl,
 } from "@blowfish/utils/chains";
+import React from "react";
+import { styled } from "styled-components";
 
 import { ArrowIcon } from "../icons";
-import { styled } from "styled-components";
 
 const SyledArrowIcon = styled(ArrowIcon)`
   margin-left: 4px;
@@ -44,12 +44,13 @@ export interface LinkWithArrowProps
   className?: string;
   style?: React.CSSProperties;
   href: string;
+  hideArrow?: boolean;
 }
 
 export const LinkWithArrow = React.forwardRef<
   HTMLAnchorElement,
   LinkWithArrowProps
->(({ className, style, href, children }, ref) => (
+>(({ className, style, href, children, hideArrow = false }, ref) => (
   <A
     className={className}
     style={style}
@@ -59,7 +60,7 @@ export const LinkWithArrow = React.forwardRef<
     ref={ref}
   >
     {children}
-    <SyledArrowIcon />
+    {!hideArrow && <SyledArrowIcon />}
   </A>
 ));
 
