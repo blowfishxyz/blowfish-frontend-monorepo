@@ -12,7 +12,6 @@ import styled from "styled-components";
 
 import AssetImage from "~components/AssetImage";
 import AssetPrice from "~components/AssetPrice";
-import { ReadableDiff } from "~components/simulation-results/ReadableDiff";
 
 export const EnrichedSimulationResult: React.FC<{
   stateChange: EvmExpectedStateChange;
@@ -48,15 +47,13 @@ export const EnrichedSimulationResult: React.FC<{
       <AssetImage
         stateChange={stateChange.rawInfo}
         isPositiveEffect={isPositiveEffect}
+        chainFamily={chainFamily}
+        chainNetwork={chainNetwork}
       />
       <StateChangeTextBlock>
         <Column>
           <StateChangeText isPositiveEffect={isPositiveEffect}>
-            <ReadableDiff
-              stateChange={stateChange}
-              chainFamily={chainFamily}
-              chainNetwork={chainNetwork}
-            />
+            {stateChange.humanReadableDiff}
           </StateChangeText>
           <AssetPrice stateChange={stateChange.rawInfo} />
         </Column>

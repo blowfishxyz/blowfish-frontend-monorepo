@@ -1,12 +1,19 @@
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
-import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
+import {
+  ChainFamily,
+  ChainNetwork,
+  EvmStateChange,
+} from "@blowfish/utils/BlowfishApiClient";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
 import Image from "next/image";
+import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
 
 interface AssetImageProps {
   stateChange: EvmStateChange;
   isPositiveEffect: boolean;
+  chainFamily: ChainFamily;
+  chainNetwork: ChainNetwork;
 }
 
 const PlaceholderSimulationImage = styled.div`
@@ -72,7 +79,12 @@ const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
   }
 `;
 
-const AssetImage = ({ stateChange, isPositiveEffect }: AssetImageProps) => {
+const AssetImage = ({
+  stateChange,
+  isPositiveEffect,
+  chainFamily,
+  chainNetwork,
+}: AssetImageProps) => {
   let altText = "Asset";
   let imageSrc;
   let showPlaceholderImage = false;
@@ -110,23 +122,29 @@ const AssetImage = ({ stateChange, isPositiveEffect }: AssetImageProps) => {
 
   return (
     <SimulationResultImageWrapper>
-      {hasPlaceholder ? (
-        <PlaceholderSimulationImage>
-          <BlowfishIcon />
-        </PlaceholderSimulationImage>
-      ) : imageSrc ? (
-        <Image
-          width={38}
-          height={38}
-          src={imageSrc}
-          onError={handleImageError}
-          alt={altText}
-        />
-      ) : null}
+      <VerifiedTokenTooltip
+        stateChange={stateChange}
+        chainFamily={chainFamily}
+        chainNetwork={chainNetwork}
+      >
+        {hasPlaceholder ? (
+          <PlaceholderSimulationImage>
+            <BlowfishIcon />
+          </PlaceholderSimulationImage>
+        ) : imageSrc ? (
+          <Image
+            width={38}
+            height={38}
+            src={imageSrc}
+            onError={handleImageError}
+            alt={altText}
+          />
+        ) : null}
 
-      <SimulationIcon isPositiveEffect={isPositiveEffect}>
-        <ArrowRightIcon />
-      </SimulationIcon>
+        <SimulationIcon isPositiveEffect={isPositiveEffect}>
+          <ArrowRightIcon />
+        </SimulationIcon>
+      </VerifiedTokenTooltip>
     </SimulationResultImageWrapper>
   );
 };
