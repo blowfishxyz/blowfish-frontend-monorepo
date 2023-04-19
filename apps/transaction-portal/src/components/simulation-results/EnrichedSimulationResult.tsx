@@ -4,7 +4,6 @@ import {
   ChainNetwork,
   EvmExpectedStateChange,
 } from "@blowfish/utils/BlowfishApiClient";
-import { isNativeAsset } from "@blowfish/utils/hex";
 import { NftStateChangeWithTokenId } from "@blowfish/utils/types";
 import { Decimal } from "decimal.js";
 import React, { useMemo } from "react";
@@ -57,7 +56,7 @@ export const EnrichedSimulationResult: React.FC<{
           </StateChangeText>
           <AssetPrice stateChange={stateChange.rawInfo} />
         </Column>
-        {!isNativeAsset(address) && (
+        {isNft && (
           <BlockExplorerLink
             address={address}
             chainFamily={chainFamily}
