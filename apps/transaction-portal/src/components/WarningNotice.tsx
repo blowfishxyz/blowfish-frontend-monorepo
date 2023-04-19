@@ -6,7 +6,6 @@ import { Text } from "@blowfish/ui/core";
 import { BlowfishWarningIcon } from "@blowfish/ui/icons";
 
 const Wrapper = styled.div<{ severity: WarningSeverity }>`
-  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   justify-content: center;

@@ -4,18 +4,24 @@ import { breakpoint } from "~utils/breakpoints";
 import SimpleConnectButton from "~components/SimpleConnectButton";
 import { useAccount } from "wagmi";
 import { PrimaryButton, SecondaryButton } from "@blowfish/ui/core";
+import { AnimatePresence, motion } from "framer-motion";
 
 const ButtonRow = styled.div`
-  display: grid;
-  grid-template-columns: 120px 1fr;
+  display: flex;
   gap: 20px;
 
   ${PrimaryButton} {
+    transition: width 0.2s ease-in;
     min-width: 170px;
     max-width: 265px;
   }
+  ${SecondaryButton} {
+    width: 120px;
+  }
 
   @media only screen and ${breakpoint.device.lg} {
+    display: grid;
+    grid-template-columns: 1fr 120px;
     ${PrimaryButton} {
       max-width: unset;
     }
@@ -51,9 +57,6 @@ const OnboardingButtons = ({
 
   return (
     <ButtonRow>
-      {currentStep !== OnboardingStep.ConnectWallet && (
-        <SecondaryButton onClick={back}>Back</SecondaryButton>
-      )}
       {currentStep === OnboardingStep.ConnectWallet && !isConnected ? (
         <SimpleConnectButton />
       ) : (
@@ -61,6 +64,18 @@ const OnboardingButtons = ({
           {currentStep === OnboardingStep.Ready ? <>Done!</> : <>Next</>}
         </PrimaryButton>
       )}
+      <AnimatePresence>
+        {currentStep !== OnboardingStep.ConnectWallet && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <SecondaryButton onClick={back}>Back</SecondaryButton>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </ButtonRow>
   );
 };

@@ -33,7 +33,7 @@ const FooterContainer = styled.div`
   overflow: hidden;
   align-content: flex-start;
   flex-wrap: nowrap;
-  gap: 20;
+  gap: 20px;
   border-radius: 0px 0px 0px 0px;
 
   @media only screen and (${device.md}) {

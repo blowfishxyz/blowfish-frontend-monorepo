@@ -39,17 +39,17 @@ const messageIdToPortAndMessageMapping: Map<
   }
 > = new Map();
 
-// Add a form for uninstalls to see if we can improve the product.
-Browser.runtime.setUninstallURL("https://airtable.com/shr8iCQakDgw2HAkq");
-
-// Add an onboarding URL on install.
 Browser.runtime.onInstalled.addListener(async (obj) => {
   // On first install, create the tab.
   if (obj.reason === "install") {
+    // Add an onboarding URL on install.
     const portalUrl = await getBlowfishPortalUrl();
     Browser.tabs.create({
       url: `${portalUrl}/onboarding`,
     });
+
+    // Add a form for uninstalls to see if we can improve the product.
+    Browser.runtime.setUninstallURL(`${portalUrl}/offboarding`);
   }
 });
 

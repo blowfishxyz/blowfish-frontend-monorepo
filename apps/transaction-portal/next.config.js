@@ -16,6 +16,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/offboarding",
+        destination: "https://airtable.com/shr8iCQakDgw2HAkq",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

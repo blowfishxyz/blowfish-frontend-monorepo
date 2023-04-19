@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { Fragment, ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -12,20 +12,16 @@ import { useTimeout } from "react-use";
 import dynamic from "next/dynamic";
 import {
   Column,
-  fadeIn,
   PrimaryButton,
   Row,
+  size,
+  supportedChains,
   Text,
   TextXL,
 } from "@blowfish/ui/core";
 import { breakpoint } from "~utils/breakpoints";
-import {
-  ArbitrumIcon,
-  BnbChainIcon,
-  EthereumIcon,
-  PolygonIcon,
-} from "@blowfish/ui/icons";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
+import { AnimatePresence, motion } from "framer-motion";
 
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,
@@ -43,27 +39,30 @@ const Logo = styled.a`
 `;
 
 const FullHeightCenterContainer = styled(Row)`
-  height: 100%;
+  height: calc(100% - 83px);
   justify-content: center;
-
-  @media only screen and ${breakpoint.device.lg} {
-    margin-top: 200px;
-  }
 `;
 
 const OnboardingContainer = styled(Column)`
   gap: 80px;
   max-width: 1024px;
   padding: 32px;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
 
   @media only screen and ${breakpoint.device.lg} {
     flex-direction: row;
   }
 `;
 
-const OnboardingDetailsContainer = styled(Column)`
+const OnboardingDetailsContainer = styled(motion(Column))`
   align-items: center;
   justify-content: center;
+
+  @media only screen and (max-width: ${size.lg}) {
+    height: 100%;
+  }
 `;
 
 const SubHeading = styled(Text)`
@@ -92,6 +91,7 @@ const StyledOl = styled.ol`
     margin-bottom: 1rem;
 
     &:before {
+      transition: background-color 0.2s ease-in;
       margin-right: 10px;
       content: counter(item);
       border-radius: 100%;
@@ -106,7 +106,7 @@ const StyledOl = styled.ol`
 `;
 
 const TextStep = styled(Text)<{ active: boolean }>`
-  transition: all 0.2s linear;
+  transition: font-size 0.2s ease-in;
 
   ${({ active }) => {
     if (active) {
@@ -147,7 +147,7 @@ const CenterColumn = styled(Column)`
     line-height: 28px;
   }
 
-  img {
+  > img {
     border-radius: 12px;
   }
 `;
@@ -163,33 +163,13 @@ const BlockedImage = styled(Image)`
 const CenteredColumnContainer = styled(CenterColumn)`
   display: flex;
   flex-direction: column;
-
-  > * {
-    opacity: 0;
-    animation-name: ${fadeIn};
-    animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
-    animation-duration: 0.24s;
-  }
-
-  > *:nth-child(1) {
-    animation-delay: 0.32s;
-  }
-
-  > *:nth-child(2) {
-    animation-delay: 0.64s;
-  }
-
-  > *:nth-child(3) {
-    animation-delay: 1.28s;
-  }
 `;
 const IconGroup = styled(Row)`
   gap: 32px;
   justify-content: center;
 
   > svg {
-    height: 32px;
+    height: 48px;
     width: auto;
   }
 `;
@@ -209,12 +189,12 @@ const StyledTooltipContent = styled(Column)`
 `;
 
 export enum OnboardingStep {
-  ConnectWallet,
-  SurfDapps,
-  Protection,
-  MultiChain,
-  Feedback,
-  Ready,
+  ConnectWallet = "CONNECT_WALLET",
+  SurfDapps = "SURF_DAPPS",
+  Protection = "PROTECTION",
+  MultiChain = "MULTI_CHAIN",
+  Feedback = "FEEDBACK",
+  Ready = "READY",
 }
 
 const OnboardingSteps = ({ currentStep }: { currentStep: OnboardingStep }) => {
@@ -244,7 +224,7 @@ const OnboardingSteps = ({ currentStep }: { currentStep: OnboardingStep }) => {
 
 const BlowfishExtensionPinCTA = () => {
   const [open, setOpen] = useState(false);
-  const [isReady] = useTimeout(1000);
+  const [isReady] = useTimeout(300);
   const ready = isReady();
 
   useEffect(() => {
@@ -254,34 +234,47 @@ const BlowfishExtensionPinCTA = () => {
   }, [ready]);
 
   return (
-    <Tooltip
-      placement="bottom"
-      initialOpen={true}
-      shouldCloseOnOutsideClick={false}
-      open={open}
-      onOpenChange={setOpen}
-    >
-      <TooltipTrigger>
-        <HiddenTooltipTrigger />
-      </TooltipTrigger>
-      <TooltipContent>
-        <StyledTooltipContent gap="md">
-          <Logo>
-            <Image src="/logo.svg" width="135" height="35" alt="Logo" />
-          </Logo>
-          <Text>
-            Blowfish extension successfully installed! Pin it for easy access.
-          </Text>
-          <Image
-            src="/onboarding/pin-extension.webp"
-            width="360"
-            height="248"
-            alt="pin extension"
-          />
-        </StyledTooltipContent>
-        <PrimaryButton onClick={() => setOpen(false)}>Close</PrimaryButton>
-      </TooltipContent>
-    </Tooltip>
+    <AnimatePresence>
+      {open && (
+        <Tooltip
+          placement="bottom"
+          initialOpen={true}
+          shouldCloseOnOutsideClick={false}
+          onOpenChange={setOpen}
+        >
+          <TooltipTrigger>
+            <HiddenTooltipTrigger />
+          </TooltipTrigger>
+          <TooltipContent>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <StyledTooltipContent gap="md">
+                <Logo>
+                  <Image src="/logo.svg" width="135" height="35" alt="Logo" />
+                </Logo>
+                <Text>
+                  Blowfish extension successfully installed! Pin it for easy
+                  access.
+                </Text>
+                <Image
+                  src="/onboarding/pin-extension.webp"
+                  width="360"
+                  height="248"
+                  alt="pin extension"
+                />
+              </StyledTooltipContent>
+              <PrimaryButton onClick={() => setOpen(false)}>
+                Close
+              </PrimaryButton>
+            </motion.div>
+          </TooltipContent>
+        </Tooltip>
+      )}
+    </AnimatePresence>
   );
 };
 
@@ -328,9 +321,9 @@ const OnboardingDetails = ({
         </TextXL>
         <Image
           src="/onboarding/transactions.webp"
-          width="360"
-          height="250"
-          alt="opensea gif"
+          height="380"
+          width="440"
+          alt="transactions"
         />
       </CenteredColumnContainer>
     );
@@ -340,10 +333,9 @@ const OnboardingDetails = ({
       <CenteredColumnContainer gap="lg">
         <TextXL>Live on</TextXL>
         <IconGroup>
-          <EthereumIcon />
-          <PolygonIcon />
-          <BnbChainIcon />
-          <ArbitrumIcon />
+          {supportedChains.map((chain: ReactElement, index: number) => {
+            return <Fragment key={`chain-${index}`}>{chain}</Fragment>;
+          })}
         </IconGroup>
       </CenteredColumnContainer>
     );
@@ -368,8 +360,7 @@ const OnboardingDetails = ({
     content = (
       <CenteredColumnContainer gap="lg">
         <TextXL>
-          Please refresh the dApps you were using & Blowfish will start working
-          immediately
+          Please reload any open dApps & Blowfish will start working immediately
         </TextXL>
         <Image
           width="320"
@@ -381,7 +372,17 @@ const OnboardingDetails = ({
     );
   }
 
-  return <OnboardingDetailsContainer>{content}</OnboardingDetailsContainer>;
+  return (
+    <OnboardingDetailsContainer
+      key={currentStep}
+      initial={{ y: 10, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 10, opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      {content}
+    </OnboardingDetailsContainer>
+  );
 };
 
 const OnboardingWizard = () => {
@@ -389,15 +390,50 @@ const OnboardingWizard = () => {
   const router = useRouter();
 
   const back = () => {
-    setCurrentStep(currentStep - 1);
+    switch (currentStep) {
+      case OnboardingStep.SurfDapps:
+        setCurrentStep(OnboardingStep.ConnectWallet);
+        break;
+      case OnboardingStep.Protection:
+        setCurrentStep(OnboardingStep.SurfDapps);
+        break;
+      case OnboardingStep.MultiChain:
+        setCurrentStep(OnboardingStep.Protection);
+        break;
+      case OnboardingStep.Feedback:
+        setCurrentStep(OnboardingStep.MultiChain);
+        break;
+      case OnboardingStep.Ready:
+        setCurrentStep(OnboardingStep.Feedback);
+        break;
+      default:
+        break;
+    }
   };
 
   const next = () => {
-    if (currentStep !== OnboardingStep.Ready) {
-      setCurrentStep(currentStep + 1);
-      return;
+    switch (currentStep) {
+      case OnboardingStep.ConnectWallet:
+        setCurrentStep(OnboardingStep.SurfDapps);
+        break;
+      case OnboardingStep.SurfDapps:
+        setCurrentStep(OnboardingStep.Protection);
+        break;
+      case OnboardingStep.Protection:
+        setCurrentStep(OnboardingStep.MultiChain);
+        break;
+      case OnboardingStep.MultiChain:
+        setCurrentStep(OnboardingStep.Feedback);
+        break;
+      case OnboardingStep.Feedback:
+        setCurrentStep(OnboardingStep.Ready);
+        break;
+      case OnboardingStep.Ready:
+        router.replace("https://blowfish.xyz/");
+        break;
+      default:
+        break;
     }
-    router.replace("https://blowfish.xyz/");
   };
 
   return (

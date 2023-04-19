@@ -27,13 +27,11 @@ export const UserWalletConnectKitWrapper: React.FC = () => {
             http: ["https://mainnet.infura.io/v3"],
             webSocket: ["wss://mainnet.infura.io/ws/v3"],
           },
-          default: {
-            http: [
-              "https://eth-mainnet.g.alchemy.com/v2/EWwF95dTi8uzhMG3rXRnlkZAqxFg6dhk",
-            ],
-          },
           public: {
             http: ["https://cloudflare-eth.com"],
+          },
+          default: {
+            http: [],
           },
         },
         blockExplorers: {

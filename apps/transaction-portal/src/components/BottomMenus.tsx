@@ -35,7 +35,6 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
           flex-direction: column;
           height: ${REGULAR_BOTTOM_MENU_HEIGHT}px;
           padding: 24px 0;
-          box-sizing: border-box;
 
           > * > * {
             margin-top: 24px;

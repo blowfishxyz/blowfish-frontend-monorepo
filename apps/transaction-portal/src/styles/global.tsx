@@ -3,8 +3,9 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
   html,
   body,
-  div#root {
-    min-height: 100vh;
+  div#root,
+  div#__next {
+    height: 100%;
     width: 100%;
   }
 
