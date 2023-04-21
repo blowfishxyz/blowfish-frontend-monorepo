@@ -23,12 +23,12 @@ import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
 
-import logoPic from "../../public/logo.svg";
-import openseaPic from "../../public/onboarding/opensea.webp";
-import blockedPic from "../../public/onboarding/blocked.webp";
-import feedbackPic from "../../public/onboarding/feedback.webp";
-import pinExtensionPic from "../../public/onboarding/pin-extension.webp";
-import transactionsPic from "../../public/onboarding/transactions.webp";
+import logoPic from "public/logo.svg";
+import openseaPic from "public/onboarding/opensea.webp";
+import blockedPic from "public/onboarding/blocked.webp";
+import feedbackPic from "public/onboarding/feedback.webp";
+import pinExtensionPic from "public/onboarding/pin-extension.webp";
+import transactionsPic from "public/onboarding/transactions.webp";
 
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,
