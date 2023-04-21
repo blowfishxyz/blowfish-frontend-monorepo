@@ -376,6 +376,19 @@ const overrideWindowEthereum = () => {
         Reflect.apply(target, thisArg, argumentsList);
 
       if (
+        request.method === "wallet_requestPermissions" &&
+        IS_IMPERSONATION_AVAILABLE &&
+        impersonatingAddress
+      ) {
+        return [
+          {
+            type: "restrictReturnedAccounts",
+            value: [impersonatingAddress],
+          },
+        ];
+      }
+
+      if (
         (request.method === "eth_requestAccounts" ||
           request.method === "eth_accounts") &&
         IS_IMPERSONATION_AVAILABLE &&
@@ -540,6 +553,9 @@ if (IS_IMPERSONATION_AVAILABLE) {
           BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET
       ) {
         impersonatingAddress = message.data.value;
+        if (impersonatingAddress) {
+          window.ethereum.selectedAddress = impersonatingAddress;
+        }
       }
     }
   );

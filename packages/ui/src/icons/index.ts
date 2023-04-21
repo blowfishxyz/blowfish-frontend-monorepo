@@ -11,3 +11,4 @@ export * from "./InfoIcon";
 export * from "./CloseIcon";
 export * from "./PauseIcon";
 export * from "./PlayIcon";
+export * from "./VerifiedIcon";
