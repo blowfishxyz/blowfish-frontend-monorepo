@@ -9,12 +9,14 @@ import { AnimatePresence, motion } from "framer-motion";
 const ButtonRow = styled.div`
   display: flex;
   gap: 20px;
+  margin-bottom: 20px;
 
   ${PrimaryButton} {
     transition: width 0.2s ease-in;
     min-width: 170px;
     max-width: 265px;
   }
+
   ${SecondaryButton} {
     width: 120px;
   }

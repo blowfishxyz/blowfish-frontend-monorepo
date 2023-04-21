@@ -14,7 +14,6 @@ import {
   Column,
   PrimaryButton,
   Row,
-  size,
   supportedChains,
   Text,
   TextXL,
@@ -22,6 +21,14 @@ import {
 import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { AnimatePresence, motion } from "framer-motion";
+import Head from "next/head";
+
+import logoPic from "../../public/logo.svg";
+import openseaPic from "../../public/onboarding/opensea.webp";
+import blockedPic from "../../public/onboarding/blocked.webp";
+import feedbackPic from "../../public/onboarding/feedback.webp";
+import pinExtensionPic from "../../public/onboarding/pin-extension.webp";
+import transactionsPic from "../../public/onboarding/transactions.webp";
 
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,
@@ -39,30 +46,39 @@ const Logo = styled.a`
 `;
 
 const FullHeightCenterContainer = styled(Row)`
-  height: calc(100% - 83px);
   justify-content: center;
+  height: 100%;
+  overflow-x: hidden;
 `;
 
 const OnboardingContainer = styled(Column)`
-  gap: 80px;
+  gap: 60px;
   max-width: 1024px;
   padding: 32px;
   height: 100%;
   align-items: center;
   justify-content: space-between;
+  flex: 1;
 
   @media only screen and ${breakpoint.device.lg} {
+    gap: 80px;
     flex-direction: row;
+  }
+`;
+
+export const OnboardingStepsWrapper = styled(Column)`
+  flex: 1;
+  justify-content: flex-end;
+
+  @media only screen and ${breakpoint.device.lg} {
+    justify-content: flex-start;
   }
 `;
 
 const OnboardingDetailsContainer = styled(motion(Column))`
   align-items: center;
   justify-content: center;
-
-  @media only screen and (max-width: ${size.lg}) {
-    height: 100%;
-  }
+  flex: 1;
 `;
 
 const SubHeading = styled(Text)`
@@ -113,15 +129,21 @@ const TextStep = styled(Text)<{ active: boolean }>`
       return css`
         font-weight: 500;
         opacity: 1;
-        font-size: 22px;
 
         &:before {
           background-color: black;
           color: white;
+        }
+
+        @media screen and (min-width: 500px) {
           font-size: 22px;
-          width: 32px;
-          height: 32px;
-          line-height: 32px;
+
+          &:before {
+            font-size: 22px;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+          }
         }
       `;
     }
@@ -164,6 +186,7 @@ const CenteredColumnContainer = styled(CenterColumn)`
   display: flex;
   flex-direction: column;
 `;
+
 const IconGroup = styled(Row)`
   gap: 32px;
   justify-content: center;
@@ -186,6 +209,31 @@ const StyledTooltipContent = styled(Column)`
   ${Logo} {
     justify-content: left;
   }
+  img {
+    border-radius: 12px;
+  }
+`;
+
+const ImageWithShadow = styled(Image)`
+  box-shadow: 0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+`;
+
+const VideoOuterContainer = styled.div`
+  overflow: hidden;
+  position: relative;
+  height: 360px;
+  width: 360px;
+
+  @media only screen and ${breakpoint.device.lg} {
+    width: 420px;
+    height: 420px;
+  }
+`;
+
+const Video = styled.video`
+  width: 100%;
+  height: 100%;
 `;
 
 export enum OnboardingStep {
@@ -245,7 +293,10 @@ const BlowfishExtensionPinCTA = () => {
           <TooltipTrigger>
             <HiddenTooltipTrigger />
           </TooltipTrigger>
-          <TooltipContent>
+          <TooltipContent
+            maxWidth={420}
+            style={{ transform: "translateX(-20px)" }}
+          >
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -254,14 +305,14 @@ const BlowfishExtensionPinCTA = () => {
             >
               <StyledTooltipContent gap="md">
                 <Logo>
-                  <Image src="/logo.svg" width="135" height="35" alt="Logo" />
+                  <Image src={logoPic} width="135" height="35" alt="Logo" />
                 </Logo>
                 <Text>
                   Blowfish extension successfully installed! Pin it for easy
                   access.
                 </Text>
                 <Image
-                  src="/onboarding/pin-extension.webp"
+                  src={pinExtensionPic}
                   width="360"
                   height="248"
                   alt="pin extension"
@@ -298,14 +349,9 @@ const OnboardingDetails = ({
           If you try to navigate to a dangerous website, Blowfish will let you
           know
         </TextXL>
-        <Image
-          src="/onboarding/opensea.webp"
-          width="297"
-          height="420"
-          alt="opensea gif"
-        />
+        <Image src={openseaPic} width="297" height="420" alt="opensea gif" />
         <BlockedImage
-          src="/onboarding/blocked.webp"
+          src={blockedPic}
           width="297"
           height="420"
           alt="blocked website"
@@ -320,7 +366,7 @@ const OnboardingDetails = ({
           Blowfish will automatically open for every transaction & message
         </TextXL>
         <Image
-          src="/onboarding/transactions.webp"
+          src={transactionsPic}
           height="380"
           width="440"
           alt="transactions"
@@ -345,8 +391,8 @@ const OnboardingDetails = ({
       <>
         <CenteredColumnContainer gap="lg">
           <TextXL>Let us know anytime in the app</TextXL>
-          <Image
-            src="/onboarding/feedback.webp"
+          <ImageWithShadow
+            src={feedbackPic}
             width="280"
             height="420"
             alt="feedback extension"
@@ -362,12 +408,15 @@ const OnboardingDetails = ({
         <TextXL>
           Please reload any open dApps & Blowfish will start working immediately
         </TextXL>
-        <Image
-          width="320"
-          height="280"
-          src="/onboarding/wallet-hero.webp"
-          alt="blowfish wallet protect"
-        />
+        <VideoOuterContainer>
+          <Video
+            src="https://framerusercontent.com/modules/assets/ABKGG2mazmK87jGsN6CbRkaoYP0~tV7jxL_gYFMk8GNcDbSBgx0YO-bKKnfT3gFDsePqGgs.mp4"
+            loop
+            autoPlay
+            muted
+            playsInline
+          ></Video>
+        </VideoOuterContainer>
       </CenteredColumnContainer>
     );
   }
@@ -438,6 +487,14 @@ const OnboardingWizard = () => {
 
   return (
     <>
+      <Head>
+        {/*NOTE: background color style needed to match the blowfish wallet video on step 6*/}
+        <style>{`
+          body {
+            background-color: #f2f4f1;
+          }
+        `}</style>
+      </Head>
       <HeaderWrapper>
         <Logo
           href={`https://${process.env.NEXT_PUBLIC_BLOWFISH_ROOT_DOMAIN}`}
@@ -449,7 +506,7 @@ const OnboardingWizard = () => {
       <FullHeightCenterContainer>
         <OnboardingContainer>
           <OnboardingDetails currentStep={currentStep} />
-          <Column>
+          <OnboardingStepsWrapper>
             <SubHeading>Get started</SubHeading>
             <Heading>Protect your assets</Heading>
             <OnboardingSteps currentStep={currentStep} />
@@ -461,7 +518,7 @@ const OnboardingWizard = () => {
                 setCurrentStep(OnboardingStep.ConnectWallet)
               }
             />
-          </Column>
+          </OnboardingStepsWrapper>
         </OnboardingContainer>
       </FullHeightCenterContainer>
     </>

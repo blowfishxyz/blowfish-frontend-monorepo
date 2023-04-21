@@ -32,5 +32,9 @@ export const LoadingScreen: ComponentStory<typeof LoadingScreenComponent> = ({
 );
 
 export const OnboardingScreen: ComponentStory<typeof OnboardingWizard> = () => {
-  return <OnboardingWizard />;
+  return (
+    <div style={{ height: "100%", backgroundColor: "#f2f4f1" }}>
+      <OnboardingWizard />
+    </div>
+  );
 };
