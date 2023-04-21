@@ -1,13 +1,8 @@
-import { styled, keyframes } from "styled-components";
+import { styled } from "styled-components";
 import { SmallButtonPrimary } from "./buttons/MainButtons";
 import { Row } from "./Row";
 import { PauseDuration } from "@blowfish/hooks";
-
-const fadeIn = keyframes`
-  to {
-    opacity: 1;
-  }
-`;
+import { fadeIn } from "./utils/animations";
 
 export const PeriodDurationContainer = styled(Row)`
   border-top-right-radius: 16px;

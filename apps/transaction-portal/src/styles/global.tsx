@@ -3,8 +3,11 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
   html,
   body,
-  div#root {
-    min-height: 100vh;
+  div#root,
+  div#__next {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     width: 100%;
   }
 
@@ -19,6 +22,12 @@ export const GlobalStyle = createGlobalStyle`
     position: relative;
     min-height: 100vh;
     scroll-behavior: smooth;
+  }
+  
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 
   @font-face {

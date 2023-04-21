@@ -13,3 +13,5 @@ export {
 export { themes } from "./theme";
 export { opacify } from "./utils/opacify";
 export { device, size } from "./utils/breakpoints";
+export * from "./utils/animations";
+export { supportedChains } from "./supportedChains";

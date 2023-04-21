@@ -37,6 +37,13 @@ export const opacify = (amount: number, hexColor: string) => {
 export const isENS = (address = "") =>
   address.endsWith(".eth") || address.endsWith(".xyz");
 
+export const shortenEnsName = (name: string): string => {
+  if (name.length < 15) {
+    return name;
+  }
+  return `${name.substring(0, 6)}••••${name.substring(name.length - 5)}`;
+};
+
 // NOTE: the default value for extensionVersion is set to 0.0.9. It's the first version that uses the portal, but due to a bug doesn't send the version number.
 export const isVersionCompatible = (extensionVersion = "0.0.9") => {
   const minimum = MINIMUM_SUPPORTED_EXTENSION_VERSION.split(".").map(Number);

@@ -1,16 +1,14 @@
-import React from "react";
+import React, { Fragment, ReactElement } from "react";
 import styled from "styled-components";
 import Image from "next/image";
-import { device } from "@blowfish/ui/core";
 import {
-  EthereumIcon,
-  PolygonIcon,
-  BnbChainIcon,
-  ArbitrumIcon,
-  OptimismIcon,
-} from "@blowfish/ui/icons";
+  device,
+  PrimaryButton,
+  supportedChains,
+  TextSmall,
+} from "@blowfish/ui/core";
+import { OptimismIcon } from "@blowfish/ui/icons";
 import { CHROME_EXTENSION_STORE_URL } from "../config";
-import { TextSmall, PrimaryButton } from "@blowfish/ui/core";
 
 const H1 = styled.h1`
   font-size: 40px;
@@ -101,6 +99,7 @@ const IconGroup = styled.div`
   display: flex;
   justify-content: space-around;
   margin-top: 18px;
+
   > * {
     width: auto;
     height: 16px;
@@ -163,10 +162,9 @@ export const Hero: React.FC = () => {
             without fear because we’ve got your back.
           </Description>
           <IconGroup>
-            <EthereumIcon />
-            <PolygonIcon />
-            <BnbChainIcon />
-            <ArbitrumIcon />
+            {supportedChains.map((chain: ReactElement, index: number) => {
+              return <Fragment key={`chain-${index}`}>{chain}</Fragment>;
+            })}
             <FadedOptimismIcon />
           </IconGroup>
           <InstallLink href={CHROME_EXTENSION_STORE_URL}>

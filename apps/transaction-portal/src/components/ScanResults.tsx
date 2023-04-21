@@ -93,7 +93,7 @@ const Header = styled(Section)`
   & > ${Row} {
     padding-left: 13px;
     padding-right: 13px;
-    width: calc(100% - 26px);
+    width: 100%;
     align-self: flex-start;
   }
 `;

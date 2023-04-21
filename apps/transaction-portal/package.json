@@ -21,7 +21,7 @@
     "@blowfish/ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@ethersproject/address": "^5.7.0",
-    "@floating-ui/react": "^0.22.3",
+    "@floating-ui/react": "^0.23.1",
     "@wagmi/core": "^0.10.1",
     "connectkit": "^1.2.1",
     "decimal.js": "^10.4.3",

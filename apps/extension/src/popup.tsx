@@ -16,7 +16,12 @@ import {
   TextXL,
   opacify,
 } from "@blowfish/ui/core";
-import { BlowfishIcon } from "@blowfish/ui/icons";
+import {
+  BlowfishIcon,
+  CloseIcon,
+  PauseIcon,
+  PlayIcon,
+} from "@blowfish/ui/icons";
 import { transformDate } from "@blowfish/utils/helpers";
 import {
   BlowfishOption,
@@ -29,9 +34,6 @@ import PauseDurationSelector from "~components/PauseDurationSelector";
 import { CustomPortalUrl } from "~components/Popup/CustomPortalUrl";
 import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
-import { CloseIcon } from "~components/icons/CloseIcon";
-import { PauseIcon } from "~components/icons/PauseIcon";
-import { PlayIcon } from "~components/icons/PlayIcon";
 import {
   BLOWFISH_EXTENSION_VERSION,
   CUSTOM_PORTAL_URL_ENABLED,

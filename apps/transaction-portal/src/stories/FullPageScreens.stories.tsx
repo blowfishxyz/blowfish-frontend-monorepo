@@ -3,6 +3,7 @@ import React from "react";
 
 import { LoadingScreen as LoadingScreenComponent } from "../components/LoadingScreen";
 import { PopupContainer } from "./../components/PopupContainer";
+import OnboardingWizard from "~components/OnboardingWizard";
 
 export default {
   title: "FullPageScreens",
@@ -10,7 +11,7 @@ export default {
   args: {
     animate: false,
   },
-} as ComponentMeta<typeof LoadingScreenComponent>;
+} as ComponentMeta<typeof LoadingScreenComponent | typeof OnboardingWizard>;
 
 const fullScreenStyleOverrides = {
   /* NOTE This is only for the story,
@@ -29,3 +30,11 @@ export const LoadingScreen: ComponentStory<typeof LoadingScreenComponent> = ({
     </PopupContainer>
   </div>
 );
+
+export const OnboardingScreen: ComponentStory<typeof OnboardingWizard> = () => {
+  return (
+    <div style={{ height: "100%", backgroundColor: "#f2f4f1" }}>
+      <OnboardingWizard />
+    </div>
+  );
+};
