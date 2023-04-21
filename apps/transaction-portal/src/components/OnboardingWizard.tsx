@@ -202,6 +202,7 @@ const StyledTooltipContent = styled(Column)`
   ${Logo} {
     justify-content: left;
   }
+
   img {
     border-radius: 12px;
   }
@@ -374,30 +375,30 @@ const OnboardingDetails = ({
   }
   if (currentStep === OnboardingStep.MultiChain) {
     content = (
-      <CenteredColumnContainer gap="lg">
-        <TextXL>Live on</TextXL>
-        <IconGroup>
-          {supportedChains.map((chain: ReactElement, index: number) => {
-            return <Fragment key={`chain-${index}`}>{chain}</Fragment>;
-          })}
-        </IconGroup>
-      </CenteredColumnContainer>
+      <>
+        <CenteredColumnContainer gap="lg">
+          <TextXL>Live on</TextXL>
+          <IconGroup>
+            {supportedChains.map((chain: ReactElement, index: number) => {
+              return <Fragment key={`chain-${index}`}>{chain}</Fragment>;
+            })}
+          </IconGroup>
+        </CenteredColumnContainer>
+        <BlowfishExtensionPinCTA />
+      </>
     );
   }
   if (currentStep === OnboardingStep.Feedback) {
     content = (
-      <>
-        <CenteredColumnContainer gap="lg">
-          <TextXL>Let us know anytime in the app</TextXL>
-          <ImageWithShadow
-            src="/onboarding/feedback.webp"
-            width="280"
-            height="420"
-            alt="feedback extension"
-          />
-        </CenteredColumnContainer>
-        <BlowfishExtensionPinCTA />
-      </>
+      <CenteredColumnContainer gap="lg">
+        <TextXL>Let us know anytime in the app</TextXL>
+        <ImageWithShadow
+          src="/onboarding/feedback.webp"
+          width="280"
+          height="420"
+          alt="feedback extension"
+        />
+      </CenteredColumnContainer>
     );
   }
   if (currentStep === OnboardingStep.Ready) {
