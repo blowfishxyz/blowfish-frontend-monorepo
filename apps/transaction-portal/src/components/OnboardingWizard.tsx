@@ -23,13 +23,6 @@ import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
 
-import logoPic from "public/logo.svg";
-import openseaPic from "public/onboarding/opensea.webp";
-import blockedPic from "public/onboarding/blocked.webp";
-import feedbackPic from "public/onboarding/feedback.webp";
-import pinExtensionPic from "public/onboarding/pin-extension.webp";
-import transactionsPic from "public/onboarding/transactions.webp";
-
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,
 });
@@ -305,14 +298,14 @@ const BlowfishExtensionPinCTA = () => {
             >
               <StyledTooltipContent gap="md">
                 <Logo>
-                  <Image src={logoPic} width="135" height="35" alt="Logo" />
+                  <Image src="/logo.svg" width="135" height="35" alt="Logo" />
                 </Logo>
                 <Text>
                   Blowfish extension successfully installed! Pin it for easy
                   access.
                 </Text>
                 <Image
-                  src={pinExtensionPic}
+                  src="/onboarding/pin-extension.webp"
                   width="360"
                   height="248"
                   alt="pin extension"
@@ -349,9 +342,14 @@ const OnboardingDetails = ({
           If you try to navigate to a dangerous website, Blowfish will let you
           know
         </TextXL>
-        <Image src={openseaPic} width="297" height="420" alt="opensea gif" />
+        <Image
+          src="/onboarding/opensea.webp"
+          width="297"
+          height="420"
+          alt="opensea gif"
+        />
         <BlockedImage
-          src={blockedPic}
+          src="/onboarding/blocked.webp"
           width="297"
           height="420"
           alt="blocked website"
@@ -366,7 +364,7 @@ const OnboardingDetails = ({
           Blowfish will automatically open for every transaction & message
         </TextXL>
         <Image
-          src={transactionsPic}
+          src="/onboarding/transactions.webp"
           height="380"
           width="440"
           alt="transactions"
@@ -392,7 +390,7 @@ const OnboardingDetails = ({
         <CenteredColumnContainer gap="lg">
           <TextXL>Let us know anytime in the app</TextXL>
           <ImageWithShadow
-            src={feedbackPic}
+            src="/onboarding/feedback.webp"
             width="280"
             height="420"
             alt="feedback extension"
