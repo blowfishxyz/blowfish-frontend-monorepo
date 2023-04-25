@@ -48,6 +48,7 @@ export enum RequestType {
   SetBlowfishOptions = "SET_BLOWFISH_OPTIONS",
   GetRequestToScan = "GET_REQUEST_TO_SCAN",
   MessageAck = "BLOWFISH_MESSAGE_ACK",
+  BlockWebsite = "BLOCK_WEBSITE",
 }
 
 // TODO(kimpers): Type message
@@ -194,11 +195,17 @@ export type BlowfishOptionKeyValue =
       value: string;
     };
 
+export type BlowfishBlockWebsitePayload = {
+  href: string;
+  host: string;
+};
+
 export type BlowfishPortalBackgroundMessage =
   | Message<RequestType.UserDecision, UserDecisionResponse>
   | Message<RequestType.GetRequestToScan, { key: string }>
   | Message<RequestType.BlowfishOptions, BlowfishOptionKey>
   | Message<RequestType.SetBlowfishOptions, BlowfishOptionKeyValue>
+  | Message<RequestType.BlockWebsite, BlowfishBlockWebsitePayload>
   | Message<DappRequest["type"], DappRequest>;
 
 export const isUserDecisionResponseMessage = (

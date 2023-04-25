@@ -1,5 +1,6 @@
 import { logger } from "@blowfish/utils/logger";
 import {
+  BlowfishBlockWebsitePayload,
   BlowfishOption,
   BlowfishOptionKey,
   BlowfishPausedOptionType,
@@ -18,6 +19,8 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
+import { BLOWFISH_EXTENSION_ID } from "~constants";
+import { setupAlarms } from "~utils/alarms";
 import {
   getBlowfishImpersonationWallet,
   getBlowfishPortalUrl,
@@ -110,6 +113,10 @@ const onBrowserMessageListener = async (
       message.type,
       messageIdToPortAndMessageMapping.get(message.data.key)?.message || {}
     );
+  }
+
+  if (message.type === RequestType.BlockWebsite) {
+    return redirectBlockedWebsite(message.data);
   }
 
   const responseRemotePort = messageIdToPortAndMessageMapping.get(
@@ -244,3 +251,17 @@ const processSignMessageRequest = async (
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
 };
+
+export const redirectBlockedWebsite = async ({
+  href,
+  host,
+}: BlowfishBlockWebsitePayload): Promise<true> => {
+  logger.debug("redirectBlockedWebsite", { href, host });
+
+  await Browser.tabs.update(undefined, {
+    url: `chrome-extension://${BLOWFISH_EXTENSION_ID}/tabs/blocked.html?host=${host}&href=${href}`,
+  });
+  return true;
+};
+
+setupAlarms();

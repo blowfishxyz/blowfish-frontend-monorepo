@@ -35,7 +35,12 @@ const PrimaryButton = styled(BaseButton).attrs({
   }
 `;
 
-const SecondaryButton = styled(BaseButton)`
+const SecondaryButton = styled(BaseButton).attrs({
+  whileHover: {
+    scale: 1.02,
+  },
+  whileTap: { scale: 0.98 },
+})`
   width: 100%;
   height: 64px;
   display: flex;
@@ -59,6 +64,30 @@ const SecondaryButton = styled(BaseButton)`
   color: #010101;
 `;
 
+const TertiaryButton = styled(BaseButton).attrs({
+  whileHover: {
+    scale: 1.02,
+  },
+  whileTap: { scale: 0.98 },
+})`
+  width: 100%;
+  height: 48px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0px;
+  gap: 4px;
+  cursor: pointer;
+  /* Button text */
+  font-family: "GT-Planar";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  color: #ffffff;
+  opacity: 0.56;
+`;
+
 const TextButton = styled(BaseButton)`
   cursor: pointer;
   /* Increase clickable area slightly for better UX */
@@ -72,4 +101,10 @@ const SmallButtonPrimary = styled(PrimaryButton)`
   padding: 8px;
 `;
 
-export { PrimaryButton, SecondaryButton, TextButton, SmallButtonPrimary };
+export {
+  PrimaryButton,
+  SecondaryButton,
+  TertiaryButton,
+  TextButton,
+  SmallButtonPrimary,
+};

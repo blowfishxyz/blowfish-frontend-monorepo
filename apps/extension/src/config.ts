@@ -10,3 +10,6 @@ export const BLOWFISH_TRANSACTION_PORTAL_URL = process.env
 
 export const BLOWFISH_EXTENSION_VERSION = process.env
   .PLASMO_PUBLIC_EXTENSION_VERSION as string;
+
+export const BLOWFISH_API_BASE_URL = process.env
+  .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string;
