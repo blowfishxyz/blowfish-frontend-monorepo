@@ -31,8 +31,10 @@ function BlockedPage() {
   };
 
   const handleLearnMore = () => {
-    // TODO: Add a link to the blog post
-    window.location.assign("https://blog.blowfish.xyz");
+    // TODO(Alex): Add link to FAQ
+    window.location.assign(
+      "https://twitter.com/blowfishxyz/status/1650635743356923904"
+    );
   };
 
   return (

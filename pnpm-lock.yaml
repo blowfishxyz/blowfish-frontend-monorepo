@@ -20,8 +20,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
       '@blowfishxyz/blocklist':
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.5
+        version: 0.0.5
       '@ethersproject/address':
         specifier: ^5.7.0
         version: 5.7.0
@@ -2382,8 +2382,8 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
-  /@blowfishxyz/blocklist@0.0.4:
-    resolution: {integrity: sha512-ncPEk9JVPMaIvyVUm2Um2VeMLlKtPvnlwJ7ikgvrWU+4Vz5ZeAybvjwCNueXSlqbUrmdOOZOOlCoi8YqXM80FA==}
+  /@blowfishxyz/blocklist@0.0.5:
+    resolution: {integrity: sha512-Y2tqkvaT9XpCtrAow8yYo3nMUZTy3Nlhz+PmbRaF9DQrNeSR1bH/DCOpvpCBKcRvtq3vq9Uv4KOPunptxiWqdw==}
     dependencies:
       cross-fetch: 3.1.5
       sha1: 1.1.1
