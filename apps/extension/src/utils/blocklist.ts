@@ -14,7 +14,7 @@ import { Storage } from "@plasmohq/storage";
 
 import { BLOWFISH_API_BASE_URL } from "~config";
 
-// Use separate storage for blocklist to use "local" storage instead of "sync" storage
+// The blocklist exceeds the "sync" storage capacity (https://developer.chrome.com/docs/extensions/reference/storage/#property-sync)
 const blocklistStorage = new Storage({ area: "local" });
 
 export const getStoredBlocklist = async () => {

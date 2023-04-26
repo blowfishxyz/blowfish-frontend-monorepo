@@ -14,6 +14,7 @@ export const config: PlasmoContentScript = {
 withRetry(() => scanDomain(window.location.href), 3).then((action) => {
   logger.debug("Domain scanned", window.location.href, action);
   if (action === Action.BLOCK) {
+    // Can't use "webextension-polyfill" here because it's not available in content scripts
     chrome.runtime.sendMessage(
       createBlockWebsiteRequestMessage({
         host: window.location.hostname,
