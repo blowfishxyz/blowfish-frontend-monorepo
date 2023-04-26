@@ -1,3 +1,4 @@
+import { withRetry } from "@blowfish/utils/helpers";
 import { logger } from "@blowfish/utils/logger";
 import type { PlasmoContentScript } from "plasmo";
 
@@ -10,7 +11,7 @@ export const config: PlasmoContentScript = {
   run_at: "document_start",
 };
 
-scanDomain(window.location.href).then((action) => {
+withRetry(() => scanDomain(window.location.href), 3).then((action) => {
   logger.debug("Domain scanned", window.location.href, action);
   if (action === Action.BLOCK) {
     chrome.runtime.sendMessage(

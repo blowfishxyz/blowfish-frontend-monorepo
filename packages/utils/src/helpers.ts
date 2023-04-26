@@ -1,6 +1,17 @@
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
 
+export const withRetry = async <T>(action: () => Promise<T>, times = 3) => {
+  try {
+    return action();
+  } catch (e) {
+    if (times <= 0) {
+      throw e;
+    }
+    withRetry(action, times - 1);
+  }
+};
+
 export const isENS = (address = "") =>
   address.toLowerCase().endsWith(".eth") ||
   address.toLowerCase().endsWith(".xyz");
