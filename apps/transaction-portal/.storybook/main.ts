@@ -22,23 +22,39 @@ module.exports = {
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   webpackFinal: async (config: any) => {
-    config.resolve.alias = {
-      ...config.resolve?.alias,
-      "~hooks": path.resolve(__dirname, "../src/hooks"),
-      "~components": path.resolve(__dirname, "../src/components"),
-      "~utils": path.resolve(__dirname, "../src/utils"),
-      "~config": path.resolve(__dirname, "../src/config"),
-      "~constants": path.resolve(__dirname, "../src/constants"),
-      // Mocks for dependencies incompatible with Storybook
-      // We bypass the Connectkit integration by mocking the button
-      "./CustomConnectkitButton": path.resolve(
-        __dirname,
-        "../src/__mocks__/CustomConnectkitButton"
-      ),
-      "./UserWalletConnectKitWrapper": path.resolve(
-        __dirname,
-        "../src/__mocks__/UserWalletConnectKitWrapper"
-      ),
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve?.alias,
+        "~hooks": path.resolve(__dirname, "../src/hooks"),
+        "~components": path.resolve(__dirname, "../src/components"),
+        "~utils": path.resolve(__dirname, "../src/utils"),
+        "~config": path.resolve(__dirname, "../src/config"),
+        "~constants": path.resolve(__dirname, "../src/constants"),
+        // Mocks for dependencies incompatible with Storybook
+        // We bypass the Connectkit integration by mocking the button
+        "./CustomConnectkitButton": path.resolve(
+          __dirname,
+          "../src/__mocks__/CustomConnectkitButton"
+        ),
+        "./UserWalletConnectKitWrapper": path.resolve(
+          __dirname,
+          "../src/__mocks__/UserWalletConnectKitWrapper"
+        ),
+      },
+      //TODO: delete once walletconnect v2 is working
+      fallback: {
+        ...config.resolve?.fallback,
+        https: false,
+        http: false,
+        stream: false,
+        net: false,
+        "stream-http": false,
+        tls: false,
+        zlib: false,
+        os: false,
+        fs: false,
+      },
     };
 
     return config;
