@@ -82,7 +82,10 @@ export const getPauseResumeSelection = async () => {
 };
 
 export const sendWhitelistedDomain = async (domain: string) => {
-  const message: Message<RequestType.SetBlowfishOptions, BlowfishOptionKey> = {
+  const message: Message<
+    RequestType.SetBlowfishOptions,
+    BlowfishOptionKeyValue
+  > = {
     id: "send-whitelisted-domain",
     data: { key: BlowfishOption.WHITELISTED_DOMAINS, value: domain },
     type: RequestType.SetBlowfishOptions,
