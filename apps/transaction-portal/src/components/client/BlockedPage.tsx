@@ -1,4 +1,11 @@
-import { PrimaryButton, TertiaryButton, Text, TextXL } from "@blowfish/ui/core";
+import {
+  Column,
+  PrimaryButton,
+  Row,
+  TertiaryButton,
+  Text,
+  TextXL,
+} from "@blowfish/ui/core";
 import { ArrowRightIcon, BlowfishWarningIcon } from "@blowfish/ui/icons";
 import { useRouter } from "next/router";
 import React from "react";
@@ -25,7 +32,7 @@ export function BlockedPage() {
   };
 
   const handleBack = () => {
-    router.replace(BLOWFISH_WEBSITE_URL);
+    window.location.replace(BLOWFISH_WEBSITE_URL);
   };
 
   return (
@@ -47,12 +54,9 @@ export function BlockedPage() {
   );
 }
 
-const Wrapper = styled.div`
-  width: 100%;
+const Wrapper = styled(Row)`
   height: 100%;
-  display: flex;
   justify-content: center;
-  align-items: center;
   background-color: #2a0000;
 `;
 
@@ -83,9 +87,8 @@ const Arrow = styled(ArrowRightIcon)`
   margin-top: 4px;
 `;
 
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
+const Content = styled(Column)`
+  justify-content: center;
   align-items: center;
   max-width: 282px;
 

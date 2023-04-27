@@ -95,17 +95,17 @@ export async function createBlocklistFilter(): Promise<Blocklist> {
 }
 
 export async function scanDomain(domain: string): Promise<Action> {
-  let stored = await getStoredBlocklist();
+  let storedBlocklist = await getStoredBlocklist();
 
-  if (!stored) {
-    stored = await createBlocklistFilter();
-    setStoredBlocklist(stored);
+  if (!storedBlocklist) {
+    storedBlocklist = await createBlocklistFilter();
+    setStoredBlocklist(storedBlocklist);
     logger.debug("blocklist missing in storage");
   } else {
     logger.debug("blocklist from storage");
   }
 
-  const { blocklist, bloomFilter } = stored;
+  const { blocklist, bloomFilter } = storedBlocklist;
 
   const action = scanDomainBlocklist(
     bloomFilter,
