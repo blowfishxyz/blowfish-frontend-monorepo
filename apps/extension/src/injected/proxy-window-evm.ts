@@ -42,7 +42,7 @@ interface JsonRpcError {
   error: EthereumProviderError<unknown>;
 }
 
-interface EthereumSignTypedDataRequest {
+export interface EthereumSignTypedDataRequest {
   method:
     | "eth_signTypedData"
     | "eth_signTypedData_v1"

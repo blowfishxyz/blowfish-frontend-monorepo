@@ -7,6 +7,7 @@ import type {
 } from "@blowfish/utils/types";
 
 import {
+  EthereumSignTypedDataRequest,
   enhanceSignTypedData,
   shouldForwardToWallet,
   stream,
@@ -190,8 +191,9 @@ export const handleRequestV1 = async (
     method === "eth_signTypedData_v3" ||
     method === "eth_signTypedData_v4"
   ) {
-    const { signTypedDataVersion, typedData, address } =
-      enhanceSignTypedData(decryptedMessage);
+    const { signTypedDataVersion, typedData, address } = enhanceSignTypedData(
+      decryptedMessage as EthereumSignTypedDataRequest
+    );
     if (!address || !typedData) return sendToSocket(data);
 
     sendAndAwaitResponseFromStream<SignTypedDataRequest, UserDecisionResponse>(
