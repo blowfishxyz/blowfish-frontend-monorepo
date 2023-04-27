@@ -1,6 +1,6 @@
 import { logger } from "@blowfish/utils/logger";
 import {
-  BlowfishBlockWebsitePayload,
+  BlowfishBlockDomainPayload,
   BlowfishOption,
   BlowfishOptionKey,
   BlowfishPausedOptionType,
@@ -104,7 +104,7 @@ const onBrowserMessageListener = async (
   }
 
   if (message.type === RequestType.SetBlowfishOptions) {
-    if (message.data.key === BlowfishOption.WHITELISTED_WEBSITES) {
+    if (message.data.key === BlowfishOption.WHITELISTED_DOMAINS) {
       updateStoredWhitelist(message.data.value);
       return true;
     }
@@ -119,8 +119,8 @@ const onBrowserMessageListener = async (
     );
   }
 
-  if (message.type === RequestType.BlockWebsite) {
-    return redirectBlockedWebsite(message.data);
+  if (message.type === RequestType.BlockDomain) {
+    return redirectBlockedDomain(message.data);
   }
 
   const responseRemotePort = messageIdToPortAndMessageMapping.get(
@@ -256,11 +256,11 @@ const processSignMessageRequest = async (
   await processRequestBase(message, remotePort);
 };
 
-export const redirectBlockedWebsite = async ({
+export const redirectBlockedDomain = async ({
   href,
   host,
-}: BlowfishBlockWebsitePayload): Promise<true> => {
-  logger.debug("redirectBlockedWebsite", { href, host });
+}: BlowfishBlockDomainPayload): Promise<true> => {
+  logger.debug("redirectBlockedDomain", { href, host });
 
   const portalUrl = await getBlowfishPortalUrl();
   await Browser.tabs.update(undefined, {

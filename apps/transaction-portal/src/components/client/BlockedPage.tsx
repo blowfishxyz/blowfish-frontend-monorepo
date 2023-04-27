@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { BLOWFISH_WEBSITE_URL } from "~constants";
 import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
-import { sendWhitelistWebsite } from "~utils/messages";
+import { sendWhitelistedDomain } from "~utils/messages";
 
 export function BlockedPage() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export function BlockedPage() {
 
   const handleContinue = async () => {
     if (host) {
-      await sendWhitelistWebsite(host);
+      await sendWhitelistedDomain(host);
     }
     if (href) {
       router.push(href);

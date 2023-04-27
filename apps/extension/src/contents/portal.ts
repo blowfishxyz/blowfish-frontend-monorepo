@@ -12,7 +12,7 @@ const REQUEST_TYPES_TO_PROXY = new Set([
   RequestType.SetBlowfishOptions,
   RequestType.BlowfishOptions,
   RequestType.GetRequestToScan,
-  RequestType.BlockWebsite,
+  RequestType.BlockDomain,
 ]);
 
 // NOTE: This should only be injected into the transaction portal website

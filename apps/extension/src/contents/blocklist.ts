@@ -4,7 +4,7 @@ import type { PlasmoContentScript } from "plasmo";
 import Browser from "webextension-polyfill";
 
 import { Action, scanDomain } from "~utils/blocklist";
-import { createBlockWebsiteRequestMessage } from "~utils/messages";
+import { createBlockDomainRequestMessage } from "~utils/messages";
 
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
@@ -16,7 +16,7 @@ withRetry(() => scanDomain(window.location.href), 3).then((action) => {
   logger.debug("Domain scanned", window.location.href, action);
   if (action === Action.BLOCK) {
     Browser.runtime.sendMessage(
-      createBlockWebsiteRequestMessage({
+      createBlockDomainRequestMessage({
         host: window.location.hostname,
         href: encodeURI(window.location.href),
       })

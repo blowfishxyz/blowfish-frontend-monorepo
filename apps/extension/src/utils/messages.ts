@@ -1,5 +1,5 @@
 import {
-  BlowfishBlockWebsitePayload,
+  BlowfishBlockDomainPayload,
   DappRequest,
   Message,
   RequestType,
@@ -132,10 +132,10 @@ export const postResponseToPort = (
   return response;
 };
 
-export const createBlockWebsiteRequestMessage = (
-  payload: BlowfishBlockWebsitePayload
+export const createBlockDomainRequestMessage = (
+  payload: BlowfishBlockDomainPayload
 ) => {
-  const type = RequestType.BlockWebsite;
+  const type = RequestType.BlockDomain;
 
   return createRawMessage(type, payload);
 };
