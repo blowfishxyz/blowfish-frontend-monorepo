@@ -25,6 +25,11 @@ const nextConfig = {
       },
     ];
   },
+  webpack: (config) => {
+    // TODO: WalletConnectLegacyConnector throws module not found errors
+    config.externals.push("fs", "net", "tls");
+    return config;
+  },
 };
 
 module.exports = nextConfig;

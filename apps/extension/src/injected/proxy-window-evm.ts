@@ -51,12 +51,7 @@ interface EthereumSignTypedDataRequest {
   params: [string | TypedDataV1Field[], string];
 }
 
-declare let window: Window & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ethereum?: any;
-};
-
-const stream = new WindowPostMessageStream({
+export const stream = new WindowPostMessageStream({
   name: Identifier.Inpage,
   target: Identifier.ContentScript,
 });
@@ -90,7 +85,7 @@ const isScanningPaused = (
   return !!response.data.opts?.pauseScan;
 };
 
-const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
+export const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
   const { method, params } = request;
   switch (method) {
     case "eth_signTypedData":
@@ -127,7 +122,7 @@ const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
   }
 };
 
-const shouldForwardToWallet = (
+export const shouldForwardToWallet = (
   response: Message<RequestType, UserDecisionResponse>,
   chainId: number
 ) => {
