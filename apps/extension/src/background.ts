@@ -19,8 +19,8 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
-import { BLOWFISH_EXTENSION_ID } from "~constants";
 import { setupAlarms } from "~utils/alarms";
+import { updateStoredWhitelist } from "~utils/blocklist";
 import {
   getBlowfishImpersonationWallet,
   getBlowfishPortalUrl,
@@ -104,6 +104,10 @@ const onBrowserMessageListener = async (
   }
 
   if (message.type === RequestType.SetBlowfishOptions) {
+    if (message.data.key === BlowfishOption.WHITELISTED_WEBSITES) {
+      updateStoredWhitelist(message.data.value);
+      return true;
+    }
     storage.set(message.data.key, message.data.value);
     return true;
   }
@@ -258,8 +262,9 @@ export const redirectBlockedWebsite = async ({
 }: BlowfishBlockWebsitePayload): Promise<true> => {
   logger.debug("redirectBlockedWebsite", { href, host });
 
+  const portalUrl = await getBlowfishPortalUrl();
   await Browser.tabs.update(undefined, {
-    url: `chrome-extension://${BLOWFISH_EXTENSION_ID}/tabs/blocked.html?host=${host}&href=${href}`,
+    url: `${portalUrl}/blocked?host=${host}&href=${href}`,
   });
   return true;
 };

@@ -49,6 +49,7 @@ export enum RequestType {
   GetRequestToScan = "GET_REQUEST_TO_SCAN",
   MessageAck = "BLOWFISH_MESSAGE_ACK",
   BlockWebsite = "BLOCK_WEBSITE",
+  WhitelistWebsite = "WHITELISTED_WEBSITES",
 }
 
 // TODO(kimpers): Type message
@@ -174,6 +175,7 @@ export enum BlowfishOption {
   PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED",
   PREFERENCES_BLOWFISH_IMPERSONATION_WALLET = "PREFERENCES_BLOWFISH_IMPERSONATION_WALLET",
   PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL = "PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL",
+  WHITELISTED_WEBSITES = "WHITELISTED_WEBSITES",
 }
 
 export type BlowfishPausedOptionType = {
@@ -193,6 +195,10 @@ export type BlowfishOptionKeyValue =
   | {
       key: BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET;
       value: string;
+    }
+  | {
+      key: BlowfishOption.WHITELISTED_WEBSITES;
+      value: string;
     };
 
 export type BlowfishBlockWebsitePayload = {
@@ -206,6 +212,7 @@ export type BlowfishPortalBackgroundMessage =
   | Message<RequestType.BlowfishOptions, BlowfishOptionKey>
   | Message<RequestType.SetBlowfishOptions, BlowfishOptionKeyValue>
   | Message<RequestType.BlockWebsite, BlowfishBlockWebsitePayload>
+  | Message<RequestType.WhitelistWebsite, BlowfishBlockWebsitePayload>
   | Message<DappRequest["type"], DappRequest>;
 
 export const isUserDecisionResponseMessage = (
