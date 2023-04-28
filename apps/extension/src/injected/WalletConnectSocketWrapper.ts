@@ -51,39 +51,37 @@ export class WalletConnectSocketWrapper extends WebSocket {
           super.send(data);
         }
       } else {
-        const socketMessage: SocketMessageV2 = JSON.parse(data);
-        if (
-          !socketMessage.params ||
-          !socketMessage.params.message ||
-          !socketMessage.params.topic
-        ) {
-          super.send(data);
-          return;
-        }
-        const { message, topic } = socketMessage.params;
-        const decodedMessage: DecryptedMessageV2 = decryptRPCRequestV2(
-          topic,
-          message
-        );
+        super.send(data);
+        // const socketMessage: SocketMessageV2 = JSON.parse(data);
+        // if (
+        //   !socketMessage.params ||
+        //   !socketMessage.params.message ||
+        //   !socketMessage.params.topic
+        // ) {
+        //   super.send(data);
+        //   return;
+        // }
+        // const { message, topic } = socketMessage.params;
+        // const decodedMessage: DecryptedMessageV2 = decryptRPCRequestV2(
+        //   topic,
+        //   message
+        // );
+        //
+        // if (!decodedMessage || decodedMessage.method !== "wc_sessionRequest") {
+        //   super.send(data);
+        //   return;
+        // }
+        //
+        // // NOTE: prevent duplicate Blowfish Protect tabs to be opened
+        // if (pendingRequests.has(decodedMessage.id)) return;
 
-        if (!decodedMessage || decodedMessage.method !== "wc_sessionRequest") {
-          super.send(data);
-          return;
-        }
-
-        // NOTE: prevent duplicate Blowfish Protect tabs to be opened
-        if (pendingRequests.has(decodedMessage.id)) return;
-
-        await handleRequest(
-          data,
-          decodedMessage,
-          topic,
-          pendingRequests,
-          () => {
-            super.send(data);
-            pendingRequests.delete(decodedMessage.id);
-          }
-        );
+        // await handleRequest(
+        //   data,
+        //   decodedMessage,
+        //   topic,
+        //   pendingRequests,
+        //   super.send.bind(this)
+        // );
       }
     } else {
       super.send(data);
