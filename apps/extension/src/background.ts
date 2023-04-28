@@ -20,7 +20,7 @@ import {
 import Browser from "webextension-polyfill";
 
 import { setupAlarms } from "~utils/alarms";
-import { updateStoredWhitelist } from "~utils/blocklist";
+import { updateStoredAllowlist } from "~utils/blocklist";
 import {
   getBlowfishImpersonationWallet,
   getBlowfishPortalUrl,
@@ -104,8 +104,8 @@ const onBrowserMessageListener = async (
   }
 
   if (message.type === RequestType.SetBlowfishOptions) {
-    if (message.data.key === BlowfishOption.WHITELISTED_DOMAINS) {
-      updateStoredWhitelist(message.data.value);
+    if (message.data.key === BlowfishOption.ALLOWLISTED_DOMAINS) {
+      updateStoredAllowlist(message.data.value);
       return true;
     }
     storage.set(message.data.key, message.data.value);

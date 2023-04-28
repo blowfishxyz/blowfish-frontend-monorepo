@@ -13,7 +13,7 @@ import styled from "styled-components";
 
 import { BLOWFISH_WEBSITE_URL } from "~constants";
 import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
-import { sendWhitelistedDomain } from "~utils/messages";
+import { sendAllowlistedDomain } from "~utils/messages";
 
 export function BlockedPage() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export function BlockedPage() {
 
   const handleContinue = async () => {
     if (host) {
-      await sendWhitelistedDomain(host);
+      await sendAllowlistedDomain(host);
     }
     if (href) {
       router.push(href);

@@ -81,13 +81,13 @@ export const getPauseResumeSelection = async () => {
   return await sendAndAwaitAck(message);
 };
 
-export const sendWhitelistedDomain = async (domain: string) => {
+export const sendAllowlistedDomain = async (domain: string) => {
   const message: Message<
     RequestType.SetBlowfishOptions,
     BlowfishOptionKeyValue
   > = {
-    id: "send-whitelisted-domain",
-    data: { key: BlowfishOption.WHITELISTED_DOMAINS, value: domain },
+    id: "send-allowlisted-domain",
+    data: { key: BlowfishOption.ALLOWLISTED_DOMAINS, value: domain },
     type: RequestType.SetBlowfishOptions,
   };
   return await sendAndAwaitAck(message);

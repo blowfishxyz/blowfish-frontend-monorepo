@@ -25,17 +25,17 @@ export const setStoredBlocklist = async (data: Blocklist) => {
   await blocklistStorage.set("BF:blocklist", data);
 };
 
-export const getStoredWhitelist = async () => {
+export const getStoredAllowlist = async () => {
   return (
     (await blocklistStorage.get<string[] | undefined>(
-      "BF:whitelisted-by-user"
+      "BF:allowlisted-by-user"
     )) || []
   );
 };
 
-export const updateStoredWhitelist = async (domain: string) => {
-  const existing = await getStoredWhitelist();
-  await blocklistStorage.set("BF:whitelisted-by-user", existing.concat(domain));
+export const updateStoredAllowlist = async (domain: string) => {
+  const existing = await getStoredAllowlist();
+  await blocklistStorage.set("BF:allowlisted-by-user", existing.concat(domain));
 };
 
 export type Blocklist = {
@@ -115,9 +115,9 @@ export async function scanDomain(domain: string): Promise<Action> {
   );
 
   if (action === Action.BLOCK) {
-    const whitelisted = await getStoredWhitelist();
+    const allowlist = await getStoredAllowlist();
     const hostname = new URL(domain).hostname;
-    if (whitelisted.includes(hostname)) {
+    if (allowlist.includes(hostname)) {
       return Action.NONE;
     }
   }
