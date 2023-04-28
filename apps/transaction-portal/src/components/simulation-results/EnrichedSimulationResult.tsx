@@ -1,3 +1,7 @@
+import type {
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner,
+} from "@blowfish/api-client";
 import { BlockExplorerLink, Column, Row, Text } from "@blowfish/ui/core";
 import {
   ChainFamily,
@@ -13,7 +17,9 @@ import AssetImage from "~components/AssetImage";
 import AssetPrice from "~components/AssetPrice";
 
 export const EnrichedSimulationResult: React.FC<{
-  stateChange: EvmExpectedStateChange;
+  stateChange:
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner
+    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }> = ({ stateChange, chainFamily, chainNetwork }) => {

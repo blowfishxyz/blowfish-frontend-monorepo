@@ -1,8 +1,13 @@
+import {
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+} from "@blowfish/api-client";
+import { Row, Text } from "@blowfish/ui/core";
 import { InfoIcon } from "@blowfish/ui/icons";
 import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 import Decimal from "decimal.js";
 import styled from "styled-components";
-import { Row, Text } from "@blowfish/ui/core";
+
 import {
   Tooltip,
   TooltipContent,
@@ -28,7 +33,9 @@ const StyledInfoIcon = styled(InfoIcon)`
 `;
 
 interface AssetPriceProps {
-  stateChange: EvmStateChange;
+  stateChange:
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
 }
 
 const AssetPrice = ({ stateChange }: AssetPriceProps) => {

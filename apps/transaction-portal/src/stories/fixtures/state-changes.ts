@@ -21,8 +21,6 @@ export const sendErc721: EvmExpectedStateChange = {
       tokenId: "1726",
       assetPrice: {
         source: "Coingecko",
-        last_updated_at: 1680006487,
-        dollar_value_per_token: 4886.162862975,
       },
     },
     kind: "ERC721_TRANSFER",
@@ -50,8 +48,6 @@ export const receiveErc721: EvmExpectedStateChange = {
       tokenId: "7238",
       assetPrice: {
         source: "Coingecko",
-        last_updated_at: 1680006487,
-        dollar_value_per_token: 4886.162862975,
       },
     },
     kind: "ERC721_TRANSFER",
@@ -70,9 +66,6 @@ export const sendErc20: EvmExpectedStateChange = {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         kind: "ACCOUNT",
       },
-      decimals: 18,
-      name: "Ether",
-      symbol: "ETH",
       asset: {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         symbol: "ETH",
@@ -84,8 +77,6 @@ export const sendErc20: EvmExpectedStateChange = {
           "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
         price: {
           source: "Coingecko",
-          last_updated_at: 1670252058,
-          dollar_value_per_token: 1288.41,
         },
       },
     },
@@ -105,9 +96,6 @@ export const receiveErc20: EvmExpectedStateChange = {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         kind: "ACCOUNT",
       },
-      decimals: 18,
-      name: "Ether",
-      symbol: "ETH",
       asset: {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         symbol: "ETH",
@@ -119,8 +107,6 @@ export const receiveErc20: EvmExpectedStateChange = {
           "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
         price: {
           source: "Coingecko",
-          last_updated_at: 1670252058,
-          dollar_value_per_token: 1288.41,
         },
       },
     },
@@ -167,9 +153,6 @@ export const permitErc20NoExpiration: EvmExpectedStateChange = {
         kind: "ACCOUNT",
         address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
       },
-      name: "USDCoin",
-      symbol: "USDC",
-      decimals: 6,
       owner: {
         kind: "ACCOUNT",
         address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -199,8 +182,6 @@ export const permitErc20NoExpiration: EvmExpectedStateChange = {
           "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
         price: {
           source: "Defillama",
-          last_updated_at: 1680508934,
-          dollar_value_per_token: 1.001,
         },
       },
     },
@@ -212,9 +193,6 @@ export const erc20UnverifedTransfer: EvmExpectedStateChange = {
   rawInfo: {
     kind: "ERC20_TRANSFER",
     data: {
-      symbol: "SQUID",
-      name: "Squid DAO Governance Token",
-      decimals: 6,
       amount: {
         before: "0",
         after: "12000000",
@@ -233,7 +211,6 @@ export const erc20UnverifedTransfer: EvmExpectedStateChange = {
         imageUrl: "",
         price: null,
       },
-      assetPrice: null,
     },
   },
 };

@@ -1,22 +1,33 @@
-import React, { memo } from "react";
-import { VerifiedIcon } from "@blowfish/ui/icons";
+import {
+  EvmAsset,
+  EvmNativeAsset,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner,
+  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+} from "@blowfish/api-client";
 import { BlockExplorerLink, Text } from "@blowfish/ui/core";
+import { VerifiedIcon } from "@blowfish/ui/icons";
 import {
-  Tooltip,
-  TooltipTrigger,
-  TooltipContent,
-} from "~components/common/Tooltip";
-import {
-  EvmStateChange,
+  AssetData,
   ChainFamily,
   ChainNetwork,
-  AssetData,
+  EvmStateChange,
 } from "@blowfish/utils/BlowfishApiClient";
+import React, { memo } from "react";
 import styled from "styled-components";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~components/common/Tooltip";
 
 export const VerifiedTokenTooltip: React.FC<
   React.PropsWithChildren<{
-    stateChange: EvmStateChange;
+    stateChange:
+      | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+      | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
     chainFamily: ChainFamily;
     chainNetwork: ChainNetwork;
   }>
@@ -48,9 +59,11 @@ export const VerifiedTokenTooltip: React.FC<
   );
 };
 
-const TooltipText: React.FC<{ asset: AssetData }> = memo(
+const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
   function TooltipTextInner({ asset }) {
-    const { symbol, verified, lists = [] } = asset;
+    const { symbol, verified } = asset;
+
+    const lists = "lists" in asset ? asset.lists : [];
 
     if (!verified) {
       return (
@@ -90,7 +103,11 @@ const TooltipText: React.FC<{ asset: AssetData }> = memo(
   }
 );
 
-function getErc20Asset(rawInfo: EvmStateChange): AssetData | undefined {
+function getErc20Asset(
+  rawInfo:
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+): EvmAsset | EvmNativeAsset | undefined {
   if (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_PERMIT" ||

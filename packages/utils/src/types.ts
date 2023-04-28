@@ -11,9 +11,9 @@ export { SignTypedDataPayload };
 export interface TransactionPayload {
   to: string;
   from: string;
-  value: string | null;
-  data: string | null;
-  gas?: string | null;
+  value: string | undefined;
+  data: string | undefined;
+  gas?: string | undefined;
 }
 
 export type WarningSeverity = "WARNING" | "CRITICAL";

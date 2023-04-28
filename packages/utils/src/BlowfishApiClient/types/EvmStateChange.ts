@@ -7,7 +7,7 @@ import type { Price } from "./Price";
 export interface AssetData {
   address: string;
   decimals: number;
-  imageUrl: string;
+  imageUrl: string | null;
   lists: string[];
   name: string;
   price: Price | null;
@@ -16,12 +16,12 @@ export interface AssetData {
 }
 
 export interface Erc20TransferData {
-  symbol: string;
-  name: string;
-  decimals: number;
+  // symbol: string;
+  // name: string;
+  // decimals: number;
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
-  assetPrice: Price | null;
+  // assetPrice: Price | null;
   asset: AssetData;
 }
 
@@ -38,7 +38,7 @@ export interface Erc721TransferData {
 export interface Erc1155TransferData {
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
-  tokenId: string;
+  tokenId: string | null;
   metadata: EvmTokenMetadata;
   assetPrice: Price | null;
 }
@@ -73,9 +73,9 @@ export interface Erc721ApprovalData {
 }
 
 export interface NativeAssetTransferData {
-  symbol: string;
-  name: string;
-  decimals: number;
+  // symbol: string;
+  // name: string;
+  // decimals: number;
   amount: EvmAmountDiff;
   contract: EvmAddressInfo;
   asset: AssetData;
@@ -94,9 +94,9 @@ export interface Erc20ApprovalData {
 
 export interface Erc20PermitData {
   contract: EvmAddressInfo;
-  name: string;
-  symbol: string;
-  decimals: number;
+  // name: string;
+  // symbol: string;
+  // decimals: number;
   owner: EvmAddressInfo;
   spender: EvmAddressInfo;
   amount: string;

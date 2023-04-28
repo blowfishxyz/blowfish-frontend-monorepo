@@ -1,16 +1,23 @@
+import {
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+} from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
 import {
   ChainFamily,
   ChainNetwork,
   EvmStateChange,
 } from "@blowfish/utils/BlowfishApiClient";
+import Image from "next/image";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
-import Image from "next/image";
+
 import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
 
 interface AssetImageProps {
-  stateChange: EvmStateChange;
+  stateChange:
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
   isPositiveEffect: boolean;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
@@ -109,7 +116,7 @@ const AssetImage = ({
   ) {
     imageSrc = stateChange.data.asset?.imageUrl;
     showPlaceholderImage = !imageSrc;
-    altText = stateChange.data.name;
+    altText = stateChange.data.asset.name;
   }
 
   const [hasPlaceholder, setHasPlaceholder] = useState(showPlaceholderImage);

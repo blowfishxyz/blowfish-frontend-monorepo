@@ -2,6 +2,6 @@
 
 export interface Price {
   source: string;
-  last_updated_at: number;
-  dollar_value_per_token: number | null;
+  // last_updated_at: number;
+  // dollar_value_per_token: number | null;
 }

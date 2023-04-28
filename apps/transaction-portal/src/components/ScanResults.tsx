@@ -1,3 +1,7 @@
+import type {
+  ScanMessageEvm200Response,
+  ScanTransactionEvm200Response,
+} from "@blowfish/api-client";
 import {
   PAUSE_DURATIONS,
   PauseDuration,
@@ -220,7 +224,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
 
 export interface ScanResultsProps {
   request: DappRequest;
-  scanResults: EvmTransactionScanResult | EvmMessageScanResult;
+  scanResults: ScanTransactionEvm200Response | ScanMessageEvm200Response;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
@@ -331,7 +335,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             severity: "CRITICAL",
             message: `This transaction failed during simulation. Proceed with caution`,
           };
-        case "INVALID_TRANSACTION":
+        case "TRANSACTION_ERROR":
           return {
             severity: "CRITICAL",
             message: `This transaction seems does not seem valid. Proceed with caution`,
@@ -342,6 +346,10 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             message:
               "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
           };
+        // TODO: Add more specific messages for these errors
+        case "UNSUPPORTED_MESSAGE":
+        case "TRANSACTION_REVERTED":
+        case "UNKNOWN_ERROR":
         default:
           return {
             severity: "CRITICAL",
