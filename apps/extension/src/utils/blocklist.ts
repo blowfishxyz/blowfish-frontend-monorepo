@@ -13,29 +13,38 @@ import {
 import { Storage } from "@plasmohq/storage";
 
 import { BLOWFISH_API_BASE_URL } from "~config";
+import {
+  BLOWFISH_ALLOWLIST_STORAGE_KEY,
+  BLOWFISH_BLOCKLIST_STORAGE_KEY,
+} from "~constants";
 
 // The blocklist exceeds the "sync" storage capacity (https://developer.chrome.com/docs/extensions/reference/storage/#property-sync)
 const blocklistStorage = new Storage({ area: "local" });
 
 export const getStoredBlocklist = async () => {
-  return blocklistStorage.get<Blocklist | undefined>("BF:blocklist");
+  return blocklistStorage.get<Blocklist | undefined>(
+    BLOWFISH_BLOCKLIST_STORAGE_KEY
+  );
 };
 
 export const setStoredBlocklist = async (data: Blocklist) => {
-  await blocklistStorage.set("BF:blocklist", data);
+  await blocklistStorage.set(BLOWFISH_BLOCKLIST_STORAGE_KEY, data);
 };
 
 export const getStoredAllowlist = async () => {
   return (
     (await blocklistStorage.get<string[] | undefined>(
-      "BF:allowlisted-by-user"
+      BLOWFISH_ALLOWLIST_STORAGE_KEY
     )) || []
   );
 };
 
 export const updateStoredAllowlist = async (domain: string) => {
   const existing = await getStoredAllowlist();
-  await blocklistStorage.set("BF:allowlisted-by-user", existing.concat(domain));
+  await blocklistStorage.set(
+    BLOWFISH_ALLOWLIST_STORAGE_KEY,
+    existing.concat(domain)
+  );
 };
 
 export type Blocklist = {
@@ -118,6 +127,7 @@ export async function scanDomain(domain: string): Promise<Action> {
     const allowlist = await getStoredAllowlist();
     const hostname = new URL(domain).hostname;
     if (allowlist.includes(hostname)) {
+      logger.debug("Block prevented by allowlist");
       return Action.NONE;
     }
   }
