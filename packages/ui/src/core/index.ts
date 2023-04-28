@@ -9,6 +9,7 @@ export {
   SecondaryButton,
   TextButton,
   SmallButtonPrimary,
+  TertiaryButton,
 } from "./buttons/MainButtons";
 export { themes } from "./theme";
 export { opacify } from "./utils/opacify";

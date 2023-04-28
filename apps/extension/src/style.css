@@ -2,6 +2,7 @@ html,
 body,
 div#root {
   min-height: 100vh;
+  height: 100%;
   width: 100%;
 }
 
