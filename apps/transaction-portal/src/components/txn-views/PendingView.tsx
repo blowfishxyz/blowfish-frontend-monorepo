@@ -15,11 +15,11 @@ import {
 } from "@blowfish/ui/icons";
 import {
   Divider,
-  StyledText,
-  SmallSecondaryButton,
-  StyledRow,
-  GrayLink,
-} from "../cards/CardCommonStyles";
+  CardText,
+  CardSmallSecondaryButton,
+  CardRow,
+  CardGrayLink,
+} from "../cards/common";
 
 const StyledSpeedUpIcon = styled(SpeedUpIcon)`
   @media only screen and (max-width: ${size.lg}) {
@@ -31,7 +31,7 @@ const StyledTextXL = styled(TextXL)`
   margin: 8px;
 `;
 
-const StyledCenteredText = styled(StyledText)`
+const StyledCenteredText = styled(CardText)`
   width: 250px;
   text-align: center;
 `;
@@ -41,7 +41,7 @@ const TxnInfoWrapper = styled.div`
   margin-top: 1rem;
 `;
 
-const StyledGrayLink = styled(GrayLink)`
+const StyledGrayLink = styled(CardGrayLink)`
   text-decoration: none;
 `;
 
@@ -64,7 +64,7 @@ const InfoRow = ({ label, value }: InfoRowProps) => (
   <>
     <Row justify="space-between">
       <GrayText>{label}</GrayText>
-      <StyledText>{value}</StyledText>
+      <CardText>{value}</CardText>
     </Row>
     <Divider margin="0.8rem 0" />
   </>
@@ -87,7 +87,7 @@ const PendingView = () => {
           value={
             <Row>
               <MiningIndicatorIcon style={MiningIndicatorIconStyles} />
-              <StyledText>Being mined</StyledText>
+              <CardText>Being mined</CardText>
             </Row>
           }
         />
@@ -101,13 +101,13 @@ const PendingView = () => {
         />
         <InfoRow label="Transaction Fee" value="$4.55" />
       </TxnInfoWrapper>
-      <StyledRow gap="md">
-        <SmallSecondaryButton>Report</SmallSecondaryButton>
+      <CardRow gap="md">
+        <CardSmallSecondaryButton>Report</CardSmallSecondaryButton>
         <PrimaryButton>
           <StyledSpeedUpIcon />
           Speed up transaction
         </PrimaryButton>
-      </StyledRow>
+      </CardRow>
     </Column>
   );
 };

@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { PrimaryButton, TextXL, Column, GrayText } from "@blowfish/ui/core";
+import { PrimaryButton, TextXL, Column, GrayText, size } from "@blowfish/ui/core";
 import {
   CardWrapper,
   CardContent,
-  StyledText,
-  SmallSecondaryButton,
-  StyledRow,
-} from "./CardCommonStyles";
+  CardText,
+  CardSmallSecondaryButton,
+  CardRow,
+} from "./common";
 import PendingView from "~components/txn-views/PendingView";
 import ConfirmingView from "~components/txn-views/ConfirmingView";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
   width: 45%;
+
+  @media only screen and (max-width: ${size.lg}) {
+    width: unset;
+  }
 `;
 
 const CenterContent = styled.div`
@@ -56,17 +60,17 @@ const ConfirmTxn: React.FC = () => {
           <>
             <Column gap="md">
               <TextXL>This seems low risk.</TextXL>
-              <StyledText>
+              <CardText>
                 This application is requesting permission to exchange assets
                 that are held in your wallet for others.
-              </StyledText>
+              </CardText>
             </Column>
-            <StyledRow gap="md">
-              <SmallSecondaryButton>Flag</SmallSecondaryButton>
+            <CardRow gap="md">
+              <CardSmallSecondaryButton>Flag</CardSmallSecondaryButton>
               <PrimaryButton onClick={handleContinueClick}>
                 Continue
               </PrimaryButton>
-            </StyledRow>
+            </CardRow>
             <CenterContent>
               <GrayText>Click Continue to proceed to your wallet.</GrayText>
             </CenterContent>

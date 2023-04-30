@@ -3,25 +3,38 @@ import { styled } from "styled-components";
 import { Row, size } from "@blowfish/ui/core";
 import ConfirmTxn from "~components/cards/ConfirmTxn";
 import PreviewTxn from "~components/cards/PreviewTxn";
+import {
+  dummyTxnSimulationData,
+  // dummySignatureData,
+} from "~components/simulation-results-types/mock-data";
 
 const ProtectContainer = styled(Row)`
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
+  flex-grow: 1;
   background: #efefef;
-  padding: 5rem;
+  padding: 80px;
 
   @media only screen and (max-width: ${size.lg}) {
+    padding: 40px;
+  }
+
+  @media only screen and (max-width: ${size.md}) {
     flex-wrap: wrap;
-    padding: 2.5rem;
+    padding: 24px;
   }
 `;
 
 const Protect = () => {
   return (
-    <ProtectContainer gap="lg">
-      <PreviewTxn />
+    <ProtectContainer gap="lg" align="flex-start">
+      {/* NOTE: One is the screen when you have a txn simulation result and the other shows when it's a signature (e.g wallet connect) */}
+      <PreviewTxn
+        txnSimulationData={dummyTxnSimulationData}
+        simulationType="transaction"
+      />
+      {/* <PreviewTxn
+        signatureData={dummySignatureData}
+        simulationType="signature"
+      /> */}
       <ConfirmTxn />
     </ProtectContainer>
   );
