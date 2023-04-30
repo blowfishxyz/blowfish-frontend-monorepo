@@ -10,7 +10,6 @@ import {
 } from "@blowfish/ui/core";
 import {
   BlowfishIcon,
-  MiningIndicatorIcon,
   SpeedUpIcon,
 } from "@blowfish/ui/icons";
 import {
