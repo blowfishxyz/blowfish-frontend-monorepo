@@ -1,5 +1,5 @@
 import React from "react";
-import { styled } from "styled-components";
+import { styled, keyframes } from "styled-components";
 import {
   PrimaryButton,
   Row,
@@ -20,6 +20,26 @@ import {
   CardRow,
   CardGrayLink,
 } from "../cards/common";
+
+const pulse = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(214, 162, 67, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(214, 162, 67, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(214, 162, 67, 0);
+  }
+`;
+
+const TinyCircle = styled.div`
+  width: 7px;
+  height: 7px;
+  background-color: #d6a243;
+  border-radius: 50%;
+  animation: ${pulse} 2s infinite ease-in-out;
+`;
 
 const StyledSpeedUpIcon = styled(SpeedUpIcon)`
   @media only screen and (max-width: ${size.lg}) {
@@ -45,15 +65,11 @@ const StyledGrayLink = styled(CardGrayLink)`
   text-decoration: none;
 `;
 
-const BlowfishIconStyles = {
-  width: "77px",
-  height: "76px",
-  opacity: "0.2",
-};
-
-const MiningIndicatorIconStyles = {
-  marginRight: "10px",
-};
+const StyledBlowfishIcon = styled(BlowfishIcon)`
+  width: 77px;
+  height: 76px;
+  opacity: 0.2;
+`;
 
 type InfoRowProps = {
   label: string;
@@ -73,7 +89,7 @@ const InfoRow = ({ label, value }: InfoRowProps) => (
 const PendingView = () => {
   return (
     <Column gap="md" alignItems="center">
-      <BlowfishIcon style={BlowfishIconStyles} />
+      <StyledBlowfishIcon />
       <StyledTextXL>Pending</StyledTextXL>
       <StyledCenteredText>
         Your transaction is being sent to the Ethereum blockchain.
@@ -85,8 +101,8 @@ const PendingView = () => {
         <InfoRow
           label="Status"
           value={
-            <Row>
-              <MiningIndicatorIcon style={MiningIndicatorIconStyles} />
+            <Row gap="md">
+              <TinyCircle />
               <CardText>Being mined</CardText>
             </Row>
           }

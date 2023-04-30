@@ -2,13 +2,12 @@ import React from "react";
 import styled, { css } from "styled-components";
 
 type ChipProps = {
-  // NOTE: other variant types can include "danger" (for high risk), "primary" here represents low risk, and the default state is the regular grey chip
   variant?: "primary";
   text: React.ReactNode | string;
   clickable?: boolean;
 };
 
-const ChipContainer = styled.div<{ variant?: string; clickable?: boolean }>`
+const ChipContainer = styled.div<Omit<ChipProps, "text">>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,7 +20,7 @@ const ChipContainer = styled.div<{ variant?: string; clickable?: boolean }>`
   ${({ variant }) =>
     variant === "primary" &&
     css`
-      background-color: #00b94a1a;
+      background-color: rgba(0, 185, 74, 0.102);
       color: #00b94a;
     `}
 
@@ -32,9 +31,9 @@ const ChipContainer = styled.div<{ variant?: string; clickable?: boolean }>`
     `}
 `;
 
-const Chip = ({ text, variant, clickable }: ChipProps) => {
+const Chip = ({ text, ...rest }: ChipProps) => {
   return (
-    <ChipContainer variant={variant} clickable={clickable}>
+    <ChipContainer {...rest}>
       <span>{text}</span>
     </ChipContainer>
   );

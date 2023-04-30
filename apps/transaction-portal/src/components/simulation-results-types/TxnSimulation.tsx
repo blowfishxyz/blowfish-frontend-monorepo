@@ -2,7 +2,7 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
 import { Column, Row, Text } from "@blowfish/ui/core";
-import { SmallGrayText, TxnImage,  } from "./SimulationResultsCommonStyles";
+import { SmallGrayText, TxnImage } from "./SimulationResultsCommonStyles";
 import { RawInfo } from "./mock-data";
 
 const TxnSimulationWrapper = styled(Row)`

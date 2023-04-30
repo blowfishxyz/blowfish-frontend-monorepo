@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import { PrimaryButton, TextXL, Column, GrayText, size } from "@blowfish/ui/core";
+import {
+  PrimaryButton,
+  TextXL,
+  Column,
+  GrayText,
+  size,
+} from "@blowfish/ui/core";
 import {
   CardWrapper,
   CardContent,
