@@ -4,12 +4,13 @@ import {
   BlowfishOptionKeyValue,
   BlowfishPausedOptionType,
   BlowfishPortalBackgroundMessage,
-  isDappRequestMessage,
   Message,
   RequestType,
   UserDecisionOpts,
   UserDecisionResponse,
+  isDappRequestMessage,
 } from "@blowfish/utils/types";
+
 import { MessageError } from "~utils/utils";
 
 const sendAndAwaitAck = async (
@@ -76,6 +77,18 @@ export const getPauseResumeSelection = async () => {
     id: "get-pause-resume-selection",
     data: { key: BlowfishOption.PREFERENCES_BLOWFISH_PAUSED },
     type: RequestType.BlowfishOptions,
+  };
+  return await sendAndAwaitAck(message);
+};
+
+export const sendAllowlistedDomain = async (domain: string) => {
+  const message: Message<
+    RequestType.SetBlowfishOptions,
+    BlowfishOptionKeyValue
+  > = {
+    id: "send-allowlisted-domain",
+    data: { key: BlowfishOption.ALLOWLISTED_DOMAINS, value: domain },
+    type: RequestType.SetBlowfishOptions,
   };
   return await sendAndAwaitAck(message);
 };

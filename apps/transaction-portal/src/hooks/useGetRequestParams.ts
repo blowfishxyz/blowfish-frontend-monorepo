@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import {
   DappRequest,
-  isUrlScan,
   Message,
+  ParsedScanUrl,
+  isUrlScan,
   parseRequestFromMessage,
 } from "@blowfish/utils/types";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
-import { checkVersionAndTransformMessage, MessageError } from "~utils/utils";
-import { getScanRequestFromMessageChannel } from "~utils/messages";
-import { useRequestChainId } from "./useRequestChainId";
+import { useEffect, useState } from "react";
+
 import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
+import { getScanRequestFromMessageChannel } from "~utils/messages";
+import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
+
+import { useRequestChainId } from "./useRequestChainId";
 
 type HexString = `0x${string}`;
 type RequestParams =
@@ -30,7 +33,7 @@ type RequestParams =
 
 export const useGetRequestParams = (): RequestParams => {
   const requestChainId = useRequestChainId();
-  const requestMessage = useParsedRequestScanUrl();
+  const requestMessage = useParsedRequestScanUrl<ParsedScanUrl>();
   const [params, setParams] = useState<RequestParams>({});
   const [errorMessage, setErrorMessage] = useState<MessageError | null>(null);
   const [paramError, setParamError] = useState(false);

@@ -31,11 +31,13 @@ import {
 import { useStorage } from "@plasmohq/storage/hook";
 
 import PauseDurationSelector from "~components/PauseDurationSelector";
+import { ClearStorage } from "~components/Popup/ClearStorage";
 import { CustomPortalUrl } from "~components/Popup/CustomPortalUrl";
 import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
 import {
   BLOWFISH_EXTENSION_VERSION,
+  CLEAR_STORAGE_ENABLED,
   CUSTOM_PORTAL_URL_ENABLED,
   IS_IMPERSONATION_AVAILABLE,
 } from "~config";
@@ -281,6 +283,7 @@ const Popup: React.FC = () => {
         </Column>
         {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
         {CUSTOM_PORTAL_URL_ENABLED && <CustomPortalUrl />}
+        {CLEAR_STORAGE_ENABLED && <ClearStorage />}
         <PopupFooter />
       </Content>
     </StyledPopupContainer>

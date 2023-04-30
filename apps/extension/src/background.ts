@@ -1,5 +1,6 @@
 import { logger } from "@blowfish/utils/logger";
 import {
+  BlowfishBlockDomainPayload,
   BlowfishOption,
   BlowfishOptionKey,
   BlowfishPausedOptionType,
@@ -18,6 +19,8 @@ import {
 } from "@blowfish/utils/types";
 import Browser from "webextension-polyfill";
 
+import { setupAlarms } from "~utils/alarms";
+import { updateStoredAllowlist } from "~utils/blocklist";
 import {
   getBlowfishImpersonationWallet,
   getBlowfishPortalUrl,
@@ -101,6 +104,10 @@ const onBrowserMessageListener = async (
   }
 
   if (message.type === RequestType.SetBlowfishOptions) {
+    if (message.data.key === BlowfishOption.ALLOWLISTED_DOMAINS) {
+      updateStoredAllowlist(message.data.value);
+      return true;
+    }
     storage.set(message.data.key, message.data.value);
     return true;
   }
@@ -110,6 +117,10 @@ const onBrowserMessageListener = async (
       message.type,
       messageIdToPortAndMessageMapping.get(message.data.key)?.message || {}
     );
+  }
+
+  if (message.type === RequestType.BlockDomain) {
+    return redirectBlockedDomain(message.data);
   }
 
   const responseRemotePort = messageIdToPortAndMessageMapping.get(
@@ -244,3 +255,18 @@ const processSignMessageRequest = async (
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
 };
+
+export const redirectBlockedDomain = async ({
+  href,
+  host,
+}: BlowfishBlockDomainPayload): Promise<true> => {
+  logger.debug("redirectBlockedDomain", { href, host });
+
+  const portalUrl = await getBlowfishPortalUrl();
+  await Browser.tabs.update(undefined, {
+    url: `${portalUrl}/blocked?host=${host}&href=${href}`,
+  });
+  return true;
+};
+
+setupAlarms();

@@ -4,7 +4,9 @@
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "dev:extension": "pnpm --filter @blowfish/extension dev",
+    "dev:portal": "pnpm --filter @blowfish/transaction-portal dev"
   },
   "packageManager": "pnpm@8.1.0",
   "devDependencies": {
