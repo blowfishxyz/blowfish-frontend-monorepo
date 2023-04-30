@@ -8,10 +8,7 @@ import {
   GrayText,
   size,
 } from "@blowfish/ui/core";
-import {
-  BlowfishIcon,
-  SpeedUpIcon,
-} from "@blowfish/ui/icons";
+import { BlowfishIcon, SpeedUpIcon } from "@blowfish/ui/icons";
 import {
   Divider,
   CardText,
