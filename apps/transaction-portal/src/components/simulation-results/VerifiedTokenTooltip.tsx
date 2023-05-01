@@ -5,7 +5,7 @@ import {
 } from "@blowfish/api-client";
 import { BlockExplorerLink, Text } from "@blowfish/ui/core";
 import { VerifiedIcon } from "@blowfish/ui/icons";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import React, { memo } from "react";
 import styled from "styled-components";
 

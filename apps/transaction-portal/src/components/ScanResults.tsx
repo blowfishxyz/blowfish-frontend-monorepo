@@ -17,7 +17,7 @@ import {
   TextSmall,
 } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import { logger } from "@blowfish/utils/logger";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";

@@ -14,9 +14,6 @@
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint": "pnpm lint:eslint && pnpm lint:prettier:check",
     "typecheck": "tsc --noEmit",
-    "types:clean": "(cd ./src/utils/BlowfishApiClient/types && find . ! -name 'index.ts' -type f -exec rm -f {} + )",
-    "types:copy": "cp ../blowfish-monorepo/components/types/bindings/* ./src/utils/BlowfishApiClient/types",
-    "types:update": "pnpm types:clean && pnpm types:copy && pnpm lint:prettier && pnpm typecheck",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chromatic": "npx chromatic --project-token=3a6769686749"

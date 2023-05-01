@@ -1,10 +1,10 @@
 import type {
-  Action,
-  Erc721ApprovalData,
-  Erc721TransferData,
-  Erc1155TransferData,
+  EvmStateChangeErc721ApprovalData,
+  EvmStateChangeErc721TransferData,
+  EvmStateChangeErc1155TransferData,
   SignTypedDataPayload,
-} from "./BlowfishApiClient";
+} from "@blowfish/api-client";
+import { ActionEnum } from "@blowfish/api-client";
 
 export { SignTypedDataPayload };
 
@@ -19,13 +19,14 @@ export interface TransactionPayload {
 export type WarningSeverity = "WARNING" | "CRITICAL";
 export type Severity = "INFO" | WarningSeverity;
 
-export const actionToSeverity = (action: Action): Severity => {
+export const actionToSeverity = (action: ActionEnum): Severity => {
   switch (action) {
-    case "BLOCK":
+    case ActionEnum.Block:
       return "CRITICAL";
-    case "WARN":
+    case ActionEnum.Warn:
       return "WARNING";
-    case "NONE":
+    case ActionEnum.None:
+    default:
       return "INFO";
   }
 };
@@ -260,6 +261,6 @@ export const isUrlScan = (
 };
 
 export type NftStateChangeWithTokenId =
-  | Erc721TransferData
-  | Erc1155TransferData
-  | Erc721ApprovalData;
+  | EvmStateChangeErc721TransferData
+  | EvmStateChangeErc1155TransferData
+  | EvmStateChangeErc721ApprovalData;

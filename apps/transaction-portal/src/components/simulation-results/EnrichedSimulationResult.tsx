@@ -1,6 +1,6 @@
 import type { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
 import { BlockExplorerLink, Column, Row, Text } from "@blowfish/ui/core";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { NftStateChangeWithTokenId } from "@blowfish/utils/types";
 import { Decimal } from "decimal.js";
 import React, { useMemo } from "react";

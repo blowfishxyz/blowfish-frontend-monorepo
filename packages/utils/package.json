@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "@blowfish/tsconfig": "*",
+    "@blowfish/api-client": "workspace:*",
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
@@ -29,11 +30,6 @@
       "types": "./build/types.d.ts",
       "import": "./build/types.mjs",
       "require": "./build/types.js"
-    },
-    "./BlowfishApiClient": {
-      "types": "./build/BlowfishApiClient.d.ts",
-      "import": "./build/BlowfishApiClient.mjs",
-      "require": "./build/BlowfishApiClient.js"
     },
     "./chains": {
       "types": "./build/chains.d.ts",

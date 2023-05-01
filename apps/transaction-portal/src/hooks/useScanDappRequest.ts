@@ -4,7 +4,7 @@ import type {
   EvmSignTypedDataDataDomain,
   EvmTransactionScanResultV2,
 } from "@blowfish/api-client";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import {
   DappRequest,

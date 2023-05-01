@@ -1,6 +1,6 @@
 import { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
