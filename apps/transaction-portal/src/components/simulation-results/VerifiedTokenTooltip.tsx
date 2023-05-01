@@ -1,19 +1,11 @@
 import {
   EvmAsset,
+  EvmExpectedStateChangeV2,
   EvmNativeAsset,
-  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
-  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
-  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner,
-  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
 } from "@blowfish/api-client";
 import { BlockExplorerLink, Text } from "@blowfish/ui/core";
 import { VerifiedIcon } from "@blowfish/ui/icons";
-import {
-  AssetData,
-  ChainFamily,
-  ChainNetwork,
-  EvmStateChange,
-} from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import React, { memo } from "react";
 import styled from "styled-components";
 
@@ -25,9 +17,7 @@ import {
 
 export const VerifiedTokenTooltip: React.FC<
   React.PropsWithChildren<{
-    stateChange:
-      | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-      | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
+    stateChange: EvmExpectedStateChangeV2;
     chainFamily: ChainFamily;
     chainNetwork: ChainNetwork;
   }>
@@ -104,10 +94,9 @@ const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
 );
 
 function getErc20Asset(
-  rawInfo:
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+  stateChange: EvmExpectedStateChangeV2
 ): EvmAsset | EvmNativeAsset | undefined {
+  const rawInfo = stateChange.rawInfo;
   if (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_PERMIT" ||

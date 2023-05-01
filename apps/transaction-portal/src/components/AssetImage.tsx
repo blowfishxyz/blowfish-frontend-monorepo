@@ -1,13 +1,6 @@
-import {
-  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
-  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
-} from "@blowfish/api-client";
+import { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
-import {
-  ChainFamily,
-  ChainNetwork,
-  EvmStateChange,
-} from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import Image from "next/image";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
@@ -15,9 +8,7 @@ import styled, { css } from "styled-components";
 import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
 
 interface AssetImageProps {
-  stateChange:
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
+  stateChange: EvmExpectedStateChangeV2;
   isPositiveEffect: boolean;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
@@ -93,30 +84,31 @@ const AssetImage = ({
   chainFamily,
   chainNetwork,
 }: AssetImageProps) => {
+  const rawInfo = stateChange.rawInfo;
   let altText = "Asset";
   let imageSrc;
   let showPlaceholderImage = false;
 
   if (
-    stateChange.kind === "ERC721_TRANSFER" ||
-    stateChange.kind === "ERC721_APPROVAL" ||
-    stateChange.kind === "ERC1155_TRANSFER"
+    rawInfo.kind === "ERC721_TRANSFER" ||
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC1155_TRANSFER"
   ) {
-    imageSrc = stateChange.data?.metadata?.rawImageUrl;
+    imageSrc = rawInfo.data?.metadata?.rawImageUrl;
     showPlaceholderImage = !imageSrc;
     altText =
-      stateChange.kind !== "ERC1155_TRANSFER"
-        ? stateChange.data.name
-        : `${altText} ${stateChange.data.tokenId}`;
+      rawInfo.kind !== "ERC1155_TRANSFER"
+        ? rawInfo.data.name
+        : `${altText} ${rawInfo.data.tokenId}`;
   } else if (
-    stateChange.kind === "ERC20_TRANSFER" ||
-    stateChange.kind === "ERC20_APPROVAL" ||
-    stateChange.kind === "ERC20_PERMIT" ||
-    stateChange.kind === "NATIVE_ASSET_TRANSFER"
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "ERC20_PERMIT" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
   ) {
-    imageSrc = stateChange.data.asset?.imageUrl;
+    imageSrc = rawInfo.data.asset?.imageUrl;
     showPlaceholderImage = !imageSrc;
-    altText = stateChange.data.asset.name;
+    altText = rawInfo.data.asset.name;
   }
 
   const [hasPlaceholder, setHasPlaceholder] = useState(showPlaceholderImage);

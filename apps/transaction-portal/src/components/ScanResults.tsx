@@ -1,6 +1,6 @@
 import type {
-  ScanMessageEvm200Response,
-  ScanTransactionEvm200Response,
+  EvmMessageScanResultV2,
+  EvmTransactionScanResultV2,
 } from "@blowfish/api-client";
 import {
   PAUSE_DURATIONS,
@@ -17,12 +17,7 @@ import {
   TextSmall,
 } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
-import {
-  ChainFamily,
-  ChainNetwork,
-  EvmMessageScanResult,
-  EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { shortenHex } from "@blowfish/utils/hex";
 import { logger } from "@blowfish/utils/logger";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
@@ -224,7 +219,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
 
 export interface ScanResultsProps {
   request: DappRequest;
-  scanResults: ScanTransactionEvm200Response | ScanMessageEvm200Response;
+  scanResults: EvmMessageScanResultV2 | EvmTransactionScanResultV2;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;

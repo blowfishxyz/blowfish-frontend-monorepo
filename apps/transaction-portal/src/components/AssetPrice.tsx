@@ -1,10 +1,6 @@
-import {
-  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
-  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
-} from "@blowfish/api-client";
+import { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
 import { Row, Text } from "@blowfish/ui/core";
 import { InfoIcon } from "@blowfish/ui/icons";
-import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 import Decimal from "decimal.js";
 import styled from "styled-components";
 
@@ -33,34 +29,33 @@ const StyledInfoIcon = styled(InfoIcon)`
 `;
 
 interface AssetPriceProps {
-  stateChange:
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-    | ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
+  stateChange: EvmExpectedStateChangeV2;
 }
 
 const AssetPrice = ({ stateChange }: AssetPriceProps) => {
+  const rawInfo = stateChange.rawInfo;
   let totalValue;
   let withInfoTooltip = false;
   //TODO: refactor price once the API is transitioned away from assetPrice
   const pricePerToken =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (stateChange.data as any)?.asset?.price?.dollar_value_per_token ??
+    (rawInfo.data as any)?.asset?.price?.dollar_value_per_token ??
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ((stateChange.data as any).assetPrice?.dollar_value_per_token || null);
+    ((rawInfo.data as any).assetPrice?.dollar_value_per_token || null);
 
   if (!pricePerToken) return null;
 
   if (
-    stateChange.kind === "ERC20_TRANSFER" ||
-    stateChange.kind === "ERC20_APPROVAL" ||
-    stateChange.kind === "NATIVE_ASSET_TRANSFER"
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
   ) {
-    const { before, after } = stateChange.data.amount;
+    const { before, after } = rawInfo.data.amount;
 
     const difference = new Decimal(before).sub(after).abs();
 
     if (
-      stateChange.kind === "ERC20_APPROVAL" &&
+      rawInfo.kind === "ERC20_APPROVAL" &&
       // U256_MAX_VALUE - unlimited approval
       difference.eq(U256_MAX_VALUE)
     ) {
@@ -68,13 +63,13 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
     }
     totalValue = new Decimal(pricePerToken)
       .times(difference)
-      .dividedBy(new Decimal(10).pow(stateChange.data.asset.decimals))
+      .dividedBy(new Decimal(10).pow(rawInfo.data.asset.decimals))
       .toNumber();
   }
   if (
-    stateChange.kind === "ERC721_TRANSFER" ||
-    stateChange.kind === "ERC1155_TRANSFER" ||
-    stateChange.kind === "ERC721_APPROVAL"
+    rawInfo.kind === "ERC721_TRANSFER" ||
+    rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "ERC721_APPROVAL"
   ) {
     totalValue = pricePerToken;
     withInfoTooltip = true;

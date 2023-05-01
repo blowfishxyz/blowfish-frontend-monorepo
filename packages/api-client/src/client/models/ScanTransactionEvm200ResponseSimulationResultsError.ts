@@ -41,14 +41,6 @@ import {
   instanceOfEvmUnknownError,
 } from "./EvmUnknownError";
 
-// import {
-//     object,
-//     instanceOfobject,
-//     objectFromJSON,
-//     objectFromJSONTyped,
-//     objectToJSON,
-// } from './object';
-
 /**
  * @type ScanTransactionEvm200ResponseSimulationResultsError
  * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
@@ -58,7 +50,8 @@ export type ScanTransactionEvm200ResponseSimulationResultsError =
   | ({ kind: "SIMULATION_FAILED" } & EvmSimulationFailedError)
   | ({ kind: "TRANSACTION_ERROR" } & EvmTransactionError)
   | ({ kind: "TRANSACTION_REVERTED" } & EvmTransactionRevertedError)
-  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError);
+  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError)
+  | null;
 
 export function ScanTransactionEvm200ResponseSimulationResultsErrorFromJSON(
   json: any

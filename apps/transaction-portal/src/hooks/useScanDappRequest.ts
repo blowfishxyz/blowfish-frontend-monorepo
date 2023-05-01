@@ -1,19 +1,10 @@
-import { EvmSignTypedDataDataDomain } from "@blowfish/api-client";
-import { scanTransactionEvm } from "@blowfish/api-client";
-import {
-  EvmSignTypedDataData,
-  ScanTransactionEvm200Response,
-  scanMessageEvm,
-  scanSignTypedData,
+import { BlowfishApiClient } from "@blowfish/api-client";
+import type {
+  EvmMessageScanResultV2,
+  EvmSignTypedDataDataDomain,
+  EvmTransactionScanResultV2,
 } from "@blowfish/api-client";
-import type { ScanMessageEvm200Response } from "@blowfish/api-client";
-import {
-  BlowfishApiClient,
-  ChainFamily,
-  ChainNetwork,
-  EvmMessageScanResult,
-  EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import {
   DappRequest,
@@ -47,28 +38,20 @@ const fetcher = async (
   chainNetwork: ChainNetwork,
   request: DappRequest,
   origin: string
-): Promise<ScanTransactionEvm200Response | ScanMessageEvm200Response> => {
-  const client = new BlowfishApiClient(
-    chainFamily,
-    chainNetwork,
-    undefined,
-    BLOWFISH_API_BASE_URL
-  );
+): Promise<EvmTransactionScanResultV2 | EvmMessageScanResultV2> => {
+  const client = new BlowfishApiClient(BLOWFISH_API_BASE_URL);
 
   if (isTransactionRequest(request)) {
-    return scanTransactionEvm(request.payload, request.userAccount, {
+    return client.scanTransactionEvm(request.payload, request.userAccount, {
       origin,
     });
-
-    // return client.scanTransaction(request.payload, request.userAccount, {
-    //   origin,
-    // });
   } else if (isSignTypedDataRequest(request)) {
     const payload =
       request.signTypedDataVersion === SignTypedDataVersion.V1
         ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
         : request.payload;
 
+    // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
     const domain = {
       ...payload.domain,
       ...(payload.domain.chainId && {
@@ -76,7 +59,7 @@ const fetcher = async (
       }),
     } as EvmSignTypedDataDataDomain;
 
-    return scanSignTypedData(
+    return client.scanSignTypedData(
       {
         ...payload,
         domain,
@@ -86,36 +69,10 @@ const fetcher = async (
         origin,
       }
     );
-
-    // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
-    // return client.scanSignTypedData(
-    //   {
-    //     ...payload,
-    //     domain: {
-    //       ...payload.domain,
-    //       ...(payload.domain.chainId && {
-    //         chainId: payload.domain.chainId.toString(),
-    //       }),
-    //     },
-    //   },
-    //   request.userAccount,
-    //   {
-    //     origin,
-    //   }
-    // );
   } else if (isSignMessageRequest(request)) {
-    return scanMessageEvm(request.payload.message, request.userAccount, {
+    return client.scanMessageEvm(request.payload.message, request.userAccount, {
       origin,
-    }).then((x) => {
-      console.log("@@ Message", x);
-      return x;
     });
-
-    // return client.scanSignMessage(
-    //   request.payload.message,
-    //   request.userAccount,
-    //   { origin }
-    // );
   }
   throw new Error(`Unsupported request: ${(request as DappRequest).type}`);
 };
@@ -125,10 +82,7 @@ export const useScanDappRequest = (
   chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
   origin: string | undefined
-): SWRResponse<
-  ScanTransactionEvm200Response | ScanMessageEvm200Response,
-  Error
-> => {
+): SWRResponse<EvmTransactionScanResultV2 | EvmMessageScanResultV2, Error> => {
   return useSWR(
     getCacheKey(chainFamily, chainNetwork, request, origin),
     (params) => fetcher(...params),

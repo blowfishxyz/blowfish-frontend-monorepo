@@ -1,7 +1,7 @@
-import type {
-  EvmMessageScanResult,
-  EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+import {
+  EvmMessageScanResultV2,
+  EvmTransactionScanResultV2,
+} from "@blowfish/api-client";
 import {
   RequestType,
   SignMessageRequest,
@@ -13,10 +13,8 @@ import {
 import {
   approveAllErc721,
   permitErc20NoExpiration,
-  receiveErc20,
   receiveErc721,
   sendErc20,
-  sendErc721,
 } from "./state-changes";
 
 export const exampleTransactionRequest: TransactionRequest = {
@@ -187,19 +185,25 @@ export const exampleEthSignRequest: SignMessageRequest = {
   extensionVersion: "10.0.0",
 };
 
-export const transactionNoActionScanResult: EvmTransactionScanResult = {
+export const transactionNoActionScanResult: EvmTransactionScanResultV2 = {
   action: "NONE",
   simulationResults: {
     error: null,
+    gas: {
+      gasLimit: null,
+    },
     expectedStateChanges: [receiveErc721, sendErc20],
   },
   warnings: [],
 };
 
-export const transactionWarningScanResult: EvmTransactionScanResult = {
+export const transactionWarningScanResult: EvmTransactionScanResultV2 = {
   action: "WARN",
   simulationResults: {
     error: null,
+    gas: {
+      gasLimit: null,
+    },
     expectedStateChanges: [approveAllErc721],
   },
   warnings: [
@@ -211,10 +215,13 @@ export const transactionWarningScanResult: EvmTransactionScanResult = {
     },
   ],
 };
-export const transactionBlockScanResult: EvmTransactionScanResult = {
+export const transactionBlockScanResult: EvmTransactionScanResultV2 = {
   action: "BLOCK",
   simulationResults: {
     error: null,
+    gas: {
+      gasLimit: null,
+    },
     expectedStateChanges: [approveAllErc721],
   },
   warnings: [
@@ -227,16 +234,16 @@ export const transactionBlockScanResult: EvmTransactionScanResult = {
   ],
 };
 
-export const messageNoActionScanResult: EvmMessageScanResult = {
+export const messageNoActionScanResult: EvmMessageScanResultV2 = {
   action: "NONE",
   simulationResults: {
     error: null,
-    expectedStateChanges: [receiveErc20, sendErc721],
+    expectedStateChanges: [],
   },
   warnings: [],
 };
 
-export const messageWarnResultScanResult: EvmMessageScanResult = {
+export const messageWarnResultScanResult: EvmMessageScanResultV2 = {
   action: "WARN",
   warnings: [
     {
@@ -252,7 +259,7 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
   },
 };
 
-export const exampleEthSignScanResult: EvmMessageScanResult = {
+export const exampleEthSignScanResult: EvmMessageScanResultV2 = {
   action: "WARN",
   warnings: [
     {
