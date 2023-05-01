@@ -1,14 +1,14 @@
 import {
-  EvmMessageExpectedStateChangeV2,
+  EvmMessageExpectedStateChange,
   EvmStateChangeErc20Permit,
   EvmStateChangeErc20Transfer,
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
   EvmStateChangeNativeAssetTransfer,
-  EvmTransactionExpectedStateChangeV2,
+  EvmTransactionExpectedStateChange,
 } from "@blowfish/api-client";
 
-export const sendErc721: EvmTransactionExpectedStateChangeV2 = {
+export const sendErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Send BoredApeYachtClub #1726",
   rawInfo: {
     data: {
@@ -37,7 +37,7 @@ export const sendErc721: EvmTransactionExpectedStateChangeV2 = {
   } as EvmStateChangeErc721Transfer,
 };
 
-export const receiveErc721: EvmTransactionExpectedStateChangeV2 = {
+export const receiveErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Receive PudgyPenguins #7238",
   rawInfo: {
     data: {
@@ -66,7 +66,7 @@ export const receiveErc721: EvmTransactionExpectedStateChangeV2 = {
   } as EvmStateChangeErc721Transfer,
 };
 
-export const sendErc20: EvmTransactionExpectedStateChangeV2 = {
+export const sendErc20: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Send 3.181 ETH",
   rawInfo: {
     data: {
@@ -97,7 +97,7 @@ export const sendErc20: EvmTransactionExpectedStateChangeV2 = {
   } as EvmStateChangeNativeAssetTransfer,
 };
 
-export const receiveErc20: EvmTransactionExpectedStateChangeV2 = {
+export const receiveErc20: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Receive 94.05 ETH",
   rawInfo: {
     data: {
@@ -128,7 +128,7 @@ export const receiveErc20: EvmTransactionExpectedStateChangeV2 = {
   } as EvmStateChangeNativeAssetTransfer,
 };
 
-export const approveAllErc721: EvmTransactionExpectedStateChangeV2 = {
+export const approveAllErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
   rawInfo: {
     data: {
@@ -157,7 +157,7 @@ export const approveAllErc721: EvmTransactionExpectedStateChangeV2 = {
   } as EvmStateChangeErc721ApprovalForAll,
 };
 
-export const permitErc20NoExpiration: EvmMessageExpectedStateChangeV2 = {
+export const permitErc20NoExpiration: EvmMessageExpectedStateChange = {
   humanReadableDiff:
     "Permit to transfer any amount of your USDC anytime in the future",
   rawInfo: {
@@ -204,7 +204,7 @@ export const permitErc20NoExpiration: EvmMessageExpectedStateChangeV2 = {
   } as EvmStateChangeErc20Permit,
 };
 
-export const erc20UnverifedTransfer: EvmTransactionExpectedStateChangeV2 = {
+export const erc20UnverifedTransfer: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Receive 12 SQUID",
   rawInfo: {
     kind: "ERC20_TRANSFER",

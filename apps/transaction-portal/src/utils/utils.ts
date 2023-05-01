@@ -1,4 +1,4 @@
-import type { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
+import type { EvmExpectedStateChange } from "@blowfish/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
 import {
@@ -142,7 +142,7 @@ const EVM_STATE_CHANGE_KIND_WITH_IMAGE = [
 ];
 
 export const evmStateChangeHasImage = (
-  kind: EvmExpectedStateChangeV2["rawInfo"]["kind"]
+  kind: EvmExpectedStateChange["rawInfo"]["kind"]
 ) => {
   return EVM_STATE_CHANGE_KIND_WITH_IMAGE.includes(kind);
 };

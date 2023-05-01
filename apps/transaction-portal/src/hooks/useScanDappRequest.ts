@@ -1,8 +1,8 @@
 import { BlowfishApiClient } from "@blowfish/api-client";
 import type {
-  EvmMessageScanResultV2,
+  EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
-  EvmTransactionScanResultV2,
+  EvmTransactionScanResult,
 } from "@blowfish/api-client";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
@@ -38,7 +38,7 @@ const fetcher = async (
   chainNetwork: ChainNetwork,
   request: DappRequest,
   origin: string
-): Promise<EvmTransactionScanResultV2 | EvmMessageScanResultV2> => {
+): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
   const client = new BlowfishApiClient(BLOWFISH_API_BASE_URL);
 
   if (isTransactionRequest(request)) {
@@ -82,7 +82,7 @@ export const useScanDappRequest = (
   chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
   origin: string | undefined
-): SWRResponse<EvmTransactionScanResultV2 | EvmMessageScanResultV2, Error> => {
+): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
   return useSWR(
     getCacheKey(chainFamily, chainNetwork, request, origin),
     (params) => fetcher(...params),

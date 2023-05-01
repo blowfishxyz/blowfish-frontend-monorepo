@@ -1,6 +1,6 @@
 import {
   EvmAsset,
-  EvmExpectedStateChangeV2,
+  EvmExpectedStateChange,
   EvmNativeAsset,
 } from "@blowfish/api-client";
 import { BlockExplorerLink, Text } from "@blowfish/ui/core";
@@ -17,7 +17,7 @@ import {
 
 export const VerifiedTokenTooltip: React.FC<
   React.PropsWithChildren<{
-    stateChange: EvmExpectedStateChangeV2;
+    stateChange: EvmExpectedStateChange;
     chainFamily: ChainFamily;
     chainNetwork: ChainNetwork;
   }>
@@ -94,7 +94,7 @@ const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
 );
 
 function getErc20Asset(
-  stateChange: EvmExpectedStateChangeV2
+  stateChange: EvmExpectedStateChange
 ): EvmAsset | EvmNativeAsset | undefined {
   const rawInfo = stateChange.rawInfo;
   if (

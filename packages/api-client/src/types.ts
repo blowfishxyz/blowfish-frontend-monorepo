@@ -5,19 +5,19 @@ import type {
   ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner,
 } from "./client/models";
 
-export type EvmMessageExpectedStateChangeV2 =
+export type EvmMessageExpectedStateChange =
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 
-export type EvmTransactionExpectedStateChangeV2 =
+export type EvmTransactionExpectedStateChange =
   ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner;
 
-export type EvmExpectedStateChangeV2 =
-  | EvmMessageExpectedStateChangeV2
-  | EvmTransactionExpectedStateChangeV2;
+export type EvmExpectedStateChange =
+  | EvmMessageExpectedStateChange
+  | EvmTransactionExpectedStateChange;
 
-export type EvmTransactionScanResultV2 = ScanTransactionEvm200Response;
+export type EvmTransactionScanResult = ScanTransactionEvm200Response;
 
-export type EvmMessageScanResultV2 = ScanMessageEvm200Response;
+export type EvmMessageScanResult = ScanMessageEvm200Response;
 
 export interface SignTypedDataPayload {
   domain: {

@@ -1,4 +1,4 @@
-import type { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
+import type { EvmExpectedStateChange } from "@blowfish/api-client";
 import { BlockExplorerLink, Column, Row, Text } from "@blowfish/ui/core";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { NftStateChangeWithTokenId } from "@blowfish/utils/types";
@@ -10,7 +10,7 @@ import AssetImage from "~components/AssetImage";
 import AssetPrice from "~components/AssetPrice";
 
 export const EnrichedSimulationResult: React.FC<{
-  stateChange: EvmExpectedStateChangeV2;
+  stateChange: EvmExpectedStateChange;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }> = ({ stateChange, chainFamily, chainNetwork }) => {

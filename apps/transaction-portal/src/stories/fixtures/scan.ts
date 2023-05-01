@@ -1,6 +1,6 @@
 import {
-  EvmMessageScanResultV2,
-  EvmTransactionScanResultV2,
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
 } from "@blowfish/api-client";
 import {
   RequestType,
@@ -185,7 +185,7 @@ export const exampleEthSignRequest: SignMessageRequest = {
   extensionVersion: "10.0.0",
 };
 
-export const transactionNoActionScanResult: EvmTransactionScanResultV2 = {
+export const transactionNoActionScanResult: EvmTransactionScanResult = {
   action: "NONE",
   simulationResults: {
     error: null,
@@ -197,7 +197,7 @@ export const transactionNoActionScanResult: EvmTransactionScanResultV2 = {
   warnings: [],
 };
 
-export const transactionWarningScanResult: EvmTransactionScanResultV2 = {
+export const transactionWarningScanResult: EvmTransactionScanResult = {
   action: "WARN",
   simulationResults: {
     error: null,
@@ -215,7 +215,7 @@ export const transactionWarningScanResult: EvmTransactionScanResultV2 = {
     },
   ],
 };
-export const transactionBlockScanResult: EvmTransactionScanResultV2 = {
+export const transactionBlockScanResult: EvmTransactionScanResult = {
   action: "BLOCK",
   simulationResults: {
     error: null,
@@ -234,7 +234,7 @@ export const transactionBlockScanResult: EvmTransactionScanResultV2 = {
   ],
 };
 
-export const messageNoActionScanResult: EvmMessageScanResultV2 = {
+export const messageNoActionScanResult: EvmMessageScanResult = {
   action: "NONE",
   simulationResults: {
     error: null,
@@ -243,7 +243,7 @@ export const messageNoActionScanResult: EvmMessageScanResultV2 = {
   warnings: [],
 };
 
-export const messageWarnResultScanResult: EvmMessageScanResultV2 = {
+export const messageWarnResultScanResult: EvmMessageScanResult = {
   action: "WARN",
   warnings: [
     {
@@ -259,7 +259,7 @@ export const messageWarnResultScanResult: EvmMessageScanResultV2 = {
   },
 };
 
-export const exampleEthSignScanResult: EvmMessageScanResultV2 = {
+export const exampleEthSignScanResult: EvmMessageScanResult = {
   action: "WARN",
   warnings: [
     {

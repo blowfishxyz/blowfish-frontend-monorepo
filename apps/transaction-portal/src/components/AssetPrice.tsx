@@ -1,4 +1,4 @@
-import { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { Row, Text } from "@blowfish/ui/core";
 import { InfoIcon } from "@blowfish/ui/icons";
 import Decimal from "decimal.js";
@@ -29,7 +29,7 @@ const StyledInfoIcon = styled(InfoIcon)`
 `;
 
 interface AssetPriceProps {
-  stateChange: EvmExpectedStateChangeV2;
+  stateChange: EvmExpectedStateChange;
 }
 
 const AssetPrice = ({ stateChange }: AssetPriceProps) => {
@@ -38,10 +38,11 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
   let withInfoTooltip = false;
   //TODO: refactor price once the API is transitioned away from assetPrice
   const pricePerToken =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (rawInfo.data as any)?.asset?.price?.dollar_value_per_token ??
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ((rawInfo.data as any).assetPrice?.dollar_value_per_token || null);
+    "asset" in rawInfo.data
+      ? rawInfo.data.asset.price?.dollarValuePerToken
+      : "assetPrice" in rawInfo.data
+      ? rawInfo.data.assetPrice?.dollarValuePerToken
+      : null;
 
   if (!pricePerToken) return null;
 

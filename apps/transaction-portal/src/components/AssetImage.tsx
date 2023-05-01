@@ -1,4 +1,4 @@
-import { EvmExpectedStateChangeV2 } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import Image from "next/image";
@@ -8,7 +8,7 @@ import styled, { css } from "styled-components";
 import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
 
 interface AssetImageProps {
-  stateChange: EvmExpectedStateChangeV2;
+  stateChange: EvmExpectedStateChange;
   isPositiveEffect: boolean;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;

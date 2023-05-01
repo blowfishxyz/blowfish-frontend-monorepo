@@ -1,6 +1,6 @@
 import type {
-  EvmMessageScanResultV2,
-  EvmTransactionScanResultV2,
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
 } from "@blowfish/api-client";
 import {
   PAUSE_DURATIONS,
@@ -219,7 +219,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
 
 export interface ScanResultsProps {
   request: DappRequest;
-  scanResults: EvmMessageScanResultV2 | EvmTransactionScanResultV2;
+  scanResults: EvmMessageScanResult | EvmTransactionScanResult;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;

@@ -22,9 +22,6 @@ export class BlowfishApiClient {
     const headers: HTTPHeaders = {
       ["Content-Type"]: "application/json",
     };
-    if (this.apiKey) {
-      headers["X-Api-Key"] = this.apiKey;
-    }
     return headers;
   }
 
@@ -53,8 +50,9 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      xApiKey: this.apiKey,
-      xApiVersion: this.apiVersion,
+      // TODO(Alex): these headers are ignored by the proxy for now
+      xApiKey: "",
+      xApiVersion: "",
     });
   };
 
@@ -72,8 +70,9 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      xApiKey: this.apiKey,
-      xApiVersion: this.apiVersion,
+      // TODO(Alex): these headers are ignored by the proxy for now
+      xApiKey: "",
+      xApiVersion: "",
     });
   };
 
@@ -88,8 +87,9 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      xApiKey: this.apiKey,
-      xApiVersion: this.apiVersion,
+      // TODO(Alex): these headers are ignored by the proxy for now
+      xApiKey: "",
+      xApiVersion: "",
     });
   };
 }
