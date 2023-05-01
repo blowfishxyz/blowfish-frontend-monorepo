@@ -49,7 +49,7 @@ export interface ScanTransactionEvm200ResponseSimulationResults {
      * @type {ScanTransactionEvm200ResponseSimulationResultsError}
      * @memberof ScanTransactionEvm200ResponseSimulationResults
      */
-    error: ScanTransactionEvm200ResponseSimulationResultsError;
+    error: ScanTransactionEvm200ResponseSimulationResultsError | null;
     /**
      * 
      * @type {ScanTransactionEvm200ResponseSimulationResultsGas}

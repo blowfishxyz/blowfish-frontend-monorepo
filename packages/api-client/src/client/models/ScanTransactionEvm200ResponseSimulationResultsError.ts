@@ -50,8 +50,7 @@ export type ScanTransactionEvm200ResponseSimulationResultsError =
   | ({ kind: "SIMULATION_FAILED" } & EvmSimulationFailedError)
   | ({ kind: "TRANSACTION_ERROR" } & EvmTransactionError)
   | ({ kind: "TRANSACTION_REVERTED" } & EvmTransactionRevertedError)
-  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError)
-  | null;
+  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError);
 
 export function ScanTransactionEvm200ResponseSimulationResultsErrorFromJSON(
   json: any

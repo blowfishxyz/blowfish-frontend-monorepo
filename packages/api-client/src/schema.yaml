@@ -169,7 +169,7 @@ paths:
                           - $ref: "#/components/schemas/EvmTransactionError"
                           - $ref: "#/components/schemas/EvmSimulationFailedError"
                           - $ref: "#/components/schemas/EvmUnknownError"
-                          - type: object
+                        nullable: true
                         discriminator:
                           propertyName: kind
                           mapping:
@@ -2149,7 +2149,6 @@ components:
           type: string
           example: "15000000000"
           description: The value of the amount before the state change occurs
-      additionalProperties: false
     EvmAsset:
       type: object
       required:
