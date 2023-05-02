@@ -361,7 +361,11 @@ const ScanPage: React.FC = () => {
             <SimulationErrorScreen
               headline="Transaction Reverted"
               message="The transaction reverted when we simulated it. Approving may lead to loss of funds"
-              errorMessage={simulationError.humanReadableError}
+              // HACK(Alex): Remove after API version update
+              errorMessage={
+                simulationError.humanReadableError ||
+                (simulationError as any).parsedErrorMessage
+              }
             />
             <SlimBottomMenu onClick={onContinue} buttonLabel="Continue" />
           </>
