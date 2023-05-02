@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { styled } from "styled-components";
 import { TextXL, Column, GrayText, device } from "@blowfish/ui/core";
 import {
@@ -86,13 +86,13 @@ const ConfirmTxn: React.FC = () => {
     };
   }, [viewState]);
 
-  const handleContinueClick = () => {
+  const handleContinueClick = useCallback(() => {
     setAnimating(true);
     setTimeout(() => {
       setAnimating(false);
       setViewState(ViewState.CONFIRMING);
     }, animationDuration);
-  };
+  }, []);
 
   const renderContent = () => {
     switch (viewState) {
@@ -147,4 +147,4 @@ const ConfirmTxn: React.FC = () => {
   );
 };
 
-export default ConfirmTxn;
+export default React.memo(ConfirmTxn);
