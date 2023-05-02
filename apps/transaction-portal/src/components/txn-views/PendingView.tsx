@@ -1,13 +1,6 @@
 import React from "react";
 import { styled, keyframes } from "styled-components";
-import {
-  PrimaryButton,
-  Row,
-  TextXL,
-  Column,
-  GrayText,
-  size,
-} from "@blowfish/ui/core";
+import { Row, TextXL, Column, GrayText, size } from "@blowfish/ui/core";
 import { BlowfishIcon, SpeedUpIcon } from "@blowfish/ui/icons";
 import {
   Divider,
@@ -15,6 +8,7 @@ import {
   CardSmallSecondaryButton,
   CardRow,
   CardGrayLink,
+  CardPrimaryButton,
 } from "../cards/common";
 
 const pulse = keyframes`
@@ -115,10 +109,10 @@ const PendingView = () => {
       </TxnInfoWrapper>
       <CardRow gap="md">
         <CardSmallSecondaryButton>Report</CardSmallSecondaryButton>
-        <PrimaryButton>
+        <CardPrimaryButton>
           <StyledSpeedUpIcon />
           Speed up transaction
-        </PrimaryButton>
+        </CardPrimaryButton>
       </CardRow>
     </Column>
   );

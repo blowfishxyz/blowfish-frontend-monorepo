@@ -3,10 +3,10 @@ import { styled } from "styled-components";
 import { BaseButton } from "./BaseButton";
 
 const PrimaryButton = styled(BaseButton).attrs({
-  whileHover: {
+  whilehover: {
     scale: 1.02,
   },
-  whileTap: { scale: 0.98 },
+  whiletap: { scale: 0.98 },
 })`
   width: 100%;
   height: 64px;

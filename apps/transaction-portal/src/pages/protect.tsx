@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Row, size } from "@blowfish/ui/core";
+import { Row, device } from "@blowfish/ui/core";
 import ConfirmTxn from "~components/cards/ConfirmTxn";
 import PreviewTxn from "~components/cards/PreviewTxn";
 import {
@@ -10,16 +10,16 @@ import {
 
 const ProtectContainer = styled(Row)`
   flex-grow: 1;
+  flex-wrap: wrap;
   background: #efefef;
-  padding: 80px;
+  padding: 20px;
 
-  @media only screen and (max-width: ${size.lg}) {
+  @media (${device.md}) {
     padding: 40px;
   }
 
-  @media only screen and (max-width: ${size.md}) {
-    flex-wrap: wrap;
-    padding: 24px;
+  @media (${device.lg}) {
+    padding: 80px;
   }
 `;
 

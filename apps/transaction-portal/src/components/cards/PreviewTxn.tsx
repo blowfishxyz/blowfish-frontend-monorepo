@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Column, GrayText, Row, Text } from "@blowfish/ui/core";
+import { Column, GrayText, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import Chip from "../chips/Chip";
 import {
@@ -18,9 +18,14 @@ import {
 } from "~components/simulation-results-types/mock-data";
 
 const Title = styled(Text)`
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 400;
-  line-height: 25px;
+  line-height: 20px;
+
+  @media (${device.lg}) {
+    font-size: 22px;
+    line-height: 25px;
+  }
 `;
 
 const SmallGrayText = styled(GrayText)<{ marginLeft?: string }>`
@@ -37,12 +42,18 @@ const StyledCardContent = styled(CardContent)`
   align-items: center;
 `;
 
-const StyledColumn = styled(Column)`
-  padding: 8px 0;
-`;
-
 const WrappedRow = styled(Row)`
   flex-wrap: wrap;
+
+  @media (${device.lg}) {
+    &:last-child {
+      gap: 12px;
+    }
+  }
+`;
+
+const StyledColumn = styled(Column)`
+  padding: 8px 0;
 `;
 
 const ChipWrapper = styled(Row)`
@@ -50,7 +61,7 @@ const ChipWrapper = styled(Row)`
   flex-wrap: wrap;
 `;
 
-interface PreviewTxnProps {
+export interface PreviewTxnProps {
   simulationType: "transaction" | "signature";
   txnSimulationData?: TxnSimulationDataType[];
   signatureData?: SignatureDataType[];
@@ -80,7 +91,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
   txnSimulationData = [],
   signatureData = [],
 }) => (
-  <CardWrapper removePaddingBottom>
+  <CardWrapper data-remove-padding-bottom="true">
     <CardContent>
       <Row justify="space-between">
         <Title>Preview</Title>
@@ -129,15 +140,15 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     <StyledCardContent>
       <StyledColumn>
         <SmallGrayText>Performed?</SmallGrayText>
-        <WrappedRow gap="md">
+        <WrappedRow gap="sm">
           <CardText>Yes</CardText>
           <SmallGrayText>3 times</SmallGrayText>
         </WrappedRow>
       </StyledColumn>
       <Divider orientation="vertical" />
       <StyledColumn>
-        <SmallGrayText>Used by others?</SmallGrayText>
-        <WrappedRow gap="md">
+        <SmallGrayText>Used?</SmallGrayText>
+        <WrappedRow gap="sm">
           <CardText>Yes</CardText>
           <SmallGrayText>481 wallets</SmallGrayText>
         </WrappedRow>
@@ -148,7 +159,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
         <ChipWrapper gap="sm">
           {labels.length > 0 && <Chip text={labels[0]} />}
           {labels.length > 1 && (
-            <Chip text={`+${labels.length - 1}`} clickable />
+            <Chip text={`+${labels.length - 1}`} data-clickable="true" />
           )}
         </ChipWrapper>
       </StyledColumn>

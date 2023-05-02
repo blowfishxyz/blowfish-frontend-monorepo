@@ -1,22 +1,32 @@
 import { styled } from "styled-components";
-import { Row, SecondaryButton, Text, size } from "@blowfish/ui/core";
+import {
+  PrimaryButton,
+  Row,
+  SecondaryButton,
+  Text,
+  device,
+} from "@blowfish/ui/core";
 
-const CardWrapper = styled.div<{ removePaddingBottom?: boolean }>`
+const CardWrapper = styled.div<{ removepaddingbottom?: boolean }>`
   flex: 1;
   box-sizing: border-box;
   background: ${({ theme }) => theme.palette.white};
   border: 1px solid ${({ theme }) => theme.palette.border};
   border-radius: 12px;
-  padding: 32px 0
-    ${({ removePaddingBottom }) => (removePaddingBottom ? "0" : "32px")};
+  padding: 32px 0;
 
-  @media only screen and (max-width: ${size.md}) {
-    min-width: 100%;
+  &[data-remove-padding-bottom="true"] {
+    padding-bottom: 0;
   }
 `;
+
 const CardContent = styled.div`
-  padding: 0 32px;
+  padding: 0 16px;
   box-sizing: border-box;
+
+  @media (${device.lg}) {
+    padding: 0 32px;
+  }
 `;
 
 interface DividerProps {
@@ -44,10 +54,31 @@ const Divider = styled.div<DividerProps>`
 
 const CardText = styled(Text)<{ alignText?: string }>`
   color: ${({ theme }) => theme.colors.primaryText};
-  line-height: 25.76px;
+  font-size: 14px;
+
+  @media (${device.lg}) {
+    font-size: 16px;
+    line-height: 25.76px;
+  }
 `;
 
-const CardSmallSecondaryButton = styled(SecondaryButton)`
+const CardSecondaryButton = styled(SecondaryButton)`
+  font-size: 16px;
+
+  @media (${device.lg}) {
+    font-size: 20px;
+  }
+`;
+
+const CardPrimaryButton = styled(PrimaryButton)`
+  font-size: 16px;
+
+  @media (${device.lg}) {
+    font-size: 20px;
+  }
+`;
+
+const CardSmallSecondaryButton = styled(CardSecondaryButton)`
   width: 120px;
 `;
 
@@ -69,6 +100,8 @@ export {
   Divider,
   CardText,
   CardSmallSecondaryButton,
+  CardSecondaryButton,
+  CardPrimaryButton,
   CardRow,
   CardGrayLink,
   CardBlackTextLink,

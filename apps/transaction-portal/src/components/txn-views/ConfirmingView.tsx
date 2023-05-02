@@ -1,9 +1,9 @@
 import React from "react";
 import { styled } from "styled-components";
-import { TextXL, Column, GrayText, SecondaryButton } from "@blowfish/ui/core";
-import { CardText, CardGrayLink } from "../cards/common";
+import { TextXL, Column, GrayText } from "@blowfish/ui/core";
+import { CardText, CardGrayLink, CardSecondaryButton } from "../cards/common";
 
-const CancelButton = styled(SecondaryButton)`
+const CancelButton = styled(CardSecondaryButton)`
   margin-top: 15px;
 `;
 

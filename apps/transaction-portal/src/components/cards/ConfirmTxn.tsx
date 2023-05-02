@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import {
-  PrimaryButton,
   TextXL,
   Column,
   GrayText,
-  size,
+  device,
 } from "@blowfish/ui/core";
 import {
   CardWrapper,
@@ -13,22 +12,39 @@ import {
   CardText,
   CardSmallSecondaryButton,
   CardRow,
+  CardPrimaryButton,
 } from "./common";
 import PendingView from "~components/txn-views/PendingView";
 import ConfirmingView from "~components/txn-views/ConfirmingView";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
-  width: 45%;
+  width: 100%;
 
-  @media only screen and (max-width: ${size.lg}) {
-    width: unset;
+  @media (${device.lg}) {
+    width: 45%;
   }
 `;
 
 const CenterContent = styled.div`
   text-align: center;
   width: 100%;
+`;
+
+const ConfirmTxnTitle = styled(TextXL)`
+  font-size: 22px;
+
+  @media (${device.lg}) {
+    font-size: 26px;
+  }
+`;
+
+const ConfirmTxnInstruction = styled(GrayText)`
+  font-size: 14px;
+
+  @media (${device.lg}) {
+    font-size: 16px;
+  }
 `;
 
 const ViewState = {
@@ -39,8 +55,28 @@ const ViewState = {
 
 type ViewStateType = (typeof ViewState)[keyof typeof ViewState];
 
+const animationDuration = 300;
+
+const Fade = styled.div`
+  &.fade-enter {
+    opacity: 0;
+  }
+  &.fade-enter-active {
+    opacity: 1;
+    transition: opacity ${animationDuration}ms;
+  }
+  &.fade-exit {
+    opacity: 1;
+  }
+  &.fade-exit-active {
+    opacity: 0;
+    transition: opacity ${animationDuration}ms;
+  }
+`;
+
 const ConfirmTxn: React.FC = () => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
+  const [animating, setAnimating] = useState(false);
 
   // NOTE: This is just to simulate an actual txn loading, it can/should be removed during integration
   useEffect(() => {
@@ -56,7 +92,11 @@ const ConfirmTxn: React.FC = () => {
   }, [viewState]);
 
   const handleContinueClick = () => {
-    setViewState(ViewState.CONFIRMING);
+    setAnimating(true);
+    setTimeout(() => {
+      setAnimating(false);
+      setViewState(ViewState.CONFIRMING);
+    }, animationDuration);
   };
 
   const renderContent = () => {
@@ -65,7 +105,7 @@ const ConfirmTxn: React.FC = () => {
         return (
           <>
             <Column gap="md">
-              <TextXL>This seems low risk.</TextXL>
+              <ConfirmTxnTitle>This seems low risk.</ConfirmTxnTitle>
               <CardText>
                 This application is requesting permission to exchange assets
                 that are held in your wallet for others.
@@ -73,12 +113,14 @@ const ConfirmTxn: React.FC = () => {
             </Column>
             <CardRow gap="md">
               <CardSmallSecondaryButton>Flag</CardSmallSecondaryButton>
-              <PrimaryButton onClick={handleContinueClick}>
+              <CardPrimaryButton onClick={handleContinueClick}>
                 Continue
-              </PrimaryButton>
+              </CardPrimaryButton>
             </CardRow>
             <CenterContent>
-              <GrayText>Click Continue to proceed to your wallet.</GrayText>
+              <ConfirmTxnInstruction>
+                Click Continue to proceed to your wallet.
+              </ConfirmTxnInstruction>
             </CenterContent>
           </>
         );
@@ -93,7 +135,19 @@ const ConfirmTxn: React.FC = () => {
 
   return (
     <StyledCardWrapper>
-      <CardContent>{renderContent()}</CardContent>
+      <CardContent>
+        <Fade
+          className={
+            animating
+              ? viewState === ViewState.WARNING
+                ? "fade-exit-active"
+                : "fade-enter-active"
+              : ""
+          }
+        >
+          {renderContent()}
+        </Fade>
+      </CardContent>
     </StyledCardWrapper>
   );
 };

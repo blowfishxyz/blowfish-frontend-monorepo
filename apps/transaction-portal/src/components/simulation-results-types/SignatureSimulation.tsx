@@ -1,12 +1,12 @@
 import React from "react";
-import { TxnImage, SmallGrayText } from "./SimulationResultsCommonStyles";
+import { TxnImage, SmallGrayText } from "./common";
 import { styled } from "styled-components";
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { CardBlackTextLink, Divider } from "~components/cards/common";
 import { shortenHex } from "~utils/hex";
 import { SignatureDataType } from "./mock-data";
 
-interface SignatureSimulationProps {
+export interface SignatureSimulationProps {
   data: SignatureDataType;
 }
 
@@ -17,8 +17,12 @@ const SignatureSimulationWrapper = styled(Row)`
 const SignatureSimulationMsgWrapper = styled(Column)``;
 
 const SignatureSimulationAction = styled(Text)`
-  font-size: 17px;
+  font-size: 13px;
   line-height: 19px;
+
+  @media (${device.lg}) {
+    font-size: 17px;
+  }
 `;
 
 const SmallSignatureSimulationText = styled(Text)`
