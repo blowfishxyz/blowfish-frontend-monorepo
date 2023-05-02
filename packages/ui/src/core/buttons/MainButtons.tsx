@@ -1,13 +1,24 @@
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 
 import { BaseButton } from "./BaseButton";
 
-const PrimaryButton = styled(BaseButton).attrs({
-  whilehover: {
-    scale: 1.02,
-  },
-  whiletap: { scale: 0.98 },
-})`
+const interactiveStyles = css`
+  transition: transform 0.2s ease-in;
+
+  &:not(:disabled):hover {
+    transform: scale(1.02);
+  }
+
+  &:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+`;
+
+const PrimaryButton = styled(BaseButton)`
   width: 100%;
   height: 64px;
   display: flex;
@@ -29,10 +40,12 @@ const PrimaryButton = styled(BaseButton).attrs({
   font-size: 20px;
   line-height: 23px;
   color: #ffffff;
+
   &:disabled {
     background: rgba(0, 0, 0, 0.3);
-    cursor: not-allowed;
   }
+
+  ${interactiveStyles}
 `;
 
 const SecondaryButton = styled(BaseButton)`
@@ -57,6 +70,29 @@ const SecondaryButton = styled(BaseButton)`
   font-size: 20px;
   line-height: 23px;
   color: #010101;
+
+  ${interactiveStyles}
+`;
+
+const TertiaryButton = styled(BaseButton)`
+  width: 100%;
+  height: 48px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0px;
+  gap: 4px;
+  cursor: pointer;
+  /* Button text */
+  font-family: "GT-Planar";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  color: #ffffff;
+  opacity: 0.56;
+
+  ${interactiveStyles}
 `;
 
 const TextButton = styled(BaseButton)`
@@ -72,4 +108,10 @@ const SmallButtonPrimary = styled(PrimaryButton)`
   padding: 8px;
 `;
 
-export { PrimaryButton, SecondaryButton, TextButton, SmallButtonPrimary };
+export {
+  PrimaryButton,
+  SecondaryButton,
+  TertiaryButton,
+  TextButton,
+  SmallButtonPrimary,
+};

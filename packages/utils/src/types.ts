@@ -48,6 +48,8 @@ export enum RequestType {
   SetBlowfishOptions = "SET_BLOWFISH_OPTIONS",
   GetRequestToScan = "GET_REQUEST_TO_SCAN",
   MessageAck = "BLOWFISH_MESSAGE_ACK",
+  BlockDomain = "BLOCK_DOMAIN",
+  AllowlistedDomains = "ALLOWLISTED_DOMAINS",
 }
 
 // TODO(kimpers): Type message
@@ -173,6 +175,7 @@ export enum BlowfishOption {
   PREFERENCES_BLOWFISH_PAUSED = "PREFERENCES_BLOWFISH_PAUSED",
   PREFERENCES_BLOWFISH_IMPERSONATION_WALLET = "PREFERENCES_BLOWFISH_IMPERSONATION_WALLET",
   PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL = "PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL",
+  ALLOWLISTED_DOMAINS = "ALLOWLISTED_DOMAINS",
 }
 
 export type BlowfishPausedOptionType = {
@@ -192,13 +195,24 @@ export type BlowfishOptionKeyValue =
   | {
       key: BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET;
       value: string;
+    }
+  | {
+      key: BlowfishOption.ALLOWLISTED_DOMAINS;
+      value: string;
     };
+
+export type BlowfishBlockDomainPayload = {
+  href: string;
+  host: string;
+};
 
 export type BlowfishPortalBackgroundMessage =
   | Message<RequestType.UserDecision, UserDecisionResponse>
   | Message<RequestType.GetRequestToScan, { key: string }>
   | Message<RequestType.BlowfishOptions, BlowfishOptionKey>
   | Message<RequestType.SetBlowfishOptions, BlowfishOptionKeyValue>
+  | Message<RequestType.BlockDomain, BlowfishBlockDomainPayload>
+  | Message<RequestType.AllowlistedDomains, BlowfishBlockDomainPayload>
   | Message<DappRequest["type"], DappRequest>;
 
 export const isUserDecisionResponseMessage = (
