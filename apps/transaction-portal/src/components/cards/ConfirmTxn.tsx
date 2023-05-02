@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
-import {
-  TextXL,
-  Column,
-  GrayText,
-  device,
-} from "@blowfish/ui/core";
+import { TextXL, Column, GrayText, device } from "@blowfish/ui/core";
 import {
   CardWrapper,
   CardContent,
