@@ -9,6 +9,7 @@ const ColumnComponent = React.forwardRef<
     gap?: Gap;
     width?: string;
     flex?: number;
+    alignItems?: string;
   } & React.HTMLAttributes<HTMLDivElement>
 >(({ gap, width, flex, ...props }, ref) => <div ref={ref} {...props} />);
 
@@ -17,6 +18,7 @@ export const Column = styled(ColumnComponent)`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: ${({alignItems}) => alignItems};
   flex: ${({ flex }) => flex};
   gap: ${({ gap, theme }) => gap && theme.grids[gap]};
 `;
