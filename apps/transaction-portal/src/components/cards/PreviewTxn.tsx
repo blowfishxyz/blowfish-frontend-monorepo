@@ -91,7 +91,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
   txnSimulationData = [],
   signatureData = [],
 }) => (
-  <CardWrapper data-remove-padding-bottom="true">
+  <CardWrapper removePaddingBottom>
     <CardContent>
       <Row justify="space-between">
         <Title>Preview</Title>

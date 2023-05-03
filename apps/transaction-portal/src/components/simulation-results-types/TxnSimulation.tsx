@@ -36,24 +36,22 @@ const TxnSimulationValue = styled(Column)`
   width: unset;
 `;
 
-const ArrowIconWrapper = styled.div.attrs<{ isreceived: boolean }>((props) => ({
-  isreceived: props.isreceived,
-}))<{ isreceived: boolean }>`
+const ArrowIconWrapper = styled.div<{ isReceived: boolean }>`
   position: absolute;
   height: 14px;
   width: 14px;
   padding: 6px;
   top: -10px;
   right: -10px;
-  background: ${({ isreceived }) => (isreceived ? "#BEEDD2" : "#FFCCCC")};
+  background: ${({ isReceived }) => (isReceived ? "#BEEDD2" : "#FFCCCC")};
   border-radius: 50%;
   padding: 5px;
   box-sizing: initial;
 
   svg {
-    ${({ isreceived }) => css`
-      fill: ${isreceived ? "#00bfa6" : "#ff4c4c"};
-      transform: rotate(${isreceived ? 135 : -45}deg);
+    ${({ isReceived }) => css`
+      fill: ${isReceived ? "#00bfa6" : "#ff4c4c"};
+      transform: rotate(${isReceived ? 135 : -45}deg);
       transform-origin: center;
     `};
   }
@@ -75,7 +73,7 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
       <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
         <TxnSimulationImage>
           <TxnImage src={imageUrl} alt="NFT" />
-          <ArrowIconWrapper isreceived={!!isApproval}>
+          <ArrowIconWrapper isReceived={!!isApproval}>
             <ArrowRightIcon />
           </ArrowIconWrapper>
         </TxnSimulationImage>
