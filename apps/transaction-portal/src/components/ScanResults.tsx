@@ -62,11 +62,22 @@ const DynamicJsonViewer = dynamic(
 
 const Wrapper = styled.div`
   width: 100%;
+  height: 100%;
   background-color: ${(props) => props.theme.palette.white};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
   border-radius: 12px;
+  overflow: hidden;
+`;
+
+const Content = styled.div`
+  width: 100%;
+  display: flex;
+  overflow-y: auto;
+  height: 100%;
+  flex-direction: column;
+  margin-bottom: 160px;
 `;
 
 const SimulationResults = styled.div`
@@ -83,7 +94,6 @@ const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
 `;
 
 const Header = styled(Section)`
-  min-height: 56px;
   /* Overwrite section styles */
   flex-direction: column;
   align-items: center;
@@ -402,115 +412,117 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
 
   return (
     <Wrapper>
-      <Header
-        borderBottom={
-          scanResults.action === "NONE" && !!scanResults.simulationResults
-        }
-      >
-        <HeaderRow>
-          {showDurationSelector ? (
-            <PauseDurationSelector
-              onClick={(period) => onDurationSelect(period)}
-            />
-          ) : (
-            <TitleText as="h1">{requestTypeStr} Details</TitleText>
-          )}
-          <PauseScanningButton onClick={onActionClick}>
-            {isScanPaused ? (
-              <>Resume</>
+      <Content>
+        <Header
+          borderBottom={
+            scanResults.action === "NONE" && !!scanResults.simulationResults
+          }
+        >
+          <HeaderRow>
+            {showDurationSelector ? (
+              <PauseDurationSelector
+                onClick={(period) => onDurationSelect(period)}
+              />
             ) : (
-              <>{showDurationSelector ? <>Cancel</> : <>Pause Scanning</>}</>
+              <TitleText as="h1">{requestTypeStr} Details</TitleText>
             )}
-          </PauseScanningButton>
-        </HeaderRow>
-        {warnings.map((warning) => (
-          <WarningNotice
-            key={warning.message}
-            severity={warning.severity}
-            message={warning.message}
-          />
-        ))}
-      </Header>
-      <SimulationResults>
-        {toAddress && (
-          <Section borderBottom>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
-              To Address
-            </TextSmall>
-            <Text>
-              <BlockExplorerLink
-                address={toAddress}
-                chainFamily={chainFamily}
-                chainNetwork={chainNetwork}
-              >
-                {shortenHex(toAddress)}
-              </BlockExplorerLink>
-            </Text>
-          </Section>
-        )}
-        {expectedStateChanges && expectedStateChanges.length > 0 ? (
-          <Section borderBottom>
-            <SimulationResultsHeader
-              evmStateChangeWithImage={evmStateChangeHasImage(
-                expectedStateChanges[0]?.rawInfo.kind
+            <PauseScanningButton onClick={onActionClick}>
+              {isScanPaused ? (
+                <>Resume</>
+              ) : (
+                <>{showDurationSelector ? <>Cancel</> : <>Pause Scanning</>}</>
               )}
-            >
-              <TextSmall secondary>Simulation Results</TextSmall>
-            </SimulationResultsHeader>
-            <Column gap="md">
-              {expectedStateChanges.map((stateChange, i) => (
-                <EnrichedSimulationResult
-                  stateChange={stateChange}
-                  key={`state-change-${i}`}
+            </PauseScanningButton>
+          </HeaderRow>
+          {warnings.map((warning) => (
+            <WarningNotice
+              key={warning.message}
+              severity={warning.severity}
+              message={warning.message}
+            />
+          ))}
+        </Header>
+        <SimulationResults>
+          {toAddress && (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                To Address
+              </TextSmall>
+              <Text>
+                <BlockExplorerLink
+                  address={toAddress}
                   chainFamily={chainFamily}
                   chainNetwork={chainNetwork}
-                />
-              ))}
-            </Column>
-          </Section>
-        ) : (
-          <Section borderBottom>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
-              Simulation Results
-            </TextSmall>
-            {scanResults?.simulationResults?.error ? (
-              <StateChangeText isPositiveEffect={false}>
-                {simulationFailedMessage}
-              </StateChangeText>
-            ) : (
-              <StateChangeText isPositiveEffect={false}>
-                No state changes found. Proceed with caution
-              </StateChangeText>
-            )}
-          </Section>
-        )}
+                >
+                  {shortenHex(toAddress)}
+                </BlockExplorerLink>
+              </Text>
+            </Section>
+          )}
+          {expectedStateChanges && expectedStateChanges.length > 0 ? (
+            <Section borderBottom>
+              <SimulationResultsHeader
+                evmStateChangeWithImage={evmStateChangeHasImage(
+                  expectedStateChanges[0]?.rawInfo.kind
+                )}
+              >
+                <TextSmall secondary>Simulation Results</TextSmall>
+              </SimulationResultsHeader>
+              <Column gap="md">
+                {expectedStateChanges.map((stateChange, i) => (
+                  <EnrichedSimulationResult
+                    stateChange={stateChange}
+                    key={`state-change-${i}`}
+                    chainFamily={chainFamily}
+                    chainNetwork={chainNetwork}
+                  />
+                ))}
+              </Column>
+            </Section>
+          ) : (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                Simulation Results
+              </TextSmall>
+              {scanResults?.simulationResults?.error ? (
+                <StateChangeText isPositiveEffect={false}>
+                  {simulationFailedMessage}
+                </StateChangeText>
+              ) : (
+                <StateChangeText isPositiveEffect={false}>
+                  No state changes found. Proceed with caution
+                </StateChangeText>
+              )}
+            </Section>
+          )}
 
-        {parsedMessageContent && (
-          <Section borderBottom>
+          {parsedMessageContent && (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                Message contents
+              </TextSmall>
+              <TextSmall
+                style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
+              >
+                {parsedMessageContent}
+              </TextSmall>
+            </Section>
+          )}
+          <Section>
             <TextSmall secondary style={{ marginBottom: "8px" }}>
-              Message contents
+              Request by
             </TextSmall>
-            <TextSmall
-              style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
-            >
-              {parsedMessageContent}
-            </TextSmall>
+            <LinkWithArrow href={dappUrl.origin}>
+              <Text>{dappUrl.host}</Text>
+            </LinkWithArrow>
           </Section>
-        )}
-        <Section>
-          <TextSmall secondary style={{ marginBottom: "8px" }}>
-            Request by
-          </TextSmall>
-          <LinkWithArrow href={dappUrl.origin}>
-            <Text>{dappUrl.host}</Text>
-          </LinkWithArrow>
-        </Section>
-      </SimulationResults>
-      <AdvancedDetails
-        request={request}
-        showAdvancedDetails={showAdvancedDetails}
-        setShowAdvancedDetails={setShowAdvancedDetails}
-      />
+        </SimulationResults>
+        <AdvancedDetails
+          request={request}
+          showAdvancedDetails={showAdvancedDetails}
+          setShowAdvancedDetails={setShowAdvancedDetails}
+        />
+      </Content>
     </Wrapper>
   );
 };
