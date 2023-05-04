@@ -218,6 +218,8 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
   );
 };
 
+type UIWarning = { message: string; severity: "WARNING" | "CRITICAL" };
+
 export interface ScanResultsProps {
   request: DappRequest;
   scanResults: EvmTransactionScanResult | EvmMessageScanResult;
@@ -308,61 +310,64 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     return undefined;
   }, [request]);
 
-  const warning:
-    | { message: string; severity: "WARNING" | "CRITICAL" }
-    | undefined = useMemo(() => {
+  const warnings: UIWarning[] = useMemo(() => {
     // Take warnings return from API first hand
-    const warning = scanResults.warnings[0];
-    if (warning) {
-      const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
-      const { message } = warning;
-      return {
-        message,
-        severity,
-      };
+    if (scanResults.warnings && scanResults.warnings.length > 0) {
+      return scanResults.warnings.map((warning) => {
+        const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
+        const { message } = warning;
+        return {
+          message,
+          severity,
+        };
+      });
     }
 
-    // TODO(kimpers): Should simulation errors be warnings from the API?
-    const simulationResults = scanResults.simulationResults || undefined;
-    if (simulationResults?.error) {
-      switch (simulationResults.error.kind) {
-        case "SIMULATION_FAILED":
-          return {
-            severity: "CRITICAL",
-            message: `This transaction failed during simulation. Proceed with caution`,
-          };
-        case "INVALID_TRANSACTION":
-          return {
-            severity: "CRITICAL",
-            message: `This transaction seems does not seem valid. Proceed with caution`,
-          };
-        case "UNSUPPORTED_ORDER_TYPE":
-          return {
-            severity: "WARNING",
-            message:
-              "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
-          };
-        default:
-          return {
-            severity: "CRITICAL",
-            message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
-          };
+    function getInferedWarning(): UIWarning | undefined {
+      // TODO(kimpers): Should simulation errors be warnings from the API?
+      const simulationResults = scanResults.simulationResults || undefined;
+      if (simulationResults?.error) {
+        switch (simulationResults.error.kind) {
+          case "SIMULATION_FAILED":
+            return {
+              severity: "CRITICAL",
+              message: `This transaction failed during simulation. Proceed with caution`,
+            };
+          case "INVALID_TRANSACTION":
+            return {
+              severity: "CRITICAL",
+              message: `This transaction seems does not seem valid. Proceed with caution`,
+            };
+          case "UNSUPPORTED_ORDER_TYPE":
+            return {
+              severity: "WARNING",
+              message:
+                "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
+            };
+          default:
+            return {
+              severity: "CRITICAL",
+              message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
+            };
+        }
+      } else if (hasPunycode) {
+        return {
+          severity: "WARNING",
+          message:
+            "The dApp uses non-ascii characters in the URL. This can be used to impersonate other dApps, proceed with caution.",
+        };
+      } else if (
+        (isSignTypedDataRequest(request) || isSignMessageRequest(request)) &&
+        !simulationResults
+      ) {
+        return {
+          severity: "WARNING",
+          message: `We are unable to simulate this message. Proceed with caution`,
+        };
       }
-    } else if (hasPunycode) {
-      return {
-        severity: "WARNING",
-        message:
-          "The dApp uses non-ascii characters in the URL. This can be used to impersonate other dApps, proceed with caution.",
-      };
-    } else if (
-      (isSignTypedDataRequest(request) || isSignMessageRequest(request)) &&
-      !simulationResults
-    ) {
-      return {
-        severity: "WARNING",
-        message: `We are unable to simulate this message. Proceed with caution`,
-      };
     }
+    const warning = getInferedWarning();
+    return warning ? [warning] : [];
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
   const simulationFailedMessage = useMemo(() => {
@@ -418,12 +423,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             )}
           </PauseScanningButton>
         </HeaderRow>
-        {warning && (
+        {warnings.map((warning) => (
           <WarningNotice
+            key={warning.message}
             severity={warning.severity}
             message={warning.message}
           />
-        )}
+        ))}
       </Header>
       <SimulationResults>
         {toAddress && (
