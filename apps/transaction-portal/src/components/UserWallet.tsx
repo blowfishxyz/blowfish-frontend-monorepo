@@ -2,7 +2,7 @@ import { shortenEnsName } from "~utils/utils";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { Chain } from "wagmi";
 import styled from "styled-components";
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfish/ui/core";
 import { ChainIcon } from "connectkit";
 
 const StyledContainer = styled.button`
@@ -30,9 +30,8 @@ const Connected = styled.div`
   outline: 2px solid white;
 `;
 
-const ChainContainer = styled(Row)`
+const ChainContainer = styled.div`
   position: relative;
-  width: unset;
 `;
 
 const AddressColumn = styled(Column)`

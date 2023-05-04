@@ -8,6 +8,7 @@ import { Row } from "@blowfish/ui/core";
 const ProtectScreenWrapper = styled.div`
   padding: 40px;
   height: 100%;
+  background: #EFEFEF;
 `;
 
 const ProtectScreenContent = styled(Row)`
