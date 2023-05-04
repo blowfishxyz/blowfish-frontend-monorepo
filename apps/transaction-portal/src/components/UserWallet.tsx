@@ -22,7 +22,7 @@ const StyledContainer = styled.button`
 const Connected = styled.div`
   position: absolute;
   bottom: 0;
-  right: 0;
+  left: 25px;
   border-radius: 50%;
   background: #00b94a;
   height: 8px;
@@ -32,7 +32,7 @@ const Connected = styled.div`
 
 const ChainContainer = styled(Row)`
   position: relative;
-  width: 30px;
+  width: unset;
 `;
 
 const AddressColumn = styled(Column)`
