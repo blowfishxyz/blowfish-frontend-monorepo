@@ -32,6 +32,14 @@ const Connected = styled.div`
 
 const ChainContainer = styled.div`
   position: relative;
+  width: 30px;
+  height: 30px;
+
+  svg {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
 `;
 
 const AddressColumn = styled(Column)`

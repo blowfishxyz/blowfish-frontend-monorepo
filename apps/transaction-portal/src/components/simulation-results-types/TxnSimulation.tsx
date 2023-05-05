@@ -36,9 +36,7 @@ const TxnSimulationValue = styled(Column)`
   width: unset;
 `;
 
-const ArrowIconWrapper = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== "isReceived",
-})<{ isReceived: boolean }>`
+const ArrowIconWrapper = styled.div<{ isReceived: boolean }>`
   position: absolute;
   height: 14px;
   width: 14px;

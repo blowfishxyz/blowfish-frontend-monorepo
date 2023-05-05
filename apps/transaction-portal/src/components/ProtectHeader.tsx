@@ -23,9 +23,7 @@ const ProtectHeader = () => {
     <ProtectScreenContent justify="space-between">
       <StyledBlowfishIconFull />
       <RightContentWrapper gap="md">
-        <div>
-          <UserWalletConnectKitWrapper />
-        </div>
+        <UserWalletConnectKitWrapper />
         <Menu />
       </RightContentWrapper>
     </ProtectScreenContent>

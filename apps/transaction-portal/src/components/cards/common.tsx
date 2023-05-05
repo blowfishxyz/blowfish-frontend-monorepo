@@ -7,9 +7,7 @@ import {
   device,
 } from "@blowfish/ui/core";
 
-const CardWrapper = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== "removePaddingBottom",
-})<{ removePaddingBottom?: boolean }>`
+const CardWrapper = styled.div<{ removePaddingBottom?: boolean }>`
   flex: 1;
   box-sizing: border-box;
   background: ${({ theme }) => theme.palette.white};

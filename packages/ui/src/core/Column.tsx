@@ -13,9 +13,7 @@ const ColumnComponent = React.forwardRef<
   } & React.HTMLAttributes<HTMLDivElement>
 >(({ gap, width, flex, ...props }, ref) => <div ref={ref} {...props} />);
 
-export const Column = styled(ColumnComponent).withConfig({
-  shouldForwardProp: (prop) => prop !== "alignItems",
-})`
+export const Column = styled(ColumnComponent)`
   width: ${({ width }) => width ?? "100%"};
   display: flex;
   flex-direction: column;
