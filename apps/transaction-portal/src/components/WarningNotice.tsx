@@ -1,9 +1,8 @@
-import React from "react";
-import styled, { css } from "styled-components";
-
-import type { WarningSeverity } from "@blowfish/utils/types";
 import { Text } from "@blowfish/ui/core";
 import { BlowfishWarningIcon } from "@blowfish/ui/icons";
+import type { WarningSeverity } from "@blowfish/utils/types";
+import React from "react";
+import styled, { css } from "styled-components";
 
 const Wrapper = styled.div<{ severity: WarningSeverity }>`
   display: flex;
@@ -12,7 +11,7 @@ const Wrapper = styled.div<{ severity: WarningSeverity }>`
   align-items: center;
   padding: 25px;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 
   ${({ severity, theme }) =>
     severity === "WARNING"
