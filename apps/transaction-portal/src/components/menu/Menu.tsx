@@ -27,10 +27,13 @@ const GreyWrapper = styled.div`
   cursor: pointer;
 `;
 
-const Dropdown = styled.div`
+const Dropdown = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== "menuOnLeft",
+})<{ menuOnLeft: boolean }>`
   position: absolute;
   top: 50px;
-  right: 0;
+  right: ${({ menuOnLeft }) => (menuOnLeft ? "0" : "auto")};
+  left: ${({ menuOnLeft }) => (menuOnLeft ? "auto" : "0")};
   background-color: ${({ theme }) => theme.palette.white};
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -59,7 +62,11 @@ const DropdownItem = styled.div`
     background: rgba(219, 219, 219, 0.4);
   }
 
-  &:hover ${MenuTitle}, &:hover ${MenuDescription} {
+  &:hover ${MenuTitle} {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  &:hover ${MenuDescription} {
     color: rgba(0, 0, 0, 0.3);
   }
 
@@ -111,12 +118,7 @@ const Menu = () => {
         <div />
       </Hamburger>
       {dropdownVisible && (
-        <Dropdown
-          style={{
-            left: menuOnLeft ? "auto" : "0",
-            right: menuOnLeft ? "0" : "auto",
-          }}
-        >
+        <Dropdown menuOnLeft={menuOnLeft}>
           {menuItems.map((item, index) => (
             <DropdownItem key={index}>
               <MenuTitle>{item.title}</MenuTitle>
