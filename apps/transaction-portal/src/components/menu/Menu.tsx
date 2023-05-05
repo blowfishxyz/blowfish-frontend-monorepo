@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import { GrayText, Text } from "@blowfish/ui/core";
 
@@ -70,6 +70,25 @@ const DropdownItem = styled.div`
 
 const Menu = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [menuOnLeft, setMenuOnLeft] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const checkAvailableSpace = () => {
+      if (wrapperRef.current) {
+        const rect = wrapperRef.current.getBoundingClientRect();
+        const availableSpace = window.innerWidth - rect.right;
+        setMenuOnLeft(availableSpace < 320);
+      }
+    };
+
+    checkAvailableSpace();
+    window.addEventListener("resize", checkAvailableSpace);
+
+    return () => {
+      window.removeEventListener("resize", checkAvailableSpace);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -85,14 +104,19 @@ const Menu = () => {
   ];
 
   return (
-    <GreyWrapper onClick={toggleDropdown}>
+    <GreyWrapper onClick={toggleDropdown} ref={wrapperRef}>
       <Hamburger>
         <div />
         <div />
         <div />
       </Hamburger>
       {dropdownVisible && (
-        <Dropdown>
+        <Dropdown
+          style={{
+            left: menuOnLeft ? "auto" : "0",
+            right: menuOnLeft ? "0" : "auto",
+          }}
+        >
           {menuItems.map((item, index) => (
             <DropdownItem key={index}>
               <MenuTitle>{item.title}</MenuTitle>

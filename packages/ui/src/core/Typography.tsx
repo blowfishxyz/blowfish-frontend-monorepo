@@ -29,7 +29,9 @@ export const TextXL = styled(TextXLComponent)`
   line-height: 23px;
 `;
 
-const StyledText = styled.span<TypographyProps>`
+const StyledText = styled.span.withConfig({
+  shouldForwardProp: (prop) => prop !== "semiBold",
+})<TypographyProps>`
   font-family: "GT-Planar";
   font-style: normal;
   font-size: 16px;
