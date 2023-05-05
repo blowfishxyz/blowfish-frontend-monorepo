@@ -62,11 +62,22 @@ const DynamicJsonViewer = dynamic(
 
 const Wrapper = styled.div`
   width: 100%;
+  height: 100%;
   background-color: ${(props) => props.theme.palette.white};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
   border-radius: 12px;
+  overflow: hidden;
+`;
+
+const Content = styled.div`
+  width: 100%;
+  display: flex;
+  overflow-y: auto;
+  height: 100%;
+  flex-direction: column;
+  margin-bottom: 160px;
 `;
 
 const SimulationResults = styled.div`
@@ -83,7 +94,6 @@ const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
 `;
 
 const Header = styled(Section)`
-  min-height: 56px;
   /* Overwrite section styles */
   flex-direction: column;
   align-items: center;
@@ -218,6 +228,8 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
   );
 };
 
+type UIWarning = { message: string; severity: "WARNING" | "CRITICAL" };
+
 export interface ScanResultsProps {
   request: DappRequest;
   scanResults: EvmTransactionScanResult | EvmMessageScanResult;
@@ -308,61 +320,64 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     return undefined;
   }, [request]);
 
-  const warning:
-    | { message: string; severity: "WARNING" | "CRITICAL" }
-    | undefined = useMemo(() => {
+  const warnings: UIWarning[] = useMemo(() => {
     // Take warnings return from API first hand
-    const warning = scanResults.warnings[0];
-    if (warning) {
-      const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
-      const { message } = warning;
-      return {
-        message,
-        severity,
-      };
+    if (scanResults.warnings && scanResults.warnings.length > 0) {
+      return scanResults.warnings.map((warning) => {
+        const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
+        const { message } = warning;
+        return {
+          message,
+          severity,
+        };
+      });
     }
 
-    // TODO(kimpers): Should simulation errors be warnings from the API?
-    const simulationResults = scanResults.simulationResults || undefined;
-    if (simulationResults?.error) {
-      switch (simulationResults.error.kind) {
-        case "SIMULATION_FAILED":
-          return {
-            severity: "CRITICAL",
-            message: `This transaction failed during simulation. Proceed with caution`,
-          };
-        case "INVALID_TRANSACTION":
-          return {
-            severity: "CRITICAL",
-            message: `This transaction seems does not seem valid. Proceed with caution`,
-          };
-        case "UNSUPPORTED_ORDER_TYPE":
-          return {
-            severity: "WARNING",
-            message:
-              "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
-          };
-        default:
-          return {
-            severity: "CRITICAL",
-            message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
-          };
+    function getInferedWarning(): UIWarning | undefined {
+      // TODO(kimpers): Should simulation errors be warnings from the API?
+      const simulationResults = scanResults.simulationResults || undefined;
+      if (simulationResults?.error) {
+        switch (simulationResults.error.kind) {
+          case "SIMULATION_FAILED":
+            return {
+              severity: "CRITICAL",
+              message: `This transaction failed during simulation. Proceed with caution`,
+            };
+          case "INVALID_TRANSACTION":
+            return {
+              severity: "CRITICAL",
+              message: `This transaction seems does not seem valid. Proceed with caution`,
+            };
+          case "UNSUPPORTED_ORDER_TYPE":
+            return {
+              severity: "WARNING",
+              message:
+                "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
+            };
+          default:
+            return {
+              severity: "CRITICAL",
+              message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
+            };
+        }
+      } else if (hasPunycode) {
+        return {
+          severity: "WARNING",
+          message:
+            "The dApp uses non-ascii characters in the URL. This can be used to impersonate other dApps, proceed with caution.",
+        };
+      } else if (
+        (isSignTypedDataRequest(request) || isSignMessageRequest(request)) &&
+        !simulationResults
+      ) {
+        return {
+          severity: "WARNING",
+          message: `We are unable to simulate this message. Proceed with caution`,
+        };
       }
-    } else if (hasPunycode) {
-      return {
-        severity: "WARNING",
-        message:
-          "The dApp uses non-ascii characters in the URL. This can be used to impersonate other dApps, proceed with caution.",
-      };
-    } else if (
-      (isSignTypedDataRequest(request) || isSignMessageRequest(request)) &&
-      !simulationResults
-    ) {
-      return {
-        severity: "WARNING",
-        message: `We are unable to simulate this message. Proceed with caution`,
-      };
     }
+    const warning = getInferedWarning();
+    return warning ? [warning] : [];
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
   const simulationFailedMessage = useMemo(() => {
@@ -397,114 +412,117 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
 
   return (
     <Wrapper>
-      <Header
-        borderBottom={
-          scanResults.action === "NONE" && !!scanResults.simulationResults
-        }
-      >
-        <HeaderRow>
-          {showDurationSelector ? (
-            <PauseDurationSelector
-              onClick={(period) => onDurationSelect(period)}
-            />
-          ) : (
-            <TitleText as="h1">{requestTypeStr} Details</TitleText>
-          )}
-          <PauseScanningButton onClick={onActionClick}>
-            {isScanPaused ? (
-              <>Resume</>
+      <Content>
+        <Header
+          borderBottom={
+            scanResults.action === "NONE" && !!scanResults.simulationResults
+          }
+        >
+          <HeaderRow>
+            {showDurationSelector ? (
+              <PauseDurationSelector
+                onClick={(period) => onDurationSelect(period)}
+              />
             ) : (
-              <>{showDurationSelector ? <>Cancel</> : <>Pause Scanning</>}</>
+              <TitleText as="h1">{requestTypeStr} Details</TitleText>
             )}
-          </PauseScanningButton>
-        </HeaderRow>
-        {warning && (
-          <WarningNotice
-            severity={warning.severity}
-            message={warning.message}
-          />
-        )}
-      </Header>
-      <SimulationResults>
-        {toAddress && (
-          <Section borderBottom>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
-              To Address
-            </TextSmall>
-            <Text>
-              <BlockExplorerLink
-                address={toAddress}
-                chainFamily={chainFamily}
-                chainNetwork={chainNetwork}
-              >
-                {shortenHex(toAddress)}
-              </BlockExplorerLink>
-            </Text>
-          </Section>
-        )}
-        {expectedStateChanges && expectedStateChanges.length > 0 ? (
-          <Section borderBottom>
-            <SimulationResultsHeader
-              evmStateChangeWithImage={evmStateChangeHasImage(
-                expectedStateChanges[0]?.rawInfo.kind
+            <PauseScanningButton onClick={onActionClick}>
+              {isScanPaused ? (
+                <>Resume</>
+              ) : (
+                <>{showDurationSelector ? <>Cancel</> : <>Pause Scanning</>}</>
               )}
-            >
-              <TextSmall secondary>Simulation Results</TextSmall>
-            </SimulationResultsHeader>
-            <Column gap="md">
-              {expectedStateChanges.map((stateChange, i) => (
-                <EnrichedSimulationResult
-                  stateChange={stateChange}
-                  key={`state-change-${i}`}
+            </PauseScanningButton>
+          </HeaderRow>
+          {warnings.map((warning) => (
+            <WarningNotice
+              key={warning.message}
+              severity={warning.severity}
+              message={warning.message}
+            />
+          ))}
+        </Header>
+        <SimulationResults>
+          {toAddress && (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                To Address
+              </TextSmall>
+              <Text>
+                <BlockExplorerLink
+                  address={toAddress}
                   chainFamily={chainFamily}
                   chainNetwork={chainNetwork}
-                />
-              ))}
-            </Column>
-          </Section>
-        ) : (
-          <Section borderBottom>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
-              Simulation Results
-            </TextSmall>
-            {scanResults?.simulationResults?.error ? (
-              <StateChangeText isPositiveEffect={false}>
-                {simulationFailedMessage}
-              </StateChangeText>
-            ) : (
-              <StateChangeText isPositiveEffect={false}>
-                No state changes found. Proceed with caution
-              </StateChangeText>
-            )}
-          </Section>
-        )}
+                >
+                  {shortenHex(toAddress)}
+                </BlockExplorerLink>
+              </Text>
+            </Section>
+          )}
+          {expectedStateChanges && expectedStateChanges.length > 0 ? (
+            <Section borderBottom>
+              <SimulationResultsHeader
+                evmStateChangeWithImage={evmStateChangeHasImage(
+                  expectedStateChanges[0]?.rawInfo.kind
+                )}
+              >
+                <TextSmall secondary>Simulation Results</TextSmall>
+              </SimulationResultsHeader>
+              <Column gap="md">
+                {expectedStateChanges.map((stateChange, i) => (
+                  <EnrichedSimulationResult
+                    stateChange={stateChange}
+                    key={`state-change-${i}`}
+                    chainFamily={chainFamily}
+                    chainNetwork={chainNetwork}
+                  />
+                ))}
+              </Column>
+            </Section>
+          ) : (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                Simulation Results
+              </TextSmall>
+              {scanResults?.simulationResults?.error ? (
+                <StateChangeText isPositiveEffect={false}>
+                  {simulationFailedMessage}
+                </StateChangeText>
+              ) : (
+                <StateChangeText isPositiveEffect={false}>
+                  No state changes found. Proceed with caution
+                </StateChangeText>
+              )}
+            </Section>
+          )}
 
-        {parsedMessageContent && (
-          <Section borderBottom>
+          {parsedMessageContent && (
+            <Section borderBottom>
+              <TextSmall secondary style={{ marginBottom: "8px" }}>
+                Message contents
+              </TextSmall>
+              <TextSmall
+                style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
+              >
+                {parsedMessageContent}
+              </TextSmall>
+            </Section>
+          )}
+          <Section>
             <TextSmall secondary style={{ marginBottom: "8px" }}>
-              Message contents
+              Request by
             </TextSmall>
-            <TextSmall
-              style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
-            >
-              {parsedMessageContent}
-            </TextSmall>
+            <LinkWithArrow href={dappUrl.origin}>
+              <Text>{dappUrl.host}</Text>
+            </LinkWithArrow>
           </Section>
-        )}
-        <Section>
-          <TextSmall secondary style={{ marginBottom: "8px" }}>
-            Request by
-          </TextSmall>
-          <LinkWithArrow href={dappUrl.origin}>
-            <Text>{dappUrl.host}</Text>
-          </LinkWithArrow>
-        </Section>
-      </SimulationResults>
-      <AdvancedDetails
-        request={request}
-        showAdvancedDetails={showAdvancedDetails}
-        setShowAdvancedDetails={setShowAdvancedDetails}
-      />
+        </SimulationResults>
+        <AdvancedDetails
+          request={request}
+          showAdvancedDetails={showAdvancedDetails}
+          setShowAdvancedDetails={setShowAdvancedDetails}
+        />
+      </Content>
     </Wrapper>
   );
 };

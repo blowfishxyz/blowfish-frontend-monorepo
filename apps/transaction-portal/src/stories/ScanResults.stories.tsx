@@ -14,16 +14,16 @@ import {
 import { ScanResults, ScanResultsProps } from "../components/ScanResults";
 import {
   exampleDappUrl,
+  exampleEthSignRequest,
+  exampleEthSignScanResult,
   exampleNftSignTypedDataRequest,
   examplePermitSignTypeDataRequest,
-  exampleEthSignRequest,
   exampleTransactionRequest,
   messageNoActionScanResult,
   messageWarnResultScanResult,
   transactionBlockScanResult,
   transactionNoActionScanResult,
   transactionWarningScanResult,
-  exampleEthSignScanResult,
 } from "./fixtures/scan";
 
 export default {
@@ -70,7 +70,7 @@ export const TransactionNoAction: ComponentStory<
   }
 
   return (
-    <div style={{ width: "392px", minHeight: "748px" }}>
+    <div style={{ width: "100%", maxWidth: "600px", minHeight: "748px" }}>
       <PopupContainer
         style={{
           /* NOTE This is only for the story,
@@ -79,7 +79,7 @@ export const TransactionNoAction: ComponentStory<
         }}
         {...props}
         severity={severity}
-        bottomMenuType={screenType !== "INFO" ? "SLIM" : "FULL"}
+        bottomMenuType={screenType !== "INFO" ? "SLIM" : "NONE"}
       >
         {}
         {screenType === "WARNING" && (
