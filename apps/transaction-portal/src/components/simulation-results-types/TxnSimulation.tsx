@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
-import { Column, Row, Text, device } from "@blowfish/ui/core";
+import { Column, Row, StyledDiv, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText, TxnImage } from "./common";
 import { RawInfo } from "./mock-data";
 
@@ -36,7 +36,7 @@ const TxnSimulationValue = styled(Column)`
   width: unset;
 `;
 
-const ArrowIconWrapper = styled.div<{ isReceived: boolean }>`
+const ArrowIconWrapper = styled(StyledDiv)<{ isReceived: boolean }>`
   position: absolute;
   height: 14px;
   width: 14px;

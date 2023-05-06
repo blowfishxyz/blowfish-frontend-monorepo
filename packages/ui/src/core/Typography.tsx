@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
+import { StyledSpan } from "./StyledBase";
 
 interface TypographyProps {
   className?: string;
@@ -29,7 +30,7 @@ export const TextXL = styled(TextXLComponent)`
   line-height: 23px;
 `;
 
-const StyledText = styled.span<TypographyProps>`
+const StyledText = styled(StyledSpan)<TypographyProps>`
   font-family: "GT-Planar";
   font-style: normal;
   font-size: 16px;
