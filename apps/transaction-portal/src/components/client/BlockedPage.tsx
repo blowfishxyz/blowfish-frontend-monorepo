@@ -64,7 +64,7 @@ const MainIcon = styled(BlowfishWarningIcon)`
   height: 104px;
 `;
 
-const Heading = styled(Text).attrs({ size: "xl" })`
+const Heading = styled(Text).attrs({ size: "xxl" })`
   color: ${({ theme }) => theme.palette.white};
 `;
 

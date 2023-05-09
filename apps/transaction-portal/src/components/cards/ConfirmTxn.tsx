@@ -84,7 +84,7 @@ const ConfirmTxn: React.FC = () => {
         return (
           <>
             <Column gap="md">
-              <Text size="lg">This seems low risk.</Text>
+              <Text size="xxl">This seems low risk.</Text>
               <CardText>
                 This application is requesting permission to exchange assets
                 that are held in your wallet for others.

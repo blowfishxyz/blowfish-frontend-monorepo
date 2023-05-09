@@ -240,7 +240,7 @@ const Popup: React.FC = () => {
         />
         <Row gap="sm">
           <BlowfishIcon />
-          <Text size="xl">Blowfish</Text>
+          <Text size="xxl">Blowfish</Text>
         </Row>
         <Column flex={1}>
           <StyledOl>

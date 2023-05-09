@@ -334,7 +334,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.SurfDapps) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <Text size="xl">
+        <Text size="xxl">
           If you try to navigate to a dangerous website, Blowfish will let you
           know
         </Text>
@@ -356,7 +356,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.Protection) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <Text size="xl">
+        <Text size="xxl">
           Blowfish will automatically open for every transaction & message
         </Text>
         <Image
@@ -372,7 +372,7 @@ const OnboardingDetails = ({
     content = (
       <>
         <CenteredColumnContainer gap="lg">
-          <Text size="xl">Live on</Text>
+          <Text size="xxl">Live on</Text>
           <IconGroup>
             {supportedChains.map((chain: ReactElement, index: number) => {
               return <Fragment key={`chain-${index}`}>{chain}</Fragment>;
@@ -386,7 +386,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.Feedback) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <Text size="xl">Let us know anytime in the app</Text>
+        <Text size="xxl">Let us know anytime in the app</Text>
         <ImageWithShadow
           src="/onboarding/feedback.webp"
           width="280"
@@ -399,7 +399,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.Ready) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <Text size="xl">
+        <Text size="xxl">
           Please reload any open dApps & Blowfish will start working immediately
         </Text>
         <VideoOuterContainer>

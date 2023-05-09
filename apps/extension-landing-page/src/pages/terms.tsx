@@ -31,7 +31,7 @@ const Home = () => {
     <>
       <Main>
         <TosContainer>
-          <Text as="h1" size="xl">
+          <Text as="h1" size="xxl">
             Blowfish Customer Terms of Service
           </Text>
           <Text style={{ fontStyle: "italic" }}>

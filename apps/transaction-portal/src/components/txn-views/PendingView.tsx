@@ -37,7 +37,7 @@ const StyledSpeedUpIcon = styled(SpeedUpIcon)`
   }
 `;
 
-const StyledTextXL = styled(Text).attrs({ size: "xl" })`
+const StyledTextXL = styled(Text).attrs({ size: "xxl" })`
   margin: 8px;
 `;
 

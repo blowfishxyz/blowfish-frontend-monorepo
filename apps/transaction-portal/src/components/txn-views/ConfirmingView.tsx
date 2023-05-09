@@ -16,7 +16,7 @@ const ConfirmingView = () => {
   return (
     <Column gap="md">
       <CardConfirmIcon />
-      <Text size="xl">Confirm in wallet</Text>
+      <Text size="xxl">Confirm in wallet</Text>
       <CardText>
         We have forwarded this signature request to your wallet. Please confirm
         it if you want to proceed with this signature.
