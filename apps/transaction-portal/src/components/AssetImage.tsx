@@ -51,7 +51,9 @@ const SimulationResultImageWrapper = styled.div`
   }
 `;
 
-const SimulationIconWrapper = styled(StyledBaseDiv)<{ isPositiveEffect: boolean }>`
+const SimulationIconWrapper = styled(StyledBaseDiv)<{
+  isPositiveEffect: boolean;
+}>`
   position: absolute;
   height: 14px;
   width: 14px;
