@@ -17,6 +17,35 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
+Here, we also use transient props with styled-components to pass props that should not be rendered to the DOM. To use transient props, simply prefix the prop name with a `$` sign. This will tell styled-components to treat the prop as a transient prop and not render it as an HTML attribute. The code sample below is pretty much how it works. You can read more about it here: [Transient Props](https://styled-components.com/docs/api#transient-props).
+
+```
+import React from 'react';
+import styled from 'styled-components';
+
+interface ButtonProps {
+  $primary?: boolean;
+}
+
+const Button = styled.button<ButtonProps>`
+  background-color: ${({ $primary, theme }) =>
+    $primary ? theme.colors.primary : theme.colors.secondary};
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+const App = () => {
+  return (
+    <>
+      <Button $primary>Primary Button</Button>
+      <Button>Secondary Button</Button>
+    </>
+  );
+};
+
+export default App;
+
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

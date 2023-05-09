@@ -4,7 +4,6 @@ import styled, { keyframes } from "styled-components";
 import {
   TextButton,
   Text,
-  StyledBaseDiv,
   Row,
   PrimaryButton,
   TextXL,
@@ -31,22 +30,22 @@ import {
 } from "@blowfish/utils/types";
 
 interface SharedProps {
-  darkMode?: boolean;
+  $darkMode?: boolean;
 }
 
 const StyledTextXL = styled(TextXL)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
-  color: ${({ darkMode, theme }) =>
-    darkMode ? theme.palette.warningText : theme.palette.black};
+  color: ${({ $darkMode, theme }) =>
+    $darkMode ? theme.palette.warningText : theme.palette.black};
 `;
 
 const StyledText = styled(Text)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   line-height: 22px;
-  color: ${({ darkMode, theme }) =>
-    darkMode ? theme.palette.warningText : theme.palette.black};
+  color: ${({ $darkMode, theme }) =>
+    $darkMode ? theme.palette.warningText : theme.palette.black};
 `;
 
 const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
@@ -59,10 +58,10 @@ const StyledBlowfishInvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
   margin-bottom: 48px;
 `;
 
-const Wrapper = styled(StyledBaseDiv)<SharedProps>`
+const Wrapper = styled.div<SharedProps>`
   width: 100%;
-  background-color: ${({ darkMode, theme }) =>
-    darkMode ? "#340000" : theme.palette.white};
+  background-color: ${({ $darkMode, theme }) =>
+    $darkMode ? "#340000" : theme.palette.white};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
@@ -135,18 +134,18 @@ export const TransactionBlockedScreen: React.FC<
   };
 
   return (
-    <Wrapper darkMode>
+    <Wrapper $darkMode>
       <StyledBlowfishWarningIcon severity="CRITICAL" />
-      <StyledTextXL darkMode>{headline}</StyledTextXL>
-      <StyledText darkMode>{message}</StyledText>
+      <StyledTextXL $darkMode>{headline}</StyledTextXL>
+      <StyledText $darkMode>{message}</StyledText>
       {showConfirmationText ? (
-        <StyledTextWithEllipsisAnimation darkMode>
+        <StyledTextWithEllipsisAnimation $darkMode>
           {confirmationText}
         </StyledTextWithEllipsisAnimation>
       ) : (
         <StyledTextButton onClick={continueClicked}>
           <StyledText
-            darkMode
+            $darkMode
             style={{
               fontWeight: 400,
               opacity: 0.6,

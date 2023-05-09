@@ -2,13 +2,13 @@ import { StyledBaseText } from "@blowfish/ui/core";
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-const Wrapper = styled.button<{ isActive?: boolean }>`
+const Wrapper = styled.button<{ $isActive?: boolean }>`
   align-items: center;
   border-radius: 20px;
-  background: ${({ isActive, theme }) =>
-    isActive ? theme.palette.lightGreen : "transparent"};
-  border: ${({ isActive, theme }) =>
-    isActive ? "none" : `1px solid ${theme.palette.gray}`};
+  background: ${({ $isActive, theme }) =>
+    $isActive ? theme.palette.lightGreen : "transparent"};
+  border: ${({ $isActive, theme }) =>
+    $isActive ? "none" : `1px solid ${theme.palette.gray}`};
   cursor: pointer;
   display: flex;
   outline: none;
@@ -39,24 +39,24 @@ const turnOffToggle = keyframes`
 `;
 
 const ToggleElement = styled(StyledBaseText)<{
-  isActive?: boolean;
-  isInitialToggleLoad?: boolean;
+  $isActive?: boolean;
+  $isInitialToggleLoad?: boolean;
 }>`
   animation: 0.1s
-    ${({ isActive, isInitialToggleLoad }) =>
-      isInitialToggleLoad ? "none" : isActive ? turnOnToggle : turnOffToggle}
+    ${({ $isActive, $isInitialToggleLoad }) =>
+      $isInitialToggleLoad ? "none" : $isActive ? turnOnToggle : turnOffToggle}
     ease-in;
-  background: ${({ theme, isActive }) =>
-    isActive ? `${theme.palette.green}` : `${theme.palette.gray}`};
+  background: ${({ theme, $isActive }) =>
+    $isActive ? `${theme.palette.green}` : `${theme.palette.gray}`};
   :hover {
-    ${({ theme, isActive }) =>
-      isActive ? "none" : `1px solid ${theme.palette.gray}`};
+    ${({ theme, $isActive }) =>
+      $isActive ? "none" : `1px solid ${theme.palette.gray}`};
   }
 
   border-radius: 50%;
   height: 24px;
-  margin-left: ${({ isActive }) => isActive && "2.2em"};
-  margin-right: ${({ isActive }) => !isActive && "2.2em"};
+  margin-left: ${({ $isActive }) => $isActive && "2.2em"};
+  margin-right: ${({ $isActive }) => !$isActive && "2.2em"};
   width: 24px;
 `;
 
@@ -83,10 +83,10 @@ export default function Toggle({
   };
 
   return (
-    <Wrapper id={id} isActive={isActive} onClick={switchToggle}>
+    <Wrapper id={id} $isActive={isActive} onClick={switchToggle}>
       <ToggleElement
-        isActive={isActive}
-        isInitialToggleLoad={isInitialToggleLoad}
+        $isActive={isActive}
+        $isInitialToggleLoad={isInitialToggleLoad}
       />
     </Wrapper>
   );

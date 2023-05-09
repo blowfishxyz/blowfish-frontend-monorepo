@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
-import { Column, Row, StyledBaseDiv, Text, device } from "@blowfish/ui/core";
+import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText, TxnImage } from "./common";
 import { RawInfo } from "./mock-data";
 
@@ -36,22 +36,22 @@ const TxnSimulationValue = styled(Column)`
   width: unset;
 `;
 
-const ArrowIconWrapper = styled(StyledBaseDiv)<{ isReceived: boolean }>`
+const ArrowIconWrapper = styled.div<{ $isReceived: boolean }>`
   position: absolute;
   height: 14px;
   width: 14px;
   padding: 6px;
   top: -10px;
   right: -10px;
-  background: ${({ isReceived }) => (isReceived ? "#BEEDD2" : "#FFCCCC")};
+  background: ${({ $isReceived }) => ($isReceived ? "#BEEDD2" : "#FFCCCC")};
   border-radius: 50%;
   padding: 5px;
   box-sizing: initial;
 
   svg {
-    ${({ isReceived }) => css`
-      fill: ${isReceived ? "#00bfa6" : "#ff4c4c"};
-      transform: rotate(${isReceived ? 135 : -45}deg);
+    ${({ $isReceived }) => css`
+      fill: ${$isReceived ? "#00bfa6" : "#ff4c4c"};
+      transform: rotate(${$isReceived ? 135 : -45}deg);
       transform-origin: center;
     `};
   }
@@ -73,7 +73,7 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
       <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
         <TxnSimulationImage>
           <TxnImage src={imageUrl} alt="NFT" />
-          <ArrowIconWrapper isReceived={!!isApproval}>
+          <ArrowIconWrapper $isReceived={!!isApproval}>
             <ArrowRightIcon />
           </ArrowIconWrapper>
         </TxnSimulationImage>

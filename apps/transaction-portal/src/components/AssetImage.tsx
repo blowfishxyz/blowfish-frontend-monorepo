@@ -8,7 +8,6 @@ import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
 import Image from "next/image";
 import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
-import { StyledBaseDiv } from "@blowfish/ui/core";
 
 interface AssetImageProps {
   stateChange: EvmStateChange;
@@ -51,8 +50,8 @@ const SimulationResultImageWrapper = styled.div`
   }
 `;
 
-const SimulationIconWrapper = styled(StyledBaseDiv)<{
-  isPositiveEffect: boolean;
+const SimulationIconWrapper = styled.div<{
+  $isPositiveEffect: boolean;
 }>`
   position: absolute;
   height: 14px;
@@ -62,12 +61,12 @@ const SimulationIconWrapper = styled(StyledBaseDiv)<{
   top: -10px;
   right: -10px;
   box-sizing: initial;
-  background: ${({ isPositiveEffect }) =>
-    isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
+  background: ${({ $isPositiveEffect }) =>
+    $isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
 
   svg {
-    ${({ isPositiveEffect, theme }) => {
-      if (isPositiveEffect) {
+    ${({ $isPositiveEffect, theme }) => {
+      if ($isPositiveEffect) {
         return css`
           fill: #00bfa6;
           transform: rotate(135deg);
@@ -145,7 +144,7 @@ const AssetImage = ({
           />
         ) : null}
 
-        <SimulationIconWrapper isPositiveEffect={isPositiveEffect}>
+        <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
           <ArrowRightIcon />
         </SimulationIconWrapper>
       </VerifiedTokenTooltip>
