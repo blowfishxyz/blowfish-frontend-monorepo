@@ -32,7 +32,7 @@ export const Text = React.forwardRef<
   return <StyledText ref={ref} as={props.as} {...props} />;
 });
 
-export const TextXL = React.forwardRef<
+export const TextXLComponent = React.forwardRef<
   HTMLSpanElement,
   TypographyProps & React.HTMLAttributes<HTMLSpanElement>
 >(({ className, style, ...props }, ref) => (
@@ -50,7 +50,9 @@ export const TextXL = React.forwardRef<
   />
 ));
 
-export const TextSmall = React.forwardRef<
+export const TextXL = styled(TextXLComponent)``;
+
+const TextSmallComponent = React.forwardRef<
   HTMLSpanElement,
   TypographyProps & React.HTMLAttributes<HTMLSpanElement>
 >(({ className, style, ...props }, ref) => (
@@ -62,7 +64,9 @@ export const TextSmall = React.forwardRef<
   />
 ));
 
-export const GrayText = React.forwardRef<
+export const TextSmall = styled(TextSmallComponent)``;
+
+const GrayTextComponent = React.forwardRef<
   HTMLSpanElement,
   TypographyProps & React.HTMLAttributes<HTMLSpanElement>
 >(({ className, style, ...props }, ref) => (
@@ -75,7 +79,9 @@ export const GrayText = React.forwardRef<
   />
 ));
 
-export const RedText = React.forwardRef<
+export const GrayText = styled(GrayTextComponent)``;
+
+const RedTextComponent = React.forwardRef<
   HTMLSpanElement,
   TypographyProps & React.HTMLAttributes<HTMLSpanElement>
 >(({ className, style, ...props }, ref) => {
@@ -89,3 +95,5 @@ export const RedText = React.forwardRef<
     />
   );
 });
+
+export const RedText = styled(RedTextComponent)``;
