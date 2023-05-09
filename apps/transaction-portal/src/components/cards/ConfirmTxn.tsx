@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { styled } from "styled-components";
-import { TextXL, Column, GrayText, device } from "@blowfish/ui/core";
+import { Column, device, Text } from "@blowfish/ui/core";
 import {
   CardWrapper,
   CardContent,
@@ -24,22 +24,6 @@ const StyledCardWrapper = styled(CardWrapper)`
 const CenterContent = styled.div`
   text-align: center;
   width: 100%;
-`;
-
-const ConfirmTxnTitle = styled(TextXL)`
-  font-size: 22px;
-
-  @media (${device.lg}) {
-    font-size: 26px;
-  }
-`;
-
-const ConfirmTxnInstruction = styled(GrayText)`
-  font-size: 14px;
-
-  @media (${device.lg}) {
-    font-size: 16px;
-  }
 `;
 
 const ViewState = {
@@ -100,7 +84,7 @@ const ConfirmTxn: React.FC = () => {
         return (
           <>
             <Column gap="md">
-              <ConfirmTxnTitle>This seems low risk.</ConfirmTxnTitle>
+              <Text size="lg">This seems low risk.</Text>
               <CardText>
                 This application is requesting permission to exchange assets
                 that are held in your wallet for others.
@@ -113,9 +97,9 @@ const ConfirmTxn: React.FC = () => {
               </CardPrimaryButton>
             </CardRow>
             <CenterContent>
-              <ConfirmTxnInstruction>
+              <Text size="sm" design="secondary">
                 Click Continue to proceed to your wallet.
-              </ConfirmTxnInstruction>
+              </Text>
             </CenterContent>
           </>
         );

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Column, GrayText, Row, Text, device } from "@blowfish/ui/core";
+import { Column, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import Chip from "../chips/Chip";
 import {
@@ -28,8 +28,9 @@ const Title = styled(Text)`
   }
 `;
 
-const SmallGrayText = styled(GrayText)<{ marginLeft?: string }>`
-  font-size: 13px;
+const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })<{
+  marginLeft?: string;
+}>`
   margin-left: ${({ marginLeft }) => marginLeft || "0"};
 `;
 

@@ -10,7 +10,6 @@ import {
   LinkWithArrow,
   Row,
   Text,
-  TextSmall,
 } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
 import {
@@ -56,7 +55,7 @@ const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
   {
     ssr: false,
-    loading: () => <TextSmall>Loading...</TextSmall>,
+    loading: () => <Text size="sm">Loading...</Text>,
   }
 );
 
@@ -216,7 +215,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
         <AdvancedDetailsToggleButton
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >
-          <Text semiBold>Advanced Details</Text>
+          <Text weight="semi-bold">Advanced Details</Text>
           <StyledExpandIcon expanded={showAdvancedDetails} />
         </AdvancedDetailsToggleButton>
         <LinkWithArrow href={BLOWFISH_FEEDBACK_URL}>
@@ -445,9 +444,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         <SimulationResults>
           {toAddress && (
             <Section borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
+              <Text
+                size="sm"
+                design="secondary"
+                style={{ marginBottom: "8px" }}
+              >
                 To Address
-              </TextSmall>
+              </Text>
               <Text>
                 <BlockExplorerLink
                   address={toAddress}
@@ -466,7 +469,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                   expectedStateChanges[0]?.rawInfo.kind
                 )}
               >
-                <TextSmall secondary>Simulation Results</TextSmall>
+                <Text size="sm" design="secondary">
+                  Simulation Results
+                </Text>
               </SimulationResultsHeader>
               <Column gap="md">
                 {expectedStateChanges.map((stateChange, i) => (
@@ -481,9 +486,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             </Section>
           ) : (
             <Section borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
+              <Text
+                size="sm"
+                design="secondary"
+                style={{ marginBottom: "8px" }}
+              >
                 Simulation Results
-              </TextSmall>
+              </Text>
               {scanResults?.simulationResults?.error ? (
                 <StateChangeText isPositiveEffect={false}>
                   {simulationFailedMessage}
@@ -498,20 +507,26 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
 
           {parsedMessageContent && (
             <Section borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
+              <Text
+                size="sm"
+                design="secondary"
+                style={{ marginBottom: "8px" }}
+              >
                 Message contents
-              </TextSmall>
-              <TextSmall
+              </Text>
+              <Text
+                size="sm"
+                design="secondary"
                 style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
               >
                 {parsedMessageContent}
-              </TextSmall>
+              </Text>
             </Section>
           )}
           <Section>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
+            <Text size="sm" design="secondary" style={{ marginBottom: "8px" }}>
               Request by
-            </TextSmall>
+            </Text>
             <LinkWithArrow href={dappUrl.origin}>
               <Text>{dappUrl.host}</Text>
             </LinkWithArrow>

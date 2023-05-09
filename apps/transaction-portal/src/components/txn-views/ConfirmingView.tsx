@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { TextXL, Column, GrayText } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfish/ui/core";
 import { CardText, CardGrayLink, CardSecondaryButton } from "../cards/common";
 import { ConfirmIcon } from "@blowfish/ui/icons";
 
@@ -16,15 +16,15 @@ const ConfirmingView = () => {
   return (
     <Column gap="md">
       <CardConfirmIcon />
-      <TextXL>Confirm in wallet</TextXL>
+      <Text size="xl">Confirm in wallet</Text>
       <CardText>
         We have forwarded this signature request to your wallet. Please confirm
         it if you want to proceed with this signature.
       </CardText>
-      <GrayText>
+      <Text design="secondary">
         Make sure that the request is coming from{" "}
         <CardGrayLink href="">blowfish.xyz</CardGrayLink>!
-      </GrayText>
+      </Text>
       <CancelButton>Cancel</CancelButton>
     </Column>
   );

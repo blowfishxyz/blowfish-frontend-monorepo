@@ -8,14 +8,7 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import {
-  Column,
-  PrimaryButton,
-  Row,
-  Text,
-  TextXL,
-  opacify,
-} from "@blowfish/ui/core";
+import { Column, PrimaryButton, Row, Text, opacify } from "@blowfish/ui/core";
 import {
   BlowfishIcon,
   CloseIcon,
@@ -247,7 +240,7 @@ const Popup: React.FC = () => {
         />
         <Row gap="sm">
           <BlowfishIcon />
-          <TextXL>Blowfish</TextXL>
+          <Text size="xl">Blowfish</Text>
         </Row>
         <Column flex={1}>
           <StyledOl>

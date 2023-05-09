@@ -2,7 +2,7 @@ export * from "./Links";
 export * from "./PauseDurationSelector";
 export * from "./Row";
 export * from "./Column";
-export * from "./Typography";
+export * from "./Text";
 export { BaseButton } from "./buttons/BaseButton";
 export {
   PrimaryButton,

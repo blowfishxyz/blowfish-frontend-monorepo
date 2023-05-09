@@ -17,7 +17,7 @@ import {
   PolygonIcon,
 } from "@blowfish/ui/icons";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
-import { TextSmall } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
 
@@ -110,9 +110,8 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
         `}
 `;
 
-const WalletAddress = styled(TextSmall)`
+const WalletAddress = styled(Text).attrs({ design: "secondary", size: "sm" })`
   margin-left: 9px;
-  color: rgba(0, 0, 0, 0.5);
 `;
 
 export const PopupContainer: React.FC<PopupContainerProps> = ({

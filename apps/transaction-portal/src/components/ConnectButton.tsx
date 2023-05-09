@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { TextButton, TextSmall } from "@blowfish/ui/core";
+import { TextButton, Text } from "@blowfish/ui/core";
 import { WalletIcon, FaLink, FaUnlink } from "@blowfish/ui/icons";
 import { shortenHex } from "@blowfish/utils/hex";
 
@@ -35,9 +35,8 @@ const StyledUnlinkIcon = styled(FaUnlink)`
   width: auto;
   fill: rgba(0, 0, 0, 0.5);
 `;
-const StyledText = styled(TextSmall)`
+const StyledText = styled(Text).attrs({ size: "sm", design: "secondary" })`
   margin-left: 9px;
-  color: rgba(0, 0, 0, 0.5);
 `;
 
 // NOTE(kimpers): Lifted from ConnectKitButton

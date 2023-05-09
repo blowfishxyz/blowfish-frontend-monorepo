@@ -1,4 +1,4 @@
-import { TextSmall } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
 import type {
   ChainFamily,
@@ -112,9 +112,9 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       {userAccount && (
         <HeaderLeft>
           <StyledWalletIcon />
-          <TextSmall style={{ marginLeft: "9px" }} secondary>
+          <Text style={{ marginLeft: "9px" }} design="secondary" size="sm">
             {shortenHex(userAccount)}
-          </TextSmall>
+          </Text>
         </HeaderLeft>
       )}
       {chainFamily && chainNetwork && (

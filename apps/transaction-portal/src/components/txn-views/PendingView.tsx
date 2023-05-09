@@ -1,6 +1,6 @@
 import React from "react";
 import { styled, keyframes } from "styled-components";
-import { Row, TextXL, Column, GrayText, size } from "@blowfish/ui/core";
+import { Row, Text, Column, size } from "@blowfish/ui/core";
 import { BlowfishIcon, SpeedUpIcon } from "@blowfish/ui/icons";
 import {
   Divider,
@@ -37,7 +37,7 @@ const StyledSpeedUpIcon = styled(SpeedUpIcon)`
   }
 `;
 
-const StyledTextXL = styled(TextXL)`
+const StyledTextXL = styled(Text).attrs({ size: "xl" })`
   margin: 8px;
 `;
 
@@ -69,7 +69,7 @@ type InfoRowProps = {
 const InfoRow = ({ label, value }: InfoRowProps) => (
   <>
     <Row justify="space-between">
-      <GrayText>{label}</GrayText>
+      <Text design="secondary">{label}</Text>
       <CardText>{value}</CardText>
     </Row>
     <Divider margin="0.8rem 0" />
@@ -84,9 +84,9 @@ const PendingView = () => {
       <StyledCenteredText>
         Your transaction is being sent to the Ethereum blockchain.
       </StyledCenteredText>
-      <GrayText>
+      <Text design="secondary">
         <StyledGrayLink href="">View on Etherscan →</StyledGrayLink>
-      </GrayText>
+      </Text>
       <TxnInfoWrapper>
         <InfoRow
           label="Status"
@@ -101,7 +101,7 @@ const PendingView = () => {
           label="Confirmations"
           value={
             <>
-              3 <GrayText>of 30</GrayText>
+              3 <Text design="secondary">of 30</Text>
             </>
           }
         />

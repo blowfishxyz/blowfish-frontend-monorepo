@@ -83,7 +83,7 @@ const TooltipText: React.FC<{ asset: AssetData }> = memo(
     return (
       <>
         {symbol} is verified on {sources[0]}, {sources[1]}, and{" "}
-        <Text semiBold>{others}</Text> other
+        <Text weight="semi-bold">{others}</Text> other
         {others ? "s" : ""}
       </>
     );
@@ -103,7 +103,9 @@ function getErc20Asset(rawInfo: EvmStateChange): AssetData | undefined {
 }
 
 function nameToText(name: string) {
-  return <Text semiBold>{name.toLowerCase().replaceAll(/_/g, " ")}</Text>;
+  return (
+    <Text weight="semi-bold">{name.toLowerCase().replaceAll(/_/g, " ")}</Text>
+  );
 }
 
 const VerifiedBadge = styled(VerifiedIcon)`

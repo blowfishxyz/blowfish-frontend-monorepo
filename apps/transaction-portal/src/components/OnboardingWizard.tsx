@@ -16,7 +16,6 @@ import {
   Row,
   supportedChains,
   Text,
-  TextXL,
 } from "@blowfish/ui/core";
 import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
@@ -53,7 +52,7 @@ const OnboardingContainer = styled(Column)`
   justify-content: space-between;
   flex: 1;
 
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${breakpoint.device.lg}) {
     gap: 80px;
     flex-direction: row;
   }
@@ -63,7 +62,7 @@ export const OnboardingStepsWrapper = styled(Column)`
   flex: 1;
   justify-content: flex-end;
 
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${breakpoint.device.lg}) {
     justify-content: flex-start;
   }
 `;
@@ -158,10 +157,6 @@ const CenterColumn = styled(Column)`
   align-items: center;
   text-align: center;
 
-  ${TextXL} {
-    line-height: 28px;
-  }
-
   > img {
     border-radius: 12px;
   }
@@ -219,7 +214,7 @@ const VideoOuterContainer = styled.div`
   height: 360px;
   width: 360px;
 
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${breakpoint.device.lg}) {
     width: 420px;
     height: 420px;
   }
@@ -339,10 +334,10 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.SurfDapps) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <TextXL>
+        <Text size="xl">
           If you try to navigate to a dangerous website, Blowfish will let you
           know
-        </TextXL>
+        </Text>
         <Image
           src="/onboarding/opensea.webp"
           width="297"
@@ -361,9 +356,9 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.Protection) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <TextXL>
+        <Text size="xl">
           Blowfish will automatically open for every transaction & message
-        </TextXL>
+        </Text>
         <Image
           src="/onboarding/transactions.webp"
           height="380"
@@ -377,7 +372,7 @@ const OnboardingDetails = ({
     content = (
       <>
         <CenteredColumnContainer gap="lg">
-          <TextXL>Live on</TextXL>
+          <Text size="xl">Live on</Text>
           <IconGroup>
             {supportedChains.map((chain: ReactElement, index: number) => {
               return <Fragment key={`chain-${index}`}>{chain}</Fragment>;
@@ -391,7 +386,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.Feedback) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <TextXL>Let us know anytime in the app</TextXL>
+        <Text size="xl">Let us know anytime in the app</Text>
         <ImageWithShadow
           src="/onboarding/feedback.webp"
           width="280"
@@ -404,9 +399,9 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.Ready) {
     content = (
       <CenteredColumnContainer gap="lg">
-        <TextXL>
+        <Text size="xl">
           Please reload any open dApps & Blowfish will start working immediately
-        </TextXL>
+        </Text>
         <VideoOuterContainer>
           <Video
             src="https://framerusercontent.com/modules/assets/ABKGG2mazmK87jGsN6CbRkaoYP0~tV7jxL_gYFMk8GNcDbSBgx0YO-bKKnfT3gFDsePqGgs.mp4"

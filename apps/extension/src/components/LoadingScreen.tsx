@@ -1,4 +1,4 @@
-import { Text, TextSmall, UnstyledA } from "@blowfish/ui/core";
+import { Text, UnstyledA } from "@blowfish/ui/core";
 import { BlowfishIconFull } from "@blowfish/ui/icons";
 import React, { useState } from "react";
 import { useInterval } from "react-use";
@@ -76,9 +76,9 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
     <Wrapper style={style} className={className}>
       <StyledLoadingAnimation animate={animate} />
       <Text>Simulating {type}...</Text>
-      <TextSmall style={{ opacity: 0.3 }}>
+      <Text size="sm" design="secondary">
         {LOADING_STATES[type][stateTextIndex]}
-      </TextSmall>
+      </Text>
       <FixedBottomLink
         href="https://blowfish.xyz"
         target="_blank"

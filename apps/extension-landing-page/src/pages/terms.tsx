@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Footer } from "../components/Footer";
-import { TextXL, Text } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 
 const Main = styled.main`
   max-width: 1280px;
@@ -31,7 +31,9 @@ const Home = () => {
     <>
       <Main>
         <TosContainer>
-          <TextXL as="h1">Blowfish Customer Terms of Service</TextXL>
+          <Text as="h1" size="xl">
+            Blowfish Customer Terms of Service
+          </Text>
           <Text style={{ fontStyle: "italic" }}>
             Last updated: February 15, 2023
           </Text>

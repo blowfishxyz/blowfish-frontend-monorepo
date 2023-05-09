@@ -11,7 +11,7 @@ const ProtectScreenContent = styled(Row)`
 
 const StyledBlowfishIconFull = styled(BlowfishIconFull)`
   width: 130px;
-  height: 100%;
+  flex-shrink: 0;
 `;
 
 const RightContentWrapper = styled(Row)`

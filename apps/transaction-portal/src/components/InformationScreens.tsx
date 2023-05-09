@@ -1,13 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import {
-  TextButton,
-  Text,
-  TextXL,
-  Row,
-  PrimaryButton,
-} from "@blowfish/ui/core";
+import { TextButton, Text, Row, PrimaryButton } from "@blowfish/ui/core";
 import { ContentToggle } from "./ContentToggle";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
@@ -33,7 +27,7 @@ interface SharedProps {
   darkMode?: boolean;
 }
 
-const StyledTextXL = styled(TextXL)<SharedProps>`
+const StyledTextXL = styled(Text).attrs({ size: "xl" })<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   color: ${({ darkMode, theme }) =>
@@ -248,7 +242,7 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
       {errorMessage && (
         <ContentToggle message="View error message">
           <WarningMessageWrapper>
-            <Text danger>{errorMessage}</Text>
+            <Text design="danger">{errorMessage}</Text>
           </WarningMessageWrapper>
         </ContentToggle>
       )}
@@ -330,7 +324,7 @@ export const AccountNotConnectedScreen: React.FC<
           <>
             <StyledText>
               You are impersonating{" "}
-              <StyledText semiBold>{impersonatingWallet}</StyledText>.
+              <StyledText weight="semi-bold">{impersonatingWallet}</StyledText>.
             </StyledText>
             <StyledText>
               Please connect a wallet to Blowfish Protect in order to proceed
@@ -339,8 +333,9 @@ export const AccountNotConnectedScreen: React.FC<
           </>
         ) : (
           <StyledText>
-            Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
-            to Blowfish&nbsp;Protect in order to proceed with the action
+            Please connect{" "}
+            <StyledText weight="semi-bold">{accountToConnect}</StyledText> to
+            Blowfish&nbsp;Protect in order to proceed with the action
           </StyledText>
         )}
         {onRetry && (
@@ -376,11 +371,11 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
       <StyledTextXL>Wallet connected to the wrong chain</StyledTextXL>
       <StyledText>
         Your are connected to{" "}
-        <StyledText semiBold style={{ textTransform: "capitalize" }}>
+        <StyledText weight="semi-bold" style={{ textTransform: "capitalize" }}>
           {chainIdToName(currentChainId)}
         </StyledText>{" "}
         but attempting to perform an action on{" "}
-        <StyledText semiBold style={{ textTransform: "capitalize" }}>
+        <StyledText weight="semi-bold" style={{ textTransform: "capitalize" }}>
           {chainIdToName(chainIdToConnect)}
         </StyledText>
         .
