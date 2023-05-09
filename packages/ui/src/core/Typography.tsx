@@ -1,5 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
+import { StyledBaseText } from "./StyledBase";
 
 interface TypographyProps {
   className?: string;
@@ -10,26 +11,7 @@ interface TypographyProps {
   as?: keyof JSX.IntrinsicElements;
 }
 
-const TextXLComponent = React.forwardRef<
-  HTMLSpanElement,
-  TypographyProps & React.HTMLAttributes<HTMLSpanElement>
->(({ className, style, ...props }, ref) => (
-  <span
-    className={className}
-    style={style}
-    ref={ref}
-    as={props.as}
-    {...props}
-  />
-));
-
-export const TextXL = styled(TextXLComponent)`
-  font-weight: 500;
-  font-size: 26px;
-  line-height: 23px;
-`;
-
-const StyledText = styled.span<TypographyProps>`
+const StyledText = styled(StyledBaseText)<TypographyProps>`
   font-family: "GT-Planar";
   font-style: normal;
   font-size: 16px;
@@ -49,6 +31,26 @@ export const Text = React.forwardRef<
 >((props, ref) => {
   return <StyledText ref={ref} as={props.as} {...props} />;
 });
+
+export const TextXLComponent = React.forwardRef<
+  HTMLSpanElement,
+  TypographyProps & React.HTMLAttributes<HTMLSpanElement>
+>(({ className, style, ...props }, ref) => (
+  <Text
+    className={className}
+    style={{
+      ...style,
+      fontSize: "26px",
+      lineHeight: "23px",
+    }}
+    ref={ref}
+    as={props.as}
+    semiBold
+    {...props}
+  />
+));
+
+export const TextXL = styled(TextXLComponent)``;
 
 const TextSmallComponent = React.forwardRef<
   HTMLSpanElement,
