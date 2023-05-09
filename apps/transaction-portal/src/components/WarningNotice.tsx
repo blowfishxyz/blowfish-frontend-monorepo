@@ -1,10 +1,10 @@
-import { Text } from "@blowfish/ui/core";
+import { StyledBaseDiv, Text } from "@blowfish/ui/core";
 import { BlowfishWarningIcon } from "@blowfish/ui/icons";
 import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-const Wrapper = styled.div<{ severity: WarningSeverity }>`
+const Wrapper = styled(StyledBaseDiv)<{ severity: WarningSeverity }>`
   display: flex;
   flex-direction: row;
   justify-content: center;

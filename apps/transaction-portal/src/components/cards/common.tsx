@@ -3,12 +3,12 @@ import {
   PrimaryButton,
   Row,
   SecondaryButton,
-  StyledDiv,
+  StyledBaseDiv,
   Text,
   device,
 } from "@blowfish/ui/core";
 
-const CardWrapper = styled(StyledDiv)<{ removePaddingBottom?: boolean }>`
+const CardWrapper = styled(StyledBaseDiv)<{ removePaddingBottom?: boolean }>`
   flex: 1;
   box-sizing: border-box;
   background: ${({ theme }) => theme.palette.white};

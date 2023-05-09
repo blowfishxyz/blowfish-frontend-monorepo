@@ -1,3 +1,4 @@
+import { StyledBaseText } from "@blowfish/ui/core";
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 
@@ -37,7 +38,7 @@ const turnOffToggle = keyframes`
   }
 `;
 
-const ToggleElement = styled.span<{
+const ToggleElement = styled(StyledBaseText)<{
   isActive?: boolean;
   isInitialToggleLoad?: boolean;
 }>`

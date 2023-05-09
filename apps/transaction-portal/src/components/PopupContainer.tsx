@@ -17,7 +17,7 @@ import {
   PolygonIcon,
 } from "@blowfish/ui/icons";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
-import { TextSmall } from "@blowfish/ui/core";
+import { TextSmall, StyledBaseDiv } from "@blowfish/ui/core";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
 
@@ -88,7 +88,10 @@ export interface PopupContainerProps extends React.PropsWithChildren {
 }
 
 type MenuType = "NONE" | "SLIM" | "FULL";
-const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
+const Wrapper = styled(StyledBaseDiv)<{
+  severity?: Severity;
+  bottomMenuType?: MenuType;
+}>`
   display: flex;
   position: relative;
   background-color: ${({ severity, theme }) =>

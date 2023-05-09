@@ -1,6 +1,6 @@
 import React from "react";
 import { styled, DefaultTheme } from "styled-components";
-import { StyledDiv } from "./StyledBase";
+import { StyledBaseDiv } from "./StyledBase";
 
 type Gap = keyof DefaultTheme["grids"];
 
@@ -12,7 +12,7 @@ const ColumnComponent = React.forwardRef<
     flex?: number;
     alignItems?: string;
   } & React.HTMLAttributes<HTMLDivElement>
->(({ gap, width, flex, ...props }, ref) => <StyledDiv ref={ref} {...props} />);
+>(({ gap, width, flex, ...props }, ref) => <StyledBaseDiv ref={ref} {...props} />);
 
 export const Column = styled(ColumnComponent)`
   width: ${({ width }) => width ?? "100%"};

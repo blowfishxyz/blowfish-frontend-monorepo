@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
 import Image from "next/image";
 import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
+import { StyledBaseDiv } from "@blowfish/ui/core";
 
 interface AssetImageProps {
   stateChange: EvmStateChange;
@@ -50,7 +51,7 @@ const SimulationResultImageWrapper = styled.div`
   }
 `;
 
-const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
+const SimulationIconWrapper = styled(StyledBaseDiv)<{ isPositiveEffect: boolean }>`
   position: absolute;
   height: 14px;
   width: 14px;
@@ -142,9 +143,9 @@ const AssetImage = ({
           />
         ) : null}
 
-        <SimulationIcon isPositiveEffect={isPositiveEffect}>
+        <SimulationIconWrapper isPositiveEffect={isPositiveEffect}>
           <ArrowRightIcon />
-        </SimulationIcon>
+        </SimulationIconWrapper>
       </VerifiedTokenTooltip>
     </SimulationResultImageWrapper>
   );

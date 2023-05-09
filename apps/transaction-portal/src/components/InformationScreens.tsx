@@ -4,9 +4,10 @@ import styled, { keyframes } from "styled-components";
 import {
   TextButton,
   Text,
-  TextXL,
+  StyledBaseDiv,
   Row,
   PrimaryButton,
+  TextXL,
 } from "@blowfish/ui/core";
 import { ContentToggle } from "./ContentToggle";
 import { chainIdToName } from "@blowfish/utils/chains";
@@ -39,6 +40,7 @@ const StyledTextXL = styled(TextXL)<SharedProps>`
   color: ${({ darkMode, theme }) =>
     darkMode ? theme.palette.warningText : theme.palette.black};
 `;
+
 const StyledText = styled(Text)<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
@@ -57,7 +59,7 @@ const StyledBlowfishInvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
   margin-bottom: 48px;
 `;
 
-const Wrapper = styled.div<SharedProps>`
+const Wrapper = styled(StyledBaseDiv)<SharedProps>`
   width: 100%;
   background-color: ${({ darkMode, theme }) =>
     darkMode ? "#340000" : theme.palette.white};

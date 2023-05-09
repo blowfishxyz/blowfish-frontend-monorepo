@@ -2,17 +2,23 @@ import shouldForwardProp from "@emotion/is-prop-valid";
 import React from "react";
 import { styled } from "styled-components";
 
-const StyledDivComponent = styled.div.withConfig({ shouldForwardProp })``;
-const StyledSpanComponent = styled.span.withConfig({ shouldForwardProp })``;
+const StyledBaseDivComponent = styled.div.withConfig({ shouldForwardProp })``;
+const StyledBaseTextComponent = styled.span.withConfig({ shouldForwardProp })``;
+const StyledBaseSvgComponent = styled.svg.withConfig({ shouldForwardProp })``;
 
-const StyledDiv = React.forwardRef<
+const StyledBaseDiv = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->((props, ref) => <StyledDivComponent ref={ref} {...props} />);
+>((props, ref) => <StyledBaseDivComponent ref={ref} {...props} />);
 
-const StyledSpan = React.forwardRef<
+const StyledBaseText = React.forwardRef<
   HTMLSpanElement,
   React.HTMLAttributes<HTMLSpanElement>
->((props, ref) => <StyledSpanComponent ref={ref} {...props} />);
+>((props, ref) => <StyledBaseTextComponent ref={ref} {...props} />);
 
-export { StyledDiv, StyledSpan };
+const StyledBaseSvg = React.forwardRef<
+  SVGSVGElement,
+  React.SVGAttributes<SVGSVGElement>
+>((props, ref) => <StyledBaseSvgComponent ref={ref} {...props} />);
+
+export { StyledBaseDiv, StyledBaseText, StyledBaseSvg };

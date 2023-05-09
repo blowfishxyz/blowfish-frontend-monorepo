@@ -11,6 +11,7 @@ import {
   Row,
   Text,
   TextSmall,
+  StyledBaseDiv,
 } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
 import {
@@ -84,7 +85,7 @@ const SimulationResults = styled.div`
   padding: 0 25px;
 `;
 
-const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
+const Section = styled(StyledBaseDiv)<{ borderBottom?: boolean; borderTop?: boolean }>`
   padding: 25px 0 25px 0;
   border-bottom: ${(props) => props.borderBottom && "1px solid #0000001a"};
   border-top: ${(props) => props.borderTop && "1px solid #0000001a"};
