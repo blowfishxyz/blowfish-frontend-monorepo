@@ -11,12 +11,15 @@ import { VerifiedIcon } from "@blowfish/ui/icons";
 const PreviewTokenContainer = styled.div`
   position: absolute;
   background-color: ${({ theme }) => theme.palette.white};
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
   z-index: 1;
+  top: 0;
   left: 60px;
   width: 237px;
+  border-radius: 12px;
 
   ${SmallGrayText} {
     font-size: 12px;
