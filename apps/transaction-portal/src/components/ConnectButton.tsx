@@ -35,7 +35,8 @@ const StyledUnlinkIcon = styled(FaUnlink)`
   width: auto;
   fill: rgba(0, 0, 0, 0.5);
 `;
-const StyledText = styled(Text).attrs({ size: "sm", design: "secondary" })`
+const StyledText = styled(Text).attrs({ size: "sm" })`
+  color: rgba(0, 0, 0, 0.5);
   margin-left: 9px;
 `;
 

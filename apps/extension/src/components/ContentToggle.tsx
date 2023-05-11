@@ -18,6 +18,10 @@ const ToggleButton = styled(BaseButton)`
   }
 `;
 
+const ToggleText = styled(Text)`
+  color: rgba(0, 0, 0, 0.5);
+`;
+
 interface ContentToggleProps extends React.PropsWithChildren {
   className?: string;
   style?: React.CSSProperties;
@@ -39,7 +43,7 @@ export const ContentToggle: React.FC<ContentToggleProps> = ({
         style={style}
         className={className}
       >
-        <Text design="secondary">{message}</Text>
+        <ToggleText>{message}</ToggleText>
         <ExpandIcon expanded={showAdvancedDetails} />
       </ToggleButton>
       {showAdvancedDetails && children}

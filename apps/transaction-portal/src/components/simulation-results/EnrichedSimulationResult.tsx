@@ -77,7 +77,9 @@ const StateChangeTextBlock = styled.div`
   display: flex;
 `;
 
-const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
+const StateChangeText = styled(Text).attrs({ weight: "semi-bold" })<{
+  isPositiveEffect?: boolean;
+}>`
   color: ${({ isPositiveEffect, theme }) =>
     isPositiveEffect ? theme.palette.green : theme.palette.red};
   line-height: 16px;

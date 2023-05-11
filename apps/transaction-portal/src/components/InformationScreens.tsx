@@ -27,7 +27,10 @@ interface SharedProps {
   $darkMode?: boolean;
 }
 
-const StyledTextXL = styled(Text).attrs({ size: "xxl" })<SharedProps>`
+const StyledTextXL = styled(Text).attrs({
+  size: "xxl",
+  weight: "semi-bold",
+})<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   color: ${({ $darkMode, theme }) =>

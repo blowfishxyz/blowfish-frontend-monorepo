@@ -2,7 +2,7 @@ import React from "react";
 import { css, styled } from "styled-components";
 import { StyledBaseText } from "./StyledBase";
 
-interface TextProps {
+export interface TextProps {
   className?: string;
   style?: React.CSSProperties;
   design?: "primary" | "secondary" | "danger" | "success";
