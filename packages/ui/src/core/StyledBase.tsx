@@ -1,24 +1,43 @@
 import shouldForwardProp from "@emotion/is-prop-valid";
 import React from "react";
 import { styled } from "styled-components";
+import { Spacing, spacing } from "./utils/spacing";
 
-const StyledBaseDivComponent = styled.div.withConfig({ shouldForwardProp })``;
-const StyledBaseTextComponent = styled.span.withConfig({ shouldForwardProp })``;
-const StyledBaseSvgComponent = styled.svg.withConfig({ shouldForwardProp })``;
+const StyledBaseDivComponent = styled.div.withConfig({
+  shouldForwardProp,
+})<Spacing>`
+  ${spacing}
+`;
+const StyledBaseTextComponent = styled.span.withConfig({
+  shouldForwardProp,
+})<Spacing>`
+  ${spacing}
+`;
+const StyledBaseSvgComponent = styled.svg.withConfig({
+  shouldForwardProp,
+})<Spacing>`
+  ${spacing}
+`;
 
-const StyledBaseDiv = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->((props, ref) => <StyledBaseDivComponent ref={ref} {...props} />);
+export type StyledBaseProps<T> = T & Spacing;
 
-const StyledBaseText = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->((props, ref) => <StyledBaseTextComponent ref={ref} {...props} />);
+const StyledBaseDiv = React.memo(
+  React.forwardRef<
+    HTMLDivElement,
+    StyledBaseProps<React.HTMLAttributes<HTMLDivElement>>
+  >((props, ref) => <StyledBaseDivComponent ref={ref} {...props} />)
+);
+
+const StyledBaseText = React.memo(
+  React.forwardRef<
+    HTMLSpanElement,
+    StyledBaseProps<React.HTMLAttributes<HTMLSpanElement>>
+  >((props, ref) => <StyledBaseTextComponent ref={ref} {...props} />)
+);
 
 const StyledBaseSvg = React.forwardRef<
   SVGSVGElement,
-  React.SVGAttributes<SVGSVGElement>
+  StyledBaseProps<React.HTMLAttributes<SVGSVGElement>>
 >((props, ref) => <StyledBaseSvgComponent ref={ref} {...props} />);
 
 export { StyledBaseDiv, StyledBaseText, StyledBaseSvg };

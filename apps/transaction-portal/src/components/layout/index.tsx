@@ -6,18 +6,29 @@ import ProtectHeader from "~components/ProtectHeader";
 const Wrapper = styled(Column)`
   height: 100%;
   width: 100%;
-  max-width: 1024px;
+  max-width: 1072px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 94px 24px 24px;
 `;
 
-const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
+const HeaderWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  max-width: 1072px;
+  padding: 24px 24px 12px;
+  margin: 0 auto;
+  background-color: #ffffff;
+`;
+
+export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <Wrapper>
-      <ProtectHeader />
-      <Column>{children}</Column>
+      <HeaderWrapper>
+        <ProtectHeader />
+      </HeaderWrapper>
+      {children}
     </Wrapper>
   );
 };
-
-export default Layout;
