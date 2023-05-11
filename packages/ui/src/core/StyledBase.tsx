@@ -19,7 +19,8 @@ const StyledBaseSvgComponent = styled.svg.withConfig({
   ${spacing}
 `;
 
-export type StyledBaseProps<T> = T & Spacing;
+export type StyledBaseProps<T> = T &
+  Spacing & { as?: keyof JSX.IntrinsicElements };
 
 const StyledBaseDiv = React.memo(
   React.forwardRef<
