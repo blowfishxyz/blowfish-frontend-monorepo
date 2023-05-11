@@ -55,18 +55,22 @@ const dummyTxnSimulationData = [
   },
   {
     rawInfo: {
-      kind: "",
+      kind: "ERC20_",
       data: {
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
+        name: "USD Coin",
+        symbol: "USDC",
+        asset: {
+          decimals: 18,
+          imageUrl: "/placeholder/placeholder-token.svg",
+          lists: ["", "", ""],
+          name: "USD Coin",
+          price: {
+            source: "Dummy Price Source",
+            last_updated_at: Date.now(),
+            dollar_value_per_token: 123.45,
+          },
+          symbol: "USDC",
+          verified: true,
         },
       },
     },
@@ -91,12 +95,28 @@ interface AssetPrice {
   dollar_value_per_token: number;
 }
 
+interface Asset {
+  address: string;
+  decimals: number;
+  imageUrl: string;
+  lists: string[];
+  name: string;
+  price: {
+    source: string;
+    last_updated_at: number;
+    dollar_value_per_token: number | null;
+  } | null;
+  symbol: string;
+  verified: boolean;
+}
+
 interface TxnData {
-  metadata: NftMetadata;
+  metadata?: NftMetadata;
   name: string;
   symbol: string;
-  tokenId: string;
-  assetPrice: AssetPrice;
+  tokenId?: string;
+  assetPrice?: AssetPrice;
+  asset?: Asset;
 }
 
 type RawInfo = {

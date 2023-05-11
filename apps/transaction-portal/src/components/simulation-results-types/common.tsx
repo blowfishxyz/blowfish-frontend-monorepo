@@ -1,9 +1,14 @@
 import { GrayText } from "@blowfish/ui/core";
 import { styled } from "styled-components";
 
-const TxnImage = styled.img`
-  width: 38px;
-  height: 38px;
+interface TxnImageProps {
+  $width?: string;
+  $height?: string;
+}
+
+const TxnImage = styled.img<TxnImageProps>`
+  width: ${({ $width }) => ($width ? $width : "38px")};
+  height: ${({ $height }) => ($height ? $height : "38px")};
   object-fit: cover;
   border-radius: 6px;
 `;

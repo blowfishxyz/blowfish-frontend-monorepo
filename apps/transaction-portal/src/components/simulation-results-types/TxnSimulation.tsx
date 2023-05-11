@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText, TxnImage } from "./common";
 import { RawInfo } from "./mock-data";
+import PreviewTokens from "~components/cards/PreviewTokens";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -20,6 +21,7 @@ const TxnSimulationImageMsgWrapper = styled(Row)`
 const TxnSimulationImage = styled.div`
   position: relative;
   display: inline-block;
+  cursor: pointer;
 `;
 
 const TxnSimulationText = styled(Text)`
@@ -62,23 +64,52 @@ interface TxnSimulationProps {
 }
 
 const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
-  const { data, kind } = txnData;
-  const { metadata, name, tokenId } = data || {};
+  const [isHovering, setIsHovering] = useState(false);
+  const { kind } = txnData;
+  const { metadata, name, tokenId, asset } = txnData.data || {};
 
-  const imageUrl = metadata?.rawImageUrl;
+  const { rawImageUrl } = metadata || {};
+  const { imageUrl, symbol } = asset || {};
+
   const isApproval = kind?.includes("APPROVAL");
+  const isERC721 = kind.includes("ERC721");
+  const isERC20 = kind.includes("ERC20");
+  const displayText = isERC20
+    ? `$${name} (${symbol})`
+    : `${name} #${tokenId}`;
+
+  const imageSrc = isERC721 ? rawImageUrl : imageUrl;
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
 
   return (
     <TxnSimulationWrapper justify="space-between" align="flex-start">
       <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
-        <TxnSimulationImage>
-          <TxnImage src={imageUrl} alt="NFT" />
+        <TxnSimulationImage
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <TxnImage src={imageSrc} alt={isERC721 ? "NFT" : "Token"} />
+          {isHovering && (
+            <PreviewTokens
+              imageUrl={imageSrc}
+              symbol={asset?.symbol}
+              isERC20={isERC20}
+              name={isERC20 ? asset?.name : name}
+            />
+          )}
           <ArrowIconWrapper $isReceived={!!isApproval}>
             <ArrowRightIcon />
           </ArrowIconWrapper>
         </TxnSimulationImage>
         <TxnSimulationText>
-          {isApproval ? "Receive" : "Send"} {name} #{tokenId}
+          {isApproval ? "Receive" : "Send"} {displayText}
         </TxnSimulationText>
       </TxnSimulationImageMsgWrapper>
       <TxnSimulationValue alignItems="flex-end">
