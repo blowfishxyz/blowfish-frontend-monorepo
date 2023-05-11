@@ -8,11 +8,11 @@ interface ExpandIconProps {
   expanded?: boolean;
 }
 
-const StyledSvg = styled(StyledBaseSvg)<{ expanded?: boolean }>`
+const StyledSvg = styled(StyledBaseSvg)<{ $expanded?: boolean }>`
   transition: all 0.2s linear;
 
   ${(props) =>
-    props.expanded &&
+    props.$expanded &&
     css`
       transform: rotate(90deg);
     `}
@@ -24,7 +24,7 @@ const ExpandIcon: React.FC<ExpandIconProps> = ({
   expanded,
 }) => (
   <StyledSvg
-    expanded={expanded}
+    $expanded={expanded}
     className={className}
     style={style}
     width="8"

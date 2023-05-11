@@ -38,7 +38,7 @@ const StyledBaseText = React.memo(
 
 const StyledBaseSvg = React.forwardRef<
   SVGSVGElement,
-  StyledBaseProps<React.HTMLAttributes<SVGSVGElement>>
+  StyledBaseProps<React.SVGAttributes<SVGSVGElement>>
 >((props, ref) => <StyledBaseSvgComponent ref={ref} {...props} />);
 
 export { StyledBaseDiv, StyledBaseText, StyledBaseSvg };
