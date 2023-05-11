@@ -1,5 +1,6 @@
 import React from "react";
 import { styled, css } from "styled-components";
+import { StyledBaseSvg } from "../core/StyledBase";
 
 interface ExpandIconProps {
   className?: string;
@@ -7,7 +8,7 @@ interface ExpandIconProps {
   expanded?: boolean;
 }
 
-const StyledSvg = styled.svg<{ expanded?: boolean }>`
+const StyledSvg = styled(StyledBaseSvg)<{ expanded?: boolean }>`
   transition: all 0.2s linear;
 
   ${(props) =>

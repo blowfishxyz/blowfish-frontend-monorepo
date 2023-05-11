@@ -1,5 +1,6 @@
 import React from "react";
 import { DefaultTheme, styled } from "styled-components";
+import { StyledBaseDiv } from "./StyledBase";
 
 type Gap = keyof DefaultTheme["grids"];
 
@@ -13,7 +14,7 @@ const RowComponent = React.forwardRef<
     gap?: Gap;
   } & React.HTMLAttributes<HTMLDivElement>
 >(({ width, align, justify, padding, gap, ...props }, ref) => (
-  <div ref={ref} {...props} />
+  <StyledBaseDiv ref={ref} {...props} />
 ));
 
 export const Row = styled(RowComponent)`

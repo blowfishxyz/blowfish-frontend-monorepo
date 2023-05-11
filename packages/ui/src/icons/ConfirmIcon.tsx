@@ -15,7 +15,7 @@ const ConfirmIcon: React.FC<ConfirmIconProps> = ({ className, style }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g clip-path="url(#clip0_568_4001)">
+    <g clipPath="url(#clip0_568_4001)">
       <path
         opacity="0.08"
         d="M34.2857 0H5.71429C2.55837 0 0 2.47189 0 5.52113V50.4789C0 53.5281 2.55837 56 5.71429 56H34.2857C37.4416 56 40 53.5281 40 50.4789V5.52113C40 2.47189 37.4416 0 34.2857 0Z"
