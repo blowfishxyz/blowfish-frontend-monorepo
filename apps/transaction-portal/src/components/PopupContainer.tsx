@@ -114,6 +114,7 @@ const Wrapper = styled.div<{
 
 const WalletAddress = styled(Text).attrs({ size: "sm" })`
   margin-left: 9px;
+  color: rgba(0, 0, 0, 0.5);
 `;
 
 export const PopupContainer: React.FC<PopupContainerProps> = ({
