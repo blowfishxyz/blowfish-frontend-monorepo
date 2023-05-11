@@ -85,6 +85,7 @@ const dummySignatureData = [
     message: "Sign in to Blur",
   },
 ];
+
 interface NftMetadata {
   rawImageUrl: string;
 }
@@ -96,7 +97,6 @@ interface AssetPrice {
 }
 
 interface Asset {
-  address: string;
   decimals: number;
   imageUrl: string;
   lists: string[];

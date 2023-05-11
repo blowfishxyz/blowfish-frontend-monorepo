@@ -74,9 +74,7 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const isApproval = kind?.includes("APPROVAL");
   const isERC721 = kind.includes("ERC721");
   const isERC20 = kind.includes("ERC20");
-  const displayText = isERC20
-    ? `$${name} (${symbol})`
-    : `${name} #${tokenId}`;
+  const displayText = isERC20 ? `$${name} (${symbol})` : `${name} #${tokenId}`;
 
   const imageSrc = isERC721 ? rawImageUrl : imageUrl;
 
