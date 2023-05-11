@@ -14,6 +14,7 @@ const palette = {
   red: "#FF3D00",
   yellow: "#FFB800",
   green: "#00BF36",
+  secondaryText: "rgba(0, 0, 0, 0.5)",
 };
 
 // Based on webflow's breakpoints
@@ -50,10 +51,6 @@ const fontWeights = {
   semiBold: 500,
 };
 
-const opacities = {
-  secondaryText: 0.5,
-};
-
 const grids = {
   xs: "4px",
   sm: "8px",
@@ -80,7 +77,7 @@ const lightTheme = {
   contextBackgroundColors,
   colors: {
     primaryText: palette.black,
-    secondaryText: lighten(opacities.secondaryText, palette.black),
+    secondaryText: palette.secondaryText,
   },
   mediaQueries: generateMediaQueries(breakpoints),
 };

@@ -20,12 +20,9 @@ const StyledText = styled(StyledBaseText)<TextProps>`
 export const Text = React.memo(
   React.forwardRef<
     HTMLSpanElement,
-    TextProps &
-      React.HTMLAttributes<HTMLSpanElement> & {
-        as?: keyof JSX.IntrinsicElements;
-      }
+    TextProps & React.ComponentProps<typeof StyledBaseText>
   >((props, ref) => {
-    return <StyledText ref={ref} as={props.as} {...props} />;
+    return <StyledText ref={ref} {...props} />;
   })
 );
 
