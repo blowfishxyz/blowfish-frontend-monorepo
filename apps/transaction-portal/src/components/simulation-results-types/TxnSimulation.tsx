@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText, TxnImage } from "./common";
 import { RawInfo } from "./mock-data";
 import PreviewTokens from "~components/cards/PreviewTokens";
+import { useHover } from "react-use";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -12,6 +13,7 @@ const TxnSimulationWrapper = styled(Row)`
 
 const TxnSimulationImageMsgWrapper = styled(Row)`
   width: unset;
+  cursor: pointer;
 
   @media (${device.lg}) {
     gap: 24px;
@@ -64,7 +66,6 @@ interface TxnSimulationProps {
 }
 
 const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
-  const [isHovering, setIsHovering] = useState(false);
   const { kind } = txnData;
   const { metadata, name, tokenId, asset } = txnData.data || {};
 
@@ -78,23 +79,12 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
 
   const imageSrc = isERC721 ? rawImageUrl : imageUrl;
 
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-  };
-
-  return (
-    <TxnSimulationWrapper justify="space-between" align="flex-start">
+  const TxnSimulationMessage = () => {
+    const element = (hovered: boolean) => (
       <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
-        <TxnSimulationImage
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+        <TxnSimulationImage>
           <TxnImage src={imageSrc} alt={isERC721 ? "NFT" : "Token"} />
-          {isHovering && (
+          {hovered && (
             <PreviewTokens
               imageUrl={imageSrc}
               symbol={asset?.symbol}
@@ -110,6 +100,16 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
           {isApproval ? "Receive" : "Send"} {displayText}
         </TxnSimulationText>
       </TxnSimulationImageMsgWrapper>
+    );
+
+    const [hoverable] = useHover(element);
+
+    return hoverable;
+  };
+
+  return (
+    <TxnSimulationWrapper justify="space-between" align="flex-start">
+      <TxnSimulationMessage />
       <TxnSimulationValue alignItems="flex-end">
         <TxnSimulationText semiBold>$25,200</TxnSimulationText>
         <SmallGrayText>18.99 ETH</SmallGrayText>
