@@ -83,10 +83,13 @@ const SimulationResults = styled.div`
   padding: 0 25px;
 `;
 
-const Section = styled.div<{ borderBottom?: boolean; borderTop?: boolean }>`
+const Section = styled.div<{
+  $borderBottom?: boolean;
+  $borderTop?: boolean;
+}>`
   padding: 25px 0 25px 0;
-  border-bottom: ${(props) => props.borderBottom && "1px solid #0000001a"};
-  border-top: ${(props) => props.borderTop && "1px solid #0000001a"};
+  border-bottom: ${(props) => props.$borderBottom && "1px solid #0000001a"};
+  border-top: ${(props) => props.$borderTop && "1px solid #0000001a"};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -204,7 +207,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
 
   return (
     <Section
-      borderTop
+      $borderTop
       style={{
         padding: "25px",
         flex: 1,
@@ -413,7 +416,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     <Wrapper>
       <Content>
         <Header
-          borderBottom={
+          $borderBottom={
             scanResults.action === "NONE" && !!scanResults.simulationResults
           }
         >
@@ -443,7 +446,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         </Header>
         <SimulationResults>
           {toAddress && (
-            <Section borderBottom>
+            <Section $borderBottom>
               <Text
                 size="sm"
                 design="secondary"
@@ -463,7 +466,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             </Section>
           )}
           {expectedStateChanges && expectedStateChanges.length > 0 ? (
-            <Section borderBottom>
+            <Section $borderBottom>
               <SimulationResultsHeader
                 evmStateChangeWithImage={evmStateChangeHasImage(
                   expectedStateChanges[0]?.rawInfo.kind
@@ -485,7 +488,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               </Column>
             </Section>
           ) : (
-            <Section borderBottom>
+            <Section $borderBottom>
               <Text
                 size="sm"
                 design="secondary"
@@ -506,7 +509,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           )}
 
           {parsedMessageContent && (
-            <Section borderBottom>
+            <Section $borderBottom>
               <Text
                 size="sm"
                 design="secondary"

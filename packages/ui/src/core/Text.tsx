@@ -1,5 +1,6 @@
 import React from "react";
 import { css, styled } from "styled-components";
+import { StyledBaseText } from "./StyledBase";
 
 interface TextProps {
   className?: string;
@@ -9,7 +10,7 @@ interface TextProps {
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
 }
 
-const StyledText = styled.span<TextProps>`
+const StyledText = styled(StyledBaseText)<TextProps>`
   font-family: "GT-Planar";
   ${getDesignStyles};
   ${getSizeStyles};

@@ -113,11 +113,11 @@ const StyledOl = styled.ol`
   }
 `;
 
-const TextStep = styled(Text)<{ active: boolean }>`
+const TextStep = styled(Text)<{ $active: boolean }>`
   transition: font-size 0.2s ease-in;
 
-  ${({ active }) => {
-    if (active) {
+  ${({ $active }) => {
+    if ($active) {
       return css`
         font-weight: 500;
         opacity: 1;
@@ -237,22 +237,22 @@ export enum OnboardingStep {
 const OnboardingSteps = ({ currentStep }: { currentStep: OnboardingStep }) => {
   return (
     <StyledOl>
-      <TextStep as="li" active={currentStep === OnboardingStep.ConnectWallet}>
+      <TextStep as="li" $active={currentStep === OnboardingStep.ConnectWallet}>
         Connect your wallet
       </TextStep>
-      <TextStep as="li" active={currentStep === OnboardingStep.SurfDapps}>
+      <TextStep as="li" $active={currentStep === OnboardingStep.SurfDapps}>
         Surf Web3 dApps like you normally do
       </TextStep>
-      <TextStep as="li" active={currentStep === OnboardingStep.Protection}>
+      <TextStep as="li" $active={currentStep === OnboardingStep.Protection}>
         Transaction & Message Protection
       </TextStep>
-      <TextStep as="li" active={currentStep === OnboardingStep.MultiChain}>
+      <TextStep as="li" $active={currentStep === OnboardingStep.MultiChain}>
         Works where you need it
       </TextStep>
-      <TextStep as="li" active={currentStep === OnboardingStep.Feedback}>
+      <TextStep as="li" $active={currentStep === OnboardingStep.Feedback}>
         Questions or Feedback
       </TextStep>
-      <TextStep as="li" active={currentStep === OnboardingStep.Ready}>
+      <TextStep as="li" $active={currentStep === OnboardingStep.Ready}>
         Ready Set Go!
       </TextStep>
     </StyledOl>

@@ -9,7 +9,7 @@ export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;
 
 interface BottomMenuWrapperProps {
-  slim?: boolean;
+  $slim?: boolean;
 }
 
 export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
@@ -20,8 +20,8 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   background: ${({ theme }) => theme.palette.white};
   display: flex;
   align-items: center;
-  ${({ slim }) =>
-    slim
+  ${({ $slim }) =>
+    $slim
       ? css`
           height: ${SLIM_BOTTOM_MENU_HEIGHT}px;
           padding: 0 12px;
@@ -52,7 +52,7 @@ export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
   className,
 }) => {
   return (
-    <BottomMenuWrapper style={style} className={className} slim>
+    <BottomMenuWrapper style={style} className={className} $slim>
       <PrimaryButton onClick={onClick}>{buttonLabel}</PrimaryButton>
     </BottomMenuWrapper>
   );

@@ -4,7 +4,7 @@ import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-const Wrapper = styled.div<{ severity: WarningSeverity }>`
+const Wrapper = styled.div<{ $severity: WarningSeverity }>`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -13,8 +13,8 @@ const Wrapper = styled.div<{ severity: WarningSeverity }>`
   width: 100%;
   margin-bottom: 8px;
 
-  ${({ severity, theme }) =>
-    severity === "WARNING"
+  ${({ $severity, theme }) =>
+    $severity === "WARNING"
       ? css`
           background: ${theme.palette.warningBackground};
           border: 2px solid ${theme.palette.yellow};
@@ -28,13 +28,13 @@ const Wrapper = styled.div<{ severity: WarningSeverity }>`
   border-radius: 12px;
 `;
 
-const WarningHeadline = styled(Text)<{ severity: WarningSeverity }>`
+const WarningHeadline = styled(Text)<{ $severity: WarningSeverity }>`
   font-weight: 900;
   font-size: 14px;
   line-height: 16px;
   margin-bottom: 8px;
-  color: ${({ theme, severity }) =>
-    severity === "WARNING" ? theme.palette.yellow : theme.palette.red};
+  color: ${({ theme, $severity }) =>
+    $severity === "WARNING" ? theme.palette.yellow : theme.palette.red};
 `;
 const MessageContainer = styled.div`
   display: flex;
@@ -53,10 +53,10 @@ export const WarningNotice: React.FC<WarningNoticeProps> = ({
 }) => {
   const headline = severity === "WARNING" ? "WARNING" : "CRITICAL WARNING";
   return (
-    <Wrapper severity={severity}>
+    <Wrapper $severity={severity}>
       <BlowfishWarningIcon severity={severity} />
       <MessageContainer>
-        <WarningHeadline severity={severity}>{headline}</WarningHeadline>
+        <WarningHeadline $severity={severity}>{headline}</WarningHeadline>
         <Text>{message}</Text>
       </MessageContainer>
     </Wrapper>
