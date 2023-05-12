@@ -15,6 +15,7 @@ import {
   EvmTransactionScanResult,
 } from "@blowfish/utils/BlowfishApiClient";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
+import { isSmartContractWallet } from "../utils/wallets";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -48,7 +49,13 @@ const fetcher = async (
   );
 
   if (isTransactionRequest(request)) {
-    return client.scanTransaction(request.payload, request.userAccount, {
+    // For smart contract wallets like Gnosis Safe we need to
+    // scan from the POV of the contract rather the the user's ExpandIcon
+    // TODO(kimpers): In the future we want to support multiple userAccounts
+    const userAccount = isSmartContractWallet(origin)
+      ? request.payload.to
+      : request.userAccount;
+    return client.scanTransaction(request.payload, userAccount, {
       origin,
     });
   } else if (isSignTypedDataRequest(request)) {
