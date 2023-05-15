@@ -12,3 +12,6 @@ export * from "./CloseIcon";
 export * from "./PauseIcon";
 export * from "./PlayIcon";
 export * from "./VerifiedIcon";
+export * from "./SpeedUpIcon";
+export * from "./ConfirmIcon";
+export * from "./MenuIcon";

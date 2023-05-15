@@ -48,7 +48,9 @@ const SimulationResultImageWrapper = styled.div`
   }
 `;
 
-const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
+const SimulationIconWrapper = styled.div<{
+  $isPositiveEffect: boolean;
+}>`
   position: absolute;
   height: 14px;
   width: 14px;
@@ -57,12 +59,12 @@ const SimulationIcon = styled.div<{ isPositiveEffect: boolean }>`
   top: -10px;
   right: -10px;
   box-sizing: initial;
-  background: ${({ isPositiveEffect }) =>
-    isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
+  background: ${({ $isPositiveEffect }) =>
+    $isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
 
   svg {
-    ${({ isPositiveEffect, theme }) => {
-      if (isPositiveEffect) {
+    ${({ $isPositiveEffect, theme }) => {
+      if ($isPositiveEffect) {
         return css`
           fill: #00bfa6;
           transform: rotate(135deg);
@@ -141,9 +143,9 @@ const AssetImage = ({
           />
         ) : null}
 
-        <SimulationIcon isPositiveEffect={isPositiveEffect}>
+        <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
           <ArrowRightIcon />
-        </SimulationIcon>
+        </SimulationIconWrapper>
       </VerifiedTokenTooltip>
     </SimulationResultImageWrapper>
   );

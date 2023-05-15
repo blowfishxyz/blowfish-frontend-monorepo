@@ -86,23 +86,26 @@ export interface PopupContainerProps extends React.PropsWithChildren {
 }
 
 type MenuType = "NONE" | "SLIM" | "FULL";
-const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
+const Wrapper = styled.div<{
+  $severity?: Severity;
+  $bottomMenuType?: MenuType;
+}>`
   display: flex;
   position: relative;
-  background-color: ${({ severity, theme }) =>
-    theme.contextBackgroundColors[severity ?? "INFO"]};
+  background-color: ${({ $severity, theme }) =>
+    theme.contextBackgroundColors[$severity ?? "INFO"]};
   padding: 48px 12px 12px 12px;
   min-height: 100vh;
   height: 100%;
   width: 100%;
   max-width: 600px;
   margin: auto;
-  ${({ bottomMenuType }) =>
-    bottomMenuType === "SLIM"
+  ${({ $bottomMenuType }) =>
+    $bottomMenuType === "SLIM"
       ? css`
           padding-bottom: ${SLIM_BOTTOM_MENU_PADDING}px;
         `
-      : bottomMenuType === "FULL" &&
+      : $bottomMenuType === "FULL" &&
         css`
           padding-bottom: ${REGULAR_BOTTOM_MENU_PADDING}px;
         `}
@@ -127,8 +130,8 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
     <Wrapper
       style={style}
       className={className}
-      severity={severity}
-      bottomMenuType={bottomMenuType}
+      $severity={severity}
+      $bottomMenuType={bottomMenuType}
     >
       <HeaderLeft>
         {impersonatingWallet && (
