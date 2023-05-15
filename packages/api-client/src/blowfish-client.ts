@@ -32,8 +32,7 @@ export class BlowfishApiClient {
 
   constructor(
     readonly basePath: string,
-    readonly apiKey: string = "",
-    readonly apiVersion: string = "2022-06-01"
+    readonly apiVersion: string = "2023-03-08"
   ) {}
 
   scanMessageEvm = (
@@ -50,9 +49,8 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      // TODO(Alex): these headers are ignored by the proxy for now
       xApiKey: "",
-      xApiVersion: "",
+      xApiVersion: this.apiVersion,
     });
   };
 
@@ -70,9 +68,8 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      // TODO(Alex): these headers are ignored by the proxy for now
       xApiKey: "",
-      xApiVersion: "",
+      xApiVersion: this.apiVersion,
     });
   };
 
@@ -87,9 +84,8 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      // TODO(Alex): these headers are ignored by the proxy for now
       xApiKey: "",
-      xApiVersion: "",
+      xApiVersion: this.apiVersion,
     });
   };
 }
