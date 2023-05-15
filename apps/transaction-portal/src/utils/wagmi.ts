@@ -2,7 +2,8 @@ import { mainnet, polygon, goerli, arbitrum, bsc } from "@wagmi/core/chains";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
 import { publicProvider } from "@wagmi/core/providers/public";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { InjectedConnector } from "wagmi/connectors/injected";
+// import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { configureChains, createClient } from "wagmi";
 
 import { ALCHEMY_API_KEY } from "../config";
@@ -26,15 +27,14 @@ export const connectors = [
       UNSTABLE_shimOnConnectSelectAccount: true,
     },
   }),
-  new CoinbaseWalletConnector({
-    chains,
-    options: {
-      appName: "Blowfish Protect",
-      appLogoUrl: "",
-      linkAPIUrl: "",
-    },
-  }),
-  // new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+  // TODO(Alex): investigate bug when both extensions enabled
+  // new CoinbaseWalletConnector({
+  //   chains,
+  //   options: {
+  //     appName: "Blowfish Protect",
+  //   },
+  // }),
+  new InjectedConnector({ chains, options: { shimDisconnect: true } }),
 ];
 
 type ConnectorMetadata = {

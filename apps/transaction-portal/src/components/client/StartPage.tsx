@@ -3,7 +3,6 @@ import Image from "next/image";
 import { Button, Column, Row, Spinner, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
-import { BLOWFISH_V2_ENABLED } from "~config";
 import { getConnectorMetadata } from "~utils/wagmi";
 
 const StartPage = () => {
@@ -41,9 +40,11 @@ const StartPage = () => {
             Connect a wallet to continue...
           </Text>
           <ButtonsGrid>
-            {connectors.map((connector) => (
-              <ConnectorButton key={connector.id} connector={connector} />
-            ))}
+            {connectors
+              .filter((x) => x.id !== "injected")
+              .map((connector) => (
+                <ConnectorButton key={connector.id} connector={connector} />
+              ))}
           </ButtonsGrid>
         </Column>
         <HeroImage
@@ -139,15 +140,5 @@ const HeroImage = styled(Image)`
     position: relative;
   }
 `;
-
-export async function getStaticProps() {
-  if (!BLOWFISH_V2_ENABLED) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return { props: {} };
-}
 
 export default StartPage;
