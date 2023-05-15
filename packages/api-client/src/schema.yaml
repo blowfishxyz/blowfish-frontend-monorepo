@@ -28,6 +28,161 @@ security:
   - ApiKeyAuth: []
 
 paths:
+  /ethereum/v0/mainnet/scan/transactions:
+    post:
+      tags:
+        - Scan transactions
+      summary: EVM
+      operationId: scan-transactions-evm
+      description: |
+        Scan a list of EVM transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transactions will do.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions |
+        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
+        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
+        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
+        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
+        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+        Note 2: If you are using a free, self-service API key from our Developer Portal, be sure to add the `free` subdomain (e.g., `https://free.api.blowfish.xyz`) to the above endpoints.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: X-Api-Key
+          in: header
+          description: API Key
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiKeyHeader"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                txObjects:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/EvmTxData"
+                metadata:
+                  $ref: "#/components/schemas/RequestMetadata"
+                userAccount:
+                  $ref: "#/components/schemas/EvmUserAccount"
+              required:
+                - txObjects
+                - userAccount
+                - metadata
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - action
+                  - warnings
+                  - simulationResults
+                properties:
+                  action:
+                    $ref: "#/components/schemas/ActionEnum"
+                  warnings:
+                    $ref: "#/components/schemas/Warning"
+                  simulationResults:
+                    type: object
+                    required:
+                      - aggregated
+                      - perTransaction
+                    properties:
+                      aggregated:
+                        type: object
+                        required:
+                          - error
+                          - expectedStateChanges
+                        properties:
+                          expectedStateChanges:
+                            $ref: "#/components/schemas/EvmExpectedStateChanges"
+                          error:
+                            description: A error object which includes the aggregated parsed simulation error encountered (if any). Can be `null`.
+                            oneOf:
+                              - $ref: "#/components/schemas/EvmSimulationFailedError"
+                              - $ref: "#/components/schemas/EvmUnknownError"
+                            nullable: true
+                            discriminator:
+                              propertyName: kind
+                              mapping:
+                                SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
+                                UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
+                      perTransaction:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - error
+                            - gas
+                          properties:
+                            error:
+                              description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+                              oneOf:
+                                - $ref: "#/components/schemas/EvmTransactionRevertedError"
+                                - $ref: "#/components/schemas/EvmTransactionError"
+                                - $ref: "#/components/schemas/EvmSimulationFailedError"
+                                - $ref: "#/components/schemas/EvmUnknownError"
+                              nullable: true
+                              discriminator:
+                                propertyName: kind
+                                mapping:
+                                  TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
+                                  TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
+                                  SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
+                                  UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
+                            gas:
+                              type: object
+                              description: An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
+                              required:
+                                - gasLimit
+                              properties:
+                                gasLimit:
+                                  type: string
+                                  example: "46220"
+                                  description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+                                  nullable: true
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
   /ethereum/v0/mainnet/scan/transaction:
     post:
       tags:
@@ -78,24 +233,7 @@ paths:
               type: object
               properties:
                 txObject:
-                  type: object
-                  properties:
-                    from:
-                      type: string
-                      description: Hex-representation address of transaction signer
-                      example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-                    to:
-                      type: string
-                      description: Hex-representation address of transaction recipient
-                      example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                    data:
-                      type: string
-                      description: Hex-representation of ABI encoded call data
-                      example: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-                    value:
-                      type: string
-                      description: String representation of Ether/Matic (in Wei) to send with the transaction
-                      example: "0"
+                  $ref: "#/components/schemas/EvmTxData"
                 metadata:
                   $ref: "#/components/schemas/RequestMetadata"
                 userAccount:
@@ -128,40 +266,7 @@ paths:
                       - gas
                     properties:
                       expectedStateChanges:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - humanReadableDiff
-                            - rawInfo
-                          properties:
-                            humanReadableDiff:
-                              type: string
-                              example: Send 10000 USDT
-                              description: Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI if they encounter a `rawInfo.kind` they don't recognize.
-                            rawInfo:
-                              description: A machine-parsable state change object describing the state change.
-                              oneOf:
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Approval"
-                                - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
-                                - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
-                                - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-                              discriminator:
-                                propertyName: kind
-                                mapping:
-                                  ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                  ERC20_APPROVAL: "#/components/schemas/EvmStateChangeErc20Approval"
-                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                  ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                  ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
-                                  ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
-                                  ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
-                                  ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-
+                        $ref: "#/components/schemas/EvmExpectedStateChanges"
                       error:
                         description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
                         oneOf:
@@ -169,7 +274,7 @@ paths:
                           - $ref: "#/components/schemas/EvmTransactionError"
                           - $ref: "#/components/schemas/EvmSimulationFailedError"
                           - $ref: "#/components/schemas/EvmUnknownError"
-                        nullable: true
+                          nullable: true
                         discriminator:
                           propertyName: kind
                           mapping:
@@ -1019,7 +1124,7 @@ paths:
   /solana/v0/mainnet/scan/transactions:
     post:
       tags:
-        - Scan transaction
+        - Scan transactions
       summary: Solana
       operationId: scan-transactions-solana
       description: |
@@ -1151,9 +1256,13 @@ paths:
                         properties:
                           kind:
                             type: string
-                            description: A unique representation of the error kind. Currently maps to the screaming case of the SystemError enum values, TokenError and TransactionError enum values.
+                            description: A unique representation of the error kind. Currently maps to the screaming case of the SystemError enum values, TokenError and TransactionError enum values. It returns `UNKNOWN_ERROR` if the Solana program reverts with an error we are unable to decode.
                             example: INSUFFICIENT_FUNDS
                             enum:
+                              - SIMULATION_FAILED
+                              - SIMULATION_TIMED_OUT
+                              - TOO_MANY_TRANSACTIONS
+                              - BAD_REQUEST
                               - AN_ACCOUNT_WITH_THE_SAME_ADDRESS_ALREADY_EXISTS
                               - ACCOUNT_DOES_NOT_HAVE_ENOUGH_SOL_TO_PERFORM_THE_OPERATION
                               - CANNOT_ASSIGN_ACCOUNT_TO_THIS_PROGRAM_ID
@@ -1214,6 +1323,7 @@ paths:
                               - TRANSACTION_WOULD_EXCEED_MAX_VOTE_COST_LIMIT
                               - TRANSACTION_WOULD_EXCEED_TOTAL_ACCOUNT_DATA_LIMIT
                               - TRANSACTION_CONTAINS_A_DUPLICATE_INSTRUCTION_({0})_THAT_IS_NOT_ALLOWED
+                              - UNKNOWN_ERROR
                           humanReadableError:
                             type: string
                             example: You don't have enough tokens for this transaction
@@ -1226,7 +1336,6 @@ paths:
                         required:
                           - err
                           - logs
-                          - accounts
                           - unitsConsumed
                           - returnData
                         properties:
@@ -1241,39 +1350,6 @@ paths:
                             items:
                               type: string
                               example: Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]
-                          accounts:
-                            type: array
-                            description: Account state post-simulation or null values on failure
-                            items:
-                              anyOf:
-                                - type: object
-                                  required:
-                                    - lamports
-                                    - data
-                                    - owner
-                                    - executable
-                                    - rentEpoch
-                                  properties:
-                                    lamports:
-                                      type: integer
-                                      format: int32
-                                      example: 143685268
-                                    data:
-                                      type: array
-                                      items:
-                                        type: string
-                                      example: []
-                                    owner:
-                                      type: string
-                                      example: "11111111111111111111111111111111"
-                                    executable:
-                                      type: boolean
-                                    rentEpoch:
-                                      type: integer
-                                      format: int32
-                                      example: 322
-                                - type: string
-                                  enum: ["null"]
                           unitsConsumed:
                             type: integer
                             format: int32
@@ -1404,7 +1480,6 @@ paths:
                       raw:
                         err: null
                         logs: []
-                        accounts: []
                         returnData: null
                         unitsConsumed: 148013
                 warnings:
@@ -1438,12 +1513,29 @@ paths:
                           funds.
                     simulationResults:
                       isRecentBlockhashExpired: false
-                      expectedStateChanges: []
+                      expectedStateChanges:
+                        - humanReadableDiff: Send 2000 USDT
+                          suggestedColor: DEBIT
+                          rawInfo:
+                            kind: SPL_TRANSFER
+                            data:
+                              symbol: USDT
+                              name: USDT
+                              mint: Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB
+                              decimals: 6
+                              supply: 1000000000
+                              metaplexTokenStandard: unknown
+                              assetPrice:
+                                source: Coingecko
+                                last_updated_at: 1679331222
+                                dollar_value_per_token: 0.99
+                              diff:
+                                sign: MINUS
+                                digits: 2000000000
                       error: null
                       raw:
                         err: null
                         logs: []
-                        accounts: []
                         returnData: null
                         unitsConsumed: 148013
 
@@ -1751,6 +1843,7 @@ paths:
 
                         Blockchain -> Which blockchain this domain attempts to interact with
                         Warning -> If we've detected scam-like behavior, a warning label describing what was found will be included. If we know which blockchain the scam dApp is built for, this information is also included. We reserve the right to add new warnings at any time so handle new additions gracefully.
+                        Copy-cat -> If this dApp is a copy-cat of a well-known brand, we include a copy-cat label with information of the brand it is impersonating and it's official domain
                       items:
                         type: string
                         enum:
@@ -1784,6 +1877,7 @@ paths:
                           - source=solflare_blocklist
                           - source=defi_llama_whitelist
                           - source=brand_whitelist
+                          - copy_cat=brand_name:domain
                         example: blockchain=solana
               examples:
                 simple:
@@ -2087,6 +2181,59 @@ components:
       enum:
         [non_fungible, fungible_asset, fungible, non_fungible_edition, unknown]
       example: fungible
+    EvmTxData:
+      type: object
+      properties:
+        from:
+          type: string
+          description: Hex-representation address of transaction signer
+          example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+        to:
+          type: string
+          description: Hex-representation address of transaction recipient
+          example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+        data:
+          type: string
+          description: Hex-representation of ABI encoded call data
+          example: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+        value:
+          type: string
+          description: String representation of Ether/Matic (in Wei) to send with the transaction
+          example: "0"
+    EvmExpectedStateChanges:
+      type: array
+      items:
+        type: object
+        required:
+          - humanReadableDiff
+          - rawInfo
+        properties:
+          humanReadableDiff:
+            type: string
+            example: Send 10000 USDT
+            description: Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI if they encounter a `rawInfo.kind` they don't recognize.
+          rawInfo:
+            description: A machine-parsable state change object describing the state change.
+            oneOf:
+              - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
+              - $ref: "#/components/schemas/EvmStateChangeErc20Approval"
+              - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+              - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
+              - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
+              - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+              - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
+              - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+            discriminator:
+              propertyName: kind
+              mapping:
+                ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
+                ERC20_APPROVAL: "#/components/schemas/EvmStateChangeErc20Approval"
+                NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+                ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
+                ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
+                ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+                ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
     EvmUserAccount:
       type: string
       description: A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
@@ -2106,9 +2253,6 @@ components:
           enum: [ACCOUNT]
           example: ACCOUNT
           description: The type of address
-    EvmDecimals:
-      type: integer
-      example: 6
     EvmSymbol:
       type: string
       example: USDT
