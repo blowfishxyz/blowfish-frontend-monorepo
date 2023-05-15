@@ -29,58 +29,58 @@ import {
 /**
  * 
  * @export
- * @interface ScanTransactionEvmRequest
+ * @interface ScanTransactionsEvmRequest
  */
-export interface ScanTransactionEvmRequest {
+export interface ScanTransactionsEvmRequest {
     /**
      * 
-     * @type {EvmTxData}
-     * @memberof ScanTransactionEvmRequest
+     * @type {Array<EvmTxData>}
+     * @memberof ScanTransactionsEvmRequest
      */
-    txObject: EvmTxData;
+    txObjects: Array<EvmTxData>;
     /**
      * 
      * @type {RequestMetadata}
-     * @memberof ScanTransactionEvmRequest
+     * @memberof ScanTransactionsEvmRequest
      */
     metadata: RequestMetadata;
     /**
      * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
      * @type {string}
-     * @memberof ScanTransactionEvmRequest
+     * @memberof ScanTransactionsEvmRequest
      */
     userAccount: string;
 }
 
 /**
- * Check if a given object implements the ScanTransactionEvmRequest interface.
+ * Check if a given object implements the ScanTransactionsEvmRequest interface.
  */
-export function instanceOfScanTransactionEvmRequest(value: object): boolean {
+export function instanceOfScanTransactionsEvmRequest(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "txObject" in value;
+    isInstance = isInstance && "txObjects" in value;
     isInstance = isInstance && "metadata" in value;
     isInstance = isInstance && "userAccount" in value;
 
     return isInstance;
 }
 
-export function ScanTransactionEvmRequestFromJSON(json: any): ScanTransactionEvmRequest {
-    return ScanTransactionEvmRequestFromJSONTyped(json, false);
+export function ScanTransactionsEvmRequestFromJSON(json: any): ScanTransactionsEvmRequest {
+    return ScanTransactionsEvmRequestFromJSONTyped(json, false);
 }
 
-export function ScanTransactionEvmRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScanTransactionEvmRequest {
+export function ScanTransactionsEvmRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScanTransactionsEvmRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'txObject': EvmTxDataFromJSON(json['txObject']),
+        'txObjects': ((json['txObjects'] as Array<any>).map(EvmTxDataFromJSON)),
         'metadata': RequestMetadataFromJSON(json['metadata']),
         'userAccount': json['userAccount'],
     };
 }
 
-export function ScanTransactionEvmRequestToJSON(value?: ScanTransactionEvmRequest | null): any {
+export function ScanTransactionsEvmRequestToJSON(value?: ScanTransactionsEvmRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -89,7 +89,7 @@ export function ScanTransactionEvmRequestToJSON(value?: ScanTransactionEvmReques
     }
     return {
         
-        'txObject': EvmTxDataToJSON(value.txObject),
+        'txObjects': ((value.txObjects as Array<any>).map(EvmTxDataToJSON)),
         'metadata': RequestMetadataToJSON(value.metadata),
         'userAccount': value.userAccount,
     };

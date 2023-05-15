@@ -13,12 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { EvmExpectedStateChangesInner } from './EvmExpectedStateChangesInner';
-import {
-    EvmExpectedStateChangesInnerFromJSON,
-    EvmExpectedStateChangesInnerFromJSONTyped,
-    EvmExpectedStateChangesInnerToJSON,
-} from './EvmExpectedStateChangesInner';
 import type { ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError } from './ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError';
 import {
     ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerErrorFromJSON,
@@ -35,58 +29,50 @@ import {
 /**
  * 
  * @export
- * @interface ScanTransactionEvm200ResponseSimulationResults
+ * @interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
  */
-export interface ScanTransactionEvm200ResponseSimulationResults {
-    /**
-     * 
-     * @type {Array<EvmExpectedStateChangesInner>}
-     * @memberof ScanTransactionEvm200ResponseSimulationResults
-     */
-    expectedStateChanges: Array<EvmExpectedStateChangesInner>;
+export interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner {
     /**
      * 
      * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError}
-     * @memberof ScanTransactionEvm200ResponseSimulationResults
+     * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
      */
     error: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError | null;
     /**
      * 
      * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas}
-     * @memberof ScanTransactionEvm200ResponseSimulationResults
+     * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
      */
     gas: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas;
 }
 
 /**
- * Check if a given object implements the ScanTransactionEvm200ResponseSimulationResults interface.
+ * Check if a given object implements the ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner interface.
  */
-export function instanceOfScanTransactionEvm200ResponseSimulationResults(value: object): boolean {
+export function instanceOfScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner(value: object): boolean {
     let isInstance = true;
-    isInstance = isInstance && "expectedStateChanges" in value;
     isInstance = isInstance && "error" in value;
     isInstance = isInstance && "gas" in value;
 
     return isInstance;
 }
 
-export function ScanTransactionEvm200ResponseSimulationResultsFromJSON(json: any): ScanTransactionEvm200ResponseSimulationResults {
-    return ScanTransactionEvm200ResponseSimulationResultsFromJSONTyped(json, false);
+export function ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerFromJSON(json: any): ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner {
+    return ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerFromJSONTyped(json, false);
 }
 
-export function ScanTransactionEvm200ResponseSimulationResultsFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScanTransactionEvm200ResponseSimulationResults {
+export function ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerFromJSONTyped(json: any, ignoreDiscriminator: boolean): ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'expectedStateChanges': ((json['expectedStateChanges'] as Array<any>).map(EvmExpectedStateChangesInnerFromJSON)),
         'error': ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerErrorFromJSON(json['error']),
         'gas': ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGasFromJSON(json['gas']),
     };
 }
 
-export function ScanTransactionEvm200ResponseSimulationResultsToJSON(value?: ScanTransactionEvm200ResponseSimulationResults | null): any {
+export function ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerToJSON(value?: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -95,7 +81,6 @@ export function ScanTransactionEvm200ResponseSimulationResultsToJSON(value?: Sca
     }
     return {
         
-        'expectedStateChanges': ((value.expectedStateChanges as Array<any>).map(EvmExpectedStateChangesInnerToJSON)),
         'error': ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerErrorToJSON(value.error),
         'gas': ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGasToJSON(value.gas),
     };

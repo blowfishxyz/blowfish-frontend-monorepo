@@ -13,12 +13,6 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import type { ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInner } from './ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInner';
-import {
-    ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInnerFromJSON,
-    ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInnerFromJSONTyped,
-    ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInnerToJSON,
-} from './ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInner';
 import type { ScanTransactionsSolana200ResponseSimulationResultsRawReturnData } from './ScanTransactionsSolana200ResponseSimulationResultsRawReturnData';
 import {
     ScanTransactionsSolana200ResponseSimulationResultsRawReturnDataFromJSON,
@@ -45,12 +39,6 @@ export interface ScanTransactionsSolana200ResponseSimulationResultsRaw {
      */
     logs: Array<string>;
     /**
-     * Account state post-simulation or null values on failure
-     * @type {Array<ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInner>}
-     * @memberof ScanTransactionsSolana200ResponseSimulationResultsRaw
-     */
-    accounts: Array<ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInner>;
-    /**
      * 
      * @type {number}
      * @memberof ScanTransactionsSolana200ResponseSimulationResultsRaw
@@ -71,7 +59,6 @@ export function instanceOfScanTransactionsSolana200ResponseSimulationResultsRaw(
     let isInstance = true;
     isInstance = isInstance && "err" in value;
     isInstance = isInstance && "logs" in value;
-    isInstance = isInstance && "accounts" in value;
     isInstance = isInstance && "unitsConsumed" in value;
     isInstance = isInstance && "returnData" in value;
 
@@ -90,7 +77,6 @@ export function ScanTransactionsSolana200ResponseSimulationResultsRawFromJSONTyp
         
         'err': json['err'],
         'logs': json['logs'],
-        'accounts': ((json['accounts'] as Array<any>).map(ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInnerFromJSON)),
         'unitsConsumed': json['unitsConsumed'],
         'returnData': ScanTransactionsSolana200ResponseSimulationResultsRawReturnDataFromJSON(json['returnData']),
     };
@@ -107,7 +93,6 @@ export function ScanTransactionsSolana200ResponseSimulationResultsRawToJSON(valu
         
         'err': value.err,
         'logs': value.logs,
-        'accounts': ((value.accounts as Array<any>).map(ScanTransactionsSolana200ResponseSimulationResultsRawAccountsInnerToJSON)),
         'unitsConsumed': value.unitsConsumed,
         'returnData': ScanTransactionsSolana200ResponseSimulationResultsRawReturnDataToJSON(value.returnData),
     };

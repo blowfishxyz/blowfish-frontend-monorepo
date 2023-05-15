@@ -3,7 +3,7 @@ import type {
   EvmSignTypedDataData,
   HTTPHeaders,
   RequestMetadata,
-  ScanTransactionEvmRequestTxObject,
+  EvmTxData,
 } from "./client";
 import { ScanMessageApi, ScanTransactionApi } from "./client/apis";
 import { Configuration } from "./client/runtime";
@@ -77,7 +77,7 @@ export class BlowfishApiClient {
   };
 
   scanTransactionEvm = (
-    txObject: ScanTransactionEvmRequestTxObject,
+    txObject: EvmTxData,
     userAccount: string,
     metadata: RequestMetadata
   ) => {

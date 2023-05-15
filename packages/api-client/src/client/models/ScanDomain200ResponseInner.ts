@@ -46,6 +46,7 @@ export interface ScanDomain200ResponseInner {
      * 
      * Blockchain -> Which blockchain this domain attempts to interact with
      * Warning -> If we've detected scam-like behavior, a warning label describing what was found will be included. If we know which blockchain the scam dApp is built for, this information is also included. We reserve the right to add new warnings at any time so handle new additions gracefully.
+     * Copy-cat -> If this dApp is a copy-cat of a well-known brand, we include a copy-cat label with information of the brand it is impersonating and it's official domain
      * @type {Array<string>}
      * @memberof ScanDomain200ResponseInner
      */
@@ -96,7 +97,8 @@ export const ScanDomain200ResponseInnerLabelsEnum = {
     SourcephantomBlocklist: 'source=phantom_blocklist',
     SourcesolflareBlocklist: 'source=solflare_blocklist',
     SourcedefiLlamaWhitelist: 'source=defi_llama_whitelist',
-    SourcebrandWhitelist: 'source=brand_whitelist'
+    SourcebrandWhitelist: 'source=brand_whitelist',
+    CopyCatbrandNamedomain: 'copy_cat=brand_name:domain'
 } as const;
 export type ScanDomain200ResponseInnerLabelsEnum = typeof ScanDomain200ResponseInnerLabelsEnum[keyof typeof ScanDomain200ResponseInnerLabelsEnum];
 

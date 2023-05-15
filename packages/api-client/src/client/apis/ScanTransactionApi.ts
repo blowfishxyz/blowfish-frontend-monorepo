@@ -20,8 +20,6 @@ import type {
   Languages,
   ScanTransactionEvm200Response,
   ScanTransactionEvmRequest,
-  ScanTransactionsSolana200Response,
-  ScanTransactionsSolanaRequest,
   Unauthorized,
 } from '../models';
 import {
@@ -35,10 +33,6 @@ import {
     ScanTransactionEvm200ResponseToJSON,
     ScanTransactionEvmRequestFromJSON,
     ScanTransactionEvmRequestToJSON,
-    ScanTransactionsSolana200ResponseFromJSON,
-    ScanTransactionsSolana200ResponseToJSON,
-    ScanTransactionsSolanaRequestFromJSON,
-    ScanTransactionsSolanaRequestToJSON,
     UnauthorizedFromJSON,
     UnauthorizedToJSON,
 } from '../models';
@@ -49,14 +43,6 @@ export interface ScanTransactionEvmOperationRequest {
     language?: Languages;
     contentType?: string;
     scanTransactionEvmRequest?: ScanTransactionEvmRequest;
-}
-
-export interface ScanTransactionsSolanaOperationRequest {
-    xApiKey: string;
-    xApiVersion: string;
-    scanTransactionsSolanaRequest: ScanTransactionsSolanaRequest;
-    language?: Languages;
-    contentType?: string;
 }
 
 /**
@@ -120,69 +106,6 @@ export class ScanTransactionApi extends runtime.BaseAPI {
      */
     async scanTransactionEvm(requestParameters: ScanTransactionEvmOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScanTransactionEvm200Response> {
         const response = await this.scanTransactionEvmRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
-
-    /**
-     * Scan Solana transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do. The API will return a list of warnings and a list of human-readable simulation results. ### Supported networks | Network | Base URL | | --- | --- | | Mainnet | https://api.blowfish.xyz/solana/v0/mainnet/scan/transactions | | Testnet | https://api.blowfish.xyz/solana/v0/testnet/scan/transactions | | Devnet | https://api.blowfish.xyz/solana/v0/devnet/scan/transactions | Note: If you are using a free, self-service API key from our Developer Portal, be sure to add the `free` subdomain (e.g., `https://free.api.blowfish.xyz`) to the above endpoints. 
-     * Solana
-     */
-    async scanTransactionsSolanaRaw(requestParameters: ScanTransactionsSolanaOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ScanTransactionsSolana200Response>> {
-        if (requestParameters.xApiKey === null || requestParameters.xApiKey === undefined) {
-            throw new runtime.RequiredError('xApiKey','Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsSolana.');
-        }
-
-        if (requestParameters.xApiVersion === null || requestParameters.xApiVersion === undefined) {
-            throw new runtime.RequiredError('xApiVersion','Required parameter requestParameters.xApiVersion was null or undefined when calling scanTransactionsSolana.');
-        }
-
-        if (requestParameters.scanTransactionsSolanaRequest === null || requestParameters.scanTransactionsSolanaRequest === undefined) {
-            throw new runtime.RequiredError('scanTransactionsSolanaRequest','Required parameter requestParameters.scanTransactionsSolanaRequest was null or undefined when calling scanTransactionsSolana.');
-        }
-
-        const queryParameters: any = {};
-
-        if (requestParameters.language !== undefined) {
-            queryParameters['language'] = requestParameters.language;
-        }
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters.xApiKey !== undefined && requestParameters.xApiKey !== null) {
-            headerParameters['X-Api-Key'] = String(requestParameters.xApiKey);
-        }
-
-        if (requestParameters.xApiVersion !== undefined && requestParameters.xApiVersion !== null) {
-            headerParameters['X-Api-Version'] = String(requestParameters.xApiVersion);
-        }
-
-        if (requestParameters.contentType !== undefined && requestParameters.contentType !== null) {
-            headerParameters['Content-Type'] = String(requestParameters.contentType);
-        }
-
-        if (this.configuration && this.configuration.apiKey) {
-            headerParameters["X-Api-Key"] = this.configuration.apiKey("X-Api-Key"); // ApiKeyAuth authentication
-        }
-
-        const response = await this.request({
-            path: `/solana/v0/mainnet/scan/transactions`,
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: ScanTransactionsSolanaRequestToJSON(requestParameters.scanTransactionsSolanaRequest),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => ScanTransactionsSolana200ResponseFromJSON(jsonValue));
-    }
-
-    /**
-     * Scan Solana transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do. The API will return a list of warnings and a list of human-readable simulation results. ### Supported networks | Network | Base URL | | --- | --- | | Mainnet | https://api.blowfish.xyz/solana/v0/mainnet/scan/transactions | | Testnet | https://api.blowfish.xyz/solana/v0/testnet/scan/transactions | | Devnet | https://api.blowfish.xyz/solana/v0/devnet/scan/transactions | Note: If you are using a free, self-service API key from our Developer Portal, be sure to add the `free` subdomain (e.g., `https://free.api.blowfish.xyz`) to the above endpoints. 
-     * Solana
-     */
-    async scanTransactionsSolana(requestParameters: ScanTransactionsSolanaOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ScanTransactionsSolana200Response> {
-        const response = await this.scanTransactionsSolanaRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

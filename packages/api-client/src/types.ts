@@ -2,14 +2,13 @@ import type {
   ScanMessageEvm200Response,
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
   ScanTransactionEvm200Response,
-  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner,
+  EvmExpectedStateChangesInner,
 } from "./client/models";
 
 export type EvmMessageExpectedStateChange =
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 
-export type EvmTransactionExpectedStateChange =
-  ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesInner;
+export type EvmTransactionExpectedStateChange = EvmExpectedStateChangesInner;
 
 export type EvmExpectedStateChange =
   | EvmMessageExpectedStateChange

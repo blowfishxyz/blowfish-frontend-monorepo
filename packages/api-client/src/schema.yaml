@@ -274,7 +274,7 @@ paths:
                           - $ref: "#/components/schemas/EvmTransactionError"
                           - $ref: "#/components/schemas/EvmSimulationFailedError"
                           - $ref: "#/components/schemas/EvmUnknownError"
-                          nullable: true
+                        nullable: true
                         discriminator:
                           propertyName: kind
                           mapping:

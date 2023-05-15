@@ -20,7 +20,7 @@ import { exists, mapValues } from '../runtime';
  */
 export interface ScanTransactionsSolana200ResponseSimulationResultsError {
     /**
-     * A unique representation of the error kind. Currently maps to the screaming case of the SystemError enum values, TokenError and TransactionError enum values.
+     * A unique representation of the error kind. Currently maps to the screaming case of the SystemError enum values, TokenError and TransactionError enum values. It returns `UNKNOWN_ERROR` if the Solana program reverts with an error we are unable to decode.
      * @type {string}
      * @memberof ScanTransactionsSolana200ResponseSimulationResultsError
      */
@@ -38,6 +38,10 @@ export interface ScanTransactionsSolana200ResponseSimulationResultsError {
  * @export
  */
 export const ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum = {
+    SimulationFailed: 'SIMULATION_FAILED',
+    SimulationTimedOut: 'SIMULATION_TIMED_OUT',
+    TooManyTransactions: 'TOO_MANY_TRANSACTIONS',
+    BadRequest: 'BAD_REQUEST',
     AnAccountWithTheSameAddressAlreadyExists: 'AN_ACCOUNT_WITH_THE_SAME_ADDRESS_ALREADY_EXISTS',
     AccountDoesNotHaveEnoughSolToPerformTheOperation: 'ACCOUNT_DOES_NOT_HAVE_ENOUGH_SOL_TO_PERFORM_THE_OPERATION',
     CannotAssignAccountToThisProgramId: 'CANNOT_ASSIGN_ACCOUNT_TO_THIS_PROGRAM_ID',
@@ -97,7 +101,8 @@ export const ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum = {
     TransactionLeavesAnAccountWithALowerBalanceThanRentExemptMinimum: 'TRANSACTION_LEAVES_AN_ACCOUNT_WITH_A_LOWER_BALANCE_THAN_RENT-EXEMPT_MINIMUM',
     TransactionWouldExceedMaxVoteCostLimit: 'TRANSACTION_WOULD_EXCEED_MAX_VOTE_COST_LIMIT',
     TransactionWouldExceedTotalAccountDataLimit: 'TRANSACTION_WOULD_EXCEED_TOTAL_ACCOUNT_DATA_LIMIT',
-    TransactionContainsADuplicateInstruction0ThatIsNotAllowed: 'TRANSACTION_CONTAINS_A_DUPLICATE_INSTRUCTION_({0})_THAT_IS_NOT_ALLOWED'
+    TransactionContainsADuplicateInstruction0ThatIsNotAllowed: 'TRANSACTION_CONTAINS_A_DUPLICATE_INSTRUCTION_({0})_THAT_IS_NOT_ALLOWED',
+    UnknownError: 'UNKNOWN_ERROR'
 } as const;
 export type ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum = typeof ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum[keyof typeof ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum];
 
