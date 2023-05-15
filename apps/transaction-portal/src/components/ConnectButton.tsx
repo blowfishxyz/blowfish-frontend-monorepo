@@ -49,8 +49,6 @@ interface ConnectButton {
   ensName?: string;
 }
 
-// NOTE: The display component is separated from the connect logic
-// so that we can use it directly in the storybook
 export const ConnectButton: React.FC<ConnectButton> = ({
   show,
   address,

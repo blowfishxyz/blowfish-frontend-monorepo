@@ -11,6 +11,8 @@ export {
   SmallButtonPrimary,
   TertiaryButton,
 } from "./buttons/MainButtons";
+export { Spinner } from "./spinner";
+export { Button } from "./buttons";
 export { themes } from "./theme";
 export { opacify } from "./utils/opacify";
 export { device, size } from "./utils/breakpoints";

@@ -7,12 +7,13 @@ const Wrapper = styled(Column)`
   height: 100%;
   width: 100%;
   max-width: 1072px;
-  margin: 0 auto;
-  padding: 94px 24px 24px;
+  margin: 82px auto;
+  padding: 0 24px;
 `;
 
 const HeaderWrapper = styled.div`
   position: fixed;
+  z-index: 2;
   top: 0;
   left: 0;
   right: 0;
