@@ -6,10 +6,8 @@ import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import {
-  REGULAR_BOTTOM_MENU_HEIGHT,
-  SLIM_BOTTOM_MENU_HEIGHT,
-} from "./BottomMenus";
+const SLIM_BOTTOM_MENU_HEIGHT = 96;
+const REGULAR_BOTTOM_MENU_HEIGHT = 154;
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
