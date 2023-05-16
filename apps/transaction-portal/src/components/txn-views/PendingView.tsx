@@ -68,7 +68,7 @@ type InfoRowProps = {
 
 const InfoRow = ({ label, value }: InfoRowProps) => (
   <>
-    <Row justify="space-between">
+    <Row justifyContent="space-between">
       <Text design="secondary">{label}</Text>
       <CardText>{value}</CardText>
     </Row>

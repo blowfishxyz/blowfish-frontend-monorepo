@@ -16,7 +16,7 @@ const StartPage = () => {
 
   return (
     <Layout>
-      <Content justify="space-between" align="center">
+      <Content justifyContent="space-between" alignItems="center">
         <Column>
           <Text size="xxl" weight="semi-bold" marginBottom={10}>
             Secure your assets
@@ -77,14 +77,14 @@ const ConnectorButton: React.FC<{
   };
 
   return (
-    <Button key={connector.id} onClick={handleClick}>
+    <StyledButton key={connector.id} onClick={handleClick}>
       {status === "loading" ? (
         <Spinner />
       ) : (
         <Image src={logoPath} alt={`${label} logo`} width={22} height={22} />
       )}
       {text}
-    </Button>
+    </StyledButton>
   );
 };
 
@@ -110,19 +110,21 @@ const StepItem = styled(Text).attrs({ size: "lg" })`
   }
 `;
 
+const StyledButton = styled(Button)``;
+
 const ButtonsGrid = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
 
-  ${Button} {
+  ${StyledButton} {
     width: 100%;
   }
 
   @media (${device.md}) {
     flex-direction: row;
 
-    ${Button} {
+    ${StyledButton} {
       max-width: 218px;
       width: 100%;
     }

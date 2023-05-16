@@ -1,27 +1,15 @@
 import React from "react";
-import { DefaultTheme, styled } from "styled-components";
+import { styled } from "styled-components";
 import { StyledBaseDiv } from "./StyledBase";
+import { Flexbox, flexbox } from "./utils/flexbox";
 
-type Gap = keyof DefaultTheme["grids"];
-
-const RowComponent = React.forwardRef<
-  HTMLDivElement,
-  {
-    width?: string;
-    align?: string;
-    justify?: string;
-    padding?: string;
-    gap?: Gap;
-  } & React.HTMLAttributes<HTMLDivElement>
->(({ width, align, justify, padding, gap, ...props }, ref) => (
-  <StyledBaseDiv ref={ref} {...props} />
-));
-
-export const Row = styled(RowComponent)`
-  display: flex;
-  width: ${({ width }) => width ?? "100%"};
-  align-items: ${({ align }) => align ?? "center"};
-  justify-content: ${({ justify }) => justify ?? "flex-start"};
-  padding: ${({ padding }) => padding};
-  gap: ${({ gap, theme }) => gap && theme.grids[gap]};
+export const Row = styled(StyledBaseDiv)<
+  React.ComponentProps<typeof StyledBaseDiv> & Flexbox
+>`
+  min-width: 0;
+  ${flexbox}
 `;
+
+Row.defaultProps = {
+  flexDirection: "row",
+};

@@ -69,8 +69,11 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const isApproval = kind?.includes("APPROVAL");
 
   return (
-    <TxnSimulationWrapper justify="space-between" align="flex-start">
-      <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
+    <TxnSimulationWrapper
+      justifyContent="space-between"
+      alignItems="flex-start"
+    >
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
         <TxnSimulationImage>
           <TxnImage src={imageUrl} alt="NFT" />
           <ArrowIconWrapper $isReceived={!!isApproval}>

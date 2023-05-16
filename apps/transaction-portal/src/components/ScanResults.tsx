@@ -213,7 +213,7 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
         justifyContent: "unset",
       }}
     >
-      <Row justify="space-between">
+      <Row justifyContent="space-between">
         <AdvancedDetailsToggleButton
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >

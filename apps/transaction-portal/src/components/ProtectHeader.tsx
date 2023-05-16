@@ -20,7 +20,7 @@ const RightContentWrapper = styled(Row)`
 
 const ProtectHeader = () => {
   return (
-    <ProtectScreenContent justify="space-between">
+    <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull />
       <RightContentWrapper gap="md">
         <UserWalletConnectKitWrapper />

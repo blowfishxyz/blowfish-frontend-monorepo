@@ -94,7 +94,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
 }) => (
   <CardWrapper $removePaddingBottom>
     <CardContent>
-      <Row justify="space-between">
+      <Row justifyContent="space-between">
         <Title>Preview</Title>
         <Chip
           text={
@@ -108,7 +108,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     </CardContent>
     <Divider margin="16px 0" />
     <CardContent>
-      <Row justify="space-between">
+      <Row justifyContent="space-between">
         <SmallGrayText>Simulation</SmallGrayText>
         {simulationType === "transaction" && (
           <SmallGrayText>Value</SmallGrayText>
@@ -122,7 +122,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     <StyledCardContent>
       <StyledColumn>
         <SmallGrayText>Counterparty</SmallGrayText>
-        <Row gap="sm" align="center">
+        <Row gap="sm" alignItems="center">
           <CardText>
             <CardBlackTextLink href="">marketplace.blur.eth</CardBlackTextLink>
           </CardText>
