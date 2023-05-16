@@ -94,7 +94,7 @@ const Wrapper = styled.div<{
   display: flex;
   position: relative;
   background-color: ${({ $severity, theme }) =>
-    theme.contextBackgroundColors[$severity ?? "INFO"]};
+    theme.severityColors[$severity ?? "INFO"].background};
   padding: 48px 12px 12px 12px;
   min-height: 100vh;
   height: 100%;

@@ -80,7 +80,7 @@ const Header = styled(Row)`
   z-index: 1;
   padding: 20px 20px 8px;
   box-sizing: border-box;
-  background-color: ${({ theme }) => theme.contextBackgroundColors["INFO"]};
+  background-color: ${({ theme }) => theme.severityColors.INFO.background};
 `;
 
 const WalletHeroImage = styled.img<{ isScanPaused: boolean }>`

@@ -42,7 +42,7 @@ const ScanPageContainer = styled.div<{ severity?: Severity }>`
   height: 100%;
   min-height: 100vh;
   background-color: ${({ severity, theme }) =>
-    theme.contextBackgroundColors[severity ?? "INFO"]};
+    theme.severityColors[severity ?? "INFO"].background};
 `;
 
 const ScanPage: React.FC = () => {

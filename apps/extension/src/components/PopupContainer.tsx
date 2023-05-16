@@ -71,7 +71,7 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   display: flex;
   position: relative;
   background-color: ${({ severity, theme }) =>
-    theme.contextBackgroundColors[severity ?? "INFO"]};
+    theme.severityColors[severity ?? "INFO"].background};
   min-height: 100vh;
   height: 100%;
   width: 100%;
