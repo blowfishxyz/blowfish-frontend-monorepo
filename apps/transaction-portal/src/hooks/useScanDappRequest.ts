@@ -40,7 +40,11 @@ const fetcher = async (
   request: DappRequest,
   origin: string
 ): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
-  const client = new BlowfishApiClient(BLOWFISH_API_BASE_URL);
+  const client = new BlowfishApiClient(
+    BLOWFISH_API_BASE_URL,
+    chainFamily,
+    chainNetwork
+  );
 
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to

@@ -36,12 +36,15 @@ import {
     UnauthorizedFromJSON,
     UnauthorizedToJSON,
 } from '../models';
+import { ChainFamily, ChainNetwork } from '../../types';
 
 export interface ScanMessageEvmOperationRequest {
     xApiKey: string;
     xApiVersion: string;
     language?: Languages;
     contentType?: string;
+    chainFamily: ChainFamily
+    chainNetwork: ChainNetwork
     scanMessageEvmRequest?: ScanMessageEvmRequest;
 }
 
@@ -90,7 +93,7 @@ export class ScanMessageApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/ethereum/v0/mainnet/scan/message`,
+            path: `/${requestParameters.chainFamily}/v0/${requestParameters.chainNetwork}/scan/message`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,

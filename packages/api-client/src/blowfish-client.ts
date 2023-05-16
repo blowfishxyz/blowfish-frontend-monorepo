@@ -7,6 +7,7 @@ import type {
 } from "./client";
 import { ScanMessageApi, ScanTransactionApi } from "./client/apis";
 import { Configuration } from "./client/runtime";
+import { ChainFamily, ChainNetwork } from "./types";
 
 export class BlowfishApiClient {
   readonly config = new Configuration(this.getConfig());
@@ -32,6 +33,8 @@ export class BlowfishApiClient {
 
   constructor(
     readonly basePath: string,
+    readonly chainFamily: ChainFamily,
+    readonly chainNetwork: ChainNetwork,
     readonly apiVersion: string = "2023-03-08"
   ) {}
 
@@ -41,6 +44,8 @@ export class BlowfishApiClient {
     metadata: RequestMetadata
   ) => {
     return this.apis.messages.scanMessageEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
       scanMessageEvmRequest: {
         message: {
           kind: "SIGN_MESSAGE",
@@ -60,6 +65,8 @@ export class BlowfishApiClient {
     metadata: RequestMetadata
   ) => {
     return this.apis.messages.scanMessageEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
       scanMessageEvmRequest: {
         message: {
           kind: "SIGN_TYPED_DATA",
@@ -79,6 +86,8 @@ export class BlowfishApiClient {
     metadata: RequestMetadata
   ) => {
     return this.apis.transactions.scanTransactionEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
       scanTransactionEvmRequest: {
         txObject,
         userAccount,

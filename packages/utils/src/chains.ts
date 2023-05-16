@@ -1,5 +1,6 @@
-export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bnb";
-export type ChainNetwork = "mainnet" | "goerli" | "one";
+import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
+
+export type { ChainFamily, ChainNetwork }
 
 export interface ChainInfo {
   chainFamily: ChainFamily;
