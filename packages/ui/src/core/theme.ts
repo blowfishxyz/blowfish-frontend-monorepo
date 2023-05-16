@@ -43,12 +43,20 @@ const severityColors: {
   },
 };
 
+const base = {
+  base10: "rgba(0, 0, 0, 0.1)",
+  base30: "rgba(0, 0, 0, 0.3)",
+  base50: "rgba(0, 0, 0, 0.5)",
+  base100: "rgb(0, 0, 0)",
+};
+
 const lightTheme = {
   colors: {
-    border: "rgba(0, 0, 0, 0.5)",
+    ...base,
+    border: base.base50,
     backgroundPrimary: "#FFFFFF",
     foregroundPrimary: "#000000",
-    foregroundSecondary: "rgba(0, 0, 0, 0.5)",
+    foregroundSecondary: base.base50,
     foregroundDanger: "#FF6332",
     danger: "#FF3D00",
     warning: "#FFB800",

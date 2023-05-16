@@ -17,7 +17,7 @@ interface AssetImageProps {
 const PlaceholderSimulationImage = styled.div`
   width: 38px;
   height: 38px;
-  background: #f2f2f2;
+  background: ${({ theme }) => theme.colors.base10};
   display: flex;
   justify-content: center;
   align-items: center;
