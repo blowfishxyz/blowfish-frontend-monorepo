@@ -1,23 +1,22 @@
-import {
-  EvmAsset,
-  EvmExpectedStateChange,
-  EvmNativeAsset,
-} from "@blowfish/api-client";
-import { BlockExplorerLink, Text } from "@blowfish/ui/core";
-import { VerifiedIcon } from "@blowfish/ui/icons";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import React, { memo } from "react";
-import styled from "styled-components";
-
+import { VerifiedIcon } from "@blowfish/ui/icons";
+import { BlockExplorerLink, Text } from "@blowfish/ui/core";
 import {
   Tooltip,
-  TooltipContent,
   TooltipTrigger,
+  TooltipContent,
 } from "~components/common/Tooltip";
+import {
+  EvmStateChange,
+  ChainFamily,
+  ChainNetwork,
+  AssetData,
+} from "@blowfish/utils/BlowfishApiClient";
+import styled from "styled-components";
 
 export const VerifiedTokenTooltip: React.FC<
   React.PropsWithChildren<{
-    stateChange: EvmExpectedStateChange;
+    stateChange: EvmStateChange;
     chainFamily: ChainFamily;
     chainNetwork: ChainNetwork;
   }>
@@ -49,11 +48,9 @@ export const VerifiedTokenTooltip: React.FC<
   );
 };
 
-const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
+const TooltipText: React.FC<{ asset: AssetData }> = memo(
   function TooltipTextInner({ asset }) {
-    const { symbol, verified } = asset;
-
-    const lists = "lists" in asset ? asset.lists : [];
+    const { symbol, verified, lists = [] } = asset;
 
     if (!verified) {
       return (
@@ -93,10 +90,7 @@ const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
   }
 );
 
-function getErc20Asset(
-  stateChange: EvmExpectedStateChange
-): EvmAsset | EvmNativeAsset | undefined {
-  const rawInfo = stateChange.rawInfo;
+function getErc20Asset(rawInfo: EvmStateChange): AssetData | undefined {
   if (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_PERMIT" ||

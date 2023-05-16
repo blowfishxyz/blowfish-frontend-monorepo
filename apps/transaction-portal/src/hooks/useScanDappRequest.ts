@@ -1,19 +1,20 @@
-import { BlowfishApiClient } from "@blowfish/api-client";
-import type {
-  EvmMessageScanResult,
-  EvmSignTypedDataDataDomain,
-  EvmTransactionScanResult,
-} from "@blowfish/api-client";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
-import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
+import useSWR, { SWRResponse } from "swr";
+
 import {
   DappRequest,
-  SignTypedDataVersion,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
+  SignTypedDataVersion,
 } from "@blowfish/utils/types";
-import useSWR, { SWRResponse } from "swr";
+import {
+  BlowfishApiClient,
+  ChainFamily,
+  ChainNetwork,
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
+} from "@blowfish/utils/BlowfishApiClient";
+import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import { isSmartContractWallet } from "../utils/wallets";
 
 export const BLOWFISH_API_BASE_URL = process.env
@@ -40,7 +41,12 @@ const fetcher = async (
   request: DappRequest,
   origin: string
 ): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
-  const client = new BlowfishApiClient(BLOWFISH_API_BASE_URL);
+  const client = new BlowfishApiClient(
+    chainFamily,
+    chainNetwork,
+    undefined,
+    BLOWFISH_API_BASE_URL
+  );
 
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to
@@ -49,7 +55,7 @@ const fetcher = async (
     const userAccount = isSmartContractWallet(origin)
       ? request.payload.to
       : request.userAccount;
-    return client.scanTransactionEvm(request.payload, userAccount, {
+    return client.scanTransaction(request.payload, userAccount, {
       origin,
     });
   } else if (isSignTypedDataRequest(request)) {
@@ -59,17 +65,15 @@ const fetcher = async (
         : request.payload;
 
     // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
-    const domain = {
-      ...payload.domain,
-      ...(payload.domain.chainId && {
-        chainId: payload.domain.chainId.toString(),
-      }),
-    } as EvmSignTypedDataDataDomain;
-
     return client.scanSignTypedData(
       {
         ...payload,
-        domain,
+        domain: {
+          ...payload.domain,
+          ...(payload.domain.chainId && {
+            chainId: payload.domain.chainId.toString(),
+          }),
+        },
       },
       request.userAccount,
       {
@@ -77,9 +81,11 @@ const fetcher = async (
       }
     );
   } else if (isSignMessageRequest(request)) {
-    return client.scanMessageEvm(request.payload.message, request.userAccount, {
-      origin,
-    });
+    return client.scanSignMessage(
+      request.payload.message,
+      request.userAccount,
+      { origin }
+    );
   }
   throw new Error(`Unsupported request: ${(request as DappRequest).type}`);
 };

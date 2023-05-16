@@ -34,6 +34,4 @@ app.use("*", (req: Request, res: Response) => {
   res.send(404);
 });
 
-app.listen(port, () => {
-  console.log(`Listening on the port ${port}`);
-});
+app.listen(port);

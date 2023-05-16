@@ -9,6 +9,7 @@ export default defineConfig((options) => ({
   minify: !options.watch,
   entry: {
     types: "./src/types.ts",
+    BlowfishApiClient: "./src/BlowfishApiClient/index.ts",
     chains: "./src/chains.ts",
     messages: "./src/messages.ts",
     hex: "./src/hex.ts",
