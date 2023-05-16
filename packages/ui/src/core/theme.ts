@@ -1,19 +1,4 @@
 import type { Severity } from "@blowfish/utils/types";
-import { lighten } from "polished";
-import { opacify } from "./utils/opacify";
-
-const palette = {
-  warningBackground: "#FFFCF2",
-  blockBackground: "#FFFAFA",
-  border: "#D9D9D9",
-  warningText: "#FF6332",
-  white: "#FFF",
-  black: "#000",
-  gray: "#00000080",
-  red: "#FF3D00",
-  yellow: "#FFB800",
-  green: "#00BF36",
-};
 
 // Based on webflow's breakpoints
 const breakpoints = {
@@ -33,26 +18,6 @@ const generateMediaQueries = (points: BreakPointType) => ({
   hover: "(hover: hover)",
 });
 
-// Based on Bootstrap z-indexes
-const zIndices = {
-  sticky: 1020,
-  fixed: 1030,
-  overlay: 1040,
-  modal: 1050,
-  popover: 1060,
-  tooltip: 1070,
-};
-
-const fontWeights = {
-  h1: 500,
-  normal: 400,
-  semiBold: 500,
-};
-
-const opacities = {
-  secondaryText: 0.5,
-};
-
 const grids = {
   xs: "4px",
   sm: "8px",
@@ -61,26 +26,37 @@ const grids = {
   xl: "32px",
 };
 
-const contextBackgroundColors: { [key in Severity]: string } = {
-  CRITICAL: "#FFC1AD",
-  WARNING: "#FFD567",
-  INFO: "#EFF2F0",
+const severityColors: {
+  [key in Severity]: { [k in "background" | "backgroundLight"]: string };
+} = {
+  CRITICAL: {
+    background: "#FFC1AD",
+    backgroundLight: "#FFFAFA",
+  },
+  WARNING: {
+    background: "#FFD567",
+    backgroundLight: "#FFFCF2",
+  },
+  INFO: {
+    background: "#EFF2F0",
+    backgroundLight: "#FFFFFF",
+  },
 };
 
 const lightTheme = {
-  zIndices,
-  fontWeights,
-  breakpoints,
-  grids,
-  palette: {
-    ...palette,
-    lightGreen: opacify(24, palette.green),
-  },
-  contextBackgroundColors,
   colors: {
-    primaryText: palette.black,
-    secondaryText: lighten(opacities.secondaryText, palette.black),
+    border: "rgba(0, 0, 0, 0.5)",
+    backgroundPrimary: "#FFFFFF",
+    foregroundPrimary: "#000000",
+    foregroundSecondary: "rgba(0, 0, 0, 0.5)",
+    foregroundDanger: "#FF6332",
+    danger: "#FF3D00",
+    warning: "#FFB800",
+    success: "rgb(0, 191, 54)",
+    successLight: "rgba(0, 191, 54, 0.24)",
   },
+  severityColors,
+  grids,
   mediaQueries: generateMediaQueries(breakpoints),
 };
 

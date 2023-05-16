@@ -28,7 +28,7 @@ const PlaceholderSimulationImage = styled.div`
     width: 24px;
 
     path {
-      fill: ${({ theme }) => theme.palette.border};
+      fill: ${({ theme }) => theme.colors.border};
     }
   }
 `;
@@ -72,7 +72,7 @@ const SimulationIconWrapper = styled.div<{
         `;
       }
       return css`
-        fill: ${theme.palette.red};
+        fill: ${theme.colors.danger};
         transform: rotate(-45deg);
         transform-origin: center;
       `;

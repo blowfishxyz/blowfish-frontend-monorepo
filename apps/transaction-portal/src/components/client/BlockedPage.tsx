@@ -65,11 +65,11 @@ const MainIcon = styled(BlowfishWarningIcon)`
 `;
 
 const Heading = styled(Text).attrs({ size: "xxl" })`
-  color: ${({ theme }) => theme.palette.white};
+  color: ${({ theme }) => theme.colors.backgroundPrimary};
 `;
 
 const Description = styled(Text)`
-  color: ${({ theme }) => theme.palette.white};
+  color: ${({ theme }) => theme.colors.backgroundPrimary};
   opacity: 0.56;
   margin-top: 12px;
   text-align: center;

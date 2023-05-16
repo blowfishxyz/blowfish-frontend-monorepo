@@ -8,7 +8,7 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import { Column, PrimaryButton, Row, Text, opacify } from "@blowfish/ui/core";
+import { Column, PrimaryButton, Row, Text } from "@blowfish/ui/core";
 import {
   BlowfishIcon,
   CloseIcon,
@@ -153,11 +153,11 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
     ${({ paused, theme }) => {
       if (paused) {
         return css`
-          background-color: ${theme.palette.red};
+          background-color: ${theme.colors.danger};
         `;
       } else {
         return css`
-          background-color: ${opacify(80, theme.palette.green)};
+          background-color: ${theme.colors.successLight};
           animation: ${blink} 2s ease-in-out infinite;
         `;
       }
@@ -165,7 +165,7 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
   }
 
   color: ${({ paused, theme }) =>
-    paused ? `${theme.palette.red}` : `${opacify(80, theme.palette.green)}`};
+    paused ? `${theme.colors.danger}` : `${theme.colors.successLight}`};
 `;
 
 const InfoContainer = styled.div`

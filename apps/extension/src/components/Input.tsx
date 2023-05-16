@@ -5,9 +5,9 @@ export const Input = styled.input<{ error?: boolean; fontSize?: string }>`
   outline: none;
   flex: 1 1 auto;
   background-color: white;
-  color: ${({ theme }) => theme.palette.black};
+  color: ${({ theme }) => theme.colors.foregroundPrimary};
   border: 1px solid
-    ${({ theme, error }) => (error ? theme.palette.red : theme.palette.border)};
+    ${({ theme, error }) => (error ? theme.colors.danger : theme.colors.border)};
   border-radius: 8px;
   overflow: hidden;
   text-overflow: ellipsis;

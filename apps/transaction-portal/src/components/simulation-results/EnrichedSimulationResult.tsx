@@ -78,6 +78,6 @@ const StateChangeText = styled(Text).attrs({ weight: "semi-bold" })<{
   isPositiveEffect?: boolean;
 }>`
   color: ${({ isPositiveEffect, theme }) =>
-    isPositiveEffect ? theme.palette.green : theme.palette.red};
+    isPositiveEffect ? theme.colors.success : theme.colors.danger};
   line-height: 16px;
 `;

@@ -61,7 +61,7 @@ const DynamicJsonViewer = dynamic(
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.theme.palette.white};
+  background-color: ${(props) => props.theme.colors.backgroundPrimary};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
@@ -162,7 +162,7 @@ const TitleText = styled(Text)`
 
 const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   color: ${({ isPositiveEffect, theme }) =>
-    isPositiveEffect ? theme.palette.green : theme.palette.red};
+    isPositiveEffect ? theme.colors.success : theme.colors.danger};
   line-height: 16px;
 `;
 

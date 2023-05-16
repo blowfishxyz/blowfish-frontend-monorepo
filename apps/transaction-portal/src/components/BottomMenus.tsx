@@ -22,7 +22,7 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   right: 0;
   bottom: 22px;
   background: ${({ theme, $slim }) =>
-    $slim ? "transparent" : theme.palette.white};
+    $slim ? "transparent" : theme.colors.backgroundPrimary};
   display: flex;
   align-items: center;
   ${({ $slim }) =>

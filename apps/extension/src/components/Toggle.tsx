@@ -5,9 +5,9 @@ const Wrapper = styled.button<{ isActive?: boolean }>`
   align-items: center;
   border-radius: 20px;
   background: ${({ isActive, theme }) =>
-    isActive ? theme.palette.lightGreen : "transparent"};
+    isActive ? theme.colors.successLight : "transparent"};
   border: ${({ isActive, theme }) =>
-    isActive ? "none" : `1px solid ${theme.palette.gray}`};
+    isActive ? "none" : `1px solid ${theme.colors.border}`};
   cursor: pointer;
   display: flex;
   outline: none;
@@ -46,10 +46,10 @@ const ToggleElement = styled.span<{
       isInitialToggleLoad ? "none" : isActive ? turnOnToggle : turnOffToggle}
     ease-in;
   background: ${({ theme, isActive }) =>
-    isActive ? `${theme.palette.green}` : `${theme.palette.gray}`};
+    isActive ? `${theme.colors.success}` : `${theme.colors.border}`};
   :hover {
     ${({ theme, isActive }) =>
-      isActive ? "none" : `1px solid ${theme.palette.gray}`};
+      isActive ? "none" : `1px solid ${theme.colors.border}`};
   }
 
   border-radius: 50%;

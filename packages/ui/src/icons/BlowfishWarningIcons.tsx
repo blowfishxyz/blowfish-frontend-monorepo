@@ -20,7 +20,7 @@ const BlowfishWarningIcon: React.FC<BlowfishWarningIconProps> = ({
   let color;
 
   if (theme) {
-    color = severity === "WARNING" ? theme.palette.yellow : theme.palette.red;
+    color = severity === "WARNING" ? theme.colors.warning : theme.colors.danger;
   }
 
   if (forcedColor) {
