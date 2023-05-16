@@ -1,11 +1,10 @@
-import type { EvmExpectedStateChange } from "@blowfish/api-client";
-import { DappRequest, Message } from "@blowfish/utils/types";
-
 import {
   CHROMIMUM_INSTALL_EXTENSION_URL,
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
 import { logger } from "~utils/logger";
+import { DappRequest, Message } from "@blowfish/utils/types";
+import { EvmStateChange } from "@blowfish/utils/BlowfishApiClient";
 
 // NOTE: the require statement below is to ensure we are using the punycode userland modules and not the deprecated core modules.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -141,9 +140,7 @@ const EVM_STATE_CHANGE_KIND_WITH_IMAGE = [
   "NATIVE_ASSET_TRANSFER",
 ];
 
-export const evmStateChangeHasImage = (
-  kind: EvmExpectedStateChange["rawInfo"]["kind"]
-) => {
+export const evmStateChangeHasImage = (kind: EvmStateChange["kind"]) => {
   return EVM_STATE_CHANGE_KIND_WITH_IMAGE.includes(kind);
 };
 

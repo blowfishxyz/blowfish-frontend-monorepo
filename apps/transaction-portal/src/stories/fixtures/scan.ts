@@ -1,7 +1,7 @@
-import {
+import type {
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfish/api-client";
+} from "@blowfish/utils/BlowfishApiClient";
 import {
   RequestType,
   SignMessageRequest,
@@ -13,8 +13,10 @@ import {
 import {
   approveAllErc721,
   permitErc20NoExpiration,
+  receiveErc20,
   receiveErc721,
   sendErc20,
+  sendErc721,
 } from "./state-changes";
 
 export const exampleTransactionRequest: TransactionRequest = {
@@ -26,7 +28,7 @@ export const exampleTransactionRequest: TransactionRequest = {
     from: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     to: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     data: "0xa9059cbb00000000000000000000000013890a1dbfee3b7debc2b2dfeb9fef2fbf81bd50000000000000000000000000000000000000000000000000000000174876e800",
-    value: undefined,
+    value: null,
   },
 };
 
@@ -189,9 +191,6 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
   action: "NONE",
   simulationResults: {
     error: null,
-    gas: {
-      gasLimit: null,
-    },
     expectedStateChanges: [receiveErc721, sendErc20],
   },
   warnings: [],
@@ -201,9 +200,6 @@ export const transactionWarningScanResult: EvmTransactionScanResult = {
   action: "WARN",
   simulationResults: {
     error: null,
-    gas: {
-      gasLimit: null,
-    },
     expectedStateChanges: [approveAllErc721],
   },
   warnings: [
@@ -219,9 +215,6 @@ export const transactionBlockScanResult: EvmTransactionScanResult = {
   action: "BLOCK",
   simulationResults: {
     error: null,
-    gas: {
-      gasLimit: null,
-    },
     expectedStateChanges: [approveAllErc721],
   },
   warnings: [
@@ -238,7 +231,7 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
   action: "NONE",
   simulationResults: {
     error: null,
-    expectedStateChanges: [],
+    expectedStateChanges: [receiveErc20, sendErc721],
   },
   warnings: [],
 };

@@ -1,14 +1,16 @@
-import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
-import Image from "next/image";
+import {
+  ChainFamily,
+  ChainNetwork,
+  EvmStateChange,
+} from "@blowfish/utils/BlowfishApiClient";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
-
+import Image from "next/image";
 import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
 
 interface AssetImageProps {
-  stateChange: EvmExpectedStateChange;
+  stateChange: EvmStateChange;
   isPositiveEffect: boolean;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
@@ -86,31 +88,30 @@ const AssetImage = ({
   chainFamily,
   chainNetwork,
 }: AssetImageProps) => {
-  const rawInfo = stateChange.rawInfo;
   let altText = "Asset";
   let imageSrc;
   let showPlaceholderImage = false;
 
   if (
-    rawInfo.kind === "ERC721_TRANSFER" ||
-    rawInfo.kind === "ERC721_APPROVAL" ||
-    rawInfo.kind === "ERC1155_TRANSFER"
+    stateChange.kind === "ERC721_TRANSFER" ||
+    stateChange.kind === "ERC721_APPROVAL" ||
+    stateChange.kind === "ERC1155_TRANSFER"
   ) {
-    imageSrc = rawInfo.data?.metadata?.rawImageUrl;
+    imageSrc = stateChange.data?.metadata?.rawImageUrl;
     showPlaceholderImage = !imageSrc;
     altText =
-      rawInfo.kind !== "ERC1155_TRANSFER"
-        ? rawInfo.data.name
-        : `${altText} ${rawInfo.data.tokenId}`;
+      stateChange.kind !== "ERC1155_TRANSFER"
+        ? stateChange.data.name
+        : `${altText} ${stateChange.data.tokenId}`;
   } else if (
-    rawInfo.kind === "ERC20_TRANSFER" ||
-    rawInfo.kind === "ERC20_APPROVAL" ||
-    rawInfo.kind === "ERC20_PERMIT" ||
-    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
+    stateChange.kind === "ERC20_TRANSFER" ||
+    stateChange.kind === "ERC20_APPROVAL" ||
+    stateChange.kind === "ERC20_PERMIT" ||
+    stateChange.kind === "NATIVE_ASSET_TRANSFER"
   ) {
-    imageSrc = rawInfo.data.asset?.imageUrl;
+    imageSrc = stateChange.data.asset?.imageUrl;
     showPlaceholderImage = !imageSrc;
-    altText = rawInfo.data.asset.name;
+    altText = stateChange.data.name;
   }
 
   const [hasPlaceholder, setHasPlaceholder] = useState(showPlaceholderImage);
