@@ -1,9 +1,6 @@
 import { TextSmall } from "@blowfish/ui/core";
 import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";

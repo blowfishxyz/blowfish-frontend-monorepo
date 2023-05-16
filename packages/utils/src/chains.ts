@@ -1,4 +1,5 @@
-import type { ChainFamily, ChainNetwork } from "./BlowfishApiClient";
+export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bnb";
+export type ChainNetwork = "mainnet" | "goerli" | "one";
 
 export interface ChainInfo {
   chainFamily: ChainFamily;

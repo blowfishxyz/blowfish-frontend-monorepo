@@ -1,6 +1,14 @@
-import { EvmExpectedStateChange } from "@blowfish/utils/BlowfishApiClient";
+import {
+  EvmMessageExpectedStateChange,
+  EvmStateChangeErc20Permit,
+  EvmStateChangeErc20Transfer,
+  EvmStateChangeErc721ApprovalForAll,
+  EvmStateChangeErc721Transfer,
+  EvmStateChangeNativeAssetTransfer,
+  EvmTransactionExpectedStateChange,
+} from "@blowfish/api-client";
 
-export const sendErc721: EvmExpectedStateChange = {
+export const sendErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Send BoredApeYachtClub #1726",
   rawInfo: {
     data: {
@@ -21,15 +29,15 @@ export const sendErc721: EvmExpectedStateChange = {
       tokenId: "1726",
       assetPrice: {
         source: "Coingecko",
-        last_updated_at: 1680006487,
-        dollar_value_per_token: 4886.162862975,
+        updatedAt: 1681958792,
+        dollarValuePerToken: 1945.92,
       },
     },
     kind: "ERC721_TRANSFER",
-  },
+  } as EvmStateChangeErc721Transfer,
 };
 
-export const receiveErc721: EvmExpectedStateChange = {
+export const receiveErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Receive PudgyPenguins #7238",
   rawInfo: {
     data: {
@@ -50,15 +58,15 @@ export const receiveErc721: EvmExpectedStateChange = {
       tokenId: "7238",
       assetPrice: {
         source: "Coingecko",
-        last_updated_at: 1680006487,
-        dollar_value_per_token: 4886.162862975,
+        updatedAt: 1681958792,
+        dollarValuePerToken: 1945.92,
       },
     },
     kind: "ERC721_TRANSFER",
-  },
+  } as EvmStateChangeErc721Transfer,
 };
 
-export const sendErc20: EvmExpectedStateChange = {
+export const sendErc20: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Send 3.181 ETH",
   rawInfo: {
     data: {
@@ -70,30 +78,26 @@ export const sendErc20: EvmExpectedStateChange = {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         kind: "ACCOUNT",
       },
-      decimals: 18,
-      name: "Ether",
-      symbol: "ETH",
       asset: {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         symbol: "ETH",
         name: "Ether",
         decimals: 18,
         verified: true,
-        lists: ["ONE_INCH", "UNISWAP"],
         imageUrl:
           "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
         price: {
           source: "Coingecko",
-          last_updated_at: 1670252058,
-          dollar_value_per_token: 1288.41,
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
         },
       },
     },
     kind: "NATIVE_ASSET_TRANSFER",
-  },
+  } as EvmStateChangeNativeAssetTransfer,
 };
 
-export const receiveErc20: EvmExpectedStateChange = {
+export const receiveErc20: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Receive 94.05 ETH",
   rawInfo: {
     data: {
@@ -105,30 +109,26 @@ export const receiveErc20: EvmExpectedStateChange = {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         kind: "ACCOUNT",
       },
-      decimals: 18,
-      name: "Ether",
-      symbol: "ETH",
       asset: {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
         symbol: "ETH",
         name: "Ether",
         decimals: 18,
         verified: true,
-        lists: [],
         imageUrl:
           "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
         price: {
           source: "Coingecko",
-          last_updated_at: 1670252058,
-          dollar_value_per_token: 1288.41,
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
         },
       },
     },
     kind: "NATIVE_ASSET_TRANSFER",
-  },
+  } as EvmStateChangeNativeAssetTransfer,
 };
 
-export const approveAllErc721: EvmExpectedStateChange = {
+export const approveAllErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
   rawInfo: {
     data: {
@@ -154,10 +154,10 @@ export const approveAllErc721: EvmExpectedStateChange = {
       assetPrice: null,
     },
     kind: "ERC721_APPROVAL_FOR_ALL",
-  },
+  } as EvmStateChangeErc721ApprovalForAll,
 };
 
-export const permitErc20NoExpiration: EvmExpectedStateChange = {
+export const permitErc20NoExpiration: EvmMessageExpectedStateChange = {
   humanReadableDiff:
     "Permit to transfer any amount of your USDC anytime in the future",
   rawInfo: {
@@ -167,9 +167,6 @@ export const permitErc20NoExpiration: EvmExpectedStateChange = {
         kind: "ACCOUNT",
         address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
       },
-      name: "USDCoin",
-      symbol: "USDC",
-      decimals: 6,
       owner: {
         kind: "ACCOUNT",
         address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
@@ -199,22 +196,19 @@ export const permitErc20NoExpiration: EvmExpectedStateChange = {
           "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
         price: {
           source: "Defillama",
-          last_updated_at: 1680508934,
-          dollar_value_per_token: 1.001,
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
         },
       },
     },
-  },
+  } as EvmStateChangeErc20Permit,
 };
 
-export const erc20UnverifedTransfer: EvmExpectedStateChange = {
+export const erc20UnverifedTransfer: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Receive 12 SQUID",
   rawInfo: {
     kind: "ERC20_TRANSFER",
     data: {
-      symbol: "SQUID",
-      name: "Squid DAO Governance Token",
-      decimals: 6,
       amount: {
         before: "0",
         after: "12000000",
@@ -233,7 +227,6 @@ export const erc20UnverifedTransfer: EvmExpectedStateChange = {
         imageUrl: "",
         price: null,
       },
-      assetPrice: null,
     },
-  },
+  } as EvmStateChangeErc20Transfer,
 };
