@@ -1,24 +1,22 @@
-import React from "react";
-import styled, { css } from "styled-components";
-
-import type { Severity } from "@blowfish/utils/types";
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
-import {
-  REGULAR_BOTTOM_MENU_HEIGHT,
-  SLIM_BOTTOM_MENU_HEIGHT,
-} from "./BottomMenus";
+import { TextSmall } from "@blowfish/ui/core";
 import {
   ArbitrumIcon,
   BnbChainIcon,
   EthereumIcon,
   PolygonIcon,
 } from "@blowfish/ui/icons";
-import { CustomConnectkitButton } from "./CustomConnectkitButton";
-import { TextSmall } from "@blowfish/ui/core";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+import type { Severity } from "@blowfish/utils/types";
+import React from "react";
+import styled, { css } from "styled-components";
+
 import { shortenHex } from "~utils/hex";
+
+import {
+  REGULAR_BOTTOM_MENU_HEIGHT,
+  SLIM_BOTTOM_MENU_HEIGHT,
+} from "./BottomMenus";
+import { CustomConnectkitButton } from "./CustomConnectkitButton";
 import { MaskIcon } from "./icons/MaskIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;

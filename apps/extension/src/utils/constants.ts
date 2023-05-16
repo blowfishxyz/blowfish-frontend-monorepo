@@ -1,7 +1,4 @@
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 
 interface ChainInfo {
   chainFamily: ChainFamily;

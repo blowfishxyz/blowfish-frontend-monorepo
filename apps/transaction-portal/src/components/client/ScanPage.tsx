@@ -1,12 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useModal } from "connectkit";
-import styled from "styled-components";
-import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
+import { logger } from "@blowfish/utils/logger";
+import {
+  Severity,
+  SignTypedDataVersion,
+  actionToSeverity,
+  isSignMessageRequest,
+  isSignTypedDataRequest,
+  isTransactionRequest,
+} from "@blowfish/utils/types";
 import {
   prepareSendTransaction,
   sendTransaction,
   signTypedData,
 } from "@wagmi/core";
+import { useModal } from "connectkit";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import styled from "styled-components";
+import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
+
+import { useGetRequestParams } from "~hooks/useGetRequestParams";
+import { useScanDappRequest } from "~hooks/useScanDappRequest";
+import { sendAbort, sendResult } from "~utils/messages";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../BottomMenus";
 import {
@@ -23,18 +36,6 @@ import {
 import { LoadingScreen } from "../LoadingScreen";
 import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
-import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { sendAbort, sendResult } from "~utils/messages";
-import { logger } from "@blowfish/utils/logger";
-import {
-  actionToSeverity,
-  isSignMessageRequest,
-  isSignTypedDataRequest,
-  isTransactionRequest,
-  Severity,
-  SignTypedDataVersion,
-} from "@blowfish/utils/types";
-import { useGetRequestParams } from "~hooks/useGetRequestParams";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -360,7 +361,11 @@ const ScanPage: React.FC = () => {
             <SimulationErrorScreen
               headline="Transaction Reverted"
               message="The transaction reverted when we simulated it. Approving may lead to loss of funds"
-              errorMessage={simulationError.parsedErrorMessage}
+              // HACK(Alex): Remove after API version update
+              errorMessage={
+                simulationError.humanReadableError ||
+                (simulationError as any).parsedErrorMessage
+              }
             />
             <SlimBottomMenu onClick={onContinue} buttonLabel="Continue" />
           </>

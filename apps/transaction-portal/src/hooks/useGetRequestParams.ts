@@ -1,4 +1,4 @@
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import {
   DappRequest,
