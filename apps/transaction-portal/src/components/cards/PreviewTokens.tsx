@@ -93,22 +93,15 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <VerifiedIcon />
         </Row>
         {isNft ? (
-          <SmallGrayText>{symbol}</SmallGrayText>
-        ) : (
           <PreviewTokenMoreInfo>
             #2831 <SmallGrayText>of 10,000</SmallGrayText>
           </PreviewTokenMoreInfo>
+        ) : (
+          <SmallGrayText>{symbol}</SmallGrayText>
         )}
       </PreviewTokenNameWrapper>
       <Divider margin="13px 0" />
       {isNft ? (
-        <div>
-          <DataRowComponent label="Price" value="$1.00" />
-          <DataRowComponent label="Market Cap." value="$38.4bn" />
-          <DataRowComponent label="Trading Volume" value="$221.2m" />
-          <DataRowComponent label="Token Lists" value="3" />
-        </div>
-      ) : (
         <div>
           <DataRowComponent label="Value (est.)" value="93.33 ETH" />
           <DataRowComponent
@@ -123,11 +116,18 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <DataRowComponent label="Floor Price" value="28.99 ETH" />
           <DataRowComponent label="Owners" value="1,899" />
         </div>
+      ) : (
+        <div>
+          <DataRowComponent label="Price" value="$1.00" />
+          <DataRowComponent label="Market Cap." value="$38.4bn" />
+          <DataRowComponent label="Trading Volume" value="$221.2m" />
+          <DataRowComponent label="Token Lists" value="3" />
+        </div>
       )}
       <SmallButtonPrimary>
         <PreviewTokenSiteName>
           <GrayText>View on </GrayText>
-          {isNft ? "Etherscan" : "Blur"}
+          {isNft ? "Blur" : "Etherscan"}
         </PreviewTokenSiteName>
       </SmallButtonPrimary>
     </PreviewTokenContainer>

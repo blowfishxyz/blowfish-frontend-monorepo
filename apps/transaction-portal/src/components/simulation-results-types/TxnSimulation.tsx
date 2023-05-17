@@ -66,30 +66,45 @@ interface TxnSimulationProps {
 }
 
 const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
-  const { kind, data } = txnData.rawInfo;
+  const { rawInfo } = txnData;
+  const { kind, data } = rawInfo;
   const { metadata, name, tokenId, asset } = data || {};
-
   const { rawImageUrl } = metadata || {};
   const { imageUrl, symbol } = asset || {};
 
+  let isNft: boolean;
   const isApproval = kind?.includes("APPROVAL");
-  const isERC721 = kind.includes("ERC721");
-  const isNft = kind.includes("ERC20");
-  const displayText = isNft ? `$${name} (${symbol})` : `${name} #${tokenId}`;
+  let imageSrc: string | undefined;
+  let displayText: string;
 
-  const imageSrc: string | undefined = isERC721 ? rawImageUrl : imageUrl;
+  if (
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC721_TRANSFER"
+  ) {
+    imageSrc = rawImageUrl;
+    isNft = true;
+    displayText = `${name} #${tokenId}`;
+  } else if (
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "ERC20_PERMIT" ||
+    rawInfo.kind === "ERC20_TRANSFER"
+  ) {
+    imageSrc = imageUrl;
+    isNft = false;
+    displayText = `${name} (${symbol})`;
+  }
 
   const TxnSimulationMessage = () => {
     const element = (hovered: boolean) => (
       <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
         <TxnSimulationImage>
-          <TxnImage src={imageSrc} alt={isERC721 ? "NFT" : "Token"} />
+          <TxnImage src={imageSrc} alt={isNft ? "NFT" : "Token"} />
           {hovered && (
             <PreviewTokens
               imageUrl={imageSrc}
               symbol={asset?.symbol}
               isNft={isNft}
-              name={isNft ? asset?.name : name}
+              name={isNft ? name : asset?.name}
             />
           )}
           <ArrowIconWrapper $isReceived={!!isApproval}>
