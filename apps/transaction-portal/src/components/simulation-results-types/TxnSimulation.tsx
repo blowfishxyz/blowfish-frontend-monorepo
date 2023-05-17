@@ -77,7 +77,7 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const isNft = kind.includes("ERC20");
   const displayText = isNft ? `$${name} (${symbol})` : `${name} #${tokenId}`;
 
-  const imageSrc: string | undefined = isERC721 ? rawImageUrl : imageUrl;
+  const imageSrc: string | undefined | null = isERC721 ? rawImageUrl : imageUrl;
 
   const TxnSimulationMessage = () => {
     const element = (hovered: boolean) => (
