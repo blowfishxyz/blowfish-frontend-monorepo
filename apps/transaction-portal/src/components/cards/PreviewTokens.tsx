@@ -69,14 +69,14 @@ const DataRowComponent: React.FC<DataRowProps> = ({ label, value }) => (
 interface PreviewTokensProps {
   imageUrl: string | undefined;
   name: string | undefined;
-  isERC20: boolean;
-  symbol: string | undefined;
+  isNft: boolean;
+  symbol?: string | undefined;
 }
 
 const PreviewTokens: React.FC<PreviewTokensProps> = ({
   imageUrl,
   name,
-  isERC20,
+  isNft,
   symbol,
 }) => {
   return (
@@ -84,15 +84,15 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
       <TxnImage
         src={imageUrl}
         alt="Preview Token"
-        $width={isERC20 ? "48px" : "120px"}
-        $height={isERC20 ? "48px" : "120px"}
+        $width={isNft ? "48px" : "120px"}
+        $height={isNft ? "48px" : "120px"}
       />
       <PreviewTokenNameWrapper>
         <Row align="flex-start">
           <PreviewTokenName semiBold>{name}</PreviewTokenName>
           <VerifiedIcon />
         </Row>
-        {isERC20 ? (
+        {isNft ? (
           <SmallGrayText>{symbol}</SmallGrayText>
         ) : (
           <PreviewTokenMoreInfo>
@@ -101,7 +101,7 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
         )}
       </PreviewTokenNameWrapper>
       <Divider margin="13px 0" />
-      {isERC20 ? (
+      {isNft ? (
         <div>
           <DataRowComponent label="Price" value="$1.00" />
           <DataRowComponent label="Market Cap." value="$38.4bn" />
@@ -127,7 +127,7 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
       <SmallButtonPrimary>
         <PreviewTokenSiteName>
           <GrayText>View on </GrayText>
-          {isERC20 ? "Etherscan" : "Blur"}
+          {isNft ? "Etherscan" : "Blur"}
         </PreviewTokenSiteName>
       </SmallButtonPrimary>
     </PreviewTokenContainer>

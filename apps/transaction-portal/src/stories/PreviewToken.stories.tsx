@@ -6,7 +6,7 @@ const PreviewTokensStory = () => (
   <PreviewTokens
     imageUrl="/placeholder/placeholder-token.svg"
     name="Token Name"
-    isERC20={true}
+    isNft={true}
     symbol="TKN"
   />
 );

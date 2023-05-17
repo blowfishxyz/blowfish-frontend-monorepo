@@ -74,7 +74,7 @@ const renderSimulation = (
 ) => {
   if (simulationType === "transaction") {
     return txnSimulationData.map((txnData, i) => (
-      <TxnSimulation key={i} txnData={txnData.rawInfo} />
+      <TxnSimulation key={i} txnData={txnData} />
     ));
   } else if (simulationType === "signature") {
     return signatureData.map((data, i) => (

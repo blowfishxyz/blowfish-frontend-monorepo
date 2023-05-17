@@ -3,9 +3,9 @@ import styled, { css } from "styled-components";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText, TxnImage } from "./common";
-import { RawInfo } from "./mock-data";
 import PreviewTokens from "~components/cards/PreviewTokens";
 import { useHover } from "react-use";
+import { TxnSimulationDataType } from "./mock-data";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -62,20 +62,20 @@ const ArrowIconWrapper = styled.div<{ $isReceived: boolean }>`
 `;
 
 interface TxnSimulationProps {
-  txnData: RawInfo;
+  txnData: TxnSimulationDataType;
 }
 
 const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
-  const { kind } = txnData;
-  const { metadata, name, tokenId, asset } = txnData.data || {};
+  const { kind, data } = txnData.rawInfo;
+  const { metadata, name, tokenId, asset } = data || {};
 
   const { rawImageUrl } = metadata || {};
   const { imageUrl, symbol } = asset || {};
 
   const isApproval = kind?.includes("APPROVAL");
   const isERC721 = kind.includes("ERC721");
-  const isERC20 = kind.includes("ERC20");
-  const displayText = isERC20 ? `$${name} (${symbol})` : `${name} #${tokenId}`;
+  const isNft = kind.includes("ERC20");
+  const displayText = isNft ? `$${name} (${symbol})` : `${name} #${tokenId}`;
 
   const imageSrc = isERC721 ? rawImageUrl : imageUrl;
 
@@ -88,8 +88,8 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             <PreviewTokens
               imageUrl={imageSrc}
               symbol={asset?.symbol}
-              isERC20={isERC20}
-              name={isERC20 ? asset?.name : name}
+              isNft={isNft}
+              name={isNft ? asset?.name : name}
             />
           )}
           <ArrowIconWrapper $isReceived={!!isApproval}>

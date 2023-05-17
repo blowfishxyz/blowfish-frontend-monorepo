@@ -1,18 +1,23 @@
+import {
+  AssetData,
+  EvmTokenMetadata,
+  Price,
+} from "@blowfish/utils/BlowfishApiClient";
+
 const dummyTxnSimulationData = [
   {
     rawInfo: {
       kind: "ERC721_APPROVAL",
       data: {
+        symbol: "TKN",
+        name: "Bored Ape",
+        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
+        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
+        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
+        tokenId: "12345",
+        amount: { before: "100", after: "200" },
         metadata: {
           rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
         },
       },
     },
@@ -21,16 +26,15 @@ const dummyTxnSimulationData = [
     rawInfo: {
       kind: "ERC721_APPROVAL",
       data: {
+        symbol: "TKN",
+        name: "Bored Ape",
+        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
+        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
+        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
+        tokenId: "12345",
+        amount: { before: "100", after: "200" },
         metadata: {
           rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
         },
       },
     },
@@ -39,38 +43,39 @@ const dummyTxnSimulationData = [
     rawInfo: {
       kind: "ERC721_APPROVAL",
       data: {
+        symbol: "TKN",
+        name: "Bored Ape",
+        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
+        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
+        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
+        tokenId: "12345",
+        amount: { before: "100", after: "200" },
         metadata: {
           rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
         },
       },
     },
   },
   {
     rawInfo: {
-      kind: "ERC20_",
+      kind: "ERC20_APPROVAL",
       data: {
-        name: "USD Coin",
-        symbol: "USDC",
+        name: "Token Name",
+        symbol: "TKN",
+        decimals: 18,
+        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
+        amount: { before: "0", after: "100" },
+        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
+        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
         asset: {
+          address: "0x1234567890abcdef",
           decimals: 18,
           imageUrl: "/placeholder/placeholder-token.svg",
-          lists: ["", "", ""],
-          name: "USD Coin",
-          price: {
-            source: "Dummy Price Source",
-            last_updated_at: Date.now(),
-            dollar_value_per_token: 123.45,
-          },
-          symbol: "USDC",
-          verified: true,
+          lists: [],
+          name: "Token Name",
+          price: null,
+          symbol: "TKN",
+          verified: false,
         },
       },
     },
@@ -86,46 +91,20 @@ const dummySignatureData = [
   },
 ];
 
-interface NftMetadata {
-  rawImageUrl: string;
-}
-
-interface AssetPrice {
-  source: string;
-  last_updated_at: number;
-  dollar_value_per_token: number;
-}
-
-interface Asset {
-  decimals: number;
-  imageUrl: string;
-  lists: string[];
-  name: string;
-  price: {
-    source: string;
-    last_updated_at: number;
-    dollar_value_per_token: number | null;
-  } | null;
-  symbol: string;
-  verified: boolean;
-}
-
 interface TxnData {
-  metadata?: NftMetadata;
+  metadata?: EvmTokenMetadata;
   name: string;
   symbol: string;
   tokenId?: string;
-  assetPrice?: AssetPrice;
-  asset?: Asset;
+  assetPrice?: Price;
+  asset?: AssetData;
 }
 
-type RawInfo = {
-  kind: string;
-  data: TxnData;
-};
-
 type TxnSimulationDataType = {
-  rawInfo: RawInfo;
+  rawInfo: {
+    kind: string;
+    data: TxnData;
+  };
 };
 
 type SignatureDataType = {
@@ -136,4 +115,4 @@ type SignatureDataType = {
 };
 
 export { dummyTxnSimulationData, dummySignatureData };
-export type { TxnSimulationDataType, SignatureDataType, RawInfo };
+export type { TxnSimulationDataType, SignatureDataType };
