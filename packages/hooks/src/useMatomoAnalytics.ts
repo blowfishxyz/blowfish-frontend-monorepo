@@ -17,7 +17,7 @@ export const useMatomoAnalytics = (
     }
     init({
       siteId,
-      url: "https://blowfishxyz.matomo.cloud",
+      url: "https://matomo.prod.blowfish.tools",
       onInitialization: () => {
         push(["disableCookies"]);
         push(["trackPageView"]);
