@@ -74,8 +74,8 @@ export function AssetPriceFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'source': json['source'],
-        'updatedAt': json['updatedAt'],
-        'dollarValuePerToken': json['dollarValuePerToken'],
+        'updatedAt': json['updatedAt'] || json['last_updated_at'],
+        'dollarValuePerToken': json['dollarValuePerToken'] || json['dollar_value_per_token'],
     };
 }
 
