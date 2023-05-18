@@ -28,8 +28,7 @@ const Title = styled(Text)`
   }
 `;
 
-const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })`
-`;
+const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
 
 const TxnSimulationResultsWrapper = styled.div`
   margin-top: 16px;
@@ -40,7 +39,10 @@ const StyledCardContent = styled(CardContent)`
   align-items: center;
 `;
 
-const WrappedRow = styled(Row).attrs({alignItems: "center", flexWrap: "wrap"})`
+const WrappedRow = styled(Row).attrs({
+  alignItems: "center",
+  flexWrap: "wrap",
+})`
   @media (${device.lg}) {
     &:last-child {
       gap: 12px;

@@ -98,6 +98,9 @@ const StyledOl = styled.ol`
   li {
     counter-increment: item;
     margin-top: 0.5rem;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 30px;
 
     &:before {
       margin-right: 10px;
@@ -157,7 +160,7 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
         `;
       } else {
         return css`
-          background-color: ${theme.colors.successLight};
+          background-color: rgba(0, 191, 54, 0.8);
           animation: ${blink} 2s ease-in-out infinite;
         `;
       }
@@ -165,7 +168,7 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
   }
 
   color: ${({ paused, theme }) =>
-    paused ? `${theme.colors.danger}` : `${theme.colors.successLight}`};
+    paused ? `${theme.colors.danger}` : `rgba(0, 191, 54, 0.8)`};
 `;
 
 const InfoContainer = styled.div`
@@ -185,7 +188,7 @@ const StatusIndicator = ({
   until: number | null;
 }) => {
   return (
-    <StatusIndicatorWrapper gap="sm" paused={paused}>
+    <StatusIndicatorWrapper gap="sm" alignItems="center" paused={paused}>
       <Indicator paused={paused} />
       {paused && until ? (
         <>Scanning Paused until {transformDate(until)}</>
@@ -223,7 +226,7 @@ const Popup: React.FC = () => {
   };
   return (
     <StyledPopupContainer>
-      <Header>
+      <Header alignItems="center" justifyContent="space-between">
         <StatusIndicator
           paused={isScanPaused ?? false}
           until={scanPausedUntil ?? null}
@@ -238,17 +241,23 @@ const Popup: React.FC = () => {
           height={160}
           isScanPaused={isScanPaused ?? false}
         />
-        <Row gap="sm">
+        <Row gap="sm" alignSelf="flex-start">
           <BlowfishIcon />
           <Text size="xxl">Blowfish</Text>
         </Row>
-        <Column flex={1}>
+        <Column flex={1} alignSelf="flex-start" width="100%">
           <StyledOl>
-            <Text as="li">Invoke a transaction on web3</Text>
-            <Text as="li">Check Blowfish before your wallet</Text>
-            <Text as="li">Confirm transaction with confidence</Text>
+            <Text as="li" size="md">
+              Invoke a transaction on web3
+            </Text>
+            <Text as="li" size="md">
+              Check Blowfish before your wallet
+            </Text>
+            <Text as="li" size="md">
+              Confirm transaction with confidence
+            </Text>
           </StyledOl>
-          <ScannerActionsContainer gap="md">
+          <ScannerActionsContainer gap="md" alignItems="center">
             <ScannerActionButton
               paused={isScanPaused ?? false}
               onClick={onActionClick}

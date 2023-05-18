@@ -13,10 +13,10 @@ export type Flexbox = {
   flex?: Properties["flex"];
   flexGrow?: Properties["flexGrow"];
   flexShrink?: Properties["flexShrink"];
-  //   flexBasis: Properties["flexBasis"];
-  //   justifySelf: Properties["justifySelf"];
-  //   alignSelf: Properties["alignSelf"];
-  //   order: Properties["order"];
+  flexBasis?: Properties["flexBasis"];
+  justifySelf?: Properties["justifySelf"];
+  alignSelf?: Properties["alignSelf"];
+  order?: Properties["order"];
 };
 
 export function flexbox(props: Flexbox) {
@@ -85,6 +85,34 @@ export function flexbox(props: Flexbox) {
     rules.push(
       css`
         flex-shrink: ${props.flexShrink};
+      `
+    );
+  }
+  if (props.justifySelf !== undefined) {
+    rules.push(
+      css`
+        justify-self: ${props.justifySelf};
+      `
+    );
+  }
+  if (props.alignSelf !== undefined) {
+    rules.push(
+      css`
+        align-self: ${props.alignSelf};
+      `
+    );
+  }
+  if (props.flexBasis !== undefined) {
+    rules.push(
+      css`
+        flex-basis: ${props.flexBasis};
+      `
+    );
+  }
+  if (props.order !== undefined) {
+    rules.push(
+      css`
+        order: ${props.order};
       `
     );
   }
