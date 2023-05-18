@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   }
 
   a {
-    color: #2a52be;
+    color: rgb(0, 0, 238);
     text-decoration: underline;
   }
 `;
@@ -39,21 +39,22 @@ const Home = () => {
             Last updated: April 3, 2023
           </Text>
           <P>
-            Ninja Security AG ("<b>Ninja Security</b>", "<b>we</b>", "<b>us</b>
-            ", or "<b>our</b>") provides fraud identification and prevention
-            services to protect crypto wallets. This Privacy Policy describes
-            how we collect, use, process, and share your personal data, and to
-            help you understand and exercise your privacy rights.
+            Ninja Security AG (&quot;<b>Ninja Security</b>&quot;, &quot;
+            <b>we</b>&quot;, &quot;<b>us</b>
+            &quot;, or &quot;<b>our</b>&quot;) provides fraud identification and
+            prevention services to protect crypto wallets. This Privacy Policy
+            describes how we collect, use, process, and share your personal
+            data, and to help you understand and exercise your privacy rights.
           </P>
           <P>
             This Privacy Policy describes how we process your personal data
-            through our "<b>Services</b>", which include our websites, browser
-            extensions, and other online offerings. We reserve the right to
-            modify this Privacy Policy as we see fit. If any significant changes
-            are made to this Privacy Policy, we will inform you as required by
-            applicable law. By continuing to use our Ser- vices after the
-            updated Privacy Policy takes effect, you acknowledge and accept its
-            terms.
+            through our &quot;<b>Services</b>&quot;, which include our websites,
+            browser extensions, and other online offerings. We reserve the right
+            to modify this Privacy Policy as we see fit. If any significant
+            changes are made to this Privacy Policy, we will inform you as
+            required by applicable law. By continuing to use our Ser- vices
+            after the updated Privacy Policy takes effect, you acknowledge and
+            accept its terms.
           </P>
           <Text as="h2">Contact us</Text>
           <P>
@@ -218,6 +219,7 @@ const Home = () => {
             <a
               href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/standard-contractual-clauses-scc_en"
               target="_blank"
+              rel="noreferrer"
             >
               EU Standard Contractual Clauses
             </a>
@@ -233,7 +235,7 @@ const Home = () => {
             You have the right to lodge a complaint with the competent
             supervisory authority. The contact details of the supervisory
             authorities in the EEA can be found{" "}
-            <a href="" target="_blank">
+            <a href="" target="_blank" rel="noreferrer">
               here
             </a>
             .

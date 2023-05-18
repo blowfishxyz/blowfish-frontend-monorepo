@@ -23,7 +23,7 @@ const MainLi = styled(Li)`
     font-weight: 500;
   }
   a {
-    color: #2a52be;
+    color: rgb(0, 0, 238);
     text-decoration: underline;
   }
 `;
