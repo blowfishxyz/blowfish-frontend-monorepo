@@ -47,7 +47,7 @@ export const EnrichedSimulationResult: React.FC<{
         chainNetwork={chainNetwork}
       />
       <StateChangeTextBlock>
-        <Column>
+        <Column justifyContent="space-around">
           <StateChangeText isPositiveEffect={isPositiveEffect}>
             {stateChange.humanReadableDiff}
           </StateChangeText>

@@ -423,7 +423,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             scanResults.action === "NONE" && !!scanResults.simulationResults
           }
         >
-          <HeaderRow>
+          <HeaderRow alignItems="center">
             {showDurationSelector ? (
               <PauseDurationSelector
                 onClick={(period) => onDurationSelect(period)}

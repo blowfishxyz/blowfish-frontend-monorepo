@@ -28,10 +28,7 @@ const Title = styled(Text)`
   }
 `;
 
-const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })<{
-  marginLeft?: string;
-}>`
-  margin-left: ${({ marginLeft }) => marginLeft || "0"};
+const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })`
 `;
 
 const TxnSimulationResultsWrapper = styled.div`
@@ -43,9 +40,7 @@ const StyledCardContent = styled(CardContent)`
   align-items: center;
 `;
 
-const WrappedRow = styled(Row)`
-  flex-wrap: wrap;
-
+const WrappedRow = styled(Row).attrs({alignItems: "center", flexWrap: "wrap"})`
   @media (${device.lg}) {
     &:last-child {
       gap: 12px;
@@ -120,7 +115,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     </CardContent>
     <Divider margin="24px 0 0" />
     <StyledCardContent>
-      <StyledColumn>
+      <StyledColumn flex={1}>
         <SmallGrayText>Counterparty</SmallGrayText>
         <Row gap="sm" alignItems="center">
           <CardText>
@@ -130,7 +125,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
         </Row>
       </StyledColumn>
       <Divider orientation="vertical" />
-      <StyledColumn>
+      <StyledColumn flex={1}>
         <SmallGrayText>Others Involved</SmallGrayText>
         <CardText>
           <CardBlackTextLink>None</CardBlackTextLink>
@@ -139,7 +134,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     </StyledCardContent>
     <Divider />
     <StyledCardContent>
-      <StyledColumn>
+      <StyledColumn flex={1}>
         <SmallGrayText>Performed?</SmallGrayText>
         <WrappedRow gap="sm">
           <CardText>Yes</CardText>
@@ -147,7 +142,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
         </WrappedRow>
       </StyledColumn>
       <Divider orientation="vertical" />
-      <StyledColumn>
+      <StyledColumn flex={1}>
         <SmallGrayText>Used?</SmallGrayText>
         <WrappedRow gap="sm">
           <CardText>Yes</CardText>
@@ -155,7 +150,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
         </WrappedRow>
       </StyledColumn>
       <Divider orientation="vertical" />
-      <StyledColumn>
+      <StyledColumn flex={1}>
         <SmallGrayText>Labels</SmallGrayText>
         <ChipWrapper gap="sm">
           {labels.length > 0 && <Chip text={labels[0]} />}

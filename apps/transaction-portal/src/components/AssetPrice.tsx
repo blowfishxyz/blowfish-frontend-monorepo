@@ -78,7 +78,7 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
 
   return (
     <>
-      {totalValue && (
+      {totalValue ? (
         <AssetPriceWrapper>
           $
           {totalValue.toLocaleString(undefined, {
@@ -98,7 +98,7 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
             </Tooltip>
           )}
         </AssetPriceWrapper>
-      )}
+      ) : null}
     </>
   );
 };

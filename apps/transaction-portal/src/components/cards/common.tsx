@@ -86,7 +86,7 @@ const CardRow = styled(Row)`
 `;
 
 const CardGrayLink = styled.a`
-  color: ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.foregroundSecondary};
 `;
 
 const CardBlackTextLink = styled.a`

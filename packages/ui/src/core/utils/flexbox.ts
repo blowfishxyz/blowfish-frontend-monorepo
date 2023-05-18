@@ -46,6 +46,13 @@ export function flexbox(props: Flexbox) {
       `
     );
   }
+  if (props.justifyContent !== undefined) {
+    rules.push(
+      css`
+        justify-content: ${props.justifyContent};
+      `
+    );
+  }
   if (props.flexWrap !== undefined) {
     rules.push(
       css`
