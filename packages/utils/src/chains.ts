@@ -1,4 +1,6 @@
-import type { ChainFamily, ChainNetwork } from "./BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
+
+export type { ChainFamily, ChainNetwork }
 
 export interface ChainInfo {
   chainFamily: ChainFamily;

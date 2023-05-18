@@ -1,25 +1,17 @@
 import React from "react";
-import { styled, DefaultTheme } from "styled-components";
+import { styled } from "styled-components";
 import { StyledBaseDiv } from "./StyledBase";
+import { Flexbox, flexbox } from "./utils/flexbox";
+import { Size, size } from "./utils/size";
 
-type Gap = keyof DefaultTheme["grids"];
-
-const ColumnComponent = React.forwardRef<
-  HTMLDivElement,
-  {
-    gap?: Gap;
-    width?: string;
-    flex?: number;
-    alignItems?: string;
-  } & React.HTMLAttributes<HTMLDivElement>
->(({ gap, width, flex, ...props }, ref) => <StyledBaseDiv ref={ref} {...props} />);
-
-export const Column = styled(ColumnComponent)`
-  width: ${({ width }) => width ?? "100%"};
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: ${({alignItems}) => alignItems};
-  flex: ${({ flex }) => flex};
-  gap: ${({ gap, theme }) => gap && theme.grids[gap]};
+export const Column = styled(StyledBaseDiv)<
+  React.ComponentProps<typeof StyledBaseDiv> & Flexbox & Size
+>`
+  min-width: 0;
+  ${size}
+  ${flexbox}
 `;
+
+Column.defaultProps = {
+  flexDirection: "column",
+};

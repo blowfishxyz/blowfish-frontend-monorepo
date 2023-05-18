@@ -1,22 +1,23 @@
-import React, { memo } from "react";
-import { VerifiedIcon } from "@blowfish/ui/icons";
+import {
+  EvmAsset,
+  EvmExpectedStateChange,
+  EvmNativeAsset,
+} from "@blowfish/api-client";
 import { BlockExplorerLink, Text } from "@blowfish/ui/core";
+import { VerifiedIcon } from "@blowfish/ui/icons";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+import React, { memo } from "react";
+import styled from "styled-components";
+
 import {
   Tooltip,
-  TooltipTrigger,
   TooltipContent,
+  TooltipTrigger,
 } from "~components/common/Tooltip";
-import {
-  EvmStateChange,
-  ChainFamily,
-  ChainNetwork,
-  AssetData,
-} from "@blowfish/utils/BlowfishApiClient";
-import styled from "styled-components";
 
 export const VerifiedTokenTooltip: React.FC<
   React.PropsWithChildren<{
-    stateChange: EvmStateChange;
+    stateChange: EvmExpectedStateChange;
     chainFamily: ChainFamily;
     chainNetwork: ChainNetwork;
   }>
@@ -48,9 +49,11 @@ export const VerifiedTokenTooltip: React.FC<
   );
 };
 
-const TooltipText: React.FC<{ asset: AssetData }> = memo(
+const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
   function TooltipTextInner({ asset }) {
-    const { symbol, verified, lists = [] } = asset;
+    const { symbol, verified } = asset;
+
+    const lists = "lists" in asset ? asset.lists : [];
 
     if (!verified) {
       return (
@@ -83,14 +86,17 @@ const TooltipText: React.FC<{ asset: AssetData }> = memo(
     return (
       <>
         {symbol} is verified on {sources[0]}, {sources[1]}, and{" "}
-        <Text semiBold>{others}</Text> other
+        <Text weight="semi-bold">{others}</Text> other
         {others ? "s" : ""}
       </>
     );
   }
 );
 
-function getErc20Asset(rawInfo: EvmStateChange): AssetData | undefined {
+function getErc20Asset(
+  stateChange: EvmExpectedStateChange
+): EvmAsset | EvmNativeAsset | undefined {
+  const rawInfo = stateChange.rawInfo;
   if (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_PERMIT" ||
@@ -103,7 +109,9 @@ function getErc20Asset(rawInfo: EvmStateChange): AssetData | undefined {
 }
 
 function nameToText(name: string) {
-  return <Text semiBold>{name.toLowerCase().replaceAll(/_/g, " ")}</Text>;
+  return (
+    <Text weight="semi-bold">{name.toLowerCase().replaceAll(/_/g, " ")}</Text>
+  );
 }
 
 const VerifiedBadge = styled(VerifiedIcon)`

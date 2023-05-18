@@ -1,24 +1,21 @@
-import React from "react";
-import styled, { css } from "styled-components";
-
-import type { Severity } from "@blowfish/utils/types";
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
-import {
-  REGULAR_BOTTOM_MENU_HEIGHT,
-  SLIM_BOTTOM_MENU_HEIGHT,
-} from "./BottomMenus";
 import {
   ArbitrumIcon,
   BnbChainIcon,
   EthereumIcon,
   PolygonIcon,
 } from "@blowfish/ui/icons";
-import { CustomConnectkitButton } from "./CustomConnectkitButton";
-import { TextSmall } from "@blowfish/ui/core";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+import type { Severity } from "@blowfish/utils/types";
+import React from "react";
+import styled, { css } from "styled-components";
+import { Text } from "@blowfish/ui/core";
 import { shortenHex } from "~utils/hex";
+
+import {
+  REGULAR_BOTTOM_MENU_HEIGHT,
+  SLIM_BOTTOM_MENU_HEIGHT,
+} from "./BottomMenus";
+import { CustomConnectkitButton } from "./CustomConnectkitButton";
 import { MaskIcon } from "./icons/MaskIcon";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
@@ -36,6 +33,8 @@ const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
       return <ArbitrumIcon style={{ height: "16px", width: "auto" }} />;
     case "bnb":
       return <BnbChainIcon style={{ height: "16px", width: "auto" }} />;
+    default:
+      return <EthereumIcon style={{ height: "16px", width: "auto" }} />;
   }
 };
 const IconForChainMemo = React.memo(IconForChain);
@@ -95,7 +94,7 @@ const Wrapper = styled.div<{
   display: flex;
   position: relative;
   background-color: ${({ $severity, theme }) =>
-    theme.contextBackgroundColors[$severity ?? "INFO"]};
+    theme.severityColors[$severity ?? "INFO"].background};
   padding: 48px 12px 12px 12px;
   min-height: 100vh;
   height: 100%;
@@ -113,7 +112,7 @@ const Wrapper = styled.div<{
         `}
 `;
 
-const WalletAddress = styled(TextSmall)`
+const WalletAddress = styled(Text).attrs({ size: "sm" })`
   margin-left: 9px;
   color: rgba(0, 0, 0, 0.5);
 `;

@@ -16,13 +16,13 @@ const Wrapper = styled.div<{ $severity: WarningSeverity }>`
   ${({ $severity, theme }) =>
     $severity === "WARNING"
       ? css`
-          background: ${theme.palette.warningBackground};
-          border: 2px solid ${theme.palette.yellow};
+          background: ${theme.severityColors.WARNING.backgroundLight};
+          border: 2px solid ${theme.colors.warning};
           box-shadow: 0px 4px 25px rgba(255, 206, 33, 0.2);
         `
       : css`
-          background: ${theme.palette.blockBackground};
-          border: 2px solid ${theme.palette.red};
+          background: ${theme.severityColors.CRITICAL.backgroundLight};
+          border: 2px solid ${theme.colors.danger};
           box-shadow: 0px 4px 25px rgba(255, 61, 0, 0.2);
         `};
   border-radius: 12px;
@@ -34,7 +34,7 @@ const WarningHeadline = styled(Text)<{ $severity: WarningSeverity }>`
   line-height: 16px;
   margin-bottom: 8px;
   color: ${({ theme, $severity }) =>
-    $severity === "WARNING" ? theme.palette.yellow : theme.palette.red};
+    $severity === "WARNING" ? theme.colors.warning : theme.colors.danger};
 `;
 const MessageContainer = styled.div`
   display: flex;

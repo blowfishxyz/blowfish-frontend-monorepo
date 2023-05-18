@@ -1,4 +1,4 @@
-import { TextSmall, UnstyledA } from "@blowfish/ui/core";
+import { Text, UnstyledA } from "@blowfish/ui/core";
 import React from "react";
 import styled from "styled-components";
 
@@ -91,7 +91,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   padding-bottom: 20px;
-  background-color: ${({ theme }) => theme.contextBackgroundColors["INFO"]};
+  background-color: ${({ theme }) => theme.severityColors.INFO.background};
 `;
 
 const PopupFooter = () => {
@@ -100,15 +100,15 @@ const PopupFooter = () => {
       <IconRow>
         <BottomLink href={BLOWFISH_WEBSITE_URL} target="_blank" rel="noopener">
           <WebsiteIcon />
-          <TextSmall>Website</TextSmall>
+          <Text size="sm">Website</Text>
         </BottomLink>
         <BottomLink href={BLOWFISH_TWITTER_URL} target="_blank" rel="noopener">
           <TwitterIcon />
-          <TextSmall>Twitter</TextSmall>
+          <Text size="sm">Twitter</Text>
         </BottomLink>
         <BottomLink href={BLOWFISH_FEEDBACK_URL} target="_blank" rel="noopener">
           <ContactIcon />
-          <TextSmall>Feedback</TextSmall>
+          <Text size="sm">Feedback</Text>
         </BottomLink>
       </IconRow>
     </Wrapper>

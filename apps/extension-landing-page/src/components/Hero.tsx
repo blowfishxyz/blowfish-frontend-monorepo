@@ -5,7 +5,7 @@ import {
   device,
   PrimaryButton,
   supportedChains,
-  TextSmall,
+  Text,
 } from "@blowfish/ui/core";
 import { OptimismIcon } from "@blowfish/ui/icons";
 import { CHROME_EXTENSION_STORE_URL } from "../config";
@@ -113,10 +113,8 @@ const IconGroup = styled.div`
   }
 `;
 
-const BrowserSupportNotice = styled(TextSmall)`
+const BrowserSupportNotice = styled(Text).attrs({ size: "sm" })`
   margin-top: 10px;
-  font-size: 14px;
-  line-height: 16px;
 
   @media only screen and (${device.lg}) {
     text-align: center;

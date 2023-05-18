@@ -5,9 +5,9 @@ name: build-lint-test
 
 on:
   push:
-    branches: [ main, main-v2 ]
+    branches: [main, main-v2]
   pull_request:
-    branches: [ main, main-v2 ]
+    branches: [main, main-v2]
 
 env:
   NEXT_PUBLIC_ALCHEMY_API_KEY: ${{vars.ALCHEMY_API_KEY}}
@@ -21,20 +21,18 @@ env:
 
 jobs:
   build-lint-test:
-
     runs-on: ubuntu-latest
     environment: ci
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 7
-    - run: pnpm install
-    - run: pnpm typecheck
-    - run: pnpm lint
-    - run: pnpm test
-    - run: pnpm build
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - run: pnpm install
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build

@@ -1,11 +1,13 @@
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import type { ComponentStory } from "@storybook/react";
 import React from "react";
 
 import { SlimBottomMenu, SlimBottomMenuProps } from "~components/BottomMenus";
+import {
+  PopupContainer,
+  PopupContainerProps,
+} from "~components/PopupContainer";
+
 import {
   AccountNotConnectedScreen,
   AccountNotConnectedScreenProps,
@@ -22,10 +24,6 @@ import {
   WrongChainScreen,
   WrongChainScreenProps,
 } from "../components/InformationScreens";
-import {
-  PopupContainer,
-  PopupContainerProps,
-} from "~components/PopupContainer";
 
 const DEFAULT_ARGS = {
   userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",

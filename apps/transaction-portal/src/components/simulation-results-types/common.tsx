@@ -1,4 +1,4 @@
-import { GrayText } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 import { styled } from "styled-components";
 
 interface TxnImageProps {
@@ -13,9 +13,6 @@ const TxnImage = styled.img<TxnImageProps>`
   border-radius: 6px;
 `;
 
-const SmallGrayText = styled(GrayText)`
-  line-height: 16px;
-  font-size: 13px;
-`;
+const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
 
 export { TxnImage, SmallGrayText };

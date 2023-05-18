@@ -1,3 +1,7 @@
+import type {
+  EvmMessageScanResult,
+  EvmTransactionScanResult,
+} from "@blowfish/api-client";
 import {
   PAUSE_DURATIONS,
   PauseDuration,
@@ -10,15 +14,9 @@ import {
   LinkWithArrow,
   Row,
   Text,
-  TextSmall,
 } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
-import {
-  ChainFamily,
-  ChainNetwork,
-  EvmMessageScanResult,
-  EvmTransactionScanResult,
-} from "@blowfish/utils/BlowfishApiClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import { logger } from "@blowfish/utils/logger";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
@@ -56,14 +54,14 @@ const DynamicJsonViewer = dynamic(
   () => import("./client/JsonViewer").then((mod) => mod.JsonViewer),
   {
     ssr: false,
-    loading: () => <TextSmall>Loading...</TextSmall>,
+    loading: () => <Text size="sm">Loading...</Text>,
   }
 );
 
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  background-color: ${(props) => props.theme.palette.white};
+  background-color: ${(props) => props.theme.colors.backgroundPrimary};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
@@ -164,7 +162,7 @@ const TitleText = styled(Text)`
 
 const StateChangeText = styled(Text)<{ isPositiveEffect?: boolean }>`
   color: ${({ isPositiveEffect, theme }) =>
-    isPositiveEffect ? theme.palette.green : theme.palette.red};
+    isPositiveEffect ? theme.colors.success : theme.colors.danger};
   line-height: 16px;
 `;
 
@@ -215,11 +213,11 @@ const AdvancedDetails: React.FC<AdvancedDetailsProps> = ({
         justifyContent: "unset",
       }}
     >
-      <Row justify="space-between">
+      <Row justifyContent="space-between">
         <AdvancedDetailsToggleButton
           onClick={() => setShowAdvancedDetails((prev) => !prev)}
         >
-          <Text semiBold>Advanced Details</Text>
+          <Text weight="semi-bold">Advanced Details</Text>
           <StyledExpandIcon expanded={showAdvancedDetails} />
         </AdvancedDetailsToggleButton>
         <LinkWithArrow href={BLOWFISH_FEEDBACK_URL}>
@@ -235,7 +233,7 @@ type UIWarning = { message: string; severity: "WARNING" | "CRITICAL" };
 
 export interface ScanResultsProps {
   request: DappRequest;
-  scanResults: EvmTransactionScanResult | EvmMessageScanResult;
+  scanResults: EvmMessageScanResult | EvmTransactionScanResult;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
@@ -346,7 +344,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               severity: "CRITICAL",
               message: `This transaction failed during simulation. Proceed with caution`,
             };
-          case "INVALID_TRANSACTION":
+          case "TRANSACTION_ERROR":
             return {
               severity: "CRITICAL",
               message: `This transaction seems does not seem valid. Proceed with caution`,
@@ -357,6 +355,10 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               message:
                 "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
             };
+          // TODO: Add more specific messages for these errors
+          case "UNSUPPORTED_MESSAGE":
+          case "TRANSACTION_REVERTED":
+          case "UNKNOWN_ERROR":
           default:
             return {
               severity: "CRITICAL",
@@ -421,7 +423,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             scanResults.action === "NONE" && !!scanResults.simulationResults
           }
         >
-          <HeaderRow>
+          <HeaderRow alignItems="center">
             {showDurationSelector ? (
               <PauseDurationSelector
                 onClick={(period) => onDurationSelect(period)}
@@ -448,9 +450,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
         <SimulationResults>
           {toAddress && (
             <Section $borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
+              <Text
+                size="sm"
+                design="secondary"
+                style={{ marginBottom: "8px" }}
+              >
                 To Address
-              </TextSmall>
+              </Text>
               <Text>
                 <BlockExplorerLink
                   address={toAddress}
@@ -469,7 +475,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                   expectedStateChanges[0]?.rawInfo.kind
                 )}
               >
-                <TextSmall secondary>Simulation Results</TextSmall>
+                <Text size="sm" design="secondary">
+                  Simulation Results
+                </Text>
               </SimulationResultsHeader>
               <Column gap="md">
                 {expectedStateChanges.map((stateChange, i) => (
@@ -484,9 +492,13 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             </Section>
           ) : (
             <Section $borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
+              <Text
+                size="sm"
+                design="secondary"
+                style={{ marginBottom: "8px" }}
+              >
                 Simulation Results
-              </TextSmall>
+              </Text>
               {scanResults?.simulationResults?.error ? (
                 <StateChangeText isPositiveEffect={false}>
                   {simulationFailedMessage}
@@ -501,20 +513,26 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
 
           {parsedMessageContent && (
             <Section $borderBottom>
-              <TextSmall secondary style={{ marginBottom: "8px" }}>
+              <Text
+                size="sm"
+                design="secondary"
+                style={{ marginBottom: "8px" }}
+              >
                 Message contents
-              </TextSmall>
-              <TextSmall
+              </Text>
+              <Text
+                size="sm"
+                design="secondary"
                 style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
               >
                 {parsedMessageContent}
-              </TextSmall>
+              </Text>
             </Section>
           )}
           <Section>
-            <TextSmall secondary style={{ marginBottom: "8px" }}>
+            <Text size="sm" design="secondary" style={{ marginBottom: "8px" }}>
               Request by
-            </TextSmall>
+            </Text>
             <LinkWithArrow href={dappUrl.origin}>
               <Text>{dappUrl.host}</Text>
             </LinkWithArrow>

@@ -4,7 +4,6 @@ import {
   Row,
   TertiaryButton,
   Text,
-  TextXL,
 } from "@blowfish/ui/core";
 import { ArrowRightIcon, BlowfishWarningIcon } from "@blowfish/ui/icons";
 import { useRouter } from "next/router";
@@ -65,12 +64,12 @@ const MainIcon = styled(BlowfishWarningIcon)`
   height: 104px;
 `;
 
-const Heading = styled(TextXL)`
-  color: ${({ theme }) => theme.palette.white};
+const Heading = styled(Text).attrs({ size: "xxl" })`
+  color: ${({ theme }) => theme.colors.backgroundPrimary};
 `;
 
 const Description = styled(Text)`
-  color: ${({ theme }) => theme.palette.white};
+  color: ${({ theme }) => theme.colors.backgroundPrimary};
   opacity: 0.56;
   margin-top: 12px;
   text-align: center;

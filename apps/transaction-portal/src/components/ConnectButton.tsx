@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { TextButton, TextSmall } from "@blowfish/ui/core";
+import { TextButton, Text } from "@blowfish/ui/core";
 import { WalletIcon, FaLink, FaUnlink } from "@blowfish/ui/icons";
 import { shortenHex } from "@blowfish/utils/hex";
 
@@ -35,9 +35,9 @@ const StyledUnlinkIcon = styled(FaUnlink)`
   width: auto;
   fill: rgba(0, 0, 0, 0.5);
 `;
-const StyledText = styled(TextSmall)`
-  margin-left: 9px;
+const StyledText = styled(Text).attrs({ size: "sm" })`
   color: rgba(0, 0, 0, 0.5);
+  margin-left: 9px;
 `;
 
 // NOTE(kimpers): Lifted from ConnectKitButton
@@ -49,8 +49,6 @@ interface ConnectButton {
   ensName?: string;
 }
 
-// NOTE: The display component is separated from the connect logic
-// so that we can use it directly in the storybook
 export const ConnectButton: React.FC<ConnectButton> = ({
   show,
   address,

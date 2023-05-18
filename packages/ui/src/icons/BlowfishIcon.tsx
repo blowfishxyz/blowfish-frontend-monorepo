@@ -12,8 +12,6 @@ const BlowfishIconFull: React.FC<BlowfishIconProps> = ({
   <svg
     className={className}
     style={style}
-    width="1949"
-    height="504"
     viewBox="0 0 1949 504"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

@@ -34,7 +34,7 @@ const AComponent = React.forwardRef<
 ));
 
 export const A = styled(AComponent)`
-  color: ${(props) => props.theme.colors.primaryText};
+  color: ${(props) => props.theme.colors.foregroundPrimary};
 `;
 
 export interface LinkWithArrowProps

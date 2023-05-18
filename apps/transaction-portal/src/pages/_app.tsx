@@ -7,7 +7,7 @@ import { wagmiClient } from "~utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
 import { GlobalStyle } from "~styles/global";
 
-import { themes } from "~styles/theme";
+import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
 
 export default function App({ Component, pageProps }: AppProps) {

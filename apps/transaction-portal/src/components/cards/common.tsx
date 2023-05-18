@@ -10,8 +10,8 @@ import {
 const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   flex: 1;
   box-sizing: border-box;
-  background: ${({ theme }) => theme.palette.white};
-  border: 1px solid ${({ theme }) => theme.palette.border};
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 32px 0;
 
@@ -34,7 +34,7 @@ interface DividerProps {
 }
 
 const Divider = styled.div<DividerProps>`
-  background-color: ${({ theme }) => theme.palette.black};
+  background-color: ${({ theme }) => theme.colors.foregroundPrimary};
   opacity: 0.05;
   margin: ${({ margin }) => margin};
 
@@ -52,7 +52,7 @@ const Divider = styled.div<DividerProps>`
 `;
 
 const CardText = styled(Text)<{ alignText?: string }>`
-  color: ${({ theme }) => theme.colors.primaryText};
+  color: ${({ theme }) => theme.colors.foregroundPrimary};
   font-size: 14px;
 
   @media (${device.lg}) {
@@ -86,11 +86,11 @@ const CardRow = styled(Row)`
 `;
 
 const CardGrayLink = styled.a`
-  color: ${({ theme }) => theme.palette.gray};
+  color: ${({ theme }) => theme.colors.foregroundSecondary};
 `;
 
 const CardBlackTextLink = styled.a`
-  color: ${({ theme }) => theme.palette.black};
+  color: ${({ theme }) => theme.colors.foregroundPrimary};
 `;
 
 export {
