@@ -217,7 +217,7 @@ const Home = () => {
             protection under applicable data pro- tection laws, one of the
             safeguards we may use to support such transfer is the{" "}
             <a
-              href="https://commission.europa.eu/law/law-topic/data-protection/international-dimension-data-protection/standard-contractual-clauses-scc_en"
+              href="https://commission.europa.eu/publications/standard-contractual-clauses-international-transfers_en"
               target="_blank"
               rel="noreferrer"
             >
@@ -235,7 +235,11 @@ const Home = () => {
             You have the right to lodge a complaint with the competent
             supervisory authority. The contact details of the supervisory
             authorities in the EEA can be found{" "}
-            <a href="" target="_blank" rel="noreferrer">
+            <a
+              href="https://edpb.europa.eu/about-edpb/about-edpb/members_en"
+              target="_blank"
+              rel="noreferrer"
+            >
               here
             </a>
             .
