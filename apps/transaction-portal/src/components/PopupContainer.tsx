@@ -1,4 +1,3 @@
-import { TextSmall } from "@blowfish/ui/core";
 import {
   ArbitrumIcon,
   BnbChainIcon,
@@ -9,6 +8,7 @@ import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
+import { Text } from "@blowfish/ui/core";
 
 import { shortenHex } from "~utils/hex";
 
@@ -111,7 +111,7 @@ const Wrapper = styled.div<{
         `}
 `;
 
-const WalletAddress = styled(TextSmall)`
+const WalletAddress = styled(Text).attrs({ size: "sm" })`
   margin-left: 9px;
   color: rgba(0, 0, 0, 0.5);
 `;

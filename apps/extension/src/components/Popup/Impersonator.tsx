@@ -33,10 +33,6 @@ const WalletInformationContainer = styled.form`
   gap: 1em;
 `;
 
-const GreenText = styled(Text)`
-  color: ${({ theme }) => theme.palette.green};
-`;
-
 const mainnetProvider = new ethers.providers.JsonRpcProvider(
   "https://rpc.ankr.com/eth"
 );
@@ -106,14 +102,14 @@ const Impersonator: React.FC = () => {
     <ImpersonatorWrapper>
       <Row>
         {currentImpersonationWallet ? (
-          <GreenText semiBold>
+          <Text weight="semi-bold" design="success">
             Impersonating:{" "}
             {isENS(currentImpersonationWallet)
               ? currentImpersonationWallet
               : shortenHex(currentImpersonationWallet)}
-          </GreenText>
+          </Text>
         ) : (
-          <Text semiBold>Impersonate Account</Text>
+          <Text weight="semi-bold">Impersonate Account</Text>
         )}
         <Toggle
           isActive={isEnabled}

@@ -1,9 +1,4 @@
-import {
-  GrayText,
-  PrimaryButton,
-  RedText,
-  SecondaryButton,
-} from "@blowfish/ui/core";
+import { PrimaryButton, SecondaryButton, Text } from "@blowfish/ui/core";
 import { BlowfishOption } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
@@ -89,9 +84,9 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   return (
     <BottomMenuWrapper style={style} className={className}>
       {blowfishImpersonationWallet ? (
-        <RedText>Confirm disabled while impersonating</RedText>
+        <Text design="danger">Confirm disabled while impersonating</Text>
       ) : (
-        <GrayText>Confirm to continue to your wallet</GrayText>
+        <Text design="secondary">Confirm to continue to your wallet</Text>
       )}
       <Row>
         <SecondaryButton style={{ width: "172px" }} onClick={onCancel}>

@@ -82,7 +82,7 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
         </TxnSimulationText>
       </TxnSimulationImageMsgWrapper>
       <TxnSimulationValue alignItems="flex-end">
-        <TxnSimulationText semiBold>$25,200</TxnSimulationText>
+        <TxnSimulationText weight="semi-bold">$25,200</TxnSimulationText>
         <SmallGrayText>18.99 ETH</SmallGrayText>
       </TxnSimulationValue>
     </TxnSimulationWrapper>

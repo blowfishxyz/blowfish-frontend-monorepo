@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
+    "typecheck": "tsc --noEmit",
     "prepare": "pnpm run build",
     "test": "pnpm jest"
   },

@@ -8,6 +8,7 @@
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
     "prepare": "pnpm run build",
+    "typecheck": "tsc --noEmit",
     "storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json start-storybook -p 6006",
     "build-storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json build-storybook"
   },

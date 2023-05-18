@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { styled } from "styled-components";
-import { GrayText, Text } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 import { MenuIcon } from "@blowfish/ui/icons";
 
 const Wrapper = styled.div`
@@ -35,9 +35,10 @@ const MenuTitle = styled(Text)`
   font-weight: ${({ theme }) => theme.fontWeights.semiBold};
 `;
 
-const MenuDescription = styled(GrayText)`
-  font-size: 14px;
-`;
+const MenuDescription = styled(Text).attrs({
+  size: "sm",
+  design: "secondary",
+})``;
 
 const DropdownItem = styled.div`
   padding: 20px;

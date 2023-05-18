@@ -73,8 +73,6 @@ type UserWalletProps = {
   chain: (Chain & { unsupported?: boolean | undefined }) | undefined;
 };
 
-// NOTE: The display component is separated from the connect logic
-// so that we can use it directly in the storybook
 export const UserWallet = ({
   show,
   truncatedAddress,

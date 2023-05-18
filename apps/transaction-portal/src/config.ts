@@ -4,3 +4,5 @@ export const CHROMIMUM_INSTALL_EXTENSION_URL = process.env
   .NEXT_PUBLIC_CHROMIMUM_INSTALL_EXTENSION_URL as string;
 export const ALCHEMY_API_KEY = process.env
   .NEXT_PUBLIC_ALCHEMY_API_KEY as string;
+export const BLOWFISH_V2_ENABLED =
+  process.env.NEXT_PUBLIC_BLOWFISH_V2_ENABLED === "true";

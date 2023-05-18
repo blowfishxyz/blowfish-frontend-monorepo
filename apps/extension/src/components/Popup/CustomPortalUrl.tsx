@@ -57,7 +57,7 @@ const CustomPortalUrlInner: React.FC<{
   return (
     <Wrapper>
       <Row gap="sm">
-        <Text semiBold>Set Custom Protal URL</Text>
+        <Text weight="semi-bold">Set Custom Protal URL</Text>
         <Toggle isActive={isEnabled} toggle={handleToggle} />
       </Row>
       {isEnabled && (

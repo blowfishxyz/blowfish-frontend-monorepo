@@ -1,4 +1,4 @@
-import { BaseButton, GrayText } from "@blowfish/ui/core";
+import { BaseButton, Text } from "@blowfish/ui/core";
 import { ExpandIcon } from "@blowfish/ui/icons";
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -16,9 +16,10 @@ const ToggleButton = styled(BaseButton)`
   & + * {
     margin-top: 16px;
   }
-  ${GrayText} {
-    color: rgba(0, 0, 0, 0.5);
-  }
+`;
+
+const ToggleText = styled(Text)`
+  color: rgba(0, 0, 0, 0.5);
 `;
 
 interface ContentToggleProps extends React.PropsWithChildren {
@@ -42,7 +43,7 @@ export const ContentToggle: React.FC<ContentToggleProps> = ({
         style={style}
         className={className}
       >
-        <GrayText>{message}</GrayText>
+        <ToggleText>{message}</ToggleText>
         <ExpandIcon expanded={showAdvancedDetails} />
       </ToggleButton>
       {showAdvancedDetails && children}
