@@ -99,25 +99,25 @@ function getWeightStyles({ weight }: TextProps) {
 function getDesignStyles({ design }: TextProps) {
   if (design === "danger") {
     return css`
-      color: ${(p) => p.theme.palette.warningText};
+      color: ${(p) => p.theme.colors.foregroundDanger};
     `;
   }
   if (design === "success") {
     return css`
-      color: ${(p) => p.theme.palette.green};
+      color: ${(p) => p.theme.colors.success};
     `;
   }
   if (design === "secondary") {
     return css`
-      color: ${(p) => p.theme.colors.secondaryText};
+      color: ${(p) => p.theme.colors.foregroundSecondary};
     `;
   }
   if (design === "primary") {
     return css`
-      color: ${(p) => p.theme.colors.primaryText};
+      color: ${(p) => p.theme.colors.foregroundPrimary};
     `;
   }
   return css`
-    color: ${(p) => p.theme.colors.primaryText};
+    color: ${(p) => p.theme.colors.foregroundPrimary};
   `;
 }

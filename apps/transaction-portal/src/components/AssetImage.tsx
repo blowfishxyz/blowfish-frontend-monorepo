@@ -17,7 +17,7 @@ interface AssetImageProps {
 const PlaceholderSimulationImage = styled.div`
   width: 38px;
   height: 38px;
-  background: #f2f2f2;
+  background: ${({ theme }) => theme.colors.base10};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -28,7 +28,7 @@ const PlaceholderSimulationImage = styled.div`
     width: 24px;
 
     path {
-      fill: ${({ theme }) => theme.palette.border};
+      fill: ${({ theme }) => theme.colors.border};
     }
   }
 `;
@@ -72,7 +72,7 @@ const SimulationIconWrapper = styled.div<{
         `;
       }
       return css`
-        fill: ${theme.palette.red};
+        fill: ${theme.colors.danger};
         transform: rotate(-45deg);
         transform-origin: center;
       `;

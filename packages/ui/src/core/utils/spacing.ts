@@ -5,14 +5,23 @@ export type Spacing = {
   marginBottom?: number;
   marginLeft?: number;
   marginRight?: number;
+  margin?: number;
   paddingTop?: number;
   paddingBottom?: number;
   paddingLeft?: number;
   paddingRight?: number;
+  padding?: number;
 };
 
 export function spacing(props: Spacing) {
   const rules = [];
+  if (props.margin !== undefined) {
+    rules.push(
+      css`
+        margin: ${props.margin}px;
+      `
+    );
+  }
   if (props.marginLeft !== undefined) {
     rules.push(
       css`
@@ -38,6 +47,13 @@ export function spacing(props: Spacing) {
     rules.push(
       css`
         margin-bottom: ${props.marginBottom}px;
+      `
+    );
+  }
+  if (props.padding !== undefined) {
+    rules.push(
+      css`
+        padding: ${props.padding}px;
       `
     );
   }

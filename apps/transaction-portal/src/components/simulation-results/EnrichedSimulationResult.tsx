@@ -47,7 +47,7 @@ export const EnrichedSimulationResult: React.FC<{
         chainNetwork={chainNetwork}
       />
       <StateChangeTextBlock>
-        <Column>
+        <Column justifyContent="space-around">
           <StateChangeText isPositiveEffect={isPositiveEffect}>
             {stateChange.humanReadableDiff}
           </StateChangeText>
@@ -78,6 +78,6 @@ const StateChangeText = styled(Text).attrs({ weight: "semi-bold" })<{
   isPositiveEffect?: boolean;
 }>`
   color: ${({ isPositiveEffect, theme }) =>
-    isPositiveEffect ? theme.palette.green : theme.palette.red};
+    isPositiveEffect ? theme.colors.success : theme.colors.danger};
   line-height: 16px;
 `;

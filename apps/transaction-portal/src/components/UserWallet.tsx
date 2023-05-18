@@ -16,7 +16,6 @@ const StyledContainer = styled.button`
   border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
   height: 45px;
-  width: 200px;
 `;
 
 const Connected = styled.div`

@@ -34,7 +34,7 @@ const StyledTextXL = styled(Text).attrs({
   text-align: center;
   margin-bottom: 32px;
   color: ${({ $darkMode, theme }) =>
-    $darkMode ? theme.palette.warningText : theme.palette.black};
+    $darkMode ? theme.colors.foregroundDanger : theme.colors.foregroundPrimary};
 `;
 
 const StyledText = styled(Text)<SharedProps>`
@@ -42,7 +42,7 @@ const StyledText = styled(Text)<SharedProps>`
   margin-bottom: 32px;
   line-height: 22px;
   color: ${({ $darkMode, theme }) =>
-    $darkMode ? theme.palette.warningText : theme.palette.black};
+    $darkMode ? theme.colors.foregroundDanger : theme.colors.foregroundPrimary};
 `;
 
 const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
@@ -58,7 +58,7 @@ const StyledBlowfishInvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
 const Wrapper = styled.div<SharedProps>`
   width: 100%;
   background-color: ${({ $darkMode, theme }) =>
-    $darkMode ? "#340000" : theme.palette.white};
+    $darkMode ? "#340000" : theme.colors.backgroundPrimary};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);

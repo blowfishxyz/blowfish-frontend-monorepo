@@ -1,6 +1,26 @@
+import React from "react";
 import { css, styled } from "styled-components";
 
-import { BaseButton } from "./BaseButton";
+const resetStyles = css`
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+  overflow: visible;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  line-height: normal;
+  -webkit-font-smoothing: inherit;
+  -moz-osx-font-smoothing: inherit;
+  -webkit-appearance: none;
+
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+`;
 
 const interactiveStyles = css`
   cursor: pointer;
@@ -35,49 +55,49 @@ const baseStyles = css`
   line-height: 23px;
 `;
 
+const secondaryDesign = css`
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+  border-radius: 12px;
+  color: #010101;
+`;
+
+const primaryDesign = css`
+  background: #000000;
+  box-shadow: 0px 9.94853px 24.1177px rgba(0, 0, 0, 0.136834),
+    0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+  color: #ffffff;
+
+  &:disabled {
+    background: rgba(0, 0, 0, 0.3);
+  }
+`;
+
 function getDesignStyles({ design }: ButtonProps) {
   if (design === "secondary") {
-    return css`
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(0, 0, 0, 0.3);
-      box-shadow: 0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
-        0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
-      border-radius: 12px;
-      color: #010101;
-    `;
+    return secondaryDesign;
   }
   if (design === "primary") {
-    return css`
-      background: #000000;
-      box-shadow: 0px 9.94853px 24.1177px rgba(0, 0, 0, 0.136834),
-        0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
-        0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
-      color: #ffffff;
-
-      &:disabled {
-        background: rgba(0, 0, 0, 0.3);
-      }
-    `;
+    return primaryDesign;
   }
-  return css`
-    background: #000000;
-    box-shadow: 0px 9.94853px 24.1177px rgba(0, 0, 0, 0.136834),
-      0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
-      0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
-    color: #ffffff;
-
-    &:disabled {
-      background: rgba(0, 0, 0, 0.3);
-    }
-  `;
+  return primaryDesign;
 }
 
 type ButtonProps = {
   design?: "primary" | "secondary";
 };
 
-export const Button = styled(BaseButton)<ButtonProps>`
+const ButtonComponent = styled.button<ButtonProps>`
+  ${resetStyles}
   ${baseStyles}
   ${getDesignStyles}
   ${interactiveStyles}
 `;
+
+export const Button = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
+>((props, ref) => <ButtonComponent ref={ref} {...props} />);

@@ -9,7 +9,6 @@ import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 import { Text } from "@blowfish/ui/core";
-
 import { shortenHex } from "~utils/hex";
 
 import {
@@ -34,6 +33,8 @@ const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
       return <ArbitrumIcon style={{ height: "16px", width: "auto" }} />;
     case "bnb":
       return <BnbChainIcon style={{ height: "16px", width: "auto" }} />;
+    default:
+      return <EthereumIcon style={{ height: "16px", width: "auto" }} />;
   }
 };
 const IconForChainMemo = React.memo(IconForChain);
@@ -93,7 +94,7 @@ const Wrapper = styled.div<{
   display: flex;
   position: relative;
   background-color: ${({ $severity, theme }) =>
-    theme.contextBackgroundColors[$severity ?? "INFO"]};
+    theme.severityColors[$severity ?? "INFO"].background};
   padding: 48px 12px 12px 12px;
   min-height: 100vh;
   height: 100%;

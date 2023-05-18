@@ -68,7 +68,7 @@ type InfoRowProps = {
 
 const InfoRow = ({ label, value }: InfoRowProps) => (
   <>
-    <Row justify="space-between">
+    <Row justifyContent="space-between">
       <Text design="secondary">{label}</Text>
       <CardText>{value}</CardText>
     </Row>
@@ -91,7 +91,7 @@ const PendingView = () => {
         <InfoRow
           label="Status"
           value={
-            <Row gap="md">
+            <Row gap="md" alignItems="center">
               <TinyCircle />
               <CardText>Being mined</CardText>
             </Row>
@@ -107,7 +107,7 @@ const PendingView = () => {
         />
         <InfoRow label="Transaction Fee" value="$4.55" />
       </TxnInfoWrapper>
-      <CardRow gap="md">
+      <CardRow gap="md" width="100%">
         <CardSmallSecondaryButton>Report</CardSmallSecondaryButton>
         <CardPrimaryButton>
           <StyledSpeedUpIcon />

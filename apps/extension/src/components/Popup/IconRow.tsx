@@ -91,7 +91,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   padding-bottom: 20px;
-  background-color: ${({ theme }) => theme.contextBackgroundColors["INFO"]};
+  background-color: ${({ theme }) => theme.severityColors.INFO.background};
 `;
 
 const PopupFooter = () => {

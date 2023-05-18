@@ -11,6 +11,8 @@ export const PeriodDurationContainer = styled(Row)`
   color: white;
   padding: 0 20px;
   gap: 20px;
+  width: 100%;
+  align-items: center;
 `;
 
 export const DurationButton = styled(SmallButtonPrimary)<{ index: number }>`
