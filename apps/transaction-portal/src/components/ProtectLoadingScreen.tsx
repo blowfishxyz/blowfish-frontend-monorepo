@@ -32,7 +32,9 @@ const ProtectLoadingScreen = () => {
     <ProtectLoadingScreenContainer>
       <Column gap="md" alignItems="center">
         <StyledBlowfishIcon />
-        <ProtectLoadingScreenTitle size="xl" weight="semi-bold">Simulating...</ProtectLoadingScreenTitle>
+        <ProtectLoadingScreenTitle size="xl" weight="semi-bold">
+          Simulating...
+        </ProtectLoadingScreenTitle>
         <ProtectLoadingScreenMessage>
           We are making sure that it is safe for you to proceed with this
           transaction.
