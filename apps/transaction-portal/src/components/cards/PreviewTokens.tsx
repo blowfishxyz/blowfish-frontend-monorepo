@@ -34,12 +34,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
 }) => {
   return (
     <PreviewTokenContainer>
-      <TxnImage
-        src={imageUrl}
-        alt={name}
-        $width={"48px"}
-        $height={"48px"}
-      />
+      <TxnImage src={imageUrl} alt={name} $width={"48px"} $height={"48px"} />
       <Column marginTop={10}>
         <Row alignItems="flex-start">
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>

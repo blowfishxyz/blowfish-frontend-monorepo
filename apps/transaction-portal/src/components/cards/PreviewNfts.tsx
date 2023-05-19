@@ -17,12 +17,7 @@ interface PreviewNftProps {
 export const PreviewNfts: React.FC<PreviewNftProps> = ({ imageUrl, name }) => {
   return (
     <PreviewTokenContainer>
-      <TxnImage
-        src={imageUrl}
-        alt={name}
-        $width={"120px"}
-        $height={"120px"}
-      />
+      <TxnImage src={imageUrl} alt={name} $width={"120px"} $height={"120px"} />
       <Column marginTop={10}>
         <Row alignItems="flex-start">
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
