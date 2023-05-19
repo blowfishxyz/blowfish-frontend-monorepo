@@ -7,6 +7,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const domain = req.query.domain as string;
+  if (!domain) {
+    logger.debug("Reporting domain missing in request query");
+    res.status(400).json({ error: "Reporting domain missing" });
+    return;
+  }
   logger.debug("Start reporting: " + domain);
   try {
     await reportIgnoredDomain(domain);
@@ -14,7 +19,7 @@ export default async function handler(
     return;
   } catch (e) {
     logger.debug("Error while reporting: " + e);
-    res.status(400).json({ error: (e as any).message });
+    res.status(420).json({ error: (e as any).message });
     return;
   }
 }

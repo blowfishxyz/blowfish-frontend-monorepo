@@ -17,10 +17,15 @@ import { sendAllowlistedDomain } from "~utils/messages";
 
 async function report(domain: string) {
   try {
-    await fetch(`/api/report-block?domain=${domain}`).then((x) => x.json());
+    await fetch(`/api/report-block?domain=${domain}`).then(async (x) => {
+      if (x.ok) {
+        return x.json();
+      }
+      throw new Error((await x.json()).error);
+    });
     logger.debug(`Reported ${domain}`);
   } catch (e) {
-    logger.debug(`Report faild: ${(e as any).message}`);
+    logger.debug(`Report failed: ${(e as any).message}`);
   }
 }
 
