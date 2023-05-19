@@ -10,6 +10,7 @@ export interface TextProps {
   weight?: "semi-bold" | "bold" | "normal";
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   textAlign?: Properties["textAlign"];
+  truncate?: boolean;
 }
 
 const StyledText = styled(StyledBaseText)<TextProps>`
@@ -126,9 +127,20 @@ function getDesignStyles({ design }: TextProps) {
 }
 
 function getTextSpecificStyles(props: TextProps) {
+  const rules = [];
   if (props.textAlign) {
-    return css`
+    rules.push(css`
       text-align: ${props.textAlign};
-    `;
+    `);
   }
+  if (props.truncate) {
+    rules.push(
+      css`
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      `
+    );
+  }
+  return rules;
 }
