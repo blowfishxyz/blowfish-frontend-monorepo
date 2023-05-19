@@ -69,8 +69,11 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const isApproval = kind?.includes("APPROVAL");
 
   return (
-    <TxnSimulationWrapper justify="space-between" align="flex-start">
-      <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
+    <TxnSimulationWrapper
+      justifyContent="space-between"
+      alignItems="flex-start"
+    >
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
         <TxnSimulationImage>
           <TxnImage src={imageUrl} alt="NFT" />
           <ArrowIconWrapper $isReceived={!!isApproval}>
@@ -82,7 +85,7 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
         </TxnSimulationText>
       </TxnSimulationImageMsgWrapper>
       <TxnSimulationValue alignItems="flex-end">
-        <TxnSimulationText semiBold>$25,200</TxnSimulationText>
+        <TxnSimulationText weight="semi-bold">$25,200</TxnSimulationText>
         <SmallGrayText>18.99 ETH</SmallGrayText>
       </TxnSimulationValue>
     </TxnSimulationWrapper>

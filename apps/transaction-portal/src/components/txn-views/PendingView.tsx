@@ -1,6 +1,6 @@
 import React from "react";
 import { styled, keyframes } from "styled-components";
-import { Row, TextXL, Column, GrayText, size } from "@blowfish/ui/core";
+import { Row, Text, Column, size } from "@blowfish/ui/core";
 import { BlowfishIcon, SpeedUpIcon } from "@blowfish/ui/icons";
 import {
   Divider,
@@ -37,7 +37,7 @@ const StyledSpeedUpIcon = styled(SpeedUpIcon)`
   }
 `;
 
-const StyledTextXL = styled(TextXL)`
+const StyledTextXL = styled(Text).attrs({ size: "xxl" })`
   margin: 8px;
 `;
 
@@ -68,8 +68,8 @@ type InfoRowProps = {
 
 const InfoRow = ({ label, value }: InfoRowProps) => (
   <>
-    <Row justify="space-between">
-      <GrayText>{label}</GrayText>
+    <Row justifyContent="space-between">
+      <Text design="secondary">{label}</Text>
       <CardText>{value}</CardText>
     </Row>
     <Divider margin="0.8rem 0" />
@@ -84,14 +84,14 @@ const PendingView = () => {
       <StyledCenteredText>
         Your transaction is being sent to the Ethereum blockchain.
       </StyledCenteredText>
-      <GrayText>
+      <Text design="secondary">
         <StyledGrayLink href="">View on Etherscan →</StyledGrayLink>
-      </GrayText>
+      </Text>
       <TxnInfoWrapper>
         <InfoRow
           label="Status"
           value={
-            <Row gap="md">
+            <Row gap="md" alignItems="center">
               <TinyCircle />
               <CardText>Being mined</CardText>
             </Row>
@@ -101,13 +101,13 @@ const PendingView = () => {
           label="Confirmations"
           value={
             <>
-              3 <GrayText>of 30</GrayText>
+              3 <Text design="secondary">of 30</Text>
             </>
           }
         />
         <InfoRow label="Transaction Fee" value="$4.55" />
       </TxnInfoWrapper>
-      <CardRow gap="md">
+      <CardRow gap="md" width="100%">
         <CardSmallSecondaryButton>Report</CardSmallSecondaryButton>
         <CardPrimaryButton>
           <StyledSpeedUpIcon />

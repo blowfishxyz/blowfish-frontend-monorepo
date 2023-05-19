@@ -21,7 +21,7 @@ const ButtonRow = styled.div`
     width: 120px;
   }
 
-  @media only screen and ${breakpoint.device.lg} {
+  @media only screen and (${breakpoint.device.lg}) {
     display: grid;
     grid-template-columns: 1fr 120px;
     ${PrimaryButton} {

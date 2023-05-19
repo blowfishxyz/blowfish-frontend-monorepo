@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { Footer } from "../components/Footer";
-import { TextXL, Text } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 
 const Main = styled.main`
-  max-width: 1280px;
+  max-width: 1024px;
   margin: auto;
   padding: 0 24px;
 `;
@@ -22,6 +22,10 @@ const MainLi = styled(Li)`
     line-height: 24px;
     font-weight: 500;
   }
+  a {
+    color: rgb(0, 0, 238);
+    text-decoration: underline;
+  }
 `;
 
 const TosContainer = styled.div``;
@@ -31,7 +35,9 @@ const Home = () => {
     <>
       <Main>
         <TosContainer>
-          <TextXL as="h1">Blowfish Customer Terms of Service</TextXL>
+          <Text as="h1" size="xxl">
+            Blowfish Customer Terms of Service
+          </Text>
           <Text style={{ fontStyle: "italic" }}>
             Last updated: February 15, 2023
           </Text>

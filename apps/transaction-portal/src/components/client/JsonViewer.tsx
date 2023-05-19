@@ -3,16 +3,16 @@ import React, { useMemo } from "react";
 import ReactJson from "react-json-view";
 import styled, { css } from "styled-components";
 
-import { TextSmall } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 
 const Wrapper = styled.div`
   margin: 16px 0;
 `;
 
-const StyledTextSmall = styled(TextSmall)<{
-  capitalize?: boolean;
-  isValue?: boolean;
-}>`
+type StyledTextSmallProps = { capitalize?: boolean; isValue?: boolean };
+const StyledTextSmall = styled(Text).attrs({
+  size: "sm",
+})<StyledTextSmallProps>`
   word-wrap: break-word;
   ${(props) =>
     props.isValue &&
@@ -59,7 +59,7 @@ const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
       {title && (
         <StyledTextSmall
           capitalize
-          semiBold
+          weight="semi-bold"
           as="div"
           style={{ marginBottom: "4px" }}
         >
@@ -71,7 +71,7 @@ const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
 
         return (
           <DetailsRow key={`details-${key}`}>
-            <StyledTextSmall capitalize secondary>
+            <StyledTextSmall capitalize design="secondary">
               {key}
             </StyledTextSmall>
             <StyledTextSmall isValue>{displayValue}</StyledTextSmall>

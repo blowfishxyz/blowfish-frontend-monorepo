@@ -3,8 +3,7 @@ import styled, { css } from "styled-components";
 import {
   PrimaryButton,
   SecondaryButton,
-  GrayText,
-  RedText,
+  Text,
   device,
 } from "@blowfish/ui/core";
 
@@ -23,7 +22,7 @@ export const BottomMenuWrapper = styled.div<BottomMenuWrapperProps>`
   right: 0;
   bottom: 22px;
   background: ${({ theme, $slim }) =>
-    $slim ? "transparent" : theme.palette.white};
+    $slim ? "transparent" : theme.colors.backgroundPrimary};
   display: flex;
   align-items: center;
   ${({ $slim }) =>
@@ -90,9 +89,9 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
   return (
     <BottomMenuWrapper style={style} className={className}>
       {isImpersonatingWallet ? (
-        <RedText>Confirm disabled while impersonating</RedText>
+        <Text design="danger">Confirm disabled while impersonating</Text>
       ) : (
-        <GrayText>Confirm to continue to your wallet</GrayText>
+        <Text design="secondary">Confirm to continue to your wallet</Text>
       )}
       <Row>
         <SecondaryButton style={{ width: "172px" }} onClick={onCancel}>

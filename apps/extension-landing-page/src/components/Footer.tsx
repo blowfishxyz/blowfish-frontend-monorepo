@@ -38,7 +38,8 @@ const FooterContainer = styled.div`
 
   @media only screen and (${device.md}) {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
     padding: 120px 0px 370px 0px;
   }
   @media only screen and (${device.lg}) {
@@ -61,6 +62,10 @@ const LinkColumn = styled.div`
   gap: 0;
   border-radius: 0px 0px 0px 0px;
   margin-right: 20px;
+
+  @media only screen and (${device.lg}) {
+    margin-left: 20px;
+  }
 `;
 const FooterLink = styled.div`
   font-size: 20px;
@@ -96,7 +101,7 @@ const FooterLink = styled.div`
 `;
 const LogoSide = styled.div`
   display: flex;
-  flex: 16;
+  flex-grow: 0;
   padding-bottom: 40px;
 
   @media only screen and (${device.md}) {
@@ -112,7 +117,7 @@ const LogoSide = styled.div`
 `;
 const MenuSide = styled.div`
   display: flex;
-  flex: 21;
+  flex: 1;
 
   @media only screen and (max-width: ${size.md}) {
     flex-direction: column;
@@ -161,14 +166,6 @@ export const Footer: React.FC = () => {
               Join us
             </Link>
           </FooterLink>
-          <FooterLink>
-            <Link
-              href="https://blowfish-xyz.notion.site/Blowfish-Responsible-Disclosure-Policy-6ea9c2b4774246dfaac2c7fb5ca9e62b"
-              target="_blank"
-            >
-              Responsible Disclosure Policy
-            </Link>
-          </FooterLink>
         </LinkColumn>
         <LinkColumn>
           <FooterLink>
@@ -189,8 +186,21 @@ export const Footer: React.FC = () => {
               Contact Us
             </Link>
           </FooterLink>
+        </LinkColumn>
+        <LinkColumn>
           <FooterLink>
             <Link href="/terms">Terms of Service</Link>
+          </FooterLink>
+          <FooterLink>
+            <Link href="/privacy">Privacy Policy</Link>
+          </FooterLink>
+          <FooterLink>
+            <Link
+              href="https://blowfish-xyz.notion.site/Blowfish-Responsible-Disclosure-Policy-6ea9c2b4774246dfaac2c7fb5ca9e62b"
+              target="_blank"
+            >
+              Responsible Disclosure Policy
+            </Link>
           </FooterLink>
         </LinkColumn>
       </MenuSide>

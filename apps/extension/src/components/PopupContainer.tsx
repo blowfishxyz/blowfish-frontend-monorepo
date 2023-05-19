@@ -1,18 +1,13 @@
-import { TextSmall } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
-import type {
-  ChainFamily,
-  ChainNetwork,
-} from "@blowfish/utils/BlowfishApiClient";
+import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
-import {
-  REGULAR_BOTTOM_MENU_HEIGHT,
-  SLIM_BOTTOM_MENU_HEIGHT,
-} from "./BottomMenus";
+const SLIM_BOTTOM_MENU_HEIGHT = 96;
+const REGULAR_BOTTOM_MENU_HEIGHT = 154;
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
@@ -76,7 +71,7 @@ const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
   display: flex;
   position: relative;
   background-color: ${({ severity, theme }) =>
-    theme.contextBackgroundColors[severity ?? "INFO"]};
+    theme.severityColors[severity ?? "INFO"].background};
   min-height: 100vh;
   height: 100%;
   width: 100%;
@@ -112,9 +107,9 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       {userAccount && (
         <HeaderLeft>
           <StyledWalletIcon />
-          <TextSmall style={{ marginLeft: "9px" }} secondary>
+          <Text style={{ marginLeft: "9px" }} design="secondary" size="sm">
             {shortenHex(userAccount)}
-          </TextSmall>
+          </Text>
         </HeaderLeft>
       )}
       {chainFamily && chainNetwork && (

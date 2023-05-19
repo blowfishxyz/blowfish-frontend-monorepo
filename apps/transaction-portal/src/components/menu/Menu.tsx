@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { styled } from "styled-components";
-import { GrayText, Text } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui/core";
 import { MenuIcon } from "@blowfish/ui/icons";
 
 const Wrapper = styled.div`
@@ -9,7 +9,7 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: ${({ theme }) => theme.palette.white};
+  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   border: 1px solid rgba(0, 0, 0, 0.1);
   padding: 10px 0;
   border-radius: 50%;
@@ -21,7 +21,7 @@ const Dropdown = styled.div`
   position: absolute;
   top: 50px;
   right: 0;
-  background-color: ${({ theme }) => theme.palette.white};
+  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -35,9 +35,10 @@ const MenuTitle = styled(Text)`
   font-weight: ${({ theme }) => theme.fontWeights.semiBold};
 `;
 
-const MenuDescription = styled(GrayText)`
-  font-size: 14px;
-`;
+const MenuDescription = styled(Text).attrs({
+  size: "sm",
+  design: "secondary",
+})``;
 
 const DropdownItem = styled.div`
   padding: 20px;

@@ -1,7 +1,7 @@
 {
   "name": "@blowfish/extension",
   "displayName": "Blowfish Wallet Protect V2 BETA",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Blowfish API protection for injected web3 wallets",
   "author": "Kim Persson",
   "scripts": {
@@ -14,9 +14,6 @@
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
     "lint": "pnpm lint:eslint && pnpm lint:prettier:check",
     "typecheck": "tsc --noEmit",
-    "types:clean": "(cd ./src/utils/BlowfishApiClient/types && find . ! -name 'index.ts' -type f -exec rm -f {} + )",
-    "types:copy": "cp ../blowfish-monorepo/components/types/bindings/* ./src/utils/BlowfishApiClient/types",
-    "types:update": "pnpm types:clean && pnpm types:copy && pnpm lint:prettier && pnpm typecheck",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chromatic": "npx chromatic --project-token=3a6769686749"
@@ -32,7 +29,6 @@
     "decimal.js": "^10.4.3",
     "eth-rpc-errors": "^4.0.3",
     "ethers": "^5.7.2",
-    "lottie-react": "^2.3.1",
     "object-hash": "^3.0.0",
     "plasmo": "0.61.2",
     "polished": "^4.2.2",

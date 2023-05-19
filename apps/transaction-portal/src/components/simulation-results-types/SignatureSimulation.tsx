@@ -36,11 +36,11 @@ const SignatureSimulationMsg = styled(Row)`
 
 const SignatureSimulation: React.FC<SignatureSimulationProps> = ({ data }) => {
   return (
-    <SignatureSimulationWrapper align="center" gap="md">
+    <SignatureSimulationWrapper alignItems="center" gap="md">
       <TxnImage src={data.imageUrl} />
       <SignatureSimulationMsgWrapper>
         <SignatureSimulationAction>
-          <Text semiBold>Connect wallet</Text> to{" "}
+          <Text weight="semi-bold">Connect wallet</Text> to{" "}
           <CardBlackTextLink href={`${data.url}`}>{data.url}</CardBlackTextLink>
         </SignatureSimulationAction>
         <SignatureSimulationMsg>

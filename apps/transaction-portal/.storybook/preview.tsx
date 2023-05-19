@@ -7,7 +7,7 @@ import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
-import { themes } from "../src/styles/theme";
+import { themes } from "@blowfish/ui/core";
 import { Wallet } from "ethers";
 
 export const parameters = {

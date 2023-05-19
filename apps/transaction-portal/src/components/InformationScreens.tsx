@@ -1,13 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import {
-  TextButton,
-  Text,
-  Row,
-  PrimaryButton,
-  TextXL,
-} from "@blowfish/ui/core";
+import { TextButton, Text, Row, PrimaryButton } from "@blowfish/ui/core";
 import { ContentToggle } from "./ContentToggle";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
@@ -33,11 +27,14 @@ interface SharedProps {
   $darkMode?: boolean;
 }
 
-const StyledTextXL = styled(TextXL)<SharedProps>`
+const StyledTextXL = styled(Text).attrs({
+  size: "xxl",
+  weight: "semi-bold",
+})<SharedProps>`
   text-align: center;
   margin-bottom: 32px;
   color: ${({ $darkMode, theme }) =>
-    $darkMode ? theme.palette.warningText : theme.palette.black};
+    $darkMode ? theme.colors.foregroundDanger : theme.colors.foregroundPrimary};
 `;
 
 const StyledText = styled(Text)<SharedProps>`
@@ -45,7 +42,7 @@ const StyledText = styled(Text)<SharedProps>`
   margin-bottom: 32px;
   line-height: 22px;
   color: ${({ $darkMode, theme }) =>
-    $darkMode ? theme.palette.warningText : theme.palette.black};
+    $darkMode ? theme.colors.foregroundDanger : theme.colors.foregroundPrimary};
 `;
 
 const StyledBlowfishWarningIcon = styled(BlowfishWarningIcon)`
@@ -61,7 +58,7 @@ const StyledBlowfishInvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
 const Wrapper = styled.div<SharedProps>`
   width: 100%;
   background-color: ${({ $darkMode, theme }) =>
-    $darkMode ? "#340000" : theme.palette.white};
+    $darkMode ? "#340000" : theme.colors.backgroundPrimary};
   display: flex;
   flex-direction: column;
   box-shadow: 0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
@@ -249,7 +246,7 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
       {errorMessage && (
         <ContentToggle message="View error message">
           <WarningMessageWrapper>
-            <Text danger>{errorMessage}</Text>
+            <Text design="danger">{errorMessage}</Text>
           </WarningMessageWrapper>
         </ContentToggle>
       )}
@@ -331,7 +328,7 @@ export const AccountNotConnectedScreen: React.FC<
           <>
             <StyledText>
               You are impersonating{" "}
-              <StyledText semiBold>{impersonatingWallet}</StyledText>.
+              <StyledText weight="semi-bold">{impersonatingWallet}</StyledText>.
             </StyledText>
             <StyledText>
               Please connect a wallet to Blowfish Protect in order to proceed
@@ -340,8 +337,9 @@ export const AccountNotConnectedScreen: React.FC<
           </>
         ) : (
           <StyledText>
-            Please connect <StyledText semiBold>{accountToConnect}</StyledText>{" "}
-            to Blowfish&nbsp;Protect in order to proceed with the action
+            Please connect{" "}
+            <StyledText weight="semi-bold">{accountToConnect}</StyledText> to
+            Blowfish&nbsp;Protect in order to proceed with the action
           </StyledText>
         )}
         {onRetry && (
@@ -377,11 +375,11 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
       <StyledTextXL>Wallet connected to the wrong chain</StyledTextXL>
       <StyledText>
         Your are connected to{" "}
-        <StyledText semiBold style={{ textTransform: "capitalize" }}>
+        <StyledText weight="semi-bold" style={{ textTransform: "capitalize" }}>
           {chainIdToName(currentChainId)}
         </StyledText>{" "}
         but attempting to perform an action on{" "}
-        <StyledText semiBold style={{ textTransform: "capitalize" }}>
+        <StyledText weight="semi-bold" style={{ textTransform: "capitalize" }}>
           {chainIdToName(chainIdToConnect)}
         </StyledText>
         .
