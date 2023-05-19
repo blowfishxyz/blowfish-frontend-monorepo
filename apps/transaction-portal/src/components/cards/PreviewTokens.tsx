@@ -1,10 +1,7 @@
 import { Column, Row, Text } from "@blowfish/ui/core";
 import React from "react";
 import styled from "styled-components";
-import {
-  SmallGrayText,
-  TxnImage,
-} from "~components/simulation-results-types/common";
+import { TxnImage } from "~components/simulation-results-types/common";
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
 
@@ -12,16 +9,6 @@ const PreviewTokenContainer = styled.div``;
 
 const PreviewTokenNameWrapper = styled(Column)`
   margin-top: 10px;
-`;
-
-const PreviewTokenName = styled(Text)`
-  margin-bottom: 5px;
-  margin-right: 3px;
-  font-size: 15px;
-`;
-
-const PreviewTokenMoreInfo = styled(Text)`
-  font-size: 12px;
 `;
 
 const DataRow = styled(Row)`
@@ -35,8 +22,10 @@ interface DataRowProps {
 
 const DataRowComponent: React.FC<DataRowProps> = ({ label, value }) => (
   <DataRow justifyContent="space-between">
-    <SmallGrayText>{label}</SmallGrayText>
-    <PreviewTokenMoreInfo>{value}</PreviewTokenMoreInfo>
+    <Text design="secondary" size="xs">
+      {label}
+    </Text>
+    <Text size="xs">{value}</Text>
   </DataRow>
 );
 
@@ -63,15 +52,22 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
       />
       <PreviewTokenNameWrapper>
         <Row alignItems="flex-start">
-          <PreviewTokenName weight="semi-bold">{name}</PreviewTokenName>
+          <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
+            {name}
+          </Text>
           <VerifiedIcon />
         </Row>
         {isNft ? (
-          <PreviewTokenMoreInfo>
-            #2831 <SmallGrayText>of 10,000</SmallGrayText>
-          </PreviewTokenMoreInfo>
+          <Text size="xs">
+            #2831{" "}
+            <Text design="secondary" size="xs">
+              of 10,000
+            </Text>
+          </Text>
         ) : (
-          <SmallGrayText>{symbol}</SmallGrayText>
+          <Text design="secondary" size="xs">
+            {symbol}
+          </Text>
         )}
       </PreviewTokenNameWrapper>
       <Divider margin="13px 0" />
@@ -82,7 +78,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
             label="Rarity"
             value={
               <>
-                <PreviewTokenMoreInfo>3,345</PreviewTokenMoreInfo>
+                <Text size="xs">3,345</Text>
                 <Text design="secondary" size="sm">
                   / 10,000
                 </Text>

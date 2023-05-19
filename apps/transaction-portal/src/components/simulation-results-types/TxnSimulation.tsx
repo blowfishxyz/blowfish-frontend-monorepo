@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
+import Decimal from "decimal.js";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText } from "./common";
 import { PreviewTokens } from "~components/cards/PreviewTokens";
@@ -73,6 +74,18 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { name, symbol, imageSrc, isNft, displayText } =
     getTxnSimulationData(rawInfo);
   const isApproval = checkIsApproval(rawInfo);
+  const diff = useMemo(() => {
+    const { amount } = rawInfo.data;
+
+    if (typeof amount === "object") {
+      return new Decimal(amount.before).sub(amount.after);
+    }
+
+    return new Decimal(amount);
+  }, [rawInfo]);
+
+  const isPositiveEffect =
+    (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
 
   return (
     <TxnSimulationWrapper
@@ -85,7 +98,7 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             <TxnSimulationImage>
               <AssetImageV2
                 stateChange={txnData}
-                isPositiveEffect={isApproval}
+                isPositiveEffect={isPositiveEffect}
                 chainFamily="ethereum"
                 chainNetwork="mainnet"
               />
