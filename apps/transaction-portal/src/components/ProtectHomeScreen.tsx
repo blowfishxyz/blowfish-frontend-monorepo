@@ -1,13 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
-import ProtectHeader from "./ProtectHeader";
-import ProtectLoadingScreen from "./ProtectLoadingScreen";
-
-const ProtectScreenWrapper = styled.div`
-  padding: 40px;
-  height: 100%;
-  background: #efefef;
-`;
+import { ProtectLoadingScreen } from "./ProtectLoadingScreen";
+import { Layout } from "./layout/Layout";
 
 const LoadingWrapper = styled.div`
   width: 100%;
@@ -19,12 +13,11 @@ const LoadingWrapper = styled.div`
 
 const ProtectHomeScreen = () => {
   return (
-    <ProtectScreenWrapper>
-      <ProtectHeader />
+    <Layout>
       <LoadingWrapper>
         <ProtectLoadingScreen />
       </LoadingWrapper>
-    </ProtectScreenWrapper>
+    </Layout>
   );
 };
 

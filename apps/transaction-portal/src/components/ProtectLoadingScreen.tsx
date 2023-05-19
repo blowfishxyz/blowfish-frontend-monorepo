@@ -2,16 +2,16 @@ import React from "react";
 import { CardText, CardWrapper } from "./cards/common";
 import { styled } from "styled-components";
 import { Column, Text } from "@blowfish/ui/core";
-import { BlowfishIcon } from "@blowfish/ui/icons";
+import { LoadingAnimation } from "./LoadingAnimation";
 
 const ProtectLoadingScreenContainer = styled(CardWrapper)`
   flex: unset;
   width: 370px;
 `;
 
-const StyledBlowfishIcon = styled(BlowfishIcon)`
+const StyledLoadingAnimation = styled(LoadingAnimation)`
   width: 104px;
-  height: 102px;
+  height: auto;
   opacity: 0.2;
 `;
 
@@ -22,20 +22,24 @@ const ProtectLoadingScreenTitle = styled(Text)`
 const ProtectLoadingScreenMessage = styled(CardText)`
   width: 250px;
   text-align: center;
-  font-size: 15px;
-  line-height: 21px;
   letter-spacing: -0.01em;
 `;
 
-const ProtectLoadingScreen = () => {
+interface ProtectLoadingScreenProps {
+  animate?: boolean;
+}
+
+export const ProtectLoadingScreen = ({
+  animate = true,
+}: ProtectLoadingScreenProps) => {
   return (
     <ProtectLoadingScreenContainer>
       <Column gap="md" alignItems="center">
-        <StyledBlowfishIcon />
+        <StyledLoadingAnimation animate={animate} />
         <ProtectLoadingScreenTitle size="xl" weight="semi-bold">
           Simulating...
         </ProtectLoadingScreenTitle>
-        <ProtectLoadingScreenMessage>
+        <ProtectLoadingScreenMessage size="md">
           We are making sure that it is safe for you to proceed with this
           transaction.
         </ProtectLoadingScreenMessage>
@@ -43,5 +47,3 @@ const ProtectLoadingScreen = () => {
     </ProtectLoadingScreenContainer>
   );
 };
-
-export default ProtectLoadingScreen;
