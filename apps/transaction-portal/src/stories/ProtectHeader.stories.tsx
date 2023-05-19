@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react/types-6-0";
-import ProtectHeader from "~components/ProtectHeader";
+import { ProtectHeader } from "~components/ProtectHeader";
 
 export default {
   title: "Components/ProtectHeader",

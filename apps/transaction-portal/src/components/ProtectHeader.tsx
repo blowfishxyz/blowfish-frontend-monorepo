@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import { Row } from "@blowfish/ui/core";
 import { BlowfishIconFull } from "@blowfish/ui/icons";
-import Menu from "./menu/Menu";
+import { Menu } from "./menu/Menu";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 
 const ProtectScreenContent = styled(Row)`
@@ -18,7 +18,7 @@ const RightContentWrapper = styled(Row)`
   width: unset;
 `;
 
-const ProtectHeader = () => {
+export const ProtectHeader = () => {
   return (
     <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull />
@@ -29,5 +29,3 @@ const ProtectHeader = () => {
     </ProtectScreenContent>
   );
 };
-
-export default ProtectHeader;

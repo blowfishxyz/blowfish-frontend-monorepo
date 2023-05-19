@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
-import Chip from "../chips/Chip";
+import { Chip } from "../chips/Chip";
 import {
   CardWrapper,
   CardContent,
@@ -9,8 +9,8 @@ import {
   CardText,
   CardBlackTextLink,
 } from "./common";
-import TxnSimulation from "~components/simulation-results-types/TxnSimulation";
-import SignatureSimulation from "~components/simulation-results-types/SignatureSimulation";
+import { TxnSimulation } from "~components/simulation-results-types/TxnSimulation";
+import { SignatureSimulation } from "~components/simulation-results-types/SignatureSimulation";
 import { VerifiedIcon } from "@blowfish/ui/icons";
 import {
   SignatureDataType,
@@ -72,7 +72,7 @@ const renderSimulation = (
 ) => {
   if (simulationType === "transaction") {
     return txnSimulationData.map((txnData, i) => (
-      <TxnSimulation key={i} txnData={txnData.rawInfo} />
+      <TxnSimulation key={i} txnData={txnData} />
     ));
   } else if (simulationType === "signature") {
     return signatureData.map((data, i) => (
@@ -84,7 +84,7 @@ const renderSimulation = (
 
 const labels = ["Marketplace", "Label2", "Label3", "Label4"];
 
-const PreviewTxn: FC<PreviewTxnProps> = ({
+export const PreviewTxn: FC<PreviewTxnProps> = ({
   simulationType,
   txnSimulationData = [],
   signatureData = [],
@@ -164,5 +164,3 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     </StyledCardContent>
   </CardWrapper>
 );
-
-export default PreviewTxn;

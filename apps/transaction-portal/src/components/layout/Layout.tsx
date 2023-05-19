@@ -1,7 +1,7 @@
 import { Column } from "@blowfish/ui/core";
 import React from "react";
 import { styled } from "styled-components";
-import ProtectHeader from "~components/ProtectHeader";
+import { ProtectHeader } from "~components/ProtectHeader";
 
 const Wrapper = styled(Column)`
   height: 100%;

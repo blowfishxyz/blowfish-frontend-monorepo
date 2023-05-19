@@ -1,10 +1,16 @@
-import type { EvmExpectedStateChange } from "@blowfish/api-client";
+import {
+  EvmExpectedStateChange,
+  EvmExpectedStateChangesInnerRawInfo,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+} from "@blowfish/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
+import Decimal from "decimal.js";
 
 import {
   CHROMIMUM_INSTALL_EXTENSION_URL,
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
+import { U256_MAX_VALUE } from "../constants";
 import { logger } from "~utils/logger";
 
 // NOTE: the require statement below is to ensure we are using the punycode userland modules and not the deprecated core modules.
@@ -133,4 +139,160 @@ export const containsPunycode = (url: string): boolean => {
   } catch (err) {
     return false;
   }
+};
+
+const filterNullImageUrls = (imageUrl: string | undefined | null) => {
+  if (imageUrl === null) {
+    return undefined;
+  } else {
+    return imageUrl;
+  }
+};
+
+export const getTxnSimulationData = (
+  rawInfo: EvmExpectedStateChangesInnerRawInfo
+) => {
+  let name = "";
+  let imageSrc;
+  let symbol = "";
+  let isNft = false;
+  let displayText = "";
+
+  if (
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC721_TRANSFER"
+  ) {
+    isNft = true;
+    name = rawInfo.data.name;
+    imageSrc = filterNullImageUrls(rawInfo.data.metadata.rawImageUrl);
+
+    displayText = `${name} #${rawInfo.data.tokenId}`;
+  } else if (
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
+  ) {
+    isNft = false;
+    name = rawInfo.data.asset.name;
+    imageSrc = filterNullImageUrls(rawInfo.data.asset.imageUrl);
+
+    symbol = rawInfo.data.asset.symbol;
+    displayText = `${name} (${symbol})`;
+  }
+
+  return {
+    name,
+    imageSrc,
+    symbol,
+    isNft,
+    displayText,
+  };
+};
+
+export const checkIsApproval = (
+  rawInfo: EvmExpectedStateChangesInnerRawInfo
+): boolean => {
+  const { kind } = rawInfo;
+
+  if (
+    kind === "ERC20_APPROVAL" ||
+    kind === "ERC1155_APPROVAL_FOR_ALL" ||
+    kind === "ERC721_APPROVAL_FOR_ALL"
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+export const calculateTotalValue = (
+  kind: string,
+  data: any,
+  pricePerToken: number
+): number | null => {
+  if (
+    kind === "ERC20_TRANSFER" ||
+    kind === "ERC20_APPROVAL" ||
+    kind === "NATIVE_ASSET_TRANSFER"
+  ) {
+    const { before, after } = data.amount;
+
+    const difference = new Decimal(before).sub(after).abs();
+
+    if (kind === "ERC20_APPROVAL" && difference.eq(U256_MAX_VALUE)) {
+      return null;
+    }
+
+    return new Decimal(pricePerToken)
+      .times(difference)
+      .dividedBy(new Decimal(10).pow(data.asset.decimals))
+      .toNumber();
+  }
+
+  if (
+    kind === "ERC721_TRANSFER" ||
+    kind === "ERC1155_TRANSFER" ||
+    kind === "ERC721_APPROVAL"
+  ) {
+    return pricePerToken;
+  }
+
+  return null;
+};
+
+export const getAssetPricePerToken = (
+  rawInfo:
+    | EvmExpectedStateChangesInnerRawInfo
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+): number | null => {
+  if ("asset" in rawInfo.data) {
+    return rawInfo.data.asset.price?.dollarValuePerToken || null;
+  }
+
+  if ("assetPrice" in rawInfo.data) {
+    return rawInfo.data.assetPrice?.dollarValuePerToken || null;
+  }
+
+  return null;
+};
+
+export const getImageInfo = (
+  rawInfo:
+    | EvmExpectedStateChangesInnerRawInfo
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+): {
+  altText: string;
+  imageSrc: string | undefined;
+  verified?: boolean;
+} => {
+  let altText = "Asset";
+  let imageSrc;
+  let verified;
+
+  if (
+    rawInfo.kind === "ERC721_TRANSFER" ||
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC1155_TRANSFER"
+  ) {
+    altText =
+      rawInfo.kind !== "ERC1155_TRANSFER"
+        ? rawInfo.data.name
+        : `${altText} ${rawInfo.data.tokenId}`;
+    imageSrc = filterNullImageUrls(rawInfo.data?.metadata?.rawImageUrl);
+
+    return { altText, imageSrc };
+  } else if (
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "ERC20_PERMIT" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
+  ) {
+    imageSrc = filterNullImageUrls(rawInfo.data.asset?.imageUrl);
+
+    altText = rawInfo.data.asset.name;
+    verified = rawInfo.data.asset.verified;
+    return { altText, imageSrc, verified };
+  }
+
+  return { altText: "Asset", imageSrc: undefined };
 };

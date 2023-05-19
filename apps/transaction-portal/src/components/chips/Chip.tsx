@@ -34,12 +34,10 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
     `}
 `;
 
-const Chip = ({ text, ...rest }: ChipProps) => {
+export const Chip = ({ text, ...rest }: ChipProps) => {
   return (
     <ChipContainer {...rest}>
       <span>{text}</span>
     </ChipContainer>
   );
 };
-
-export default Chip;

@@ -1,77 +1,11 @@
-const dummyTxnSimulationData = [
-  {
-    rawInfo: {
-      kind: "ERC721_APPROVAL",
-      data: {
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
-        },
-      },
-    },
-  },
-  {
-    rawInfo: {
-      kind: "ERC721_APPROVAL",
-      data: {
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
-        },
-      },
-    },
-  },
-  {
-    rawInfo: {
-      kind: "ERC721_APPROVAL",
-      data: {
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
-        },
-      },
-    },
-  },
-  {
-    rawInfo: {
-      kind: "",
-      data: {
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-        name: "Bored Ape Yatch Club",
-        symbol: "DNFT",
-        tokenId: "1",
-        assetPrice: {
-          source: "Dummy Price Source",
-          last_updated_at: Date.now(),
-          dollar_value_per_token: 123.45,
-        },
-      },
-    },
-  },
-];
+import { EvmExpectedStateChangesInner } from "@blowfish/api-client";
+import {
+  receiveErc20,
+  sendErc20,
+  sendErc721,
+} from "~components/fixtures/state-changes";
+
+const dummyTxnSimulationData = [sendErc721, sendErc20, receiveErc20];
 
 const dummySignatureData = [
   {
@@ -81,32 +15,8 @@ const dummySignatureData = [
     message: "Sign in to Blur",
   },
 ];
-interface NftMetadata {
-  rawImageUrl: string;
-}
 
-interface AssetPrice {
-  source: string;
-  last_updated_at: number;
-  dollar_value_per_token: number;
-}
-
-interface TxnData {
-  metadata: NftMetadata;
-  name: string;
-  symbol: string;
-  tokenId: string;
-  assetPrice: AssetPrice;
-}
-
-type RawInfo = {
-  kind: string;
-  data: TxnData;
-};
-
-type TxnSimulationDataType = {
-  rawInfo: RawInfo;
-};
+type TxnSimulationDataType = EvmExpectedStateChangesInner;
 
 type SignatureDataType = {
   imageUrl: string;
@@ -116,4 +26,4 @@ type SignatureDataType = {
 };
 
 export { dummyTxnSimulationData, dummySignatureData };
-export type { TxnSimulationDataType, SignatureDataType, RawInfo };
+export type { TxnSimulationDataType, SignatureDataType };

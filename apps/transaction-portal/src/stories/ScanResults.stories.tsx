@@ -24,7 +24,7 @@ import {
   transactionBlockScanResult,
   transactionNoActionScanResult,
   transactionWarningScanResult,
-} from "./fixtures/scan";
+} from "../components/fixtures/scan";
 
 export default {
   title: "ScanResults",
