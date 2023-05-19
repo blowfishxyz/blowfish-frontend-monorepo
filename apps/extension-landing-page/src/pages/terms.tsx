@@ -3,7 +3,7 @@ import { Footer } from "../components/Footer";
 import { Text } from "@blowfish/ui/core";
 
 const Main = styled.main`
-  max-width: 1280px;
+  max-width: 1024px;
   margin: auto;
   padding: 0 24px;
 `;
@@ -21,6 +21,10 @@ const MainLi = styled(Li)`
     font-size: 21px;
     line-height: 24px;
     font-weight: 500;
+  }
+  a {
+    color: rgb(0, 0, 238);
+    text-decoration: underline;
   }
 `;
 
