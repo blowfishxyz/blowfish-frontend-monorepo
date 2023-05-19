@@ -3,8 +3,9 @@ import { styled } from "styled-components";
 import { ChainIcon } from "connectkit";
 import { Chain } from "wagmi";
 import { Column, Text } from "@blowfish/ui/core";
-import { shortenEnsName } from "~utils/utils";
+import { PlusIcon } from "@blowfish/ui/icons";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
+import { shortenEnsName } from "~utils/utils";
 
 const UserWalletConnectContainer = styled.button`
   display: flex;
@@ -12,18 +13,23 @@ const UserWalletConnectContainer = styled.button`
   align-items: center;
   background: white;
   border-radius: 58px;
-  padding: 10px;
-  gap: 8px;
+  padding: 5px 8px;
+  gap: 10px;
+  max-width: 185px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   cursor: pointer;
 `;
 
-const UserWalletConnectConnected = styled.div`
+const ChainContainer = styled.div`
+  position: relative;
+`;
+
+const UserWalletConnectConnected = styled.div<{ $isActive: boolean }>`
   position: absolute;
   bottom: 0;
   left: 25px;
   border-radius: 50%;
-  background: #00b94a;
+  background: ${({ $isActive }) => ($isActive ? "#00b94a" : "#B9B9B9")};
   height: 8px;
   width: 8px;
   outline: 2px solid white;
@@ -60,46 +66,53 @@ export type UserWalletProps = {
   chain: (Chain & { unsupported?: boolean | undefined }) | undefined;
 };
 
-const UserWalletConnect = ({
+export const UserWalletConnect: React.FC<UserWalletProps> = ({
   show,
   truncatedAddress,
   ensName,
-  isConnecting,
   isConnected,
   chain,
-}: UserWalletProps) => {
-  const getUserWalletMessage = (
-    isConnected: boolean,
-    isConnecting: boolean
-  ) => {
-    if (!isConnected && isConnecting) {
-      return "Connecting...";
-    } else if (!isConnected && !isConnecting) {
-      return "Connect wallet";
+}) => {
+  const renderUserWalletMessage = () => {
+    if (!isConnected) {
+      return (
+        <UserWalletAddress>
+          <Text size="sm" design="primary">
+            Connect
+          </Text>
+          <Text size="xs" design="secondary">
+            No wallet linked
+          </Text>
+        </UserWalletAddress>
+      );
     } else {
       return (
         <UserWalletAddress>
-          {ensName && <Text>{shortenEnsName(ensName)}</Text>}
-          <Text>{truncatedAddress}</Text>
+          {ensName && (
+            <Text size="sm" design="primary">
+              {shortenEnsName(ensName)}
+            </Text>
+          )}
+          <Text size="xs" design="secondary">
+            {truncatedAddress}
+          </Text>
         </UserWalletAddress>
       );
     }
   };
 
-  const userWalletMessage = getUserWalletMessage(isConnected, isConnecting);
+  const isActive = isConnected && !chain?.unsupported;
 
   return (
     <UserWalletConnectContainer onClick={show}>
-      <div>
+      <ChainContainer>
         <ChainIcon id={chain?.id} unsupported={chain?.unsupported} size={30} />
-        {!chain?.unsupported && <UserWalletConnectConnected />}
-      </div>
-      {userWalletMessage}
+        <UserWalletConnectConnected $isActive={isActive} />
+      </ChainContainer>
+      {renderUserWalletMessage()}
       <ChangeAccountContainer>
-        <SwitchIcon />
+        {!isConnected ? <PlusIcon /> : <SwitchIcon />}
       </ChangeAccountContainer>
     </UserWalletConnectContainer>
   );
 };
-
-export default UserWalletConnect;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import UserWalletConnect, {
+import {
+  UserWalletConnect,
   UserWalletProps,
 } from "~components/common/UserWalletConnect";
 
@@ -15,11 +16,11 @@ const Template: Story<UserWalletProps> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  show: () => console.log("show"),
+  show: () => alert("Wallet connect button clicked!"),
   truncatedAddress: "0x2dB2••••f5f3",
-  ensName: "vitalik.eth",
+  ensName: "kim.blowfish.xyz",
   isConnecting: false,
-  isConnected: false,
+  isConnected: true,
   chain: {
     id: 1,
     network: "homestead",
