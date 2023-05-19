@@ -2,10 +2,10 @@ import React from "react";
 import styled from "styled-components";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText } from "./common";
-import PreviewTokens from "~components/cards/PreviewTokens";
+import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { TxnSimulationDataType } from "./mock-data";
-import AssetPriceV2 from "~components/common/AssetPriceV2";
-import AssetImageV2 from "~components/common/AssetImageV2";
+import { AssetPriceV2 } from "~components/common/AssetPriceV2";
+import { AssetImageV2 } from "~components/common/AssetImageV2";
 import { checkIsApproval, getTxnSimulationData } from "~utils/utils";
 import {
   Tooltip,
@@ -68,7 +68,7 @@ interface TxnSimulationProps {
   txnData: TxnSimulationDataType;
 }
 
-const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
+export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { rawInfo } = txnData;
   const { name, symbol, imageSrc, isNft, displayText } =
     getTxnSimulationData(rawInfo);
@@ -114,5 +114,3 @@ const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
     </TxnSimulationWrapper>
   );
 };
-
-export default TxnSimulation;

@@ -81,7 +81,7 @@ const SimulationIconWrapper = styled.div<{
   }
 `;
 
-const AssetImageV2 = ({
+export const AssetImageV2 = ({
   stateChange,
   isPositiveEffect,
   chainFamily,
@@ -123,5 +123,3 @@ const AssetImageV2 = ({
     </SimulationResultImageWrapper>
   );
 };
-
-export default AssetImageV2;

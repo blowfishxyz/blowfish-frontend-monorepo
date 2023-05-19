@@ -1,6 +1,6 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import PreviewTokens from "~components/cards/PreviewTokens";
+import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { styled } from "styled-components";
 
 const PreviewTokenContainer = styled.div`

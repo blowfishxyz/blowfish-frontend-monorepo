@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import ProtectHeader from "./ProtectHeader";
+import { ProtectHeader } from "./ProtectHeader";
 
 const ProtectScreenWrapper = styled.div`
   padding: 40px;

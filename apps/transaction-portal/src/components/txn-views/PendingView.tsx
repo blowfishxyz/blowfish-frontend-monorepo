@@ -76,7 +76,7 @@ const InfoRow = ({ label, value }: InfoRowProps) => (
   </>
 );
 
-const PendingView = () => {
+export const PendingView = () => {
   return (
     <Column gap="md" alignItems="center">
       <StyledBlowfishIcon />
@@ -117,5 +117,3 @@ const PendingView = () => {
     </Column>
   );
 };
-
-export default PendingView;

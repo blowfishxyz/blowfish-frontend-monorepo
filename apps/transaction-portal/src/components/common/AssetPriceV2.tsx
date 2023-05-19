@@ -14,7 +14,7 @@ interface AssetPriceProps {
   stateChange: EvmExpectedStateChangesInner;
 }
 
-const AssetPriceV2 = ({ stateChange }: AssetPriceProps) => {
+export const AssetPriceV2 = ({ stateChange }: AssetPriceProps) => {
   const rawInfo = stateChange.rawInfo;
   const pricePerToken = getAssetPricePerToken(rawInfo);
 
@@ -39,5 +39,3 @@ const AssetPriceV2 = ({ stateChange }: AssetPriceProps) => {
     </>
   );
 };
-
-export default AssetPriceV2;

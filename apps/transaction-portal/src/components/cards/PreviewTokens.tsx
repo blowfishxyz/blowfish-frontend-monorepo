@@ -47,7 +47,7 @@ interface PreviewTokensProps {
   symbol?: string | undefined;
 }
 
-const PreviewTokens: React.FC<PreviewTokensProps> = ({
+export const PreviewTokens: React.FC<PreviewTokensProps> = ({
   imageUrl,
   name,
   isNft,
@@ -103,5 +103,3 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
     </PreviewTokenContainer>
   );
 };
-
-export default PreviewTokens;

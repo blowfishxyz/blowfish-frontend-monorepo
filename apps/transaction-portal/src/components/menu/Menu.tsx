@@ -53,7 +53,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Menu = () => {
+export const Menu = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -88,5 +88,3 @@ const Menu = () => {
     </Wrapper>
   );
 };
-
-export default Menu;
