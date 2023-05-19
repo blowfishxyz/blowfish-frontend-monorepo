@@ -59,8 +59,6 @@ Browser.runtime.onInstalled.addListener(async (obj) => {
 const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
   remotePort.onMessage.addListener(
     (message: Message<DappRequest["type"], DappRequest>) => {
-      logger.debug(message);
-
       if (isTransactionRequestMessage(message)) {
         return processTransactionRequest(message, remotePort);
       } else if (isSignTypedDataRequestMessage(message)) {
