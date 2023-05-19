@@ -32,7 +32,6 @@ const Dropdown = styled.div`
 const MenuTitle = styled(Text)`
   font-size: 20px;
   line-height: 23px;
-  font-weight: ${({ theme }) => theme.fontWeights.semiBold};
 `;
 
 const MenuDescription = styled(Text).attrs({
@@ -78,7 +77,7 @@ const Menu = () => {
         <Dropdown>
           {menuItems.map((item, index) => (
             <DropdownItem key={index}>
-              <MenuTitle>{item.title}</MenuTitle>
+              <MenuTitle weight="semi-bold">{item.title}</MenuTitle>
               <div>
                 <MenuDescription>{item.description}</MenuDescription>
               </div>

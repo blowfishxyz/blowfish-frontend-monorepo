@@ -61,7 +61,7 @@ export interface EvmNativeAsset {
      * @type {string}
      * @memberof EvmNativeAsset
      */
-    imageUrl: string | null;
+    imageUrl: string | undefined;
     /**
      * 
      * @type {AssetPrice}

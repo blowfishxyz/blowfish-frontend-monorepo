@@ -1,4 +1,4 @@
-import { Column, GrayText, PrimaryButton, Row, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui/core";
 import React from "react";
 import styled from "styled-components";
 import {
@@ -8,23 +8,7 @@ import {
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
 
-const PreviewTokenContainer = styled.div`
-  position: absolute;
-  background-color: ${({ theme }) => theme.palette.white};
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  z-index: 1;
-  top: 0;
-  left: 60px;
-  width: 237px;
-  border-radius: 12px;
-
-  ${SmallGrayText} {
-    font-size: 12px;
-  }
-`;
+const PreviewTokenContainer = styled.div``;
 
 const PreviewTokenNameWrapper = styled(Column)`
   margin-top: 10px;
@@ -44,23 +28,13 @@ const DataRow = styled(Row)`
   margin-bottom: 8px;
 `;
 
-const SmallButtonPrimary = styled(PrimaryButton)`
-  height: 40px;
-  font-size: 15px;
-  margin-top: 10px;
-`;
-
-const PreviewTokenSiteName = styled(Text)`
-  color: ${({ theme }) => theme.palette.white};
-`;
-
 interface DataRowProps {
   label: string;
   value: React.ReactNode;
 }
 
 const DataRowComponent: React.FC<DataRowProps> = ({ label, value }) => (
-  <DataRow justify="space-between">
+  <DataRow justifyContent="space-between">
     <SmallGrayText>{label}</SmallGrayText>
     <PreviewTokenMoreInfo>{value}</PreviewTokenMoreInfo>
   </DataRow>
@@ -84,12 +58,12 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
       <TxnImage
         src={imageUrl}
         alt="Preview Token"
-        $width={isNft ? "48px" : "120px"}
-        $height={isNft ? "48px" : "120px"}
+        $width={isNft ? "120px" : "48px"}
+        $height={isNft ? "120px" : "48px"}
       />
       <PreviewTokenNameWrapper>
-        <Row align="flex-start">
-          <PreviewTokenName semiBold>{name}</PreviewTokenName>
+        <Row alignItems="flex-start">
+          <PreviewTokenName weight="semi-bold">{name}</PreviewTokenName>
           <VerifiedIcon />
         </Row>
         {isNft ? (
@@ -109,7 +83,9 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
             value={
               <>
                 <PreviewTokenMoreInfo>3,345</PreviewTokenMoreInfo>
-                <SmallGrayText>/ 10,000</SmallGrayText>
+                <Text design="secondary" size="sm">
+                  / 10,000
+                </Text>
               </>
             }
           />
@@ -124,12 +100,6 @@ const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <DataRowComponent label="Token Lists" value="3" />
         </div>
       )}
-      <SmallButtonPrimary>
-        <PreviewTokenSiteName>
-          <GrayText>View on </GrayText>
-          {isNft ? "Blur" : "Etherscan"}
-        </PreviewTokenSiteName>
-      </SmallButtonPrimary>
     </PreviewTokenContainer>
   );
 };

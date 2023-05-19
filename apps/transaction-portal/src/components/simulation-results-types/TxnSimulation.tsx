@@ -1,14 +1,21 @@
 import React from "react";
-import styled, { css } from "styled-components";
-import { ArrowRightIcon } from "@blowfish/ui/icons";
+import styled from "styled-components";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
-import { SmallGrayText, TxnImage } from "./common";
+import { SmallGrayText } from "./common";
 import PreviewTokens from "~components/cards/PreviewTokens";
-import { useHover } from "react-use";
 import { TxnSimulationDataType } from "./mock-data";
+import AssetPriceV2 from "~components/common/AssetPriceV2";
+import AssetImageV2 from "~components/common/AssetImageV2";
+import { checkIsApproval, getTxnSimulationData } from "~utils/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~components/common/Tooltip";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
+  position: relative;
 `;
 
 const TxnSimulationImageMsgWrapper = styled(Row)`
@@ -27,7 +34,7 @@ const TxnSimulationImage = styled.div`
 `;
 
 const TxnSimulationText = styled(Text)`
-  max-width: 150px;
+  max-width: 180px;
   font-size: 13px;
   line-height: 21px;
 
@@ -40,24 +47,20 @@ const TxnSimulationValue = styled(Column)`
   width: unset;
 `;
 
-const ArrowIconWrapper = styled.div<{ $isReceived: boolean }>`
-  position: absolute;
-  height: 14px;
-  width: 14px;
-  padding: 6px;
-  top: -10px;
-  right: -10px;
-  background: ${({ $isReceived }) => ($isReceived ? "#BEEDD2" : "#FFCCCC")};
-  border-radius: 50%;
-  padding: 5px;
-  box-sizing: initial;
+const PreviewTokenTooltipContent = styled(TooltipContent)`
+  background-color: white;
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 1;
+  top: 0;
+  left: 55px;
+  width: 237px;
+  border-radius: 12px;
 
-  svg {
-    ${({ $isReceived }) => css`
-      fill: ${$isReceived ? "#00bfa6" : "#ff4c4c"};
-      transform: rotate(${$isReceived ? 135 : -45}deg);
-      transform-origin: center;
-    `};
+  ${SmallGrayText} {
+    font-size: 12px;
   }
 `;
 
@@ -67,66 +70,45 @@ interface TxnSimulationProps {
 
 const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { rawInfo } = txnData;
-  const { kind, data } = rawInfo;
-  const { metadata, name, tokenId, asset } = data || {};
-  const { rawImageUrl } = metadata || {};
-  const { imageUrl, symbol } = asset || {};
+  const { name, symbol, imageSrc, isNft, displayText } =
+    getTxnSimulationData(rawInfo);
+  const isApproval = checkIsApproval(rawInfo);
 
-  let isNft: boolean;
-  const isApproval = kind?.includes("APPROVAL");
-  let imageSrc: string | undefined;
-  let displayText: string;
+  return (
+    <TxnSimulationWrapper
+      justifyContent="space-between"
+      alignItems="flex-start"
+    >
+      <TxnSimulationImageMsgWrapper gap="lg" alignItems="flex-start">
+        <Tooltip placement="top-start">
+          <TooltipTrigger>
+            <TxnSimulationImage>
+              <AssetImageV2
+                stateChange={txnData}
+                isPositiveEffect={isApproval}
+                chainFamily="ethereum"
+                chainNetwork="mainnet"
+              />
+            </TxnSimulationImage>
+            <PreviewTokenTooltipContent showArrow={false}>
+              <PreviewTokens
+                imageUrl={imageSrc}
+                symbol={symbol}
+                isNft={isNft}
+                name={name}
+              />
+            </PreviewTokenTooltipContent>
+          </TooltipTrigger>
+        </Tooltip>
 
-  if (
-    rawInfo.kind === "ERC721_APPROVAL" ||
-    rawInfo.kind === "ERC721_TRANSFER"
-  ) {
-    imageSrc = rawImageUrl;
-    isNft = true;
-    displayText = `${name} #${tokenId}`;
-  } else if (
-    rawInfo.kind === "ERC20_APPROVAL" ||
-    rawInfo.kind === "ERC20_PERMIT" ||
-    rawInfo.kind === "ERC20_TRANSFER"
-  ) {
-    imageSrc = imageUrl;
-    isNft = false;
-    displayText = `${name} (${symbol})`;
-  }
-
-  const TxnSimulationMessage = () => {
-    const element = (hovered: boolean) => (
-      <TxnSimulationImageMsgWrapper gap="md" align="flex-start">
-        <TxnSimulationImage>
-          <TxnImage src={imageSrc} alt={isNft ? "NFT" : "Token"} />
-          {hovered && (
-            <PreviewTokens
-              imageUrl={imageSrc}
-              symbol={asset?.symbol}
-              isNft={isNft}
-              name={isNft ? name : asset?.name}
-            />
-          )}
-          <ArrowIconWrapper $isReceived={!!isApproval}>
-            <ArrowRightIcon />
-          </ArrowIconWrapper>
-        </TxnSimulationImage>
         <TxnSimulationText>
           {isApproval ? "Receive" : "Send"} {displayText}
         </TxnSimulationText>
       </TxnSimulationImageMsgWrapper>
-    );
-
-    const [hoverable] = useHover(element);
-
-    return hoverable;
-  };
-
-  return (
-    <TxnSimulationWrapper justify="space-between" align="flex-start">
-      <TxnSimulationMessage />
       <TxnSimulationValue alignItems="flex-end">
-        <TxnSimulationText weight="semi-bold">$25,200</TxnSimulationText>
+        <TxnSimulationText weight="semi-bold" design="primary">
+          <AssetPriceV2 stateChange={txnData} />
+        </TxnSimulationText>
         <SmallGrayText>18.99 ETH</SmallGrayText>
       </TxnSimulationValue>
     </TxnSimulationWrapper>

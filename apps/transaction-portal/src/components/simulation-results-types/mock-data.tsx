@@ -1,86 +1,7 @@
-import {
-  AssetData,
-  EvmTokenMetadata,
-  Price,
-} from "@blowfish/utils/BlowfishApiClient";
+import { EvmExpectedStateChangesInner } from "@blowfish/api-client";
+import { sendErc721 } from "~components/fixtures/state-changes";
 
-const dummyTxnSimulationData = [
-  {
-    rawInfo: {
-      kind: "ERC721_APPROVAL",
-      data: {
-        symbol: "TKN",
-        name: "Bored Ape",
-        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
-        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
-        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
-        tokenId: "12345",
-        amount: { before: "100", after: "200" },
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-      },
-    },
-  },
-  {
-    rawInfo: {
-      kind: "ERC721_APPROVAL",
-      data: {
-        symbol: "TKN",
-        name: "Bored Ape",
-        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
-        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
-        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
-        tokenId: "12345",
-        amount: { before: "100", after: "200" },
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-      },
-    },
-  },
-  {
-    rawInfo: {
-      kind: "ERC721_APPROVAL",
-      data: {
-        symbol: "TKN",
-        name: "Bored Ape",
-        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
-        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
-        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
-        tokenId: "12345",
-        amount: { before: "100", after: "200" },
-        metadata: {
-          rawImageUrl: "/placeholder/placeholder-nft.svg",
-        },
-      },
-    },
-  },
-  {
-    rawInfo: {
-      kind: "ERC20_APPROVAL",
-      data: {
-        name: "Token Name",
-        symbol: "TKN",
-        decimals: 18,
-        spender: { kind: "ACCOUNT", address: "0x9876543210fedcba" },
-        amount: { before: "0", after: "100" },
-        contract: { kind: "ACCOUNT", address: "0x1234567890abcdef" },
-        owner: { kind: "ACCOUNT", address: "0xfedcba0987654321" },
-        asset: {
-          address: "0x1234567890abcdef",
-          decimals: 18,
-          imageUrl: "/placeholder/placeholder-token.svg",
-          lists: [],
-          name: "Token Name",
-          price: null,
-          symbol: "TKN",
-          verified: false,
-        },
-      },
-    },
-  },
-];
+const dummyTxnSimulationData = [sendErc721];
 
 const dummySignatureData = [
   {
@@ -91,21 +12,7 @@ const dummySignatureData = [
   },
 ];
 
-interface TxnData {
-  metadata?: EvmTokenMetadata;
-  name: string;
-  symbol: string;
-  tokenId?: string;
-  assetPrice?: Price;
-  asset?: AssetData;
-}
-
-type TxnSimulationDataType = {
-  rawInfo: {
-    kind: string;
-    data: TxnData;
-  };
-};
+type TxnSimulationDataType = EvmExpectedStateChangesInner;
 
 type SignatureDataType = {
   imageUrl: string;
