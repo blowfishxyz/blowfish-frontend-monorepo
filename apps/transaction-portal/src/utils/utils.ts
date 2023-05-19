@@ -10,7 +10,7 @@ import {
   CHROMIMUM_INSTALL_EXTENSION_URL,
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
-import { U256_MAX_VALUE } from "~constants";
+import { U256_MAX_VALUE } from "../constants";
 import { logger } from "~utils/logger";
 
 // NOTE: the require statement below is to ensure we are using the punycode userland modules and not the deprecated core modules.
