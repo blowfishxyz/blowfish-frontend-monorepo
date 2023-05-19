@@ -1,7 +1,7 @@
 import React from "react";
 import { CardText, CardWrapper } from "./cards/common";
 import { styled } from "styled-components";
-import { Column, TextXL } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfish/ui/core";
 import { BlowfishIcon } from "@blowfish/ui/icons";
 
 const ProtectLoadingScreenContainer = styled(CardWrapper)`
@@ -15,7 +15,7 @@ const StyledBlowfishIcon = styled(BlowfishIcon)`
   opacity: 0.2;
 `;
 
-const ProtectLoadingScreenTitle = styled(TextXL)`
+const ProtectLoadingScreenTitle = styled(Text)`
   margin: 8px 0;
 `;
 
@@ -32,7 +32,7 @@ const ProtectLoadingScreen = () => {
     <ProtectLoadingScreenContainer>
       <Column gap="md" alignItems="center">
         <StyledBlowfishIcon />
-        <ProtectLoadingScreenTitle>Simulating...</ProtectLoadingScreenTitle>
+        <ProtectLoadingScreenTitle size="xl" weight="semi-bold">Simulating...</ProtectLoadingScreenTitle>
         <ProtectLoadingScreenMessage>
           We are making sure that it is safe for you to proceed with this
           transaction.
