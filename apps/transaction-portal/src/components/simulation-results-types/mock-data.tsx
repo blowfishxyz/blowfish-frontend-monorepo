@@ -1,7 +1,11 @@
 import { EvmExpectedStateChangesInner } from "@blowfish/api-client";
-import { sendErc721 } from "~components/fixtures/state-changes";
+import {
+  receiveErc20,
+  sendErc20,
+  sendErc721,
+} from "~components/fixtures/state-changes";
 
-const dummyTxnSimulationData = [sendErc721];
+const dummyTxnSimulationData = [sendErc721, sendErc20, receiveErc20];
 
 const dummySignatureData = [
   {

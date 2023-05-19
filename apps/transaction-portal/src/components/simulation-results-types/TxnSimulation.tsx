@@ -4,6 +4,7 @@ import Decimal from "decimal.js";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText } from "./common";
 import { PreviewTokens } from "~components/cards/PreviewTokens";
+import { PreviewNfts } from "~components/cards/PreviewNfts";
 import { TxnSimulationDataType } from "./mock-data";
 import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 import { AssetImageV2 } from "~components/common/AssetImageV2";
@@ -99,17 +100,18 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
               <AssetImageV2
                 stateChange={txnData}
                 isPositiveEffect={isPositiveEffect}
-                chainFamily="ethereum"
-                chainNetwork="mainnet"
               />
             </TxnSimulationImage>
             <PreviewTokenTooltipContent showArrow={false}>
-              <PreviewTokens
-                imageUrl={imageSrc}
-                symbol={symbol}
-                isNft={isNft}
-                name={name}
-              />
+              {isNft ? (
+                <PreviewNfts imageUrl={imageSrc} symbol={symbol} name={name} />
+              ) : (
+                <PreviewTokens
+                  imageUrl={imageSrc}
+                  symbol={symbol}
+                  name={name}
+                />
+              )}
             </PreviewTokenTooltipContent>
           </TooltipTrigger>
         </Tooltip>

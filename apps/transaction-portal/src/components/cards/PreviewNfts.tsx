@@ -4,41 +4,24 @@ import styled from "styled-components";
 import { TxnImage } from "~components/simulation-results-types/common";
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
+import { DataRowComponent } from "./PreviewTokens";
 
 const PreviewTokenContainer = styled.div``;
 
-interface DataRowProps {
-  label: string;
-  value: React.ReactNode;
-}
-
-export const DataRowComponent: React.FC<DataRowProps> = ({ label, value }) => (
-  <Row justifyContent="space-between" marginBottom={8}>
-    <Text design="secondary" size="xs">
-      {label}
-    </Text>
-    <Text size="xs">{value}</Text>
-  </Row>
-);
-
-interface PreviewTokensProps {
+interface PreviewNftProps {
   imageUrl: string | undefined;
   name: string | undefined;
   symbol?: string | undefined;
 }
 
-export const PreviewTokens: React.FC<PreviewTokensProps> = ({
-  imageUrl,
-  name,
-  symbol,
-}) => {
+export const PreviewNfts: React.FC<PreviewNftProps> = ({ imageUrl, name }) => {
   return (
     <PreviewTokenContainer>
       <TxnImage
         src={imageUrl}
         alt={name}
-        $width={"48px"}
-        $height={"48px"}
+        $width={"120px"}
+        $height={"120px"}
       />
       <Column marginTop={10}>
         <Row alignItems="flex-start">
@@ -47,17 +30,29 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           </Text>
           <VerifiedIcon />
         </Row>
-        <Text design="secondary" size="xs">
-          {symbol}
+        <Text size="xs">
+          #2831{" "}
+          <Text design="secondary" size="xs">
+            of 10,000
+          </Text>
         </Text>
       </Column>
       <Divider margin="13px 0" />
-
       <div>
-        <DataRowComponent label="Price" value="$1.00" />
-        <DataRowComponent label="Market Cap." value="$38.4bn" />
-        <DataRowComponent label="Trading Volume" value="$221.2m" />
-        <DataRowComponent label="Token Lists" value="3" />
+        <DataRowComponent label="Value (est.)" value="93.33 ETH" />
+        <DataRowComponent
+          label="Rarity"
+          value={
+            <>
+              <Text size="xs">3,345</Text>
+              <Text design="secondary" size="sm">
+                / 10,000
+              </Text>
+            </>
+          }
+        />
+        <DataRowComponent label="Floor Price" value="28.99 ETH" />
+        <DataRowComponent label="Owners" value="1,899" />
       </div>
     </PreviewTokenContainer>
   );

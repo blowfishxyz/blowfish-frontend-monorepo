@@ -22,7 +22,6 @@ const PreviewTokensStory = () => (
     <PreviewTokens
       imageUrl="/placeholder/placeholder-token.svg"
       name="Token Name"
-      isNft={false}
       symbol="TKN"
     />
   </PreviewTokenContainer>

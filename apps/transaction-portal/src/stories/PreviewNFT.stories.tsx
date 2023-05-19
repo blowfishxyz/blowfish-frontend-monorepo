@@ -1,9 +1,9 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { styled } from "styled-components";
+import { PreviewNfts } from "~components/cards/PreviewNfts";
 
-const PreviewTokenContainer = styled.div`
+const PreviewNftContainer = styled.div`
   position: absolute;
   background-color: white;
   box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
@@ -17,16 +17,12 @@ const PreviewTokenContainer = styled.div`
   border-radius: 12px;
 `;
 
-const PreviewNFTTokensStory = () => (
-  <PreviewTokenContainer>
-    <PreviewTokens
-      imageUrl="/placeholder/placeholder-nft.svg"
-      name="NFT Name"
-      isNft={true}
-    />
-  </PreviewTokenContainer>
+const PreviewNFTStory = () => (
+  <PreviewNftContainer>
+    <PreviewNfts imageUrl="/placeholder/placeholder-nft.svg" name="NFT Name" />
+  </PreviewNftContainer>
 );
 
-storiesOf("Components/PreviewTokens", module).add("NFT", () => (
-  <PreviewNFTTokensStory />
+storiesOf("Components/PreviewNft", module).add("NFT", () => (
+  <PreviewNFTStory />
 ));

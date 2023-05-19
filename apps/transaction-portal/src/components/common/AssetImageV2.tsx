@@ -1,17 +1,13 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { ArrowRightIcon, BlowfishIcon } from "@blowfish/ui/icons";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+import { ArrowRightIcon, BlowfishIcon, VerifiedIcon } from "@blowfish/ui/icons";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
 
-import { VerifiedTokenTooltip } from "~components/simulation-results/VerifiedTokenTooltip";
 import { getImageInfo } from "~utils/utils";
 
 interface AssetImageProps {
   stateChange: EvmExpectedStateChange;
   isPositiveEffect: boolean;
-  chainFamily: ChainFamily;
-  chainNetwork: ChainNetwork;
 }
 
 interface SimulationImageProps {
@@ -81,14 +77,20 @@ const SimulationIconWrapper = styled.div<{
   }
 `;
 
+const VerifiedBadge = styled(VerifiedIcon)`
+  width: 14px;
+  height: 14px;
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+`;
+
 export const AssetImageV2 = ({
   stateChange,
   isPositiveEffect,
-  chainFamily,
-  chainNetwork,
 }: AssetImageProps) => {
   const rawInfo = stateChange.rawInfo;
-  const { altText, imageSrc } = getImageInfo(rawInfo);
+  const { altText, imageSrc, verified } = getImageInfo(rawInfo);
   const [hasPlaceholder, setHasPlaceholder] = useState(!imageSrc);
   const handleImageError = useCallback(() => {
     setHasPlaceholder(true);
@@ -100,26 +102,25 @@ export const AssetImageV2 = ({
 
   return (
     <SimulationResultImageWrapper>
-      <VerifiedTokenTooltip
-        stateChange={stateChange}
-        chainFamily={chainFamily}
-        chainNetwork={chainNetwork}
-      >
-        {hasPlaceholder ? (
-          <PlaceholderSimulationImage>
-            <BlowfishIcon />
-          </PlaceholderSimulationImage>
-        ) : (
-          <SimulationImage
-            src={imageSrc}
-            onError={handleImageError}
-            alt={altText}
-          />
-        )}
+      <div>
+        <div>
+          {verified && <VerifiedBadge />}
+          {hasPlaceholder ? (
+            <PlaceholderSimulationImage>
+              <BlowfishIcon />
+            </PlaceholderSimulationImage>
+          ) : (
+            <SimulationImage
+              src={imageSrc}
+              onError={handleImageError}
+              alt={altText}
+            />
+          )}
+        </div>
         <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
           <ArrowRightIcon />
         </SimulationIconWrapper>
-      </VerifiedTokenTooltip>
+      </div>
     </SimulationResultImageWrapper>
   );
 };

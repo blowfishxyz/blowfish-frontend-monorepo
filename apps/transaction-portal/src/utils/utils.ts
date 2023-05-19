@@ -141,11 +141,19 @@ export const containsPunycode = (url: string): boolean => {
   }
 };
 
+const filterNullImageUrls = (imageUrl: string | undefined | null) => {
+  if (imageUrl === null) {
+    return undefined;
+  } else {
+    return imageUrl;
+  }
+};
+
 export const getTxnSimulationData = (
   rawInfo: EvmExpectedStateChangesInnerRawInfo
 ) => {
   let name = "";
-  let imageSrc: string | undefined;
+  let imageSrc;
   let symbol = "";
   let isNft = false;
   let displayText = "";
@@ -156,15 +164,18 @@ export const getTxnSimulationData = (
   ) {
     isNft = true;
     name = rawInfo.data.name;
-    imageSrc = rawInfo.data.metadata.rawImageUrl;
+    imageSrc = filterNullImageUrls(rawInfo.data.metadata.rawImageUrl);
+
     displayText = `${name} #${rawInfo.data.tokenId}`;
   } else if (
     rawInfo.kind === "ERC20_APPROVAL" ||
-    rawInfo.kind === "ERC20_TRANSFER"
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
   ) {
     isNft = false;
     name = rawInfo.data.asset.name;
-    imageSrc = rawInfo.data.asset.imageUrl;
+    imageSrc = filterNullImageUrls(rawInfo.data.asset.imageUrl);
+
     symbol = rawInfo.data.asset.symbol;
     displayText = `${name} (${symbol})`;
   }
@@ -249,9 +260,14 @@ export const getImageInfo = (
   rawInfo:
     | EvmExpectedStateChangesInnerRawInfo
     | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-): { altText: string; imageSrc: string | undefined } => {
+): {
+  altText: string;
+  imageSrc: string | undefined;
+  verified?: boolean;
+} => {
   let altText = "Asset";
   let imageSrc;
+  let verified;
 
   if (
     rawInfo.kind === "ERC721_TRANSFER" ||
@@ -262,7 +278,8 @@ export const getImageInfo = (
       rawInfo.kind !== "ERC1155_TRANSFER"
         ? rawInfo.data.name
         : `${altText} ${rawInfo.data.tokenId}`;
-    imageSrc = rawInfo.data?.metadata?.rawImageUrl;
+    imageSrc = filterNullImageUrls(rawInfo.data?.metadata?.rawImageUrl);
+
     return { altText, imageSrc };
   } else if (
     rawInfo.kind === "ERC20_TRANSFER" ||
@@ -270,9 +287,11 @@ export const getImageInfo = (
     rawInfo.kind === "ERC20_PERMIT" ||
     rawInfo.kind === "NATIVE_ASSET_TRANSFER"
   ) {
-    imageSrc = rawInfo.data.asset?.imageUrl;
+    imageSrc = filterNullImageUrls(rawInfo.data.asset?.imageUrl);
+
     altText = rawInfo.data.asset.name;
-    return { altText, imageSrc };
+    verified = rawInfo.data.asset.verified;
+    return { altText, imageSrc, verified };
   }
 
   return { altText: "Asset", imageSrc: undefined };
