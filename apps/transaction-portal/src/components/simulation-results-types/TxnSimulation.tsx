@@ -117,7 +117,7 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
         </Tooltip>
 
         <TxnSimulationText>
-          {isApproval ? "Receive" : "Send"} {displayText}
+          {isPositiveEffect ? "Receive" : "Send"} {displayText}
         </TxnSimulationText>
       </TxnSimulationImageMsgWrapper>
       <TxnSimulationValue alignItems="flex-end">
