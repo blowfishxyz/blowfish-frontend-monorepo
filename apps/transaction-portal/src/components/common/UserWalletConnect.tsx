@@ -129,7 +129,11 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
         <UserWalletConnectConnected $isActive={isActive} />
       </ChainContainer>
       {renderUserWalletMessage()}
-      <ChangeAccountContainer justifyContent="center" alignItems="center" onClick={show}>
+      <ChangeAccountContainer
+        justifyContent="center"
+        alignItems="center"
+        onClick={show}
+      >
         {!isConnected ? <PlusIcon /> : <SwitchIcon />}
       </ChangeAccountContainer>
     </UserWalletConnectContainer>
