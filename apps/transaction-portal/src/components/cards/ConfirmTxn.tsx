@@ -9,8 +9,8 @@ import {
   CardRow,
   CardPrimaryButton,
 } from "./common";
-import PendingView from "~components/txn-views/PendingView";
-import ConfirmingView from "~components/txn-views/ConfirmingView";
+import { PendingView } from "~components/txn-views/PendingView";
+import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
@@ -53,7 +53,7 @@ const Fade = styled.div`
   }
 `;
 
-const ConfirmTxn: React.FC = () => {
+export const ConfirmTxn: React.FC = () => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
 
@@ -130,5 +130,3 @@ const ConfirmTxn: React.FC = () => {
     </StyledCardWrapper>
   );
 };
-
-export default React.memo(ConfirmTxn);

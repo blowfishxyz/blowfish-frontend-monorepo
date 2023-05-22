@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import PreviewTxn, { PreviewTxnProps } from "~components/cards/PreviewTxn";
+import { PreviewTxn, PreviewTxnProps } from "~components/cards/PreviewTxn";
 import {
   dummySignatureData,
   dummyTxnSimulationData,

@@ -162,11 +162,12 @@ const StyledTooltip = styled.div`
 
 type TooltipContentProps = React.HTMLProps<HTMLDivElement> & {
   maxWidth?: number;
+  showArrow?: boolean;
 };
 
 export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
   function TooltipContent(props, propRef) {
-    const { style, children, maxWidth, ...rest } = props;
+    const { style, children, maxWidth, showArrow = true, ...rest } = props;
     const context = useTooltipContext();
     const ref = useMergeRefs([context.refs.setFloating, propRef]);
 
@@ -187,15 +188,17 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>(
               }}
             >
               {children}
-              <FloatingArrow
-                ref={context.arrowRef}
-                context={context.context}
-                width={12}
-                height={5}
-                fill="white"
-                stroke="rgba(0, 0, 0, 0.1)"
-                strokeWidth={1}
-              />
+              {showArrow && (
+                <FloatingArrow
+                  ref={context.arrowRef}
+                  context={context.context}
+                  width={12}
+                  height={5}
+                  fill="white"
+                  stroke="rgba(0, 0, 0, 0.1)"
+                  strokeWidth={1}
+                />
+              )}
             </StyledTooltip>
           </>
         )}
