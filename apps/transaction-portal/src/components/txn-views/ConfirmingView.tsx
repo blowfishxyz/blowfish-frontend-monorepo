@@ -12,7 +12,7 @@ const CardConfirmIcon = styled(ConfirmIcon)`
   margin-bottom: 10px;
 `;
 
-const ConfirmingView = () => {
+export const ConfirmingView = () => {
   return (
     <Column gap="md">
       <CardConfirmIcon />
@@ -29,5 +29,3 @@ const ConfirmingView = () => {
     </Column>
   );
 };
-
-export default ConfirmingView;

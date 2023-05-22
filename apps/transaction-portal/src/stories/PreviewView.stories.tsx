@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import PendingView from "~components/txn-views/PendingView";
+import { PendingView } from "~components/txn-views/PendingView";
 
 export default {
   title: "Components/PendingView",

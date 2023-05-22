@@ -12,7 +12,22 @@ import styled from "styled-components";
 
 import { BLOWFISH_WEBSITE_URL } from "~constants";
 import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
+import { logger } from "~utils/logger";
 import { sendAllowlistedDomain } from "~utils/messages";
+
+async function report(domain: string) {
+  try {
+    await fetch(`/api/report-block?domain=${domain}`).then(async (x) => {
+      if (x.ok) {
+        return x.json();
+      }
+      throw new Error((await x.json()).error);
+    });
+    logger.debug(`Reported ${domain}`);
+  } catch (e) {
+    logger.debug(`Report failed: ${(e as any).message}`);
+  }
+}
 
 export function BlockedPage() {
   const router = useRouter();
@@ -23,6 +38,7 @@ export function BlockedPage() {
 
   const handleContinue = async () => {
     if (host) {
+      report(host);
       await sendAllowlistedDomain(host);
     }
     if (href) {

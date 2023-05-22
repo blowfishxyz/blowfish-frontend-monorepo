@@ -1,18 +1,23 @@
 import React from "react";
 import { styled } from "styled-components";
-import ProtectHeader from "./ProtectHeader";
+import { ProtectLoadingScreen } from "./ProtectLoadingScreen";
+import { Layout } from "./layout/Layout";
 
-const ProtectScreenWrapper = styled.div`
-  padding: 40px;
+const LoadingWrapper = styled.div`
+  width: 100%;
   height: 100%;
-  background: #efefef;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const ProtectHomeScreen = () => {
   return (
-    <ProtectScreenWrapper>
-      <ProtectHeader />
-    </ProtectScreenWrapper>
+    <Layout>
+      <LoadingWrapper>
+        <ProtectLoadingScreen />
+      </LoadingWrapper>
+    </Layout>
   );
 };
 
