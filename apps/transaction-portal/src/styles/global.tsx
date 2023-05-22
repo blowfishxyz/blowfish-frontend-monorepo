@@ -23,6 +23,11 @@ export const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     scroll-behavior: smooth;
   }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
   
   *,
   *::before,

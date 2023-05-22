@@ -4,10 +4,10 @@ import { styled } from "styled-components";
 import ProtectHeader from "~components/ProtectHeader";
 
 const Wrapper = styled(Column)`
-  height: 100%;
+  height: calc(100% - 100px);
   width: 100%;
   max-width: 1072px;
-  margin: 82px auto;
+  margin: 82px auto 18px;
   padding: 0 24px;
 `;
 
