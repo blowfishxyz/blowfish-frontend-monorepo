@@ -8,35 +8,23 @@ import { css, styled } from "styled-components";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
 import { Layout } from "~components/layout/Layout";
+import type { Transaction } from "~pages/api/user-transactions";
 import { shortenHex } from "~utils/hex";
 import { logger } from "~utils/logger";
 import { capitalize } from "~utils/utils";
 
-async function fetchTransactions<T>(address: string): Promise<T> {
-  return fetch(
-    `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=9069000&endblock=99999999&page=1&offset=10&sort=desc&apikey=IKQSBP9H6H1YXRINZB33RVB3V93QYJUR5Z`
-  )
+async function fetchTransactions(address: string): Promise<Transaction[]> {
+  return fetch(`api/user-transactions?address=${address}`)
     .then(async (x) => {
       if (x.ok) {
-        const res = await x.json();
-        if (Array.isArray(res.result)) {
-          return res.result;
-        }
-
-        throw res.result;
+        return x.json();
       }
-      throw new Error(await x.text());
+      throw await x.json();
     })
     .catch((e) => {
-      logger.debug("Etherscan fetching error: " + e);
+      logger.debug("Etherscan error: " + e.error);
+      return [];
     });
-}
-
-async function fetchAddressTransactions(
-  address: string
-): Promise<Transaction[]> {
-  const txs = await fetchTransactions<Transaction[]>(address);
-  return txs;
 }
 
 function DashboardPage() {
@@ -50,7 +38,9 @@ function DashboardPage() {
     }
   }, [isConnected]);
 
-  const { data } = useSWR(address, (addr) => fetchAddressTransactions(addr));
+  const { data, isLoading } = useSWR(address, (addr) =>
+    fetchTransactions(addr)
+  );
   const transactions = data || [];
   const isEmpty = transactions.length === 0;
 
@@ -66,7 +56,7 @@ function DashboardPage() {
         >
           Recent transactions
         </Heading>
-        {isEmpty ? (
+        {isLoading ? null : isEmpty ? (
           <Column alignItems="center" justifyContent="center" flexGrow={1}>
             <Column maxWidth={290} alignItems="center">
               <Icon />
@@ -157,17 +147,6 @@ const Icon = styled(BlowfishIconStroke)`
     stroke: ${(p) => p.theme.colors.base30};
   }
 `;
-
-type Transaction = {
-  from: string;
-  to: string;
-  timeStamp: string;
-  hash: string;
-  value: string;
-  methodId: string;
-  functionName: string;
-  contractAddress: string;
-};
 
 const intl = new Intl.DateTimeFormat("en-US", {
   dateStyle: "long",
