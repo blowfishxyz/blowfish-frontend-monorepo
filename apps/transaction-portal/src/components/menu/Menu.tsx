@@ -53,7 +53,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Menu = () => {
+export const Menu = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +77,7 @@ const Menu = () => {
         <Dropdown>
           {menuItems.map((item, index) => (
             <DropdownItem key={index}>
-              <MenuTitle>{item.title}</MenuTitle>
+              <MenuTitle weight="semi-bold">{item.title}</MenuTitle>
               <div>
                 <MenuDescription>{item.description}</MenuDescription>
               </div>
@@ -88,5 +88,3 @@ const Menu = () => {
     </Wrapper>
   );
 };
-
-export default Menu;

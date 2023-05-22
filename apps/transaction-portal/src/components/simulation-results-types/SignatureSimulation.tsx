@@ -34,7 +34,9 @@ const SignatureSimulationMsg = styled(Row)`
   margin-top: 5px;
 `;
 
-const SignatureSimulation: React.FC<SignatureSimulationProps> = ({ data }) => {
+export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
+  data,
+}) => {
   return (
     <SignatureSimulationWrapper alignItems="center" gap="md">
       <TxnImage src={data.imageUrl} />
@@ -62,5 +64,3 @@ const SignatureSimulation: React.FC<SignatureSimulationProps> = ({ data }) => {
     </SignatureSimulationWrapper>
   );
 };
-
-export default SignatureSimulation;
