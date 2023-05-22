@@ -1,23 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { styled } from "styled-components";
 import { ChainIcon } from "connectkit";
 import { Chain } from "wagmi";
-import { Column, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui/core";
 import { PlusIcon } from "@blowfish/ui/icons";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
-import { shortenEnsName } from "~utils/utils";
+import { copyToClipboard, shortenEnsName } from "~utils/utils";
+import { shortenHex } from "@blowfish/utils/hex";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
-const UserWalletConnectContainer = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: white;
+const UserWalletConnectContainer = styled(Row)`
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
   border-radius: 58px;
   padding: 5px 8px;
   gap: 10px;
-  max-width: 185px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  border: ${({ theme }) => `1px solid ${theme.colors.border}`};
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.backgroundSecondary};
+  }
 `;
 
 const ChainContainer = styled.div`
@@ -38,12 +39,7 @@ const UserWalletConnectConnected = styled.div<{ $isActive: boolean }>`
 const UserWalletAddress = styled(Column)`
   text-align: left;
   line-height: 17px;
-
-  span:nth-child(2) {
-    opacity: 0.5;
-    font-size: 11px;
-    line-height: 13px;
-  }
+  cursor: pointer;
 `;
 
 const ChangeAccountContainer = styled.div`
@@ -55,11 +51,12 @@ const ChangeAccountContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 export type UserWalletProps = {
   show: (() => void) | undefined;
-  truncatedAddress: string | undefined;
+  address: string | undefined;
   ensName: string | undefined;
   isConnecting: boolean;
   isConnected: boolean;
@@ -68,49 +65,76 @@ export type UserWalletProps = {
 
 export const UserWalletConnect: React.FC<UserWalletProps> = ({
   show,
-  truncatedAddress,
+  address,
   ensName,
   isConnected,
+  isConnecting,
   chain,
 }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleTooltipTriggerClick = () => {
+    copyToClipboard(address);
+    setOpen(true);
+
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000);
+  };
+
   const renderUserWalletMessage = () => {
-    if (!isConnected) {
+    if (!isConnected && isConnecting) {
+      return (
+        <UserWalletAddress>
+          <Text size="sm" design="primary">
+            Connecting...
+          </Text>
+        </UserWalletAddress>
+      );
+    }
+
+    if (!isConnected && !isConnecting) {
       return (
         <UserWalletAddress>
           <Text size="sm" design="primary">
             Connect
           </Text>
-          <Text size="xs" design="secondary">
+          <Text size="xxs" opacity="0.5" design="secondary">
             No wallet linked
           </Text>
         </UserWalletAddress>
       );
-    } else {
-      return (
-        <UserWalletAddress>
-          {ensName && (
-            <Text size="sm" design="primary">
-              {shortenEnsName(ensName)}
-            </Text>
-          )}
-          <Text size="xs" design="secondary">
-            {truncatedAddress}
-          </Text>
-        </UserWalletAddress>
-      );
     }
+
+    return (
+      <UserWalletAddress>
+        <Text size="sm" design="primary">
+          {ensName
+            ? shortenEnsName(ensName, true)
+            : address && shortenHex(address)}
+        </Text>
+        <Tooltip open={open}>
+          <TooltipTrigger onClick={handleTooltipTriggerClick}>
+            <Text size="xxs" opacity="0.5" design="secondary">
+              {address && shortenHex(address)}
+            </Text>
+          </TooltipTrigger>
+          <TooltipContent>Address copied to clipboard</TooltipContent>
+        </Tooltip>
+      </UserWalletAddress>
+    );
   };
 
   const isActive = isConnected && !chain?.unsupported;
 
   return (
-    <UserWalletConnectContainer onClick={show}>
+    <UserWalletConnectContainer justifyContent="center" alignItems="center">
       <ChainContainer>
         <ChainIcon id={chain?.id} unsupported={chain?.unsupported} size={30} />
         <UserWalletConnectConnected $isActive={isActive} />
       </ChainContainer>
       {renderUserWalletMessage()}
-      <ChangeAccountContainer>
+      <ChangeAccountContainer onClick={show}>
         {!isConnected ? <PlusIcon /> : <SwitchIcon />}
       </ChangeAccountContainer>
     </UserWalletConnectContainer>

@@ -17,7 +17,7 @@ const Template: Story<UserWalletProps> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   show: () => alert("Wallet connect button clicked!"),
-  truncatedAddress: "0x2dB2••••f5f3",
+  address: "0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376",
   ensName: "kim.blowfish.xyz",
   isConnecting: false,
   isConnected: true,
