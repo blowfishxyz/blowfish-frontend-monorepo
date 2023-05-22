@@ -105,6 +105,11 @@ const Wrapper = styled(Column)`
   border-radius: 12px;
   border: 1px solid ${(p) => p.theme.colors.border};
 
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
   & > *:not(:nth-child(2), :last-child) {
     border-bottom: 1px solid ${(p) => p.theme.colors.border};
   }
@@ -207,7 +212,9 @@ const TransactionView: React.FC<{ tx: Transaction; userAddress: string }> = ({
 };
 
 const AddressText = styled(Text).attrs({ as: "a" })`
-  text-decoration: underline;
+  && {
+    text-decoration: underline;
+  }
 `;
 
 function formatAddress(address: string, userAddress: string) {
