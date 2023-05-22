@@ -3,7 +3,7 @@ import { BlowfishIconStroke } from "@blowfish/ui/icons";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
 import Decimal from "decimal.js";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { css, styled } from "styled-components";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
@@ -13,7 +13,10 @@ import { shortenHex } from "~utils/hex";
 import { logger } from "~utils/logger";
 import { capitalize } from "~utils/utils";
 
-async function fetchTransactions(address: string): Promise<Transaction[]> {
+async function fetchTransactions(
+  address: string | undefined
+): Promise<Transaction[]> {
+  if (!address) return [];
   return fetch(`api/user-transactions?address=${address}`)
     .then(async (x) => {
       if (x.ok) {
@@ -31,15 +34,19 @@ function DashboardPage() {
   const { isConnected, address } = useAccount();
   const router = useRouter();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isConnected) {
       router.replace("/start");
       return;
     }
   }, [isConnected]);
 
-  const { data, isLoading } = useSWR(address, (addr) =>
-    fetchTransactions(addr)
+  const { data, isLoading } = useSWR(
+    `transactions-${address}`,
+    () => fetchTransactions(address),
+    {
+      revalidateOnFocus: false,
+    }
   );
   const transactions = data || [];
   const isEmpty = transactions.length === 0;
@@ -56,7 +63,7 @@ function DashboardPage() {
         >
           Recent transactions
         </Heading>
-        {isLoading ? null : isEmpty ? (
+        {isLoading || !isConnected ? null : isEmpty ? (
           <Column alignItems="center" justifyContent="center" flexGrow={1}>
             <Column maxWidth={290} alignItems="center">
               <Icon />
