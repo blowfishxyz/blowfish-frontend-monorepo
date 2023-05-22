@@ -21,18 +21,6 @@ import type {
   InternalServerError,
   Unauthorized,
 } from '../models';
-import {
-    BadRequestFromJSON,
-    BadRequestToJSON,
-    DownloadBlocklist200ResponseFromJSON,
-    DownloadBlocklist200ResponseToJSON,
-    DownloadBlocklistRequestFromJSON,
-    DownloadBlocklistRequestToJSON,
-    InternalServerErrorFromJSON,
-    InternalServerErrorToJSON,
-    UnauthorizedFromJSON,
-    UnauthorizedToJSON,
-} from '../models';
 
 export interface DownloadBlocklistOperationRequest {
     xApiKey: string;
@@ -86,10 +74,10 @@ export class DownloadBlocklistApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: DownloadBlocklistRequestToJSON(requestParameters.downloadBlocklistRequest),
+            body: requestParameters.downloadBlocklistRequest,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DownloadBlocklist200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
