@@ -8,7 +8,6 @@ export interface TextProps {
   design?: "primary" | "secondary" | "danger" | "success";
   weight?: "semi-bold" | "bold" | "normal";
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
-  opacity?: string;
 }
 
 const StyledText = styled(StyledBaseText)<TextProps>`
@@ -97,33 +96,28 @@ function getWeightStyles({ weight }: TextProps) {
   `;
 }
 
-function getDesignStyles({ design, opacity }: TextProps) {
+function getDesignStyles({ design }: TextProps) {
   if (design === "danger") {
     return css`
       color: ${(p) => p.theme.colors.foregroundDanger};
-      opacity: ${opacity ?? 1};
     `;
   }
   if (design === "success") {
     return css`
       color: ${(p) => p.theme.colors.success};
-      opacity: ${opacity ?? 1};
     `;
   }
   if (design === "secondary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundSecondary};
-      opacity: ${opacity ?? 1};
     `;
   }
   if (design === "primary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundPrimary};
-      opacity: ${opacity ?? 1};
     `;
   }
   return css`
     color: ${(p) => p.theme.colors.foregroundPrimary};
-    opacity: ${opacity ?? 1};
   `;
 }

@@ -94,7 +94,7 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
           <Text size="sm" design="primary">
             Connect
           </Text>
-          <Text size="xxs" opacity="0.5" design="secondary">
+          <Text size="xxs" design="secondary">
             No wallet linked
           </Text>
         </UserWalletAddress>
@@ -110,7 +110,7 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
         </Text>
         <Tooltip open={open}>
           <TooltipTrigger onClick={handleTooltipTriggerClick}>
-            <Text size="xxs" opacity="0.5" design="secondary">
+            <Text size="xxs" design="secondary">
               {address && shortenHex(address)}
             </Text>
           </TooltipTrigger>
