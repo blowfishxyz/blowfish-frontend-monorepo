@@ -38,19 +38,14 @@ const UserWalletConnectConnected = styled.div<{ $isActive: boolean }>`
 
 const UserWalletAddress = styled(Column)`
   text-align: left;
-  line-height: 17px;
   cursor: pointer;
 `;
 
-const ChangeAccountContainer = styled.div`
+const ChangeAccountContainer = styled(Row)`
   width: 30px;
   height: 30px;
-  min-width: 30px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   cursor: pointer;
 `;
 
@@ -134,7 +129,7 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
         <UserWalletConnectConnected $isActive={isActive} />
       </ChainContainer>
       {renderUserWalletMessage()}
-      <ChangeAccountContainer onClick={show}>
+      <ChangeAccountContainer justifyContent="center" alignItems="center" onClick={show}>
         {!isConnected ? <PlusIcon /> : <SwitchIcon />}
       </ChangeAccountContainer>
     </UserWalletConnectContainer>
