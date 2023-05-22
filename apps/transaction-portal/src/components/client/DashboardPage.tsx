@@ -1,7 +1,6 @@
 import { Button, Column, Row, Text } from "@blowfish/ui/core";
 import { BlowfishIconStroke } from "@blowfish/ui/icons";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
-import { chainToBlockExplorerUrl } from "@blowfish/utils/chains";
 import Decimal from "decimal.js";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -10,6 +9,7 @@ import useSWR from "swr";
 import { useAccount } from "wagmi";
 import { Layout } from "~components/layout/Layout";
 import { shortenHex } from "~utils/hex";
+import { logger } from "~utils/logger";
 import { capitalize } from "~utils/utils";
 
 async function fetchTransactions<T>(address: string): Promise<T> {
@@ -18,11 +18,18 @@ async function fetchTransactions<T>(address: string): Promise<T> {
   )
     .then(async (x) => {
       if (x.ok) {
-        return x.json();
+        const res = await x.json();
+        if (Array.isArray(res.result)) {
+          return res.result;
+        }
+
+        throw res.result;
       }
       throw new Error(await x.text());
     })
-    .then((x) => x.result);
+    .catch((e) => {
+      logger.debug("Etherscan fetching error: " + e);
+    });
 }
 
 async function fetchAddressTransactions(
