@@ -14,7 +14,7 @@ const UserWalletConnectContainer = styled(Row)`
   border-radius: 58px;
   padding: 5px 8px;
   gap: 10px;
-  border: ${({ theme }) => `1px solid ${theme.colors.border}`};
+  border: 1px solid ${({ theme }) => theme.colors.border};
 
   &:hover {
     background: ${({ theme }) => theme.colors.backgroundSecondary};
@@ -33,7 +33,7 @@ const UserWalletConnectConnected = styled.div<{ $isActive: boolean }>`
   background: ${({ $isActive }) => ($isActive ? "#00b94a" : "#B9B9B9")};
   height: 8px;
   width: 8px;
-  outline: 2px solid white;
+  outline: 2px solid ${({ theme }) => theme.colors.backgroundPrimary};
 `;
 
 const UserWalletAddress = styled(Column)`
@@ -44,7 +44,7 @@ const UserWalletAddress = styled(Column)`
 const ChangeAccountContainer = styled(Row)`
   width: 30px;
   height: 30px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 50%;
   cursor: pointer;
 `;
