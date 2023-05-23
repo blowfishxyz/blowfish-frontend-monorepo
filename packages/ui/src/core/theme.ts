@@ -55,6 +55,7 @@ const lightTheme = {
     ...base,
     border: base.base10,
     backgroundPrimary: "#FFFFFF",
+    backgroundSecondary: "#F8F8F8",
     foregroundPrimary: "#000000",
     foregroundSecondary: base.base50,
     foregroundDanger: "#FF6332",
