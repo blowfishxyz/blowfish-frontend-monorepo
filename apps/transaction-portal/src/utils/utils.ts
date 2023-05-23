@@ -28,11 +28,20 @@ export const capitalize = (str: string) => {
   return str[0].toUpperCase() + str.slice(1);
 };
 
-export const shortenEnsName = (name: string): string => {
-  if (name.length < 15) {
+export const shortenEnsName = (name: string, showFatDots?: boolean): string => {
+  const maxLength = 20;
+
+  if (name.length <= maxLength) {
     return name;
   }
-  return `${name.substring(0, 6)}••••${name.substring(name.length - 5)}`;
+
+  const prefixLength = 6;
+  const suffixLength = 5;
+  const dots = showFatDots ? "••••" : "···";
+
+  return `${name.substring(0, prefixLength)}${dots}${name.substring(
+    name.length - suffixLength
+  )}`;
 };
 
 // NOTE: the default value for extensionVersion is set to 0.0.9. It's the first version that uses the portal, but due to a bug doesn't send the version number.
@@ -144,6 +153,19 @@ export const containsPunycode = (url: string): boolean => {
   } catch (err) {
     return false;
   }
+};
+
+export const copyToClipboard = (address: string | undefined) => {
+  if (!address) return;
+
+  navigator.clipboard
+    .writeText(address)
+    .then(() => {
+      console.log("Address copied to clipboard!");
+    })
+    .catch((error) => {
+      console.error("Failed to copy address:", error);
+    });
 };
 
 const filterNullImageUrls = (imageUrl: string | undefined | null) => {
