@@ -1,18 +1,22 @@
 import { Layout } from "~components/layout/Layout";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button, Column, Row, Spinner, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata } from "~utils/wagmi";
+import { useEffect } from "react";
 
 const StartPage = () => {
   const { connectors } = useConnect();
   const { isConnected } = useAccount();
+  const router = useRouter();
 
-  // TODO: Redirect to dashboard
-  if (isConnected) {
-    return <Layout>Dashboard (disconnect to get redirected to start)</Layout>;
-  }
+  useEffect(() => {
+    if (isConnected) {
+      router.replace("/dashboard");
+    }
+  }, [isConnected]);
 
   return (
     <Layout>
@@ -79,7 +83,7 @@ const ConnectorButton: React.FC<{
   return (
     <StyledButton key={connector.id} onClick={handleClick}>
       {status === "loading" ? (
-        <Spinner />
+        <Spinner contrast />
       ) : (
         <Image src={logoPath} alt={`${label} logo`} width={22} height={22} />
       )}

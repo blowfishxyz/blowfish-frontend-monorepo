@@ -76,6 +76,22 @@ const primaryDesign = css`
   }
 `;
 
+const tertiaryDesign = css`
+  background: ${(p) => p.theme.colors.backgroundPrimary};
+  color: ${(p) => p.theme.colors.foregroundPrimary};
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 9px 12px;
+  border-radius: 56px;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 17px;
+  gap: 6px;
+
+  svg {
+    fill: ${(p) => p.theme.colors.base30};
+  }
+`;
+
 function getDesignStyles({ design }: ButtonProps) {
   if (design === "secondary") {
     return secondaryDesign;
@@ -83,11 +99,14 @@ function getDesignStyles({ design }: ButtonProps) {
   if (design === "primary") {
     return primaryDesign;
   }
+  if (design === "tertiary") {
+    return tertiaryDesign;
+  }
   return primaryDesign;
 }
 
 type ButtonProps = {
-  design?: "primary" | "secondary";
+  design?: "primary" | "secondary" | "tertiary";
 };
 
 const ButtonComponent = styled.button<ButtonProps>`

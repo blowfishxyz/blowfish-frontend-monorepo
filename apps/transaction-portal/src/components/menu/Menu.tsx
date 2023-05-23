@@ -29,7 +29,7 @@ const Dropdown = styled.div`
   width: 320px;
 `;
 
-const MenuTitle = styled(Text)`
+const MenuTitle = styled(Text).attrs({ weight: "semi-bold" })`
   font-size: 20px;
   line-height: 23px;
 `;

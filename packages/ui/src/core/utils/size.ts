@@ -6,6 +6,8 @@ export type Size = {
   height?: Properties["height"] | number;
   maxWidth?: Properties["maxWidth"] | number;
   maxHeight?: Properties["maxHeight"] | number;
+  minWidth?: Properties["minWidth"] | number;
+  minHeight?: Properties["minHeight"] | number;
 };
 
 export function size(props: Size) {
@@ -28,6 +30,16 @@ export function size(props: Size) {
   if (props.maxHeight) {
     rules.push(css`
       max-height: ${normalizeProp(props.maxHeight)};
+    `);
+  }
+  if (props.minWidth) {
+    rules.push(css`
+      min-width: ${normalizeProp(props.minWidth)};
+    `);
+  }
+  if (props.minHeight) {
+    rules.push(css`
+      min-height: ${normalizeProp(props.minHeight)};
     `);
   }
 

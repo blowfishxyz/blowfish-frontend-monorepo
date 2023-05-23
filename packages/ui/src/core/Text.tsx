@@ -1,6 +1,7 @@
 import React from "react";
 import { css, styled } from "styled-components";
 import { StyledBaseText } from "./StyledBase";
+import type { Properties } from "csstype";
 
 export interface TextProps {
   className?: string;
@@ -8,13 +9,16 @@ export interface TextProps {
   design?: "primary" | "secondary" | "danger" | "success";
   weight?: "semi-bold" | "bold" | "normal";
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
+  textAlign?: Properties["textAlign"];
+  truncate?: boolean;
 }
 
 const StyledText = styled(StyledBaseText)<TextProps>`
   font-family: "GT-Planar";
-  ${getDesignStyles};
-  ${getSizeStyles};
-  ${getWeightStyles};
+  ${getDesignStyles}
+  ${getSizeStyles}
+  ${getWeightStyles}
+  ${getTextSpecificStyles}
 `;
 
 export const Text = React.memo(
@@ -120,4 +124,23 @@ function getDesignStyles({ design }: TextProps) {
   return css`
     color: ${(p) => p.theme.colors.foregroundPrimary};
   `;
+}
+
+function getTextSpecificStyles(props: TextProps) {
+  const rules = [];
+  if (props.textAlign) {
+    rules.push(css`
+      text-align: ${props.textAlign};
+    `);
+  }
+  if (props.truncate) {
+    rules.push(
+      css`
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      `
+    );
+  }
+  return rules;
 }

@@ -2,25 +2,30 @@ import shouldForwardProp from "@emotion/is-prop-valid";
 import React from "react";
 import { styled } from "styled-components";
 import { Spacing, spacing } from "./utils/spacing";
+import { size, Size } from "./utils/size";
 
 const StyledBaseDivComponent = styled.div.withConfig({
   shouldForwardProp,
-})<Spacing>`
+})<Spacing & Size>`
   ${spacing}
+  ${size}
 `;
 const StyledBaseTextComponent = styled.span.withConfig({
   shouldForwardProp,
-})<Spacing>`
+})<Spacing & Size>`
   ${spacing}
+  ${size}
 `;
 const StyledBaseSvgComponent = styled.svg.withConfig({
   shouldForwardProp,
-})<Spacing>`
+})<Spacing & Size>`
   ${spacing}
+  ${size}
 `;
 
 export type StyledBaseProps<T> = T &
-  Spacing & { as?: keyof JSX.IntrinsicElements };
+  Spacing &
+  Size & { as?: keyof JSX.IntrinsicElements };
 
 const StyledBaseDiv = React.memo(
   React.forwardRef<

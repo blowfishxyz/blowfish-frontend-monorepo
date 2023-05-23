@@ -6,11 +6,15 @@ export type Spacing = {
   marginLeft?: number;
   marginRight?: number;
   margin?: number;
+  marginInline?: number;
+  marginBlock?: number;
   paddingTop?: number;
   paddingBottom?: number;
   paddingLeft?: number;
   paddingRight?: number;
   padding?: number;
+  paddingInline?: number;
+  paddingBlock?: number;
 };
 
 export function spacing(props: Spacing) {
@@ -19,6 +23,20 @@ export function spacing(props: Spacing) {
     rules.push(
       css`
         margin: ${props.margin}px;
+      `
+    );
+  }
+  if (props.marginInline !== undefined) {
+    rules.push(
+      css`
+        margin-inline: ${props.marginInline}px;
+      `
+    );
+  }
+  if (props.marginBlock !== undefined) {
+    rules.push(
+      css`
+        margin-block: ${props.marginBlock}px;
       `
     );
   }
@@ -54,6 +72,20 @@ export function spacing(props: Spacing) {
     rules.push(
       css`
         padding: ${props.padding}px;
+      `
+    );
+  }
+  if (props.paddingInline !== undefined) {
+    rules.push(
+      css`
+        padding-inline: ${props.paddingInline}px;
+      `
+    );
+  }
+  if (props.paddingBlock !== undefined) {
+    rules.push(
+      css`
+        padding-block: ${props.paddingBlock}px;
       `
     );
   }
