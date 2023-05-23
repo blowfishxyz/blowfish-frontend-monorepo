@@ -15,10 +15,6 @@ const UserWalletConnectContainer = styled(Row)`
   padding: 5px 8px;
   gap: 10px;
   border: 1px solid ${({ theme }) => theme.colors.border};
-
-  &:hover {
-    background: ${({ theme }) => theme.colors.backgroundSecondary};
-  }
 `;
 
 const ChainContainer = styled.div`
@@ -47,6 +43,10 @@ const ChangeAccountContainer = styled(Row)`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 50%;
   cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.backgroundSecondary};
+  }
 `;
 
 export type UserWalletProps = {
@@ -105,7 +105,7 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
       <UserWalletAddress>
         <Text size="sm" design="primary">
           {ensName
-            ? shortenEnsName(ensName, true)
+            ? shortenEnsName(ensName, false)
             : address && shortenHex(address)}
         </Text>
         <Tooltip open={open}>
