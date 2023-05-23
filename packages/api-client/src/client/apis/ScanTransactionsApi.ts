@@ -24,24 +24,6 @@ import type {
   ScanTransactionsSolanaRequest,
   Unauthorized,
 } from '../models';
-import {
-    BadRequestFromJSON,
-    BadRequestToJSON,
-    InternalServerErrorFromJSON,
-    InternalServerErrorToJSON,
-    LanguagesFromJSON,
-    LanguagesToJSON,
-    ScanTransactionsEvm200ResponseFromJSON,
-    ScanTransactionsEvm200ResponseToJSON,
-    ScanTransactionsEvmRequestFromJSON,
-    ScanTransactionsEvmRequestToJSON,
-    ScanTransactionsSolana200ResponseFromJSON,
-    ScanTransactionsSolana200ResponseToJSON,
-    ScanTransactionsSolanaRequestFromJSON,
-    ScanTransactionsSolanaRequestToJSON,
-    UnauthorizedFromJSON,
-    UnauthorizedToJSON,
-} from '../models';
 
 export interface ScanTransactionsEvmOperationRequest {
     xApiKey: string;
@@ -108,10 +90,10 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ScanTransactionsEvmRequestToJSON(requestParameters.scanTransactionsEvmRequest),
+            body: requestParameters.scanTransactionsEvmRequest,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ScanTransactionsEvm200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
@@ -171,10 +153,10 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ScanTransactionsSolanaRequestToJSON(requestParameters.scanTransactionsSolanaRequest),
+            body: requestParameters.scanTransactionsSolanaRequest,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ScanTransactionsSolana200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**

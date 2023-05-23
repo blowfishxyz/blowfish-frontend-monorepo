@@ -23,6 +23,11 @@ export const sleep = (timeMs: number) =>
 export const isENS = (address = "") =>
   address.endsWith(".eth") || address.endsWith(".xyz");
 
+export const capitalize = (str: string) => {
+  if (!str) return str;
+  return str[0].toUpperCase() + str.slice(1);
+};
+
 export const shortenEnsName = (name: string, showFatDots?: boolean): string => {
   const maxLength = 20;
 

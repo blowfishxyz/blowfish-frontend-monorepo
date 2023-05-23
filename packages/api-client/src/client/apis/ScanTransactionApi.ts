@@ -22,20 +22,6 @@ import type {
   ScanTransactionEvmRequest,
   Unauthorized,
 } from '../models';
-import {
-    BadRequestFromJSON,
-    BadRequestToJSON,
-    InternalServerErrorFromJSON,
-    InternalServerErrorToJSON,
-    LanguagesFromJSON,
-    LanguagesToJSON,
-    ScanTransactionEvm200ResponseFromJSON,
-    ScanTransactionEvm200ResponseToJSON,
-    ScanTransactionEvmRequestFromJSON,
-    ScanTransactionEvmRequestToJSON,
-    UnauthorizedFromJSON,
-    UnauthorizedToJSON,
-} from '../models';
 import { ChainFamily, ChainNetwork } from '../../types';
 
 export interface ScanTransactionEvmOperationRequest {
@@ -97,10 +83,10 @@ export class ScanTransactionApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ScanTransactionEvmRequestToJSON(requestParameters.scanTransactionEvmRequest),
+            body: requestParameters.scanTransactionEvmRequest,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => ScanTransactionEvm200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**

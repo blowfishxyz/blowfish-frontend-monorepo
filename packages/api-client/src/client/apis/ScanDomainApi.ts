@@ -21,18 +21,6 @@ import type {
   ScanDomain200ResponseInner,
   Unauthorized,
 } from '../models';
-import {
-    BadRequestFromJSON,
-    BadRequestToJSON,
-    InternalServerErrorFromJSON,
-    InternalServerErrorToJSON,
-    ObjectWithDomainsPropertyOfTypeArrayFromJSON,
-    ObjectWithDomainsPropertyOfTypeArrayToJSON,
-    ScanDomain200ResponseInnerFromJSON,
-    ScanDomain200ResponseInnerToJSON,
-    UnauthorizedFromJSON,
-    UnauthorizedToJSON,
-} from '../models';
 
 export interface ScanDomainRequest {
     xApiKey: string;
@@ -86,10 +74,10 @@ export class ScanDomainApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: ObjectWithDomainsPropertyOfTypeArrayToJSON(requestParameters.objectWithDomainsPropertyOfTypeArray),
+            body: requestParameters.objectWithDomainsPropertyOfTypeArray,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ScanDomain200ResponseInnerFromJSON));
+        return new runtime.JSONApiResponse(response);
     }
 
     /**
