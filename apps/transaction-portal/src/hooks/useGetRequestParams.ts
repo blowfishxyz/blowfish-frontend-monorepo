@@ -9,7 +9,7 @@ import {
 } from "@blowfish/utils/types";
 import { useEffect, useState } from "react";
 
-import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
 import { getScanRequestFromMessageChannel } from "~utils/messages";
 import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
@@ -33,7 +33,7 @@ type RequestParams =
 
 export const useGetRequestParams = (): RequestParams => {
   const requestChainId = useRequestChainId();
-  const requestMessage = useParsedRequestScanUrl<ParsedScanUrl>();
+  const requestMessage = useQueryParams<ParsedScanUrl>();
   const [params, setParams] = useState<RequestParams>({});
   const [errorMessage, setErrorMessage] = useState<MessageError | null>(null);
   const [paramError, setParamError] = useState(false);
