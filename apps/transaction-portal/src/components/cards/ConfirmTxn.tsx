@@ -1,29 +1,45 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { styled } from "styled-components";
-import { Column, device, Text } from "@blowfish/ui/core";
 import {
-  CardWrapper,
-  CardContent,
-  CardText,
-  CardSmallSecondaryButton,
-  CardRow,
-  CardPrimaryButton,
-} from "./common";
+  Column,
+  PrimaryButton,
+  Row,
+  SecondaryButton,
+  Text,
+} from "@blowfish/ui/core";
+import { ContinueIcon } from "@blowfish/ui/icons";
+import { CardWrapper, CardContent } from "./common";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
   width: 100%;
-
-  @media (${device.lg}) {
-    width: 45%;
-  }
+  background: ${({ theme }) => theme.colors.backgroundSecondary};
 `;
 
-const CenterContent = styled.div`
-  text-align: center;
-  width: 100%;
+const CancelButton = styled(SecondaryButton)`
+  height: 46px;
+  font-size: 15px;
+  border: 1px solid #ce5347;
+  color: #ce5347;
+`;
+
+const ReportButton = styled(SecondaryButton)`
+  height: 46px;
+  font-size: 15px;
+`;
+
+const ContinueButton = styled(PrimaryButton)`
+  height: 46px;
+  font-size: 18px;
+`;
+
+const ConfirmTxnWarningMsg = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})`
+  max-width: 250px;
 `;
 
 const ViewState = {
@@ -82,26 +98,29 @@ export const ConfirmTxn: React.FC = () => {
     switch (viewState) {
       case ViewState.WARNING:
         return (
-          <>
-            <Column gap="md">
-              <Text size="xxl">This seems low risk.</Text>
-              <CardText>
-                This application is requesting permission to exchange assets
-                that are held in your wallet for others.
-              </CardText>
+          <Row justifyContent="space-between" alignItems="center">
+            <Column gap="md" flex={1}>
+              <Text size="xl">This seems low risk.</Text>
+              <ConfirmTxnWarningMsg>
+                This signature request seems to be trustworthy. If something
+                feels fishy, you should report it.
+              </ConfirmTxnWarningMsg>
             </Column>
-            <CardRow gap="md">
-              <CardSmallSecondaryButton>Flag</CardSmallSecondaryButton>
-              <CardPrimaryButton onClick={handleContinueClick}>
-                Continue
-              </CardPrimaryButton>
-            </CardRow>
-            <CenterContent>
-              <Text size="sm" design="secondary">
-                Click Continue to proceed to your wallet.
-              </Text>
-            </CenterContent>
-          </>
+            <Column gap="md" flex={0.7}>
+              <Row gap="md">
+                <ContinueButton onClick={handleContinueClick}>
+                  <ContinueIcon />
+                  Continue
+                </ContinueButton>
+              </Row>
+              <Row gap="md">
+                <CancelButton>Cancel</CancelButton>
+                <ReportButton onClick={handleContinueClick}>
+                  Report
+                </ReportButton>
+              </Row>
+            </Column>
+          </Row>
         );
       case ViewState.CONFIRMING:
         return <ConfirmingView />;

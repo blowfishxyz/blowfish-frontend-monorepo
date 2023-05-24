@@ -1,14 +1,13 @@
 import { styled } from "styled-components";
 import {
   PrimaryButton,
-  Row,
   SecondaryButton,
   Text,
   device,
 } from "@blowfish/ui/core";
 
 const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
-  flex: 1;
+  width: 100%;
   box-sizing: border-box;
   background: ${({ theme }) => theme.colors.backgroundPrimary};
   border: 1px solid ${({ theme }) => theme.colors.border};
@@ -17,6 +16,10 @@ const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
 
   padding: 32px 0
     ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
+
+  @media (${device.lg}) {
+    width: 55%;
+  }
 `;
 
 const CardContent = styled.div`
@@ -51,10 +54,7 @@ const Divider = styled.div<DividerProps>`
         `}
 `;
 
-const CardText = styled(Text)<{ alignText?: string }>`
-  color: ${({ theme }) => theme.colors.foregroundPrimary};
-  font-size: 14px;
-
+const CardText = styled(Text).attrs({ size: "md", design: "primary" })`
   @media (${device.lg}) {
     font-size: 16px;
     line-height: 25.76px;
@@ -77,20 +77,13 @@ const CardPrimaryButton = styled(PrimaryButton)`
   }
 `;
 
-const CardSmallSecondaryButton = styled(CardSecondaryButton)`
-  width: 120px;
-`;
-
-const CardRow = styled(Row)`
-  margin: 25px 0 20px;
-`;
-
 const CardGrayLink = styled.a`
   color: ${({ theme }) => theme.colors.foregroundSecondary};
 `;
 
 const CardBlackTextLink = styled.a`
   color: ${({ theme }) => theme.colors.foregroundPrimary};
+  text-decoration: none;
 `;
 
 export {
@@ -98,10 +91,8 @@ export {
   CardContent,
   Divider,
   CardText,
-  CardSmallSecondaryButton,
   CardSecondaryButton,
   CardPrimaryButton,
-  CardRow,
   CardGrayLink,
   CardBlackTextLink,
 };

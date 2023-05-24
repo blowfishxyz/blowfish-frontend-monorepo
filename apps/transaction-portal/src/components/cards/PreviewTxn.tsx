@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Column, Row, Text, device } from "@blowfish/ui/core";
+import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import {
@@ -16,6 +16,8 @@ import {
   SignatureDataType,
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
+import { shortenEnsName } from "~utils/utils";
+import { ConfirmTxn } from "./ConfirmTxn";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -30,33 +32,13 @@ const Title = styled(Text)`
 
 const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
 
-const TxnSimulationResultsWrapper = styled.div`
-  margin-top: 16px;
-`;
-
 const StyledCardContent = styled(CardContent)`
   display: flex;
   align-items: center;
 `;
 
-const WrappedRow = styled(Row).attrs({
-  alignItems: "center",
-  flexWrap: "wrap",
-})`
-  @media (${device.lg}) {
-    &:last-child {
-      gap: 12px;
-    }
-  }
-`;
-
 const StyledColumn = styled(Column)`
-  padding: 8px 0;
-`;
-
-const ChipWrapper = styled(Row)`
-  margin-top: 3px;
-  flex-wrap: wrap;
+  padding: 12px 0;
 `;
 
 export interface PreviewTxnProps {
@@ -82,14 +64,12 @@ const renderSimulation = (
   return null;
 };
 
-const labels = ["Marketplace", "Label2", "Label3", "Label4"];
-
 export const PreviewTxn: FC<PreviewTxnProps> = ({
   simulationType,
   txnSimulationData = [],
   signatureData = [],
 }) => (
-  <CardWrapper $removePaddingBottom>
+  <CardWrapper>
     <CardContent>
       <Row justifyContent="space-between">
         <Title>Preview</Title>
@@ -105,62 +85,56 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
     </CardContent>
     <Divider margin="16px 0" />
     <CardContent>
-      <Row justifyContent="space-between">
-        <SmallGrayText>Simulation</SmallGrayText>
-        {simulationType === "transaction" && (
-          <SmallGrayText>Value</SmallGrayText>
-        )}
-      </Row>
-      <TxnSimulationResultsWrapper>
-        {renderSimulation(simulationType, txnSimulationData, signatureData)}
-      </TxnSimulationResultsWrapper>
+      <Column gap="md">
+        <Row justifyContent="space-between">
+          <SmallGrayText>Simulation</SmallGrayText>
+          {simulationType === "transaction" && (
+            <SmallGrayText>Value</SmallGrayText>
+          )}
+        </Row>
+        <div>
+          {renderSimulation(simulationType, txnSimulationData, signatureData)}
+        </div>
+      </Column>
+      {simulationType === "signature" && (
+        <Column gap="md">
+          <Row justifyContent="space-between">
+            <SmallGrayText>State</SmallGrayText>
+          </Row>
+          <div>
+            <Text design="secondary" size="md" marginTop={30}>
+              There will be no change in state.
+            </Text>
+          </div>
+        </Column>
+      )}
     </CardContent>
     <Divider margin="24px 0 0" />
     <StyledCardContent>
-      <StyledColumn flex={1}>
-        <SmallGrayText>Counterparty</SmallGrayText>
-        <Row gap="sm" alignItems="center">
-          <CardText>
-            <CardBlackTextLink href="">marketplace.blur.eth</CardBlackTextLink>
-          </CardText>
+      <StyledColumn gap="sm">
+        <SmallGrayText>Website</SmallGrayText>
+        <Row gap="xs" alignItems="center">
           <VerifiedIcon />
+          <CardText>
+            <LinkWithArrow href="">marketplace.blur.eth</LinkWithArrow>
+          </CardText>
         </Row>
       </StyledColumn>
       <Divider orientation="vertical" />
-      <StyledColumn flex={1}>
-        <SmallGrayText>Others Involved</SmallGrayText>
+      <StyledColumn gap="sm">
+        <SmallGrayText>Contract</SmallGrayText>
         <CardText>
-          <CardBlackTextLink>None</CardBlackTextLink>
+          <CardBlackTextLink>
+            <LinkWithArrow href="">
+              {shortenEnsName("0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376")}
+            </LinkWithArrow>
+          </CardBlackTextLink>
         </CardText>
       </StyledColumn>
     </StyledCardContent>
-    <Divider />
-    <StyledCardContent>
-      <StyledColumn flex={1}>
-        <SmallGrayText>Performed?</SmallGrayText>
-        <WrappedRow gap="sm">
-          <CardText>Yes</CardText>
-          <SmallGrayText>3 times</SmallGrayText>
-        </WrappedRow>
-      </StyledColumn>
-      <Divider orientation="vertical" />
-      <StyledColumn flex={1}>
-        <SmallGrayText>Used?</SmallGrayText>
-        <WrappedRow gap="sm">
-          <CardText>Yes</CardText>
-          <SmallGrayText>481 wallets</SmallGrayText>
-        </WrappedRow>
-      </StyledColumn>
-      <Divider orientation="vertical" />
-      <StyledColumn flex={1}>
-        <SmallGrayText>Labels</SmallGrayText>
-        <ChipWrapper gap="sm">
-          {labels.length > 0 && <Chip text={labels[0]} />}
-          {labels.length > 1 && (
-            <Chip text={`+${labels.length - 1}`} data-clickable="true" />
-          )}
-        </ChipWrapper>
-      </StyledColumn>
-    </StyledCardContent>
+    <Divider margin="0 0 16px" />
+    <CardContent>
+      <ConfirmTxn />
+    </CardContent>
   </CardWrapper>
 );

@@ -2,7 +2,7 @@ import React from "react";
 import { TxnImage, SmallGrayText } from "./common";
 import { styled } from "styled-components";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
-import { CardBlackTextLink, Divider } from "~components/cards/common";
+import { Divider } from "~components/cards/common";
 import { shortenHex } from "~utils/hex";
 import { SignatureDataType } from "./mock-data";
 
@@ -10,57 +10,44 @@ export interface SignatureSimulationProps {
   data: SignatureDataType;
 }
 
-const SignatureSimulationWrapper = styled(Row)`
-  margin-bottom: 10px;
-`;
-
 const SignatureSimulationMsgWrapper = styled(Column)``;
 
-const SignatureSimulationAction = styled(Text)`
-  font-size: 13px;
-  line-height: 19px;
-
+const SignatureSimulationAction = styled(Text).attrs({ size: "sm", design: "primary" })`
   @media (${device.lg}) {
     font-size: 17px;
   }
 `;
 
-const SmallSignatureSimulationText = styled(Text)`
-  font-size: 13px;
-  margin-left: 3px;
-`;
-
 const SignatureSimulationMsg = styled(Row)`
-  margin-top: 5px;
+  flex-wrap: wrap;
 `;
 
 export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
   data,
 }) => {
   return (
-    <SignatureSimulationWrapper alignItems="center" gap="md">
+    <Row alignItems="center" gap="md" marginBottom={10}>
       <TxnImage src={data.imageUrl} />
       <SignatureSimulationMsgWrapper>
         <SignatureSimulationAction>
-          <Text weight="semi-bold">Connect wallet</Text> to{" "}
-          <CardBlackTextLink href={`${data.url}`}>{data.url}</CardBlackTextLink>
+          <Text weight="semi-bold">Connect wallet</Text>
         </SignatureSimulationAction>
-        <SignatureSimulationMsg>
+        <SignatureSimulationMsg marginTop={5}>
           <SmallGrayText>
             Message:
-            <SmallSignatureSimulationText>
+            <Text size="sm" design="primary" marginRight={3}>
               {data.message}
-            </SmallSignatureSimulationText>
+            </Text>
           </SmallGrayText>
           <Divider orientation="vertical" margin="0 5px" />
           <SmallGrayText>
             Challenge:
-            <SmallSignatureSimulationText>
+            <Text size="sm" design="primary" marginRight={3}>
               {shortenHex(data.challenge)}
-            </SmallSignatureSimulationText>
+            </Text>
           </SmallGrayText>
         </SignatureSimulationMsg>
       </SignatureSimulationMsgWrapper>
-    </SignatureSimulationWrapper>
+    </Row>
   );
 };
