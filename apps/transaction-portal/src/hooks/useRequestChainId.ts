@@ -1,11 +1,11 @@
 import { ParsedScanUrl, isUrlScan } from "@blowfish/utils/types";
 import { useMemo } from "react";
 
-import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
 
 //TODO: we can delete this hook once urlScan is removed
 export const useRequestChainId = () => {
-  const requestScanUrl = useParsedRequestScanUrl<ParsedScanUrl>();
+  const requestScanUrl = useQueryParams<ParsedScanUrl>();
 
   return useMemo(() => {
     //TODO: We should remove the urlScan as soon as possible since it introduces a security risk

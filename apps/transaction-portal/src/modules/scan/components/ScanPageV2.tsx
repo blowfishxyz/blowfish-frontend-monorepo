@@ -1,0 +1,126 @@
+import { ChainInfo } from "@blowfish/utils/chains";
+import {
+  Message,
+  DappRequest,
+  isSignMessageRequest,
+} from "@blowfish/utils/types";
+import { useModal } from "connectkit";
+import { useMemo, useState } from "react";
+import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
+import { ScanResults } from "~components/ScanResults";
+import { useScanDappRequest } from "~hooks/useScanDappRequest";
+import { useScanParams } from "~modules/scan/hooks/useScanParams";
+import { MessageError } from "~utils/utils";
+
+export const ScanPageV2: React.FC = () => {
+  const data = useScanParams();
+  const connectedChainId = useChainId();
+  const { address, isConnected } = useAccount();
+  const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
+    useSwitchNetwork({ throwForSwitchChainNotSupported: true });
+  const { disconnectAsync } = useDisconnect();
+  const { setOpen: setConnectWalletModalOpen } = useModal();
+
+  if (!data) {
+    return <div key="loading">loading...</div>;
+  }
+
+  if ("error" in data) {
+    if (data.error === MessageError.PARAMS_NOT_OK) {
+      return <div>TransactionNotFoundScreen</div>;
+    }
+    if (data.error === MessageError.OUTDATED_EXTENSION) {
+      return <div>OutdatedExtensionScreen</div>;
+    }
+    if (data.error === MessageError.FETCH_ERROR) {
+      return <div>UnknownErrorScreen with retry and try to show api error</div>;
+    }
+
+    return <div>unknown error</div>;
+  }
+
+  const { message, request, chain, isImpersonating, userAccount } = data;
+
+  const isUnsupportedDangerousRequest =
+    message && isSignMessageRequest(message.data)
+      ? message?.data.payload.method === "eth_sign"
+      : false;
+
+  if (!chain?.chainInfo) {
+    return <div>unsupported chain</div>;
+  }
+
+  if (!isConnected) {
+    return <div>Account not connected</div>;
+  }
+
+  if (address !== userAccount && !isImpersonating) {
+    return <div>wrong account, please change</div>;
+  }
+
+  if (chain.chainId !== connectedChainId) {
+    return <div>wrong chain, please change</div>;
+  }
+
+  if (isUnsupportedDangerousRequest) {
+    return <div>TransactionUnsupportedScreen</div>;
+  }
+
+  return (
+    <ResultsView
+      messageOrigin={message.origin}
+      request={request}
+      chainInfo={chain.chainInfo}
+    />
+  );
+};
+
+const ResultsView: React.FC<{
+  messageOrigin: string | undefined;
+  request: DappRequest;
+  chainInfo: ChainInfo;
+}> = ({ chainInfo, messageOrigin, request }) => {
+  const { chainFamily, chainNetwork } = chainInfo;
+  const {
+    data: scanResults,
+    error: scanError,
+    mutate,
+    isValidating,
+  } = useScanDappRequest(chainFamily, chainNetwork, request, messageOrigin);
+  const simulationError = scanResults?.simulationResults?.error;
+
+  const [hasDismissedScreen, setHasDismissedScreen] = useState(false);
+
+  const overlay = useMemo(() => {
+    if (hasDismissedScreen) {
+      return null;
+    }
+    if (scanResults?.action === "BLOCK") {
+      return <div>block screen</div>;
+    }
+    if (simulationError) {
+      if (simulationError.kind === "SIMULATION_FAILED") {
+        return <div>transaction reverted</div>;
+      } else {
+        return <div>simulation failed</div>;
+      }
+    }
+
+    return null;
+  }, [scanResults?.action]);
+
+  if (!scanResults) {
+    return <div key="loading">loading...</div>;
+  }
+
+  // TODO: replace with new UI
+  return (
+    <ScanResults
+      request={request}
+      scanResults={scanResults}
+      dappUrl={messageOrigin || ""}
+      chainFamily={chainFamily}
+      chainNetwork={chainNetwork}
+    />
+  );
+};

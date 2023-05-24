@@ -11,7 +11,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { BLOWFISH_WEBSITE_URL } from "~constants";
-import { useParsedRequestScanUrl } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
 import { logger } from "~utils/logger";
 import { sendAllowlistedDomain } from "~utils/messages";
 
@@ -31,7 +31,7 @@ async function report(domain: string) {
 
 export function BlockedPage() {
   const router = useRouter();
-  const { href, host } = useParsedRequestScanUrl<{
+  const { href, host } = useQueryParams<{
     href: string;
     host: string;
   }>();
