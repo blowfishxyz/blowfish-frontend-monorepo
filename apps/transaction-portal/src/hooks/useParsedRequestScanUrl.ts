@@ -12,7 +12,7 @@ const booleanDecoder = (value: string): boolean | string => {
   }
 };
 
-export const useParsedRequestScanUrl = <T>() => {
+export const useQueryParams = <T>() => {
   const router = useRouter();
   return useMemo(() => {
     const cleanedQs = router.asPath.split("?")[1];
