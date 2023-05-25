@@ -203,17 +203,19 @@ export const TransactionUnsupportedScreen = ({
 interface RetryButtonProps extends PropsWithChildren {
   onRetry: () => void;
   isRetrying: boolean;
+  marker?: string;
 }
 
 const RetryButton: React.FC<RetryButtonProps> = ({
   onRetry,
   isRetrying,
   children,
+  marker,
 }) => {
   return isRetrying ? (
     <StyledText style={{ opacity: 0.5 }}>Loading...</StyledText>
   ) : (
-    <TextButton onClick={onRetry}>
+    <TextButton className={marker} data-testid={marker} onClick={onRetry}>
       <StyledText style={{ opacity: 0.5 }}>{children}</StyledText>
     </TextButton>
   );
@@ -251,7 +253,11 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
         </ContentToggle>
       )}
       {onRetry && (
-        <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+        <RetryButton
+          marker="simulation-error"
+          onRetry={onRetry}
+          isRetrying={isRetrying ?? false}
+        >
           <StyledText>Retry this transaction</StyledText>
         </RetryButton>
       )}
@@ -343,7 +349,11 @@ export const AccountNotConnectedScreen: React.FC<
           </StyledText>
         )}
         {onRetry && (
-          <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+          <RetryButton
+            marker="account-not-connected"
+            onRetry={onRetry}
+            isRetrying={isRetrying ?? false}
+          >
             <StyledText>Connect wallet</StyledText>
           </RetryButton>
         )}
@@ -384,7 +394,11 @@ export const WrongChainScreen: React.FC<WrongChainScreenProps> = ({
         </StyledText>
         .
       </StyledText>
-      <RetryButton onRetry={onRetry} isRetrying={isRetrying ?? false}>
+      <RetryButton
+        marker="wrong-chain"
+        onRetry={onRetry}
+        isRetrying={isRetrying ?? false}
+      >
         <StyledText>
           Switch to{" "}
           <StyledText style={{ textTransform: "capitalize" }}>
@@ -416,7 +430,11 @@ export const UnknownErrorScreen: React.FC<UnknownErrorScreenProps> = ({
       <StyledText>
         Something unexpected happened. Please try again later.
       </StyledText>
-      <RetryButton onRetry={onRetry} isRetrying={isRetrying}>
+      <RetryButton
+        marker="unknown-error"
+        onRetry={onRetry}
+        isRetrying={isRetrying}
+      >
         <StyledText>Retry this transaction</StyledText>
       </RetryButton>
     </Wrapper>
