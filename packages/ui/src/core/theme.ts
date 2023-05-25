@@ -50,24 +50,42 @@ const base = {
   base100: "rgb(0, 0, 0)",
 };
 
+const backgroundColors = {
+  backgroundPrimary: "#FFFFFF",
+  backgroundSecondary: "#F8F8F8",
+};
+
+const foregroundColors = {
+  foregroundPrimary: "#000000",
+  foregroundSecondary: base.base50,
+  foregroundDanger: "#FF6332",
+};
+const actionColors = {
+  danger: "#FF3D00",
+  warning: "#FFB800",
+  success: "rgb(0, 191, 54)",
+  successLight: "rgba(0, 191, 54, 0.24)",
+};
+
 const lightTheme = {
   colors: {
     ...base,
     border: base.base10,
-    backgroundPrimary: "#FFFFFF",
-    backgroundSecondary: "#F8F8F8",
-    foregroundPrimary: "#000000",
-    foregroundSecondary: base.base50,
-    foregroundDanger: "#FF6332",
-    danger: "#FF3D00",
-    warning: "#FFB800",
-    success: "rgb(0, 191, 54)",
-    successLight: "rgba(0, 191, 54, 0.24)",
+    ...backgroundColors,
+    ...foregroundColors,
+    ...actionColors,
   },
   severityColors,
   grids,
   mediaQueries: generateMediaQueries(breakpoints),
 };
+
+export type ThemeBackgroundColors =
+  | keyof typeof backgroundColors
+  | keyof typeof base;
+export type ThemeForegroundColors =
+  | keyof typeof foregroundColors
+  | keyof typeof actionColors;
 
 export type ITheme = typeof lightTheme;
 

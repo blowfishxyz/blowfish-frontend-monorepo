@@ -1,5 +1,7 @@
 import React from "react";
 import { css, styled } from "styled-components";
+import { Spinner } from "../Spinner";
+import { Column } from "../Column";
 
 const resetStyles = css`
   border: none;
@@ -24,6 +26,7 @@ const resetStyles = css`
 
 const interactiveStyles = css`
   cursor: pointer;
+  user-select: none;
   transition: transform 0.2s ease-in;
 
   &:not(:disabled):hover {
@@ -40,6 +43,7 @@ const interactiveStyles = css`
 `;
 
 const baseStyles = css`
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -105,8 +109,17 @@ function getDesignStyles({ design }: ButtonProps) {
   return primaryDesign;
 }
 
+function getLoadingStyles({ loading }: ButtonProps) {
+  if (loading) {
+    return css`
+      color: transparent;
+    `;
+  }
+}
+
 type ButtonProps = {
   design?: "primary" | "secondary" | "tertiary";
+  loading?: boolean;
 };
 
 const ButtonComponent = styled.button<ButtonProps>`
@@ -114,9 +127,23 @@ const ButtonComponent = styled.button<ButtonProps>`
   ${baseStyles}
   ${getDesignStyles}
   ${interactiveStyles}
+  ${getLoadingStyles}
 `;
 
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
->((props, ref) => <ButtonComponent ref={ref} {...props} />);
+>((props, ref) => {
+  return (
+    <ButtonComponent ref={ref} {...props}>
+      {props.loading ? (
+        <Column position="absolute" absoluteCentered="both">
+          <Spinner
+            contrast={props.design === "primary" || props.design === undefined}
+          />
+        </Column>
+      ) : null}
+      {props.children}
+    </ButtonComponent>
+  );
+});

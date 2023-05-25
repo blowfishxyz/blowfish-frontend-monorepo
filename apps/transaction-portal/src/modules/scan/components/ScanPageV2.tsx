@@ -5,14 +5,24 @@ import {
   isSignMessageRequest,
 } from "@blowfish/utils/types";
 import { useModal } from "connectkit";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
 import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { useScanParams } from "~modules/scan/hooks/useScanParams";
 import { MessageError } from "~utils/utils";
+import {
+  OutdatedExtensionModal,
+  TransactionNotFoundModal,
+  UnknownErrorModal,
+  UnsupportedChainModal,
+  WrongAccountModal,
+} from "./modals";
+import { Layout } from "~components/layout/Layout";
+import { Row } from "@blowfish/ui/core";
+import { useRouter } from "next/router";
 
-export const ScanPageV2: React.FC = () => {
+export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
   const connectedChainId = useChainId();
   const { address, isConnected } = useAccount();
@@ -27,13 +37,11 @@ export const ScanPageV2: React.FC = () => {
 
   if ("error" in data) {
     if (data.error === MessageError.PARAMS_NOT_OK) {
-      return <div>TransactionNotFoundScreen</div>;
+      // return <UnsupportedChainModal />;
+      return <TransactionNotFoundModal />;
     }
     if (data.error === MessageError.OUTDATED_EXTENSION) {
-      return <div>OutdatedExtensionScreen</div>;
-    }
-    if (data.error === MessageError.FETCH_ERROR) {
-      return <div>UnknownErrorScreen with retry and try to show api error</div>;
+      return <OutdatedExtensionModal />;
     }
 
     return <div>unknown error</div>;
@@ -46,16 +54,17 @@ export const ScanPageV2: React.FC = () => {
       ? message?.data.payload.method === "eth_sign"
       : false;
 
+  // TODO move all checks inside ResultsView
   if (!chain?.chainInfo) {
-    return <div>unsupported chain</div>;
+    return <UnsupportedChainModal />;
   }
 
   if (!isConnected) {
-    return <div>Account not connected</div>;
+    return <AccountNotConnected />;
   }
 
   if (address !== userAccount && !isImpersonating) {
-    return <div>wrong account, please change</div>;
+    return <WrongAccountModal correctAddress={userAccount} />;
   }
 
   if (chain.chainId !== connectedChainId) {
@@ -109,6 +118,10 @@ const ResultsView: React.FC<{
     return null;
   }, [scanResults?.action]);
 
+  if (scanError) {
+    return <UnknownErrorModal onRetry={mutate} />;
+  }
+
   if (!scanResults) {
     return <div key="loading">loading...</div>;
   }
@@ -124,3 +137,21 @@ const ResultsView: React.FC<{
     />
   );
 };
+
+const AccountNotConnected: React.FC = () => {
+  const router = useRouter();
+  useLayoutEffect(() => {
+    router.push(`/start?redirect=${encodeURIComponent(router.asPath)}`);
+  }, []);
+  return null;
+};
+
+export const ScanPageV2: React.FC = () => {
+  return (
+    <Layout>
+      <ScanPageV2Inner />
+    </Layout>
+  );
+};
+
+export default ScanPageV2;
