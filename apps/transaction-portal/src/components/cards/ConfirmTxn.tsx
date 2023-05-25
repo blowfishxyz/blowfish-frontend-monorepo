@@ -69,7 +69,10 @@ const Fade = styled.div`
   }
 `;
 
-export const ConfirmTxn: React.FC = () => {
+export const ConfirmTxn: React.FC<{
+  onContinue: () => void;
+  onCancel: () => void;
+}> = ({ onContinue, onCancel }) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
 
@@ -108,13 +111,13 @@ export const ConfirmTxn: React.FC = () => {
             </Column>
             <Column gap="md" flex={0.7}>
               <Row gap="md">
-                <ContinueButton onClick={handleContinueClick}>
+                <ContinueButton onClick={onContinue}>
                   <ContinueIcon />
                   Continue
                 </ContinueButton>
               </Row>
               <Row gap="md">
-                <CancelButton>Cancel</CancelButton>
+                <CancelButton onClick={onCancel}>Cancel</CancelButton>
                 <ReportButton onClick={handleContinueClick}>
                   Report
                 </ReportButton>

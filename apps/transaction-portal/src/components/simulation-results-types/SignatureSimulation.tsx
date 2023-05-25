@@ -12,7 +12,10 @@ export interface SignatureSimulationProps {
 
 const SignatureSimulationMsgWrapper = styled(Column)``;
 
-const SignatureSimulationAction = styled(Text).attrs({ size: "sm", design: "primary" })`
+const SignatureSimulationAction = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})`
   @media (${device.lg}) {
     font-size: 17px;
   }
@@ -35,14 +38,14 @@ export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
         <SignatureSimulationMsg marginTop={5}>
           <SmallGrayText>
             Message:
-            <Text size="sm" design="primary" marginRight={3}>
+            <Text size="sm" design="primary" marginRight={3} marginLeft={3}>
               {data.message}
             </Text>
           </SmallGrayText>
           <Divider orientation="vertical" margin="0 5px" />
           <SmallGrayText>
             Challenge:
-            <Text size="sm" design="primary" marginRight={3}>
+            <Text size="sm" design="primary" marginRight={3} marginLeft={3}>
               {shortenHex(data.challenge)}
             </Text>
           </SmallGrayText>

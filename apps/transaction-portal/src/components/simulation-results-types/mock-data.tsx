@@ -20,9 +20,11 @@ type TxnSimulationDataType = EvmExpectedStateChangesInner;
 
 type SignatureDataType = {
   imageUrl: string;
-  url: string;
-  challenge: string;
+  dappUrl: URL;
+  state: string;
   message: string;
+  challenge: string;
+  account: string;
 };
 
 export { dummyTxnSimulationData, dummySignatureData };

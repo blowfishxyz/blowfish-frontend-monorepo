@@ -1,3 +1,4 @@
+import { useCallback, useMemo, useState } from "react";
 import { ChainInfo } from "@blowfish/utils/chains";
 import {
   Message,
@@ -5,12 +6,13 @@ import {
   isSignMessageRequest,
 } from "@blowfish/utils/types";
 import { useModal } from "connectkit";
-import { useMemo, useState } from "react";
 import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
-import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { useScanParams } from "~modules/scan/hooks/useScanParams";
 import { MessageError } from "~utils/utils";
+import ScanResultsV2 from "./ScanResultsV2";
+import { logger } from "@blowfish/utils/logger";
+import { sendAbort, sendResult } from "~utils/messages";
 
 export const ScanPageV2: React.FC = () => {
   const data = useScanParams();
@@ -68,6 +70,7 @@ export const ScanPageV2: React.FC = () => {
 
   return (
     <ResultsView
+      message={message}
       messageOrigin={message.origin}
       request={request}
       chainInfo={chain.chainInfo}
@@ -76,10 +79,11 @@ export const ScanPageV2: React.FC = () => {
 };
 
 const ResultsView: React.FC<{
+  message: any,
   messageOrigin: string | undefined;
   request: DappRequest;
   chainInfo: ChainInfo;
-}> = ({ chainInfo, messageOrigin, request }) => {
+}> = ({ chainInfo, messageOrigin, request, message }) => {
   const { chainFamily, chainNetwork } = chainInfo;
   const {
     data: scanResults,
@@ -109,18 +113,52 @@ const ResultsView: React.FC<{
     return null;
   }, [scanResults?.action]);
 
+  const handleUserAction = useCallback(
+    async (shouldProceed: boolean) => {
+      if (!message) {
+        logger.error("Error: Cannot proceed, no message to respond to ");
+        return;
+      }
+      if (!request) {
+        logger.error("Error: Cannot proceed, no request to respond to ");
+        return;
+      }
+
+      logger.debug(request);
+
+      if (shouldProceed) {
+        if (isSignMessageRequest(request)) {
+          const { payload } = request;
+          if (payload.method === "personal_sign") {
+            // NOTE: domain mismatch on SIWE, so we just pass the message back to the dapp
+            logger.debug("personal_sign - send message back to dapp");
+            await sendResult(message.id, payload.message);
+          }
+        } else {
+          // TODO: This should never happen
+          logger.error("Unsupported operation ", request);
+          alert("UNSUPPORTED OPERATION");
+        }
+      } else {
+        await sendAbort(message.id);
+      }
+      window.close();
+    },
+    [message, request]
+  );
+
   if (!scanResults) {
     return <div key="loading">loading...</div>;
   }
 
-  // TODO: replace with new UI
   return (
-    <ScanResults
+    <ScanResultsV2
       request={request}
       scanResults={scanResults}
       dappUrl={messageOrigin || ""}
       chainFamily={chainFamily}
       chainNetwork={chainNetwork}
+      handleUserAction={handleUserAction}
     />
   );
 };

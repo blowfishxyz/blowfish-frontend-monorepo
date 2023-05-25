@@ -32,47 +32,43 @@ const Title = styled(Text)`
 
 const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
 
-const StyledCardContent = styled(CardContent)`
-  display: flex;
-  align-items: center;
+const StyledCardContent = styled(Row).attrs({
+  alignItems: "center",
+  paddingRight: 16,
+  paddingLeft: 16,
+})`
+  @media (${device.lg}) {
+    padding: 0 32px;
+  }
 `;
 
-const StyledColumn = styled(Column)`
-  padding: 12px 0;
-`;
+const StyledColumn = styled(Column).attrs({
+  paddingTop: 18,
+  paddingBottom: 18,
+})``;
 
 export interface PreviewTxnProps {
   simulationType: "transaction" | "signature";
   txnSimulationData?: TxnSimulationDataType[];
   signatureData?: SignatureDataType[];
+  onContinue: () => void;
+  onCancel: () => void;
 }
 
-const renderSimulation = (
-  simulationType: string,
-  txnSimulationData: TxnSimulationDataType[],
-  signatureData: SignatureDataType[]
-) => {
-  if (simulationType === "transaction") {
-    return txnSimulationData.map((txnData, i) => (
-      <TxnSimulation key={i} txnData={txnData} />
-    ));
-  } else if (simulationType === "signature") {
-    return signatureData.map((data, i) => (
-      <SignatureSimulation key={i} data={data} />
-    ));
-  }
-  return null;
-};
-
-export const PreviewTxn: FC<PreviewTxnProps> = ({
-  simulationType,
-  txnSimulationData = [],
-  signatureData = [],
-}) => (
+const PreviewCard: FC<{
+  title: string;
+  simulationType: "transaction" | "signature";
+  children: React.ReactNode;
+  origin: string;
+  website: string;
+  contract: string;
+  onContinue: () => void;
+  onCancel: () => void;
+}> = ({ title, children, origin, website, contract, onContinue, onCancel }) => (
   <CardWrapper>
     <CardContent>
       <Row justifyContent="space-between">
-        <Title>Preview</Title>
+        <Title>{title}</Title>
         <Chip
           text={
             <span>
@@ -84,31 +80,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       </Row>
     </CardContent>
     <Divider margin="16px 0" />
-    <CardContent>
-      <Column gap="md">
-        <Row justifyContent="space-between">
-          <SmallGrayText>Simulation</SmallGrayText>
-          {simulationType === "transaction" && (
-            <SmallGrayText>Value</SmallGrayText>
-          )}
-        </Row>
-        <div>
-          {renderSimulation(simulationType, txnSimulationData, signatureData)}
-        </div>
-      </Column>
-      {simulationType === "signature" && (
-        <Column gap="md">
-          <Row justifyContent="space-between">
-            <SmallGrayText>State</SmallGrayText>
-          </Row>
-          <div>
-            <Text design="secondary" size="md" marginTop={30}>
-              There will be no change in state.
-            </Text>
-          </div>
-        </Column>
-      )}
-    </CardContent>
+    <CardContent>{children}</CardContent>
     <Divider margin="24px 0 0" />
     <StyledCardContent>
       <StyledColumn gap="sm">
@@ -116,17 +88,17 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
         <Row gap="xs" alignItems="center">
           <VerifiedIcon />
           <CardText>
-            <LinkWithArrow href="">marketplace.blur.eth</LinkWithArrow>
+            <LinkWithArrow href={origin}>{website}</LinkWithArrow>
           </CardText>
         </Row>
       </StyledColumn>
-      <Divider orientation="vertical" />
+      <Divider orientation="vertical" margin="0 36px" />
       <StyledColumn gap="sm">
         <SmallGrayText>Contract</SmallGrayText>
         <CardText>
           <CardBlackTextLink>
-            <LinkWithArrow href="">
-              {shortenEnsName("0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376")}
+            <LinkWithArrow href={contract}>
+              {shortenEnsName(contract)}
             </LinkWithArrow>
           </CardBlackTextLink>
         </CardText>
@@ -134,7 +106,78 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
     </StyledCardContent>
     <Divider margin="0 0 16px" />
     <CardContent>
-      <ConfirmTxn />
+      <ConfirmTxn
+        onContinue={onContinue}
+        onCancel={() => onCancel()}
+      />
     </CardContent>
   </CardWrapper>
 );
+
+const PreviewTxn: FC<PreviewTxnProps> = ({
+  simulationType,
+  txnSimulationData = [],
+  signatureData = [],
+  onContinue,
+  onCancel
+}) => (
+  <>
+    {simulationType === "transaction" &&
+      txnSimulationData.map((data, index) => (
+        <PreviewCard
+          key={index}
+          title="Preview"
+          simulationType="transaction"
+          origin=""
+          website="marketplace.blur.eth"
+          contract="0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376"
+          onContinue={onContinue}
+          onCancel={onCancel}
+        >
+          <Column gap="md">
+            <Row justifyContent="space-between">
+              <SmallGrayText>Simulation</SmallGrayText>
+              <SmallGrayText>Value</SmallGrayText>
+            </Row>
+            <div>
+              <TxnSimulation txnData={data} />
+            </div>
+          </Column>
+        </PreviewCard>
+      ))}
+    {simulationType === "signature" &&
+      signatureData.map((data, index) => (
+        <PreviewCard
+          key={index}
+          title="Preview"
+          simulationType="signature"
+          origin={data.dappUrl.origin}
+          website={data.dappUrl.host}
+          contract={data.account}
+          onContinue={onContinue}
+          onCancel={onCancel}
+        >
+          <Column gap="md">
+            <Row justifyContent="space-between">
+              <SmallGrayText>Simulation</SmallGrayText>
+            </Row>
+            <div>
+              <SignatureSimulation data={data} />
+            </div>
+          </Column>
+          <Column gap="md">
+            <Row justifyContent="space-between">
+              <SmallGrayText>State</SmallGrayText>
+            </Row>
+            <div>
+              <Text design="secondary" size="md" marginTop={30}>
+                {data.state}
+              </Text>
+            </div>
+          </Column>
+        </PreviewCard>
+      ))}
+  </>
+);
+
+export default PreviewTxn;
