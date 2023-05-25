@@ -347,7 +347,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
           case "TRANSACTION_ERROR":
             return {
               severity: "CRITICAL",
-              message: `This transaction seems does not seem valid. Proceed with caution`,
+              message: `This transaction does not seem valid. Proceed with caution`,
             };
           case "UNSUPPORTED_ORDER_TYPE":
             return {
