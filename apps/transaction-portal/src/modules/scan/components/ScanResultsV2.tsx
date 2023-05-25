@@ -83,6 +83,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     },
   ];
 
+  const closeWindow = useCallback(() => window.close(), []);
+
   const handleUserAction = useCallback(
     async (shouldProceed: boolean) => {
       if (!message) {
@@ -112,9 +114,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       } else {
         await sendAbort(message.id);
       }
-      window.close();
+      closeWindow();
     },
-    [message, request]
+    [message, request, closeWindow]
   );
 
   const simulationType =
