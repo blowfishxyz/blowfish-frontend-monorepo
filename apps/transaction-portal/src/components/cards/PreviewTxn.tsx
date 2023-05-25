@@ -106,10 +106,7 @@ const PreviewCard: FC<{
     </StyledCardContent>
     <Divider margin="0 0 16px" />
     <CardContent>
-      <ConfirmTxn
-        onContinue={onContinue}
-        onCancel={() => onCancel()}
-      />
+      <ConfirmTxn onContinue={onContinue} onCancel={() => onCancel()} />
     </CardContent>
   </CardWrapper>
 );
@@ -119,7 +116,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
   txnSimulationData = [],
   signatureData = [],
   onContinue,
-  onCancel
+  onCancel,
 }) => (
   <>
     {simulationType === "transaction" &&

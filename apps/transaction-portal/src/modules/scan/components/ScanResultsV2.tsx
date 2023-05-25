@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { styled } from "styled-components";
 import { Row } from "@blowfish/ui/core";
 import PreviewTxn from "~components/cards/PreviewTxn";
@@ -8,7 +8,13 @@ import {
   EvmMessageScanResult,
   EvmTransactionScanResult,
 } from "@blowfish/api-client";
-import { DappRequest, isSignMessageRequest } from "@blowfish/utils/types";
+import {
+  DappRequest,
+  Message,
+  isSignMessageRequest,
+} from "@blowfish/utils/types";
+import { logger } from "@blowfish/utils/logger";
+import { sendAbort, sendResult } from "~utils/messages";
 
 const ScanResultsWrapper = styled(Row)`
   height: 100%;
@@ -20,15 +26,17 @@ interface ScanResultsV2Props {
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
   dappUrl: string;
-  handleUserAction: (shouldProceed: boolean) => Promise<void>;
+  message: Message<DappRequest["type"], DappRequest>;
 }
 
 const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   request,
   scanResults,
-  dappUrl,
-  handleUserAction,
+  message,
+  ...props
 }) => {
+  const dappUrl = useMemo(() => new URL(props.dappUrl), [props.dappUrl]);
+
   const parsedMessageContent = useMemo(() => {
     if (
       isSignMessageRequest(request) &&
@@ -47,19 +55,19 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     );
   }, [scanResults]);
 
-  const { message, challenge } = useMemo(() => {
+  const { parsedMessage, challenge } = useMemo(() => {
     if (!parsedMessageContent) {
-      return { message: "", challenge: "" };
+      return { parsedMessage: "", challenge: "" };
     }
 
     const startIndex = parsedMessageContent.indexOf("\n\nChallenge: ");
     if (startIndex !== -1) {
-      const message = parsedMessageContent.substring(0, startIndex);
+      const parsedMessage = parsedMessageContent.substring(0, startIndex);
       const challenge = parsedMessageContent.substring(startIndex + 13);
-      return { message, challenge };
+      return { parsedMessage, challenge };
     }
 
-    return { message: parsedMessageContent, challenge: "" };
+    return { parsedMessage: parsedMessageContent, challenge: "" };
   }, [parsedMessageContent]);
 
   const signatureData = [
@@ -68,12 +76,46 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       state: scanResults.simulationResults?.error
         ? simulationFailedMessage
         : "No state changes found. Proceed with caution",
-      dappUrl: new URL(dappUrl),
-      message,
+      dappUrl,
+      message: parsedMessage,
       challenge,
       account: request.userAccount,
     },
   ];
+
+  const handleUserAction = useCallback(
+    async (shouldProceed: boolean) => {
+      if (!message) {
+        logger.error("Error: Cannot proceed, no message to respond to ");
+        return;
+      }
+      if (!request) {
+        logger.error("Error: Cannot proceed, no request to respond to ");
+        return;
+      }
+
+      logger.debug(request);
+
+      if (shouldProceed) {
+        if (isSignMessageRequest(request)) {
+          const { payload } = request;
+          if (payload.method === "personal_sign") {
+            // NOTE: domain mismatch on SIWE, so we just pass the message back to the dapp
+            logger.debug("personal_sign - send message back to dapp");
+            await sendResult(message.id, payload.message);
+          }
+        } else {
+          // TODO: This should never happen
+          logger.error("Unsupported operation ", request);
+          alert("UNSUPPORTED OPERATION");
+        }
+      } else {
+        await sendAbort(message.id);
+      }
+      window.close();
+    },
+    [message, request]
+  );
 
   const simulationType =
     request.type === "SIGN_MESSAGE" ? "signature" : "transaction";

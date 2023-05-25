@@ -69,10 +69,15 @@ const Fade = styled.div`
   }
 `;
 
-export const ConfirmTxn: React.FC<{
+export interface ConfirmTxnProps {
   onContinue: () => void;
   onCancel: () => void;
-}> = ({ onContinue, onCancel }) => {
+}
+
+export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
+  onContinue,
+  onCancel,
+}) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
 
