@@ -39,7 +39,7 @@ const ConfirmTxnWarningMsg = styled(Text).attrs({
   size: "sm",
   design: "primary",
 })`
-  max-width: 250px;
+  max-width: 300px;
 `;
 
 const ViewState = {
@@ -106,7 +106,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
     switch (viewState) {
       case ViewState.WARNING:
         return (
-          <Row justifyContent="space-between" alignItems="center">
+          <Row justifyContent="space-between" alignItems="center" gap="lg">
             <Column gap="md" flex={1}>
               <Text size="xl">This seems low risk.</Text>
               <ConfirmTxnWarningMsg>
