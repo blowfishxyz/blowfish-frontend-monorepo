@@ -206,7 +206,6 @@ export const ModalContent = React.forwardRef<
           position="relative"
           zIndex={10}
         >
-          {/* <FloatingFocusManager context={floatingContext}> */}
           <Column
             ref={ref}
             aria-labelledby={context.labelId}
@@ -222,7 +221,6 @@ export const ModalContent = React.forwardRef<
           >
             {props.children}
           </Column>
-          {/* </FloatingFocusManager> */}
         </Overlay>
       </FloatingOverlay>
     </FloatingPortal>

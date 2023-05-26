@@ -151,8 +151,6 @@ const ButtonsGrid = styled.div`
 `;
 
 const HeroImage = styled(Image)`
-  /* display: none; */
-
   @media (${device.md}) {
     width: 363px;
     height: 363px;
