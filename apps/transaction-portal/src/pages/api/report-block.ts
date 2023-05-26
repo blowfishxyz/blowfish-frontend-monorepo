@@ -19,7 +19,9 @@ export default async function handler(
     return;
   } catch (e) {
     logger.debug("Error while reporting: " + e);
-    res.status(420).json({ error: (e as any).message });
+    if (e instanceof Error) {
+      res.status(420).json({ error: e.message });
+    }
     return;
   }
 }

@@ -96,6 +96,12 @@ const tertiaryDesign = css`
   }
 `;
 
+const dangerDesign = css`
+  background: ${(p) => p.theme.severityColors.CRITICAL.backgroundLight};
+  color: ${(p) => p.theme.colors.danger};
+  border: 1px solid ${(p) => p.theme.colors.danger};
+`;
+
 function getDesignStyles({ design }: ButtonProps) {
   if (design === "secondary") {
     return secondaryDesign;
@@ -106,6 +112,10 @@ function getDesignStyles({ design }: ButtonProps) {
   if (design === "tertiary") {
     return tertiaryDesign;
   }
+  if (design === "danger") {
+    return dangerDesign;
+  }
+
   return primaryDesign;
 }
 
@@ -118,7 +128,7 @@ function getLoadingStyles({ loading }: ButtonProps) {
 }
 
 type ButtonProps = {
-  design?: "primary" | "secondary" | "tertiary";
+  design?: "primary" | "secondary" | "tertiary" | "danger";
   loading?: boolean;
 };
 
@@ -139,7 +149,13 @@ export const Button = React.forwardRef<
       {props.loading ? (
         <Column position="absolute" absoluteCentered="both">
           <Spinner
-            contrast={props.design === "primary" || props.design === undefined}
+            design={
+              props.design === "primary" || props.design === undefined
+                ? "contrast"
+                : props.design === "danger"
+                ? "danger"
+                : undefined
+            }
           />
         </Column>
       ) : null}

@@ -1,38 +1,33 @@
 import { ChainInfo } from "@blowfish/utils/chains";
-import {
-  Message,
-  DappRequest,
-  isSignMessageRequest,
-} from "@blowfish/utils/types";
-import { useModal } from "connectkit";
+import { DappRequest, isSignMessageRequest } from "@blowfish/utils/types";
 import { useLayoutEffect, useMemo, useState } from "react";
-import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
+import { useAccount, useChainId, useSwitchNetwork } from "wagmi";
 import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { useScanParams } from "~modules/scan/hooks/useScanParams";
+import {
+  ScanParamsSuccess,
+  useScanParams,
+} from "~modules/scan/hooks/useScanParams";
 import { MessageError } from "~utils/utils";
 import {
   OutdatedExtensionModal,
   TransactionNotFoundModal,
   UnknownErrorModal,
   UnsupportedChainModal,
+  UnsupportedTransactionModal,
   WrongAccountModal,
+  WrongNetworkModal,
 } from "./modals";
 import { Layout } from "~components/layout/Layout";
-import { Row } from "@blowfish/ui/core";
 import { useRouter } from "next/router";
+import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
+import { useUserDecision } from "../hooks/useUserDecision";
 
 export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
-  const connectedChainId = useChainId();
-  const { address, isConnected } = useAccount();
-  const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
-    useSwitchNetwork({ throwForSwitchChainNotSupported: true });
-  const { disconnectAsync } = useDisconnect();
-  const { setOpen: setConnectWalletModalOpen } = useModal();
 
   if (!data) {
-    return <div key="loading">loading...</div>;
+    return <ProtectLoadingScreen key="loading" />;
   }
 
   if ("error" in data) {
@@ -44,35 +39,31 @@ export const ScanPageV2Inner: React.FC = () => {
       return <OutdatedExtensionModal />;
     }
 
-    return <div>unknown error</div>;
+    return <TransactionNotFoundModal />;
   }
 
+  return <FullfieldView data={data} />;
+};
+
+const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
+  const { reject } = useUserDecision({
+    chainId: chain?.chainId,
+    message,
+    request,
+  });
 
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
       ? message?.data.payload.method === "eth_sign"
       : false;
 
-  // TODO move all checks inside ResultsView
+  if (isUnsupportedDangerousRequest) {
+    return <UnsupportedTransactionModal closeWindow={reject} />;
+  }
+
   if (!chain?.chainInfo) {
     return <UnsupportedChainModal />;
-  }
-
-  if (!isConnected) {
-    return <AccountNotConnected />;
-  }
-
-  if (address !== userAccount && !isImpersonating) {
-    return <WrongAccountModal correctAddress={userAccount} />;
-  }
-
-  if (chain.chainId !== connectedChainId) {
-    return <div>wrong chain, please change</div>;
-  }
-
-  if (isUnsupportedDangerousRequest) {
-    return <div>TransactionUnsupportedScreen</div>;
   }
 
   return (
@@ -80,6 +71,9 @@ export const ScanPageV2Inner: React.FC = () => {
       messageOrigin={message.origin}
       request={request}
       chainInfo={chain.chainInfo}
+      chainId={chain.chainId}
+      isImpersonating={isImpersonating}
+      userAccount={userAccount}
     />
   );
 };
@@ -88,18 +82,33 @@ const ResultsView: React.FC<{
   messageOrigin: string | undefined;
   request: DappRequest;
   chainInfo: ChainInfo;
-}> = ({ chainInfo, messageOrigin, request }) => {
+  chainId: number;
+  userAccount: string;
+  isImpersonating: boolean;
+}> = ({
+  chainInfo,
+  chainId,
+  userAccount,
+  isImpersonating,
+  messageOrigin,
+  request,
+}) => {
+  const connectedChainId = useChainId();
+  const { address, isConnected } = useAccount();
+  const { switchNetworkAsync } = useSwitchNetwork({
+    throwForSwitchChainNotSupported: true,
+  });
   const { chainFamily, chainNetwork } = chainInfo;
   const {
     data: scanResults,
     error: scanError,
     mutate,
-    isValidating,
   } = useScanDappRequest(chainFamily, chainNetwork, request, messageOrigin);
   const simulationError = scanResults?.simulationResults?.error;
 
-  const [hasDismissedScreen, setHasDismissedScreen] = useState(false);
+  const [hasDismissedScreen] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
     if (hasDismissedScreen) {
       return null;
@@ -116,17 +125,42 @@ const ResultsView: React.FC<{
     }
 
     return null;
-  }, [scanResults?.action]);
+  }, [scanResults?.action, hasDismissedScreen, simulationError]);
+
+  if (!isConnected) {
+    return <AccountNotConnected />;
+  }
+
+  if (address !== userAccount && !isImpersonating) {
+    return <WrongAccountModal correctAddress={userAccount} />;
+  }
+
+  if (chainId !== connectedChainId) {
+    return (
+      <WrongNetworkModal
+        targetChainId={chainId}
+        connectedChainId={connectedChainId}
+        switchNetwork={async (chainId) => {
+          await switchNetworkAsync?.(chainId);
+        }}
+      />
+    );
+  }
 
   if (scanError) {
-    return <UnknownErrorModal onRetry={mutate} />;
+    return (
+      <UnknownErrorModal
+        onRetry={async () => {
+          await mutate();
+        }}
+      />
+    );
   }
 
   if (!scanResults) {
-    return <div key="loading">loading...</div>;
+    return <ProtectLoadingScreen key="loading" />;
   }
 
-  // TODO: replace with new UI
   return (
     <ScanResults
       request={request}
@@ -142,7 +176,7 @@ const AccountNotConnected: React.FC = () => {
   const router = useRouter();
   useLayoutEffect(() => {
     router.push(`/start?redirect=${encodeURIComponent(router.asPath)}`);
-  }, []);
+  }, [router]);
   return null;
 };
 

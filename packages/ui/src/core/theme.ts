@@ -61,7 +61,8 @@ const foregroundColors = {
   foregroundDanger: "#FF6332",
 };
 const actionColors = {
-  danger: "#FF3D00",
+  danger: "rgb(255, 61, 0)",
+  dangerLight: "rgba(255, 61, 0, 0.24)",
   warning: "#FFB800",
   success: "rgb(0, 191, 54)",
   successLight: "rgba(0, 191, 54, 0.24)",

@@ -364,6 +364,7 @@ const ScanPage: React.FC = () => {
               // HACK(Alex): Remove after API version update
               errorMessage={
                 simulationError.humanReadableError ||
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (simulationError as any).parsedErrorMessage
               }
             />

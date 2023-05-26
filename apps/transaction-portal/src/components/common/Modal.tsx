@@ -7,13 +7,13 @@ import {
   useInteractions,
   useMergeRefs,
   FloatingPortal,
-  FloatingFocusManager,
   FloatingOverlay,
   useId,
 } from "@floating-ui/react";
-import { Column, Row, Text, Button, Spinner } from "@blowfish/ui/core";
+import { Column, Row, Text, Button } from "@blowfish/ui/core";
 import { styled } from "styled-components";
 import { useAsyncFn } from "react-use";
+import { useMemo } from "react";
 
 interface ModalOptions {
   blocking?: boolean;
@@ -56,7 +56,7 @@ export function useModal({
       descriptionId,
       ...data,
     }),
-    [open, setOpen, interactions, data]
+    [open, setOpen, interactions, data, labelId, descriptionId]
   );
 }
 
@@ -74,35 +74,42 @@ export const useModalContext = () => {
   return context;
 };
 
+type ModalAction =
+  | {
+      title?: string;
+      cb: () => Promise<void>;
+      design?: "primary" | "danger";
+      closeOnComplete?: boolean;
+    }
+  | (() => Promise<void>);
+
 type ModalProps = {
   title: string;
   description: React.ReactNode;
   content?: React.ReactNode;
   footerContent?: React.ReactNode;
-  action?: () => Promise<void>;
+  action?: ModalAction;
   actionTitle?: string;
-  closeAfterAction?: boolean;
+  width?: number;
   options?: ModalOptions;
+  onCancel?: () => void;
 };
-
-const noop = () => Promise.resolve();
 
 export function Modal({
   content,
   footerContent,
   title,
   action,
-  actionTitle,
-  closeAfterAction = true,
+  width,
   description,
+  onCancel,
   options,
 }: ModalProps) {
   const modal = useModal(options);
-  const [state, actionAsync] = useAsyncFn(action || noop);
 
   return (
     <ModalContext.Provider value={modal}>
-      <ModalContent>
+      <ModalContent width={width}>
         <Column height="100%" justifyContent="space-between">
           <Column>
             <Text
@@ -123,24 +130,20 @@ export function Modal({
             {!options?.blocking && (
               <Button
                 design={action ? "secondary" : "primary"}
-                onClick={() => modal.setOpen(false)}
+                onClick={() => {
+                  onCancel?.();
+                  modal.setOpen(false);
+                }}
               >
-                Close
+                Cancel
               </Button>
             )}
 
             {action && (
-              <Button
-                loading={state.loading}
-                onClick={async () => {
-                  await actionAsync();
-                  if (closeAfterAction) {
-                    modal.setOpen(false);
-                  }
-                }}
-              >
-                {actionTitle || "Confirm"}
-              </Button>
+              <ModalActionButton
+                action={action}
+                close={() => modal.setOpen(false)}
+              />
             )}
           </Row>
         </Column>
@@ -149,9 +152,41 @@ export function Modal({
   );
 }
 
+const ModalActionButton: React.FC<{
+  action: ModalAction;
+  close: () => void;
+}> = ({ action, close }) => {
+  const actionFn = useMemo(() => {
+    if (typeof action === "function") {
+      return action;
+    }
+
+    return action.cb;
+  }, [action]);
+  const [state, actionAsync] = useAsyncFn(actionFn);
+  const closeOnComplete =
+    typeof action === "function" || action.closeOnComplete;
+  const title = typeof action !== "function" ? action.title : undefined;
+
+  return (
+    <Button
+      loading={state.loading}
+      design={typeof action !== "function" ? action.design : undefined}
+      onClick={async () => {
+        await actionAsync();
+        if (closeOnComplete) {
+          close();
+        }
+      }}
+    >
+      {title ?? "Confirm"}
+    </Button>
+  );
+};
+
 export const ModalContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLProps<HTMLDivElement>
+  React.HTMLProps<HTMLDivElement> & { width?: number }
 >(function ModalContent(props, propRef) {
   const { context: floatingContext, ...context } = useModalContext();
   const ref = useMergeRefs([context.refs.setFloating, propRef]);
@@ -179,7 +214,7 @@ export const ModalContent = React.forwardRef<
             padding={26}
             paddingBottom={16}
             borderRadius={12}
-            width={400}
+            width={props.width || 400}
             position="relative"
             backgroundColor="backgroundPrimary"
             withBorder

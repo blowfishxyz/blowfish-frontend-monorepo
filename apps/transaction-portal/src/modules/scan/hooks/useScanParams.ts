@@ -1,4 +1,3 @@
-import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
 import { ChainInfo } from "@blowfish/utils/chains";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import {
@@ -14,7 +13,7 @@ import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
 type HexString = `0x${string}`;
 
-type ChainMetadata =
+export type ChainMetadata =
   | {
       chainId: number;
       chainInfo: ChainInfo | undefined;
@@ -36,14 +35,16 @@ export function useChainFromUrl(): ChainMetadata {
   return { chainId, chainInfo: chain };
 }
 
-type ScanParams =
-  | {
-      message: Message<DappRequest["type"], DappRequest>;
-      request: DappRequest;
-      userAccount: HexString;
-      chain: ChainMetadata;
-      isImpersonating: boolean;
-    }
+export type ScanParamsSuccess = {
+  message: Message<DappRequest["type"], DappRequest>;
+  request: DappRequest;
+  userAccount: HexString;
+  chain: ChainMetadata;
+  isImpersonating: boolean;
+};
+
+export type ScanParams =
+  | ScanParamsSuccess
   | { error: MessageError | undefined }
   | undefined;
 

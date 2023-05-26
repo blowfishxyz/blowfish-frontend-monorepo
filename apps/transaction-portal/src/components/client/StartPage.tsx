@@ -23,7 +23,7 @@ const StartPage = () => {
         router.replace("/dashboard");
       }
     }
-  }, [isConnected, redirect]);
+  }, [isConnected, redirect, router]);
 
   return (
     <Layout>
@@ -40,7 +40,7 @@ const StartPage = () => {
   );
 };
 
-const ConnectWalletView: React.FC = ({}) => {
+const ConnectWalletView: React.FC = () => {
   const { connectors } = useConnect();
 
   return (
@@ -81,9 +81,7 @@ const ConnectorButton: React.FC<{
   connector: Connector;
 }> = ({ connector }) => {
   const { status, connect } = useConnect();
-  const { label, logoPath, id, installLink } = getConnectorMetadata(
-    connector.id
-  );
+  const { label, logoPath, installLink } = getConnectorMetadata(connector.id);
   const text = connector.ready ? label : `Install ${label}`;
   const handleClick = () => {
     if (connector.ready) {
@@ -98,7 +96,7 @@ const ConnectorButton: React.FC<{
   return (
     <StyledButton key={connector.id} onClick={handleClick}>
       {status === "loading" ? (
-        <Spinner contrast />
+        <Spinner design="contrast" />
       ) : (
         <Image src={logoPath} alt={`${label} logo`} width={22} height={22} />
       )}
