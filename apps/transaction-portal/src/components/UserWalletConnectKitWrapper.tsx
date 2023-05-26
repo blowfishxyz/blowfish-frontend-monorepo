@@ -11,16 +11,18 @@ export const UserWalletConnectKitWrapper = () => {
         isConnecting,
         isConnected,
         chain,
-      }) => (
-        <UserWallet
-          show={show}
-          truncatedAddress={truncatedAddress}
-          ensName={ensName}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          chain={chain}
-        />
-      )}
+      }) =>
+        isConnected ? (
+          <UserWallet
+            show={show}
+            truncatedAddress={truncatedAddress}
+            ensName={ensName}
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            chain={chain}
+          />
+        ) : null
+      }
     </ConnectKitButton.Custom>
   );
 };

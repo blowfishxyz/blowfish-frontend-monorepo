@@ -4,7 +4,7 @@ import { capitalize, getExtensionInstallationUrl, sleep } from "~utils/utils";
 import { Text } from "@blowfish/ui/core";
 import { useCallback, useMemo } from "react";
 import { shortenHex } from "~utils/hex";
-import { useAccount } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { useLocalStorage } from "react-use";
 import {
@@ -16,14 +16,32 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import { sendPauseResumeSelection } from "~utils/messages";
+import { sendAbort, sendPauseResumeSelection } from "~utils/messages";
 import { useRouter } from "next/router";
+import { logger } from "~utils/logger";
 
-export const TransactionNotFoundModal: React.FC = () => {
+export const TransactionNotFoundModal: React.FC<{
+  messageId: string | undefined;
+}> = ({ messageId }) => {
   return (
     <Modal
       title="Something went wrong"
       description="Please close the window and try again"
+      action={
+        messageId
+          ? {
+              cb: async () => {
+                try {
+                  await sendAbort(messageId);
+                } catch (e) {
+                  logger.debug("Error sending abort message: " + e);
+                }
+              },
+              closeOnComplete: true,
+              title: "Close",
+            }
+          : undefined
+      }
     />
   );
 };
@@ -38,8 +56,10 @@ export const OutdatedExtensionModal: React.FC = () => {
       title="Outdated extension"
       description="Please update the Blowfish extension to the latest version and retry
       the transaction"
+      options={{ blocking: true }}
       action={{
         closeOnComplete: false,
+        title: "Update",
         cb: async () => {
           window.location.replace(
             extensionUrl || "https://extension.blowfish.xyz"
@@ -63,6 +83,7 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
   correctAddress,
 }) => {
   const { address } = useAccount();
+  const { disconnectAsync } = useDisconnect();
   return (
     <Modal
       title="Switch account"
@@ -76,8 +97,10 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
           <Text design="primary">
             {shortenHex(correctAddress.toLowerCase()).toLowerCase()}
           </Text>
+          . Change account to continue
         </>
       }
+      action={{ cb: disconnectAsync, title: "Disconnect" }}
       options={{ blocking: true }}
     />
   );
@@ -148,8 +171,7 @@ export const WrongNetworkModal: React.FC<{
     <Modal
       title="Switch network"
       description={description}
-      actionTitle={actionText}
-      action={action}
+      action={{ cb: action, title: actionText, closeOnComplete: true }}
       options={{ blocking: true }}
     />
   );
@@ -201,6 +223,25 @@ export const UnsupportedTransactionModal: React.FC<{
         design: "danger",
         cb: pauseScannerAndCloseWindow,
       }}
+    />
+  );
+};
+
+export const AccountNotConnectedModal: React.FC = () => {
+  const router = useRouter();
+
+  return (
+    <Modal
+      title="Connect account"
+      description="To scan transactions, you need to connect your account"
+      action={{
+        cb: async () => {
+          router.push(`/start?redirect=${encodeURIComponent(router.asPath)}`);
+        },
+        title: "Continue",
+        closeOnComplete: true,
+      }}
+      options={{ blocking: true }}
     />
   );
 };

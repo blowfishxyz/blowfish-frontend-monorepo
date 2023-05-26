@@ -12,8 +12,8 @@ import {
 } from "@floating-ui/react";
 import { Column, Row, Text, Button } from "@blowfish/ui/core";
 import { styled } from "styled-components";
-import { useAsyncFn } from "react-use";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { logger } from "~utils/logger";
 
 interface ModalOptions {
   blocking?: boolean;
@@ -49,8 +49,8 @@ export function useModal({
 
   return React.useMemo(
     () => ({
-      open,
-      setOpen,
+      isOpen: open,
+      hide: () => setOpen(false),
       ...interactions,
       labelId,
       descriptionId,
@@ -89,7 +89,6 @@ type ModalProps = {
   content?: React.ReactNode;
   footerContent?: React.ReactNode;
   action?: ModalAction;
-  actionTitle?: string;
   width?: number;
   options?: ModalOptions;
   onCancel?: () => void;
@@ -132,19 +131,14 @@ export function Modal({
                 design={action ? "secondary" : "primary"}
                 onClick={() => {
                   onCancel?.();
-                  modal.setOpen(false);
+                  modal.hide();
                 }}
               >
                 Cancel
               </Button>
             )}
 
-            {action && (
-              <ModalActionButton
-                action={action}
-                close={() => modal.setOpen(false)}
-              />
-            )}
+            {action && <ModalActionButton action={action} close={modal.hide} />}
           </Row>
         </Column>
       </ModalContent>
@@ -156,6 +150,7 @@ const ModalActionButton: React.FC<{
   action: ModalAction;
   close: () => void;
 }> = ({ action, close }) => {
+  const [loading, setLoading] = useState(false);
   const actionFn = useMemo(() => {
     if (typeof action === "function") {
       return action;
@@ -163,20 +158,26 @@ const ModalActionButton: React.FC<{
 
     return action.cb;
   }, [action]);
-  const [state, actionAsync] = useAsyncFn(actionFn);
+
   const closeOnComplete =
     typeof action === "function" || action.closeOnComplete;
   const title = typeof action !== "function" ? action.title : undefined;
 
   return (
     <Button
-      loading={state.loading}
+      loading={loading}
       design={typeof action !== "function" ? action.design : undefined}
       onClick={async () => {
-        await actionAsync();
-        if (closeOnComplete) {
-          close();
+        setLoading(true);
+        try {
+          await actionFn();
+          if (closeOnComplete) {
+            close();
+          }
+        } catch (e) {
+          logger.debug(e);
         }
+        setLoading(false);
       }}
     >
       {title ?? "Confirm"}

@@ -119,8 +119,8 @@ function getDesignStyles({ design }: ButtonProps) {
   return primaryDesign;
 }
 
-function getLoadingStyles({ loading }: ButtonProps) {
-  if (loading) {
+function getLoadingStyles({ $loading }: { $loading?: boolean }) {
+  if ($loading) {
     return css`
       color: transparent;
     `;
@@ -132,7 +132,9 @@ type ButtonProps = {
   loading?: boolean;
 };
 
-const ButtonComponent = styled.button<ButtonProps>`
+const ButtonComponent = styled.button<
+  Omit<ButtonProps, "loading"> & { $loading?: boolean }
+>`
   ${resetStyles}
   ${baseStyles}
   ${getDesignStyles}
@@ -143,10 +145,10 @@ const ButtonComponent = styled.button<ButtonProps>`
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
->((props, ref) => {
+>(({ loading, ...props }, ref) => {
   return (
-    <ButtonComponent ref={ref} {...props}>
-      {props.loading ? (
+    <ButtonComponent ref={ref} {...props} $loading={loading}>
+      {loading ? (
         <Column position="absolute" absoluteCentered="both">
           <Spinner
             design={

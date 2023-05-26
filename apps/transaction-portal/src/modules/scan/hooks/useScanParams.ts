@@ -45,7 +45,7 @@ export type ScanParamsSuccess = {
 
 export type ScanParams =
   | ScanParamsSuccess
-  | { error: MessageError | undefined }
+  | { error: MessageError | undefined; id: string | undefined }
   | undefined;
 
 async function fetcher([messageId]: [string]): Promise<
@@ -70,18 +70,18 @@ export function useScanParams(): ScanParams {
   const { id } = useQueryParams<{ id?: string }>();
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
   if (fetchError) {
-    return { error: MessageError.PARAMS_NOT_OK };
+    return { error: MessageError.PARAMS_NOT_OK, id };
   }
   if (!data) {
     return undefined; // loading
   }
   if ("error" in data) {
-    return { error: data.error };
+    return { error: data.error, id };
   }
   const { message } = data;
   const dappRequest = parseRequestFromMessage(message);
   if (!dappRequest || !message.origin) {
-    return { error: MessageError.PARAMS_NOT_OK };
+    return { error: MessageError.PARAMS_NOT_OK, id };
   }
   const { isImpersonatingWallet, userAccount } = dappRequest;
 

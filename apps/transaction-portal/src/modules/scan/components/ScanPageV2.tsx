@@ -1,6 +1,6 @@
 import { ChainInfo } from "@blowfish/utils/chains";
 import { DappRequest, isSignMessageRequest } from "@blowfish/utils/types";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useAccount, useChainId, useSwitchNetwork } from "wagmi";
 import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
@@ -10,6 +10,7 @@ import {
 } from "~modules/scan/hooks/useScanParams";
 import { MessageError } from "~utils/utils";
 import {
+  AccountNotConnectedModal,
   OutdatedExtensionModal,
   TransactionNotFoundModal,
   UnknownErrorModal,
@@ -19,7 +20,6 @@ import {
   WrongNetworkModal,
 } from "./modals";
 import { Layout } from "~components/layout/Layout";
-import { useRouter } from "next/router";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 
@@ -32,14 +32,13 @@ export const ScanPageV2Inner: React.FC = () => {
 
   if ("error" in data) {
     if (data.error === MessageError.PARAMS_NOT_OK) {
-      // return <UnsupportedChainModal />;
-      return <TransactionNotFoundModal />;
+      return <TransactionNotFoundModal messageId={data.id} />;
     }
     if (data.error === MessageError.OUTDATED_EXTENSION) {
       return <OutdatedExtensionModal />;
     }
 
-    return <TransactionNotFoundModal />;
+    return <TransactionNotFoundModal messageId={data.id} />;
   }
 
   return <FullfieldView data={data} />;
@@ -128,7 +127,7 @@ const ResultsView: React.FC<{
   }, [scanResults?.action, hasDismissedScreen, simulationError]);
 
   if (!isConnected) {
-    return <AccountNotConnected />;
+    return <AccountNotConnectedModal />;
   }
 
   if (address !== userAccount && !isImpersonating) {
@@ -170,14 +169,6 @@ const ResultsView: React.FC<{
       chainNetwork={chainNetwork}
     />
   );
-};
-
-const AccountNotConnected: React.FC = () => {
-  const router = useRouter();
-  useLayoutEffect(() => {
-    router.push(`/start?redirect=${encodeURIComponent(router.asPath)}`);
-  }, [router]);
-  return null;
 };
 
 export const ScanPageV2: React.FC = () => {
