@@ -21,8 +21,8 @@ const StyledCardWrapper = styled(CardWrapper)`
 const CancelButton = styled(SecondaryButton)`
   height: 46px;
   font-size: 15px;
-  border: 1px solid ${({theme}) => theme.colors.danger};
-  color: ${({theme}) => theme.colors.danger};
+  border: 1px solid ${({ theme }) => theme.colors.danger};
+  color: ${({ theme }) => theme.colors.danger};
 `;
 
 const ReportButton = styled(SecondaryButton)`

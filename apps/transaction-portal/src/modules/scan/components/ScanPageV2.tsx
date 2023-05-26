@@ -69,7 +69,6 @@ export const ScanPageV2: React.FC = () => {
   return (
     <ResultsView
       message={message}
-      messageOrigin={message.origin}
       request={request}
       chainInfo={chain.chainInfo}
     />
@@ -78,17 +77,16 @@ export const ScanPageV2: React.FC = () => {
 
 const ResultsView: React.FC<{
   message: Message<DappRequest["type"], DappRequest>;
-  messageOrigin: string | undefined;
   request: DappRequest;
   chainInfo: ChainInfo;
-}> = ({ chainInfo, messageOrigin, request, message }) => {
+}> = ({ chainInfo, request, message }) => {
   const { chainFamily, chainNetwork } = chainInfo;
   const {
     data: scanResults,
     error: scanError,
     mutate,
     isValidating,
-  } = useScanDappRequest(chainFamily, chainNetwork, request, messageOrigin);
+  } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
   const simulationError = scanResults?.simulationResults?.error;
 
   const [hasDismissedScreen, setHasDismissedScreen] = useState(false);

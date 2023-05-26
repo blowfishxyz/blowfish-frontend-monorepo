@@ -86,6 +86,37 @@ const CardBlackTextLink = styled.a`
   text-decoration: none;
 `;
 
+interface SimulationImageProps {
+  $width?: string;
+  $height?: string;
+}
+
+const SimulationImage = styled.img<SimulationImageProps>`
+  width: ${({ $width }) => ($width ? $width : "38px")};
+  height: ${({ $height }) => ($height ? $height : "38px")};
+  object-fit: cover;
+  border-radius: 6px;
+`;
+
+const PlaceholderSimulationImage = styled.div<SimulationImageProps>`
+  width: ${({ $width }) => ($width ? $width : "38px")};
+  height: ${({ $height }) => ($height ? $height : "38px")};
+  background: ${({ theme }) => theme.colors.base10};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+
+  svg {
+    height: 24px;
+    width: 24px;
+
+    path {
+      fill: ${({ theme }) => theme.colors.border};
+    }
+  }
+`;
+
 export {
   CardWrapper,
   CardContent,
@@ -95,4 +126,6 @@ export {
   CardPrimaryButton,
   CardGrayLink,
   CardBlackTextLink,
+  SimulationImage,
+  PlaceholderSimulationImage,
 };

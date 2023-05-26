@@ -2,6 +2,10 @@ import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon, VerifiedIcon } from "@blowfish/ui/icons";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
+import {
+  PlaceholderSimulationImage,
+  SimulationImage,
+} from "~components/cards/common";
 
 import { getImageInfo } from "~utils/utils";
 
@@ -9,37 +13,6 @@ interface AssetImageProps {
   stateChange: EvmExpectedStateChange;
   isPositiveEffect: boolean;
 }
-
-interface SimulationImageProps {
-  $width?: string;
-  $height?: string;
-}
-
-const SimulationImage = styled.img<SimulationImageProps>`
-  width: ${({ $width }) => ($width ? $width : "38px")};
-  height: ${({ $height }) => ($height ? $height : "38px")};
-  object-fit: cover;
-  border-radius: 6px;
-`;
-
-const PlaceholderSimulationImage = styled.div<SimulationImageProps>`
-  width: ${({ $width }) => ($width ? $width : "38px")};
-  height: ${({ $height }) => ($height ? $height : "38px")};
-  background: ${({ theme }) => theme.colors.base10};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-
-  svg {
-    height: 24px;
-    width: 24px;
-
-    path {
-      fill: ${({ theme }) => theme.colors.border};
-    }
-  }
-`;
 
 const SimulationResultImageWrapper = styled.div`
   position: relative;

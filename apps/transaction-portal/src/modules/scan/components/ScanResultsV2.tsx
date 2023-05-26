@@ -48,6 +48,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return undefined;
   }, [request]);
 
+  console.log(parsedMessageContent);
+
   const simulationFailedMessage = useMemo(() => {
     return (
       scanResults?.simulationResults?.error?.humanReadableError ||
@@ -72,7 +74,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   const signatureData = [
     {
-      imageUrl: "/placeholder/placeholder-signature-image.svg",
+      imageUrl: "",
       state: scanResults.simulationResults?.error
         ? simulationFailedMessage
         : "No state changes found. Proceed with caution",

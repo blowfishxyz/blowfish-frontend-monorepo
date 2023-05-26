@@ -17,7 +17,7 @@ const Template: Story<SignatureSimulationProps> = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   data: {
-    imageUrl: "/placeholder/placeholder-signature-image.svg",
+    imageUrl: "",
     dappUrl: new URL("https://www.blur.io"),
     challenge:
       "3713d500eb602da26f87d1d44cbb406bc18d84b0084ae9448310f717d80d395d",

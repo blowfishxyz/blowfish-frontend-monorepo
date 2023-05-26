@@ -16,8 +16,8 @@ import {
   SignatureDataType,
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
-import { shortenEnsName } from "~utils/utils";
 import { ConfirmTxn } from "./ConfirmTxn";
+import { shortenHex } from "~utils/hex";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -34,8 +34,7 @@ const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
 
 const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
-  paddingRight: 16,
-  paddingLeft: 16,
+  paddingInline: 16,
 })`
   @media (${device.lg}) {
     padding: 0 32px;
@@ -43,8 +42,7 @@ const StyledCardContent = styled(Row).attrs({
 `;
 
 const StyledColumn = styled(Column).attrs({
-  paddingTop: 18,
-  paddingBottom: 18,
+  paddingBlock: 18,
 })``;
 
 export interface PreviewTxnProps {
@@ -98,7 +96,7 @@ const PreviewCard: FC<{
         <CardText>
           <CardBlackTextLink>
             <LinkWithArrow href={contract}>
-              {shortenEnsName(contract)}
+              {shortenHex(contract)}
             </LinkWithArrow>
           </CardBlackTextLink>
         </CardText>
@@ -156,13 +154,13 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
         >
           <Column gap="md">
             <Row justifyContent="space-between">
-              <SmallGrayText>Simulation</SmallGrayText>
+              <SmallGrayText>Signatures</SmallGrayText>
             </Row>
             <div>
               <SignatureSimulation data={data} />
             </div>
           </Column>
-          <Column gap="md">
+          <Column gap="sm" paddingTop={4}>
             <Row justifyContent="space-between">
               <SmallGrayText>State</SmallGrayText>
             </Row>
