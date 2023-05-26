@@ -11,11 +11,11 @@ const LoadingWrapper = styled.div`
   align-items: center;
 `;
 
-const ProtectHomeScreen = () => {
+const ProtectHomeScreen: React.FC<{ animate?: boolean }> = ({ animate }) => {
   return (
     <Layout>
       <LoadingWrapper>
-        <ProtectLoadingScreen />
+        <ProtectLoadingScreen animate={animate} />
       </LoadingWrapper>
     </Layout>
   );
