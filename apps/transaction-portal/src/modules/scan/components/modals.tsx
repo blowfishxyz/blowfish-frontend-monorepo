@@ -4,7 +4,7 @@ import { capitalize, getExtensionInstallationUrl, sleep } from "~utils/utils";
 import { Text } from "@blowfish/ui/core";
 import { useCallback, useMemo } from "react";
 import { shortenHex } from "~utils/hex";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { useLocalStorage } from "react-use";
 import {
@@ -84,22 +84,34 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
 }) => {
   const { address } = useAccount();
   const { disconnectAsync } = useDisconnect();
-  return (
-    <Modal
-      title="Switch account"
-      description={
+  const description = useMemo(() => {
+    if (!address) {
+      return (
         <>
-          You are connected to the account{" "}
-          <Text design="primary">
-            {shortenHex(address || "").toLowerCase()}
-          </Text>
-          , but the transaction was initiated by{" "}
+          You are disconnected, but the transaction was initiated by{" "}
           <Text design="primary">
             {shortenHex(correctAddress.toLowerCase()).toLowerCase()}
           </Text>
           . Change account to continue
         </>
-      }
+      );
+    }
+    return (
+      <>
+        You are connected to the account{" "}
+        <Text design="primary">{shortenHex(address || "").toLowerCase()}</Text>,
+        but the transaction was initiated by{" "}
+        <Text design="primary">
+          {shortenHex(correctAddress.toLowerCase()).toLowerCase()}
+        </Text>
+        . Change account to continue
+      </>
+    );
+  }, [address, correctAddress]);
+  return (
+    <Modal
+      title="Switch account"
+      description={description}
       action={{ cb: disconnectAsync, title: "Disconnect" }}
       options={{ blocking: true }}
     />
