@@ -13,8 +13,7 @@ type SignatureDataType = {
   imageUrl: string;
   dappUrl: URL;
   state: string;
-  message: string;
-  challenge: string;
+  message: string | undefined;
   account: string;
 };
 

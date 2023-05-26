@@ -48,29 +48,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return undefined;
   }, [request]);
 
-  console.log(parsedMessageContent);
-
   const simulationFailedMessage = useMemo(() => {
     return (
       scanResults?.simulationResults?.error?.humanReadableError ||
       "Simulation failed"
     );
   }, [scanResults]);
-
-  const { parsedMessage, challenge } = useMemo(() => {
-    if (!parsedMessageContent) {
-      return { parsedMessage: "", challenge: "" };
-    }
-
-    const startIndex = parsedMessageContent.indexOf("\n\nChallenge: ");
-    if (startIndex !== -1) {
-      const parsedMessage = parsedMessageContent.substring(0, startIndex);
-      const challenge = parsedMessageContent.substring(startIndex + 13);
-      return { parsedMessage, challenge };
-    }
-
-    return { parsedMessage: parsedMessageContent, challenge: "" };
-  }, [parsedMessageContent]);
 
   const signatureData = [
     {
@@ -79,8 +62,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         ? simulationFailedMessage
         : "No state changes found. Proceed with caution",
       dappUrl,
-      message: parsedMessage,
-      challenge,
+      message: parsedMessageContent,
       account: request.userAccount,
     },
   ];
