@@ -50,6 +50,7 @@ export interface SlimBottomMenuProps {
   onClick: () => void;
   style?: React.CSSProperties;
   className?: string;
+  marker?: string;
 }
 
 export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
@@ -57,10 +58,13 @@ export const SlimBottomMenu: React.FC<SlimBottomMenuProps> = ({
   buttonLabel,
   style,
   className,
+  marker,
 }) => {
   return (
     <BottomMenuWrapper style={style} className={className} $slim>
-      <PrimaryButton onClick={onClick}>{buttonLabel}</PrimaryButton>
+      <PrimaryButton className={marker} data-testid={marker} onClick={onClick}>
+        {buttonLabel}
+      </PrimaryButton>
     </BottomMenuWrapper>
   );
 };
@@ -94,13 +98,20 @@ export const ApproveBottomMenu: React.FC<ApproveBottomMenuProps> = ({
         <Text design="secondary">Confirm to continue to your wallet</Text>
       )}
       <Row>
-        <SecondaryButton style={{ width: "172px" }} onClick={onCancel}>
+        <SecondaryButton
+          style={{ width: "172px" }}
+          className="cancel-button"
+          data-testid="cancel-button"
+          onClick={onCancel}
+        >
           Cancel
         </SecondaryButton>
         <PrimaryButton
           style={{ width: "172px" }}
           onClick={onContinue}
           disabled={isImpersonatingWallet}
+          className="approve-button"
+          data-testid="approve-button"
         >
           Confirm
         </PrimaryButton>

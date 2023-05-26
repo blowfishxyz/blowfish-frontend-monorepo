@@ -292,6 +292,7 @@ const ScanPage: React.FC = () => {
               await sendAbort(message.id, opts);
               closeWindow();
             }}
+            marker="unsupported-chain"
             buttonLabel="Continue"
           />
         </>
