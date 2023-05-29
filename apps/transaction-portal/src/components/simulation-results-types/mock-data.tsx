@@ -1,4 +1,7 @@
-import { EvmExpectedStateChangesInner } from "@blowfish/api-client";
+import {
+  EvmExpectedStateChangesInner,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+} from "@blowfish/api-client";
 import {
   receiveErc20,
   sendErc20,
@@ -7,11 +10,18 @@ import {
 
 const dummyTxnSimulationData = [sendErc721, sendErc20, receiveErc20];
 
-type TxnSimulationDataType = EvmExpectedStateChangesInner;
+type TxnSimulationDataType = {
+  data:
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner[]
+    | EvmExpectedStateChangesInner[]
+    | undefined;
+  dappUrl: URL | undefined;
+  account: string;
+};
 
 type SignatureDataType = {
   imageUrl: string;
-  dappUrl: URL;
+  dappUrl: URL | undefined;
   state: string;
   message: string | undefined;
   account: string;

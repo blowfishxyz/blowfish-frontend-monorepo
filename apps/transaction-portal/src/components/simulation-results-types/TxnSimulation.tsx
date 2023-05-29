@@ -5,8 +5,6 @@ import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText } from "./common";
 import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { PreviewNfts } from "~components/cards/PreviewNfts";
-import { TxnSimulationDataType } from "./mock-data";
-import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 import { AssetImageV2 } from "~components/common/AssetImageV2";
 import { checkIsApproval, getTxnSimulationData } from "~utils/utils";
 import {
@@ -25,7 +23,7 @@ const TxnSimulationImageMsgWrapper = styled(Row)`
   cursor: pointer;
 
   @media (${device.lg}) {
-    gap: 24px;
+    gap: 16px;
   }
 `;
 
@@ -35,18 +33,10 @@ const TxnSimulationImage = styled.div`
   cursor: pointer;
 `;
 
-const TxnSimulationText = styled(Text)`
-  max-width: 180px;
-  font-size: 13px;
-  line-height: 21px;
-
+const TxnSimulationText = styled(Text).attrs({ size: "sm" })`
   @media (${device.lg}) {
-    font-size: 15px;
+    font-size: 16px;
   }
-`;
-
-const TxnSimulationValue = styled(Column)`
-  width: unset;
 `;
 
 const PreviewTokenTooltipContent = styled(TooltipContent)`
@@ -67,13 +57,12 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
 `;
 
 interface TxnSimulationProps {
-  txnData: TxnSimulationDataType;
+  txnData: any;
 }
 
 export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { rawInfo } = txnData;
-  const { name, symbol, imageSrc, isNft, displayText } =
-    getTxnSimulationData(rawInfo);
+  const { name, symbol, imageSrc, isNft } = getTxnSimulationData(rawInfo);
   const isApproval = checkIsApproval(rawInfo);
   const diff = useMemo(() => {
     const { amount } = rawInfo.data;
@@ -88,12 +77,31 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const isPositiveEffect =
     (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
 
+  const modifyText = (text: string) => {
+    const parts = text.split(" ");
+    if (parts.length < 2) {
+      return text;
+    }
+    const otherPart = parts.slice(1, -1).join(" ");
+    const lastPart = parts[parts.length - 1];
+
+    return (
+      <TxnSimulationText>
+        {parts[0]}{" "}
+        <TxnSimulationText weight="semi-bold">{otherPart}</TxnSimulationText>{" "}
+        <TxnSimulationText design="secondary" weight="semi-bold">
+          {lastPart}
+        </TxnSimulationText>
+      </TxnSimulationText>
+    );
+  };
+
   return (
     <TxnSimulationWrapper
       justifyContent="space-between"
       alignItems="flex-start"
     >
-      <TxnSimulationImageMsgWrapper gap="lg" alignItems="flex-start">
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
         <Tooltip placement="top-start">
           <TooltipTrigger>
             <TxnSimulationImage>
@@ -115,17 +123,21 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             </PreviewTokenTooltipContent>
           </TooltipTrigger>
         </Tooltip>
-
-        <TxnSimulationText>
-          {isPositiveEffect ? "Receive" : "Send"} {displayText}
-        </TxnSimulationText>
+        <Column gap="xs">
+          <TxnSimulationText weight="normal">
+            {modifyText(txnData.humanReadableDiff)}
+          </TxnSimulationText>
+          {isNft ? (
+            <Text size="sm" design="secondary">
+              Type: ERC-721
+            </Text>
+          ) : (
+            <Text size="sm" design="secondary">
+              Asset: {name}
+            </Text>
+          )}
+        </Column>
       </TxnSimulationImageMsgWrapper>
-      <TxnSimulationValue alignItems="flex-end">
-        <TxnSimulationText weight="semi-bold" design="primary">
-          <AssetPriceV2 stateChange={txnData} />
-        </TxnSimulationText>
-        <SmallGrayText>18.99 ETH</SmallGrayText>
-      </TxnSimulationValue>
     </TxnSimulationWrapper>
   );
 };

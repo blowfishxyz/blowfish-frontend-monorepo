@@ -27,19 +27,24 @@ const grids = {
 };
 
 const severityColors: {
-  [key in Severity]: { [k in "background" | "backgroundLight"]: string };
+  [key in Severity]: {
+    [k in "background" | "backgroundLight" | "backgroundV2"]: string;
+  };
 } = {
   CRITICAL: {
     background: "#FFC1AD",
     backgroundLight: "#FFFAFA",
+    backgroundV2: "#E96357",
   },
   WARNING: {
     background: "#FFD567",
     backgroundLight: "#FFFCF2",
+    backgroundV2: "#FBBD4D",
   },
   INFO: {
     background: "#EFF2F0",
     backgroundLight: "#FFFFFF",
+    backgroundV2: "#00B94A",
   },
 };
 
@@ -58,6 +63,7 @@ const lightTheme = {
     backgroundSecondary: "#EFEFEF",
     foregroundPrimary: "#000000",
     foregroundSecondary: base.base50,
+    foregroundSecondaryLight: "#FFFFFFCC",
     foregroundDanger: "#FF6332",
     danger: "#FF3D00",
     warning: "#FFB800",

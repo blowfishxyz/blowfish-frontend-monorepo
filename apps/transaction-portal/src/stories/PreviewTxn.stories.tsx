@@ -13,7 +13,11 @@ const Template: Story<PreviewTxnProps> = (args) => <PreviewTxn {...args} />;
 export const TransactionPreview = Template.bind({});
 TransactionPreview.args = {
   simulationType: "transaction",
-  txnSimulationData: [sendErc721],
+  txnSimulationData: {
+    data: [sendErc721],
+    dappUrl: new URL("https://www.blur.io"),
+    account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
+  },
   onContinue: () => {
     console.log("Continue clicked");
   },

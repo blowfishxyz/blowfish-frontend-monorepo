@@ -21,13 +21,14 @@ const SimulationResultImageWrapper = styled.div`
 const SimulationIconWrapper = styled.div<{
   $isPositiveEffect: boolean;
 }>`
+  display: flex;
+  justify-content: center;
   position: absolute;
-  height: 14px;
-  width: 14px;
-  padding: 6px;
+  height: 16px;
+  width: 16px;
   border-radius: 50%;
-  top: -10px;
-  right: -10px;
+  top: -4px;
+  right: -4px;
   box-sizing: initial;
   background: ${({ $isPositiveEffect }) =>
     $isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
@@ -39,12 +40,14 @@ const SimulationIconWrapper = styled.div<{
           fill: #00bfa6;
           transform: rotate(135deg);
           transform-origin: center;
+          width: 9px;
         `;
       }
       return css`
         fill: ${theme.colors.danger};
         transform: rotate(-45deg);
         transform-origin: center;
+        width: 9px;
       `;
     }};
   }

@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
@@ -11,13 +11,13 @@ import {
 } from "./common";
 import { TxnSimulation } from "~components/simulation-results-types/TxnSimulation";
 import { SignatureSimulation } from "~components/simulation-results-types/SignatureSimulation";
-import { VerifiedIcon } from "@blowfish/ui/icons";
+import { shortenHex } from "~utils/hex";
+import { ConfirmTxn } from "./ConfirmTxn";
 import {
   SignatureDataType,
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
-import { ConfirmTxn } from "./ConfirmTxn";
-import { shortenHex } from "~utils/hex";
+import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -45,36 +45,33 @@ const StyledColumn = styled(Column).attrs({
   paddingBlock: 18,
 })``;
 
-export interface PreviewTxnProps {
+interface PreviewCardProps {
+  title: string;
   simulationType: "transaction" | "signature";
-  txnSimulationData?: TxnSimulationDataType[];
-  signatureData?: SignatureDataType[];
+  origin?: string;
+  website?: string;
+  contract: string;
+  warning?: UIWarning;
+  children: ReactNode;
   onContinue: () => void;
   onCancel: () => void;
 }
 
-const PreviewCard: FC<{
-  title: string;
-  simulationType: "transaction" | "signature";
-  children: React.ReactNode;
-  origin: string;
-  website: string;
-  contract: string;
-  onContinue: () => void;
-  onCancel: () => void;
-}> = ({ title, children, origin, website, contract, onContinue, onCancel }) => (
+const PreviewCard: FC<PreviewCardProps> = ({
+  title,
+  origin,
+  website,
+  contract,
+  warning,
+  onContinue,
+  onCancel,
+  children,
+}) => (
   <CardWrapper>
     <CardContent>
       <Row justifyContent="space-between">
         <Title>{title}</Title>
-        <Chip
-          text={
-            <span>
-              <b>Low</b> Risk
-            </span>
-          }
-          variant="primary"
-        />
+        <Chip warning={warning} />
       </Row>
     </CardContent>
     <Divider margin="16px 0" />
@@ -84,9 +81,8 @@ const PreviewCard: FC<{
       <StyledColumn gap="sm">
         <SmallGrayText>Website</SmallGrayText>
         <Row gap="xs" alignItems="center">
-          <VerifiedIcon />
           <CardText>
-            <LinkWithArrow href={origin}>{website}</LinkWithArrow>
+            <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
           </CardText>
         </Row>
       </StyledColumn>
@@ -104,51 +100,67 @@ const PreviewCard: FC<{
     </StyledCardContent>
     <Divider margin="0 0 16px" />
     <CardContent>
-      <ConfirmTxn onContinue={onContinue} onCancel={onCancel} />
+      <ConfirmTxn
+        onContinue={onContinue}
+        onCancel={onCancel}
+        warning={warning}
+      />
     </CardContent>
   </CardWrapper>
 );
 
+export interface PreviewTxnProps {
+  simulationType: "transaction" | "signature";
+  txnSimulationData?: TxnSimulationDataType;
+  signatureData: SignatureDataType[];
+  warnings: UIWarning[];
+  onContinue: () => void;
+  onCancel: () => void;
+}
+
 const PreviewTxn: FC<PreviewTxnProps> = ({
   simulationType,
-  txnSimulationData = [],
-  signatureData = [],
+  txnSimulationData,
+  signatureData,
+  warnings,
   onContinue,
   onCancel,
-}) => (
-  <>
-    {simulationType === "transaction" &&
-      txnSimulationData.map((data, index) => (
-        <PreviewCard
-          key={index}
-          title="Preview"
-          simulationType="transaction"
-          origin=""
-          website="marketplace.blur.eth"
-          contract="0x74E20Bd2A1fE0cdbe45b9A1d89cb7e0a45b36376"
-          onContinue={onContinue}
-          onCancel={onCancel}
-        >
-          <Column gap="md">
-            <Row justifyContent="space-between">
-              <SmallGrayText>Simulation</SmallGrayText>
-              <SmallGrayText>Value</SmallGrayText>
-            </Row>
-            <div>
-              <TxnSimulation txnData={data} />
-            </div>
-          </Column>
-        </PreviewCard>
-      ))}
-    {simulationType === "signature" &&
-      signatureData.map((data, index) => (
+}) => {
+  const renderTransactionPreview = () => (
+    <PreviewCard
+      title="Preview"
+      simulationType="transaction"
+      origin={txnSimulationData?.dappUrl?.origin}
+      website={txnSimulationData?.dappUrl?.host}
+      contract={txnSimulationData?.account || ""}
+      warning={warnings[0]}
+      onContinue={onContinue}
+      onCancel={onCancel}
+    >
+      <Column gap="lg">
+        <Row justifyContent="space-between">
+          <SmallGrayText>State</SmallGrayText>
+        </Row>
+        <div>
+          {txnSimulationData?.data?.map((data, index) => (
+            <TxnSimulation key={index} txnData={data} />
+          ))}
+        </div>
+      </Column>
+    </PreviewCard>
+  );
+
+  const renderSignaturePreview = () => (
+    <>
+      {signatureData.map((data, index) => (
         <PreviewCard
           key={index}
           title="Preview"
           simulationType="signature"
-          origin={data.dappUrl.origin}
-          website={data.dappUrl.host}
+          origin={data.dappUrl?.origin}
+          website={data.dappUrl?.host}
           contract={data.account}
+          warning={warnings[0]}
           onContinue={onContinue}
           onCancel={onCancel}
         >
@@ -172,7 +184,15 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
           </Column>
         </PreviewCard>
       ))}
-  </>
-);
+    </>
+  );
+
+  return (
+    <>
+      {simulationType === "transaction" && renderTransactionPreview()}
+      {simulationType === "signature" && renderSignaturePreview()}
+    </>
+  );
+};
 
 export default PreviewTxn;

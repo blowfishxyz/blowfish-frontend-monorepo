@@ -11,6 +11,8 @@ import { ContinueIcon } from "@blowfish/ui/icons";
 import { CardWrapper, CardContent } from "./common";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
+import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { warning } from "framer-motion";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
@@ -72,6 +74,7 @@ const Fade = styled.div`
 export interface ConfirmTxnProps {
   onContinue: () => void;
   onCancel: () => void;
+  warning: UIWarning | undefined;
 }
 
 export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
