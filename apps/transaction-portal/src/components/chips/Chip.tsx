@@ -1,12 +1,11 @@
 import { Text, device } from "@blowfish/ui/core";
 import React from "react";
 import styled, { css } from "styled-components";
-import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 
 export interface ChipProps {
   variant?: "primary";
   text?: React.ReactNode | string;
-  warning?: UIWarning;
+  severity: string | undefined;
   clickable?: boolean;
 }
 
@@ -27,12 +26,12 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
     cursor: pointer;
   }
 
-  ${({ theme, warning }) =>
-    warning
+  ${({ theme, severity }) =>
+    severity
       ? css`
-          background-color: ${warning.severity === "WARNING"
+          background-color: ${severity === "WARNING"
             ? theme.severityColors.WARNING.backgroundV2
-            : warning.severity === "CRITICAL"
+            : severity === "CRITICAL"
             ? theme.severityColors.CRITICAL.backgroundV2
             : theme.severityColors.INFO.backgroundV2};
         `
@@ -49,9 +48,9 @@ const SeverityText = styled(Text).attrs({ size: "md" })`
   color: ${({ theme }) => theme.colors.backgroundPrimary};
 `;
 
-export const Chip = ({ warning, ...rest }: ChipProps) => {
+export const Chip = ({ severity, ...rest }: ChipProps) => {
   const getSeverityText = () => {
-    switch (warning?.severity) {
+    switch (severity) {
       case "WARNING":
         return (
           <Text size="md">
@@ -73,10 +72,10 @@ export const Chip = ({ warning, ...rest }: ChipProps) => {
     }
   };
 
-  console.log(warning);
+  console.log(severity);
 
   return (
-    <ChipContainer warning={warning} {...rest}>
+    <ChipContainer severity={severity} {...rest}>
       {getSeverityText()}
     </ChipContainer>
   );

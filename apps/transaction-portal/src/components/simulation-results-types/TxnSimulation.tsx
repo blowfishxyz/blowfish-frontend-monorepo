@@ -15,7 +15,6 @@ import {
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
-  position: relative;
 `;
 
 const TxnSimulationImageMsgWrapper = styled(Row)`
@@ -132,9 +131,11 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
               Type: ERC-721
             </Text>
           ) : (
-            <Text size="sm" design="secondary">
-              Asset: {name}
-            </Text>
+            name && (
+              <Text size="sm" design="secondary">
+                Asset: {name}
+              </Text>
+            )
           )}
         </Column>
       </TxnSimulationImageMsgWrapper>

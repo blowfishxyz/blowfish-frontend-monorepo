@@ -45,13 +45,45 @@ const StyledColumn = styled(Column).attrs({
   paddingBlock: 18,
 })``;
 
+const TxnDataWrapper = styled.div`
+  max-height: 200px;
+  height: 100%;
+  overflow-y: auto;
+
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: #f5f5f5;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+  }
+
+  scrollbar-color: #e0e0e0 #f5f5f5;
+
+  & {
+    scrollbar-width: thin;
+  }
+
+  & {
+    scrollbar-color: #e0e0e0 #f5f5f5;
+    scrollbar-width: thin;
+  }
+`;
+
 interface PreviewCardProps {
   title: string;
   simulationType: "transaction" | "signature";
   origin?: string;
   website?: string;
   contract: string;
-  warning?: UIWarning;
+  warnings: UIWarning[];
+  severity: string | undefined;
   children: ReactNode;
   onContinue: () => void;
   onCancel: () => void;
@@ -62,7 +94,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
   origin,
   website,
   contract,
-  warning,
+  warnings,
+  severity,
   onContinue,
   onCancel,
   children,
@@ -71,7 +104,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
     <CardContent>
       <Row justifyContent="space-between">
         <Title>{title}</Title>
-        <Chip warning={warning} />
+        <Chip severity={severity} />
       </Row>
     </CardContent>
     <Divider margin="16px 0" />
@@ -103,7 +136,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
       <ConfirmTxn
         onContinue={onContinue}
         onCancel={onCancel}
-        warning={warning}
+        warnings={warnings}
+        severity={severity}
       />
     </CardContent>
   </CardWrapper>
@@ -114,6 +148,7 @@ export interface PreviewTxnProps {
   txnSimulationData?: TxnSimulationDataType;
   signatureData: SignatureDataType[];
   warnings: UIWarning[];
+  severity: string | undefined;
   onContinue: () => void;
   onCancel: () => void;
 }
@@ -123,6 +158,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
   txnSimulationData,
   signatureData,
   warnings,
+  severity,
   onContinue,
   onCancel,
 }) => {
@@ -133,7 +169,8 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
       origin={txnSimulationData?.dappUrl?.origin}
       website={txnSimulationData?.dappUrl?.host}
       contract={txnSimulationData?.account || ""}
-      warning={warnings[0]}
+      warnings={warnings}
+      severity={severity}
       onContinue={onContinue}
       onCancel={onCancel}
     >
@@ -141,11 +178,11 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
         <Row justifyContent="space-between">
           <SmallGrayText>State</SmallGrayText>
         </Row>
-        <div>
+        <TxnDataWrapper>
           {txnSimulationData?.data?.map((data, index) => (
             <TxnSimulation key={index} txnData={data} />
           ))}
-        </div>
+        </TxnDataWrapper>
       </Column>
     </PreviewCard>
   );
@@ -160,7 +197,8 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
           origin={data.dappUrl?.origin}
           website={data.dappUrl?.host}
           contract={data.account}
-          warning={warnings[0]}
+          warnings={warnings}
+          severity={severity}
           onContinue={onContinue}
           onCancel={onCancel}
         >

@@ -11,6 +11,7 @@ import {
 import {
   DappRequest,
   Message,
+  actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
@@ -19,8 +20,11 @@ import { logger } from "@blowfish/utils/logger";
 import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
 
-const ScanResultsWrapper = styled(Row)`
+const ScanResultsWrapper = styled(Row)<{ severity: string | undefined }>`
   height: 100%;
+
+  background-color: ${({ severity, theme }) =>
+    theme.severityColors[severity ?? "INFO"].backgroundV2};
 `;
 
 export type UIWarning = {
@@ -176,6 +180,19 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   const simulationType =
     request.type === "SIGN_MESSAGE" ? "signature" : "transaction";
 
+  const severity = useMemo(() => {
+    if (
+      request?.payload &&
+      "method" in request.payload &&
+      request?.payload?.method === "eth_sign"
+    ) {
+      return actionToSeverity("BLOCK");
+    }
+    return scanResults?.action
+      ? actionToSeverity(scanResults?.action)
+      : undefined;
+  }, [request?.payload, scanResults?.action]);
+
   const signatureData = [
     {
       imageUrl: "",
@@ -195,12 +212,17 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   };
 
   return (
-    <ScanResultsWrapper justifyContent="center" alignItems="center">
+    <ScanResultsWrapper
+      justifyContent="center"
+      alignItems="center"
+      severity={severity}
+    >
       <PreviewTxn
         simulationType={simulationType}
         signatureData={signatureData}
         txnSimulationData={txnData}
         warnings={warnings}
+        severity={severity}
         onContinue={() => handleUserAction(true)}
         onCancel={() => handleUserAction(false)}
       />

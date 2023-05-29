@@ -57,12 +57,14 @@ export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
           <Text weight="semi-bold">Connect wallet</Text>
         </SignatureSimulationAction>
         <SignatureSimulationMsg marginTop={5}>
-          <SmallGrayText>
-            Message:
-            <SignatureSimulatioMsgText>
-              {data.message}
-            </SignatureSimulatioMsgText>
-          </SmallGrayText>
+          {data.message && (
+            <SmallGrayText>
+              Message:
+              <SignatureSimulatioMsgText>
+                {data.message}
+              </SignatureSimulatioMsgText>
+            </SmallGrayText>
+          )}
         </SignatureSimulationMsg>
       </SignatureSimulationMsgWrapper>
     </Row>

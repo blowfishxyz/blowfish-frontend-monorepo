@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import {
   Column,
   PrimaryButton,
@@ -7,12 +7,11 @@ import {
   SecondaryButton,
   Text,
 } from "@blowfish/ui/core";
-import { ContinueIcon } from "@blowfish/ui/icons";
+import { ContinueIcon, ReportIcon } from "@blowfish/ui/icons";
 import { CardWrapper, CardContent } from "./common";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
-import { warning } from "framer-motion";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
@@ -74,12 +73,15 @@ const Fade = styled.div`
 export interface ConfirmTxnProps {
   onContinue: () => void;
   onCancel: () => void;
-  warning: UIWarning | undefined;
+  warnings: UIWarning[] | undefined;
+  severity: string | undefined;
 }
 
 export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   onContinue,
   onCancel,
+  warnings,
+  severity,
 }) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
@@ -105,30 +107,75 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
     }, animationDuration);
   }, []);
 
-  const renderContent = () => {
+  const getWarningTitle = () => {
+    if (severity === "CRITICAL") {
+      return <Text size="xl">Do not proceed!</Text>;
+    } else if (severity === "WARNING") {
+      return (
+        <Text size="xl">
+          This seems{" "}
+          <Text design="warning" size="xl" weight="semi-bold">
+            fishy...
+          </Text>
+        </Text>
+      );
+    } else {
+      return (
+        <Text size="xl">
+          This seems{" "}
+          <Text design="success" size="xl" weight="semi-bold">
+            low risk
+          </Text>
+        </Text>
+      );
+    }
+  };
+
+  const getContent = () => {
     switch (viewState) {
       case ViewState.WARNING:
         return (
           <Row justifyContent="space-between" alignItems="center" gap="lg">
             <Column gap="md" flex={1}>
-              <Text size="xl">This seems low risk.</Text>
-              <ConfirmTxnWarningMsg>
-                This signature request seems to be trustworthy. If something
-                feels fishy, you should report it.
-              </ConfirmTxnWarningMsg>
+              <Text size="xl">{getWarningTitle()}</Text>
+              {warnings?.length ? (
+                warnings?.map((warning, index) => (
+                  <ConfirmTxnWarningMsg key={index}>
+                    {warning.message}
+                  </ConfirmTxnWarningMsg>
+                ))
+              ) : (
+                <ConfirmTxnWarningMsg>
+                  This signature request seems to be trustworthy. If something
+                  feels fishy, you should report it.
+                </ConfirmTxnWarningMsg>
+              )}
             </Column>
             <Column gap="md" flex={0.7}>
               <Row gap="md">
-                <ContinueButton onClick={onContinue}>
-                  <ContinueIcon />
-                  Continue
-                </ContinueButton>
+                {severity === "INFO" ? (
+                  <ContinueButton onClick={onContinue}>
+                    <ContinueIcon />
+                    Continue
+                  </ContinueButton>
+                ) : (
+                  <ContinueButton>
+                    <ReportIcon />
+                    Report
+                  </ContinueButton>
+                )}
               </Row>
               <Row gap="md">
                 <CancelButton onClick={onCancel}>Cancel</CancelButton>
-                <ReportButton onClick={handleContinueClick}>
-                  Report
-                </ReportButton>
+                {severity === "INFO" ? (
+                  <ReportButton onClick={handleContinueClick}>
+                    Report
+                  </ReportButton>
+                ) : severity === "WARNING" ? (
+                  <ReportButton onClick={handleContinueClick}>
+                    Continue
+                  </ReportButton>
+                ) : null}
               </Row>
             </Column>
           </Row>
@@ -154,7 +201,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
               : ""
           }
         >
-          {renderContent()}
+          {getContent()}
         </Fade>
       </CardContent>
     </StyledCardWrapper>

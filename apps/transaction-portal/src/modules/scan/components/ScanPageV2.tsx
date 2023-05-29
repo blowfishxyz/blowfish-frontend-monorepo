@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ChainInfo } from "@blowfish/utils/chains";
 import {
   Message,
@@ -90,24 +90,6 @@ const ResultsView: React.FC<{
   const simulationError = scanResults?.simulationResults?.error;
 
   const [hasDismissedScreen, setHasDismissedScreen] = useState(false);
-
-  const overlay = useMemo(() => {
-    if (hasDismissedScreen) {
-      return null;
-    }
-    if (scanResults?.action === "BLOCK") {
-      return <div>block screen</div>;
-    }
-    if (simulationError) {
-      if (simulationError.kind === "SIMULATION_FAILED") {
-        return <div>transaction reverted</div>;
-      } else {
-        return <div>simulation failed</div>;
-      }
-    }
-
-    return null;
-  }, [scanResults?.action]);
 
   if (!scanResults) {
     return <div key="loading">loading...</div>;
