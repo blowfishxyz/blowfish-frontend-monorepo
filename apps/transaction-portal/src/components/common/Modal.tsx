@@ -10,7 +10,7 @@ import {
   FloatingOverlay,
   useId,
 } from "@floating-ui/react";
-import { Column, Row, Text, Button } from "@blowfish/ui/core";
+import { Column, Text, Button } from "@blowfish/ui/core";
 import { styled } from "styled-components";
 import { useMemo, useState } from "react";
 import { logger } from "~utils/logger";
@@ -18,12 +18,13 @@ import { logger } from "~utils/logger";
 interface ModalOptions {
   blocking?: boolean;
   initialOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onClose?: () => void;
 }
 
 export function useModal({
   initialOpen = true,
   blocking = false,
+  onClose,
 }: ModalOptions = {}) {
   const [open, setOpen] = React.useState(initialOpen);
   const labelId = useId();
@@ -31,7 +32,12 @@ export function useModal({
 
   const data = useFloating({
     open,
-    onOpenChange: setOpen,
+    onOpenChange: (nextOpen: boolean) => {
+      setOpen(nextOpen);
+      if (!nextOpen) {
+        onClose?.();
+      }
+    },
   });
 
   const context = data.context;
@@ -77,17 +83,16 @@ export const useModalContext = () => {
 type ModalAction =
   | {
       title?: string;
-      cb: () => Promise<void>;
+      cb: (hide: () => void) => Promise<void>;
       design?: "primary" | "danger";
       closeOnComplete?: boolean;
     }
-  | (() => Promise<void>);
+  | ((hide: () => void) => Promise<void>);
 
 type ModalProps = {
   title: string;
   description: React.ReactNode;
-  content?: React.ReactNode;
-  footerContent?: React.ReactNode;
+  icon?: React.ReactNode;
   action?: ModalAction;
   width?: number;
   options?: ModalOptions;
@@ -95,39 +100,49 @@ type ModalProps = {
 };
 
 export function Modal({
-  content,
-  footerContent,
   title,
+  icon,
   action,
   width,
   description,
   onCancel,
   options,
 }: ModalProps) {
-  const modal = useModal(options);
+  const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
 
   return (
     <ModalContext.Provider value={modal}>
       <ModalContent width={width}>
         <Column height="100%" justifyContent="space-between">
-          <Column>
+          <Column
+            alignItems="center"
+            maxWidth="90%"
+            alignSelf="center"
+            gap="md"
+          >
+            {icon ? icon : null}
             <Text
               id={modal.labelId}
               size="xl"
               weight="semi-bold"
-              marginBottom={12}
+              textAlign="center"
             >
               {title}
             </Text>
-            <Text id={modal.descriptionId} size="md" design="secondary">
+            <Text
+              id={modal.descriptionId}
+              textAlign="center"
+              size="md"
+              design="secondary"
+            >
               {description}
             </Text>
-            {content}
           </Column>
-          <Row justifyContent="flex-end" gap="md" marginTop={24}>
-            {footerContent}
-            {!options?.blocking && (
+          <Column gap="sm" marginTop={36}>
+            {action && <ModalActionButton action={action} close={modal.hide} />}
+            {(!options?.blocking || onCancel) && (
               <Button
+                stretch
                 design={action ? "secondary" : "primary"}
                 onClick={() => {
                   onCancel?.();
@@ -137,9 +152,7 @@ export function Modal({
                 Cancel
               </Button>
             )}
-
-            {action && <ModalActionButton action={action} close={modal.hide} />}
-          </Row>
+          </Column>
         </Column>
       </ModalContent>
     </ModalContext.Provider>
@@ -165,12 +178,13 @@ const ModalActionButton: React.FC<{
 
   return (
     <Button
+      stretch
       loading={loading}
       design={typeof action !== "function" ? action.design : undefined}
       onClick={async () => {
         setLoading(true);
         try {
-          await actionFn();
+          await actionFn(close);
           if (closeOnComplete) {
             close();
           }

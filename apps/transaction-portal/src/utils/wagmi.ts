@@ -4,9 +4,14 @@ import { publicProvider } from "@wagmi/core/providers/public";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { InjectedConnector } from "wagmi/connectors/injected";
 // import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
-import { configureChains, createClient } from "wagmi";
+import { configureChains, createClient, useNetwork } from "wagmi";
 
 import { ALCHEMY_API_KEY } from "../config";
+
+export const useConnectedChainId = () => {
+  const network = useNetwork();
+  return network.chain?.id;
+};
 
 const { chains, provider } = configureChains(
   [mainnet, polygon, goerli, arbitrum, bsc],

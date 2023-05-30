@@ -5,7 +5,9 @@ import { storiesOf } from "@storybook/react";
 import {
   AccountNotConnectedModal,
   OutdatedExtensionModal,
+  SimulationErrorModal,
   TransactionNotFoundModal,
+  TransactionRevertedModal,
   UnknownErrorModal,
   UnsupportedChainModal,
   UnsupportedTransactionModal,
@@ -23,11 +25,15 @@ const Default: Story = () => (
 storiesOf("Components/Modal", module).add("Default", () => <Default />);
 
 storiesOf("Modals", module)
-  .add("TransactionNotFoundModal", () => (
-    <TransactionNotFoundModal messageId={undefined} />
-  ))
+  .add("TransactionNotFoundModal", () => <TransactionNotFoundModal />)
   .add("OutdatedExtensionModal", () => <OutdatedExtensionModal />)
-  .add("UnsupportedChainModal", () => <UnsupportedChainModal />)
+  .add("UnsupportedChainModal", () => (
+    <UnsupportedChainModal
+      closeWindow={async () => {
+        alert("Close");
+      }}
+    />
+  ))
   .add("WrongAccountModal", () => (
     <WrongAccountModal correctAddress="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" />
   ))
@@ -54,4 +60,14 @@ storiesOf("Modals", module)
         alert("Retry");
       }}
     />
+  ))
+  .add("SimulationErrorModal", () => (
+    <SimulationErrorModal
+      onRetry={async () => {
+        alert("Retry");
+      }}
+    />
+  ))
+  .add("TransactionRevertedModal", () => (
+    <TransactionRevertedModal error="UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" />
   ));

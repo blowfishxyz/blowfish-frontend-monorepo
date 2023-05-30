@@ -127,8 +127,19 @@ function getLoadingStyles({ $loading }: { $loading?: boolean }) {
   }
 }
 
+function getPositioningStyles({ stretch }: { stretch?: boolean }) {
+  if (stretch) {
+    return css`
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+    `;
+  }
+}
+
 type ButtonProps = {
   design?: "primary" | "secondary" | "tertiary" | "danger";
+  stretch?: boolean;
   loading?: boolean;
 };
 
@@ -140,6 +151,7 @@ const ButtonComponent = styled.button<
   ${getDesignStyles}
   ${interactiveStyles}
   ${getLoadingStyles}
+  ${getPositioningStyles}
 `;
 
 export const Button = React.forwardRef<
