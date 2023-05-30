@@ -12,6 +12,7 @@ import { CardWrapper, CardContent } from "./common";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { Severity } from "@blowfish/utils/types";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
@@ -74,7 +75,7 @@ export interface ConfirmTxnProps {
   onContinue: () => void;
   onCancel: () => void;
   warnings: UIWarning[] | undefined;
-  severity: string | undefined;
+  severity: Severity | undefined;
 }
 
 export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({

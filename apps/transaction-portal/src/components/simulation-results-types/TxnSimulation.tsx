@@ -77,19 +77,19 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
     (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
 
   const modifyText = (text: string) => {
-    const parts = text.split(" ");
-    if (parts.length < 2) {
+    const splitText = text.split(" ");
+    if (splitText.length < 2) {
       return text;
     }
-    const otherPart = parts.slice(1, -1).join(" ");
-    const lastPart = parts[parts.length - 1];
+    const centerText = splitText.slice(1, -1).join(" ");
+    const lastWord = splitText[splitText.length - 1];
 
     return (
       <TxnSimulationText>
-        {parts[0]}{" "}
-        <TxnSimulationText weight="semi-bold">{otherPart}</TxnSimulationText>{" "}
+        {splitText[0]}{" "}
+        <TxnSimulationText weight="semi-bold">{centerText}</TxnSimulationText>{" "}
         <TxnSimulationText design="secondary" weight="semi-bold">
-          {lastPart}
+          {lastWord}
         </TxnSimulationText>
       </TxnSimulationText>
     );
