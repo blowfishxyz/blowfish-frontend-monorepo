@@ -3,7 +3,7 @@ import { BlowfishIconStroke } from "@blowfish/ui/icons";
 import { ArrowRightIcon } from "@blowfish/ui/icons";
 import Decimal from "decimal.js";
 import { useRouter } from "next/router";
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { css, styled } from "styled-components";
 import useSWR from "swr";
 import { useAccount } from "wagmi";
@@ -39,7 +39,7 @@ function DashboardPage() {
       router.replace("/start");
       return;
     }
-  }, [isConnected]);
+  }, [isConnected, router]);
 
   const { data, isLoading } = useSWR(
     `transactions-${address}`,
@@ -63,7 +63,7 @@ function DashboardPage() {
         >
           Recent transactions
         </Heading>
-        {isLoading || !isConnected ? null : isEmpty ? (
+        {isLoading || !isConnected || !address ? null : isEmpty ? (
           <Column alignItems="center" justifyContent="center" flexGrow={1}>
             <Column maxWidth={290} alignItems="center">
               <Icon />
@@ -90,7 +90,7 @@ function DashboardPage() {
               </TableGrid>
             </Column>
             {transactions.map((tx) => (
-              <TransactionView tx={tx} key={tx.hash} userAddress={address!} />
+              <TransactionView tx={tx} key={tx.hash} userAddress={address} />
             ))}
           </>
         )}
@@ -124,7 +124,7 @@ const IconWrapper = styled.div<{
   width: 32px;
   padding: 6px;
   border-radius: 50%;
-  background: ${({ $isIn, theme }) => ($isIn ? "#BEEDD2" : "#FFE0C3")};
+  background: ${({ $isIn }) => ($isIn ? "#BEEDD2" : "#FFE0C3")};
 
   svg {
     ${({ $isIn, theme }) => {

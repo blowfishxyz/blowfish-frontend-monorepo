@@ -1,7 +1,9 @@
 import { ConnectKitButton } from "connectkit";
 import { UserWallet } from "~components/UserWallet";
 
-export const UserWalletConnectKitWrapper = () => {
+export const UserWalletConnectKitWrapper: React.FC<{
+  hideConnect?: boolean;
+}> = ({ hideConnect }) => {
   return (
     <ConnectKitButton.Custom>
       {({
@@ -11,16 +13,21 @@ export const UserWalletConnectKitWrapper = () => {
         isConnecting,
         isConnected,
         chain,
-      }) => (
-        <UserWallet
-          show={show}
-          truncatedAddress={truncatedAddress}
-          ensName={ensName}
-          isConnecting={isConnecting}
-          isConnected={isConnected}
-          chain={chain}
-        />
-      )}
+      }) => {
+        if (hideConnect && isConnected) {
+          return null;
+        }
+        return (
+          <UserWallet
+            show={show}
+            truncatedAddress={truncatedAddress}
+            ensName={ensName}
+            isConnecting={isConnecting}
+            isConnected={isConnected}
+            chain={chain}
+          />
+        );
+      }}
     </ConnectKitButton.Custom>
   );
 };

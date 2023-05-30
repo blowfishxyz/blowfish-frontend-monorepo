@@ -1,69 +1,68 @@
 import { ChainInfo } from "@blowfish/utils/chains";
-import {
-  Message,
-  DappRequest,
-  isSignMessageRequest,
-} from "@blowfish/utils/types";
-import { useModal } from "connectkit";
+import { DappRequest, isSignMessageRequest } from "@blowfish/utils/types";
 import { useMemo, useState } from "react";
-import { useAccount, useChainId, useDisconnect, useSwitchNetwork } from "wagmi";
+import { useAccount, useChainId, useSwitchNetwork } from "wagmi";
 import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { useScanParams } from "~modules/scan/hooks/useScanParams";
+import {
+  ScanParamsSuccess,
+  useScanParams,
+} from "~modules/scan/hooks/useScanParams";
 import { MessageError } from "~utils/utils";
+import {
+  AccountNotConnectedModal,
+  OutdatedExtensionModal,
+  TransactionNotFoundModal,
+  UnknownErrorModal,
+  UnsupportedChainModal,
+  UnsupportedTransactionModal,
+  WrongAccountModal,
+  WrongNetworkModal,
+} from "./modals";
+import { Layout } from "~components/layout/Layout";
+import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
+import { useUserDecision } from "../hooks/useUserDecision";
 
-export const ScanPageV2: React.FC = () => {
+export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
-  const connectedChainId = useChainId();
-  const { address, isConnected } = useAccount();
-  const { switchNetworkAsync, isLoading: isSwitchingNetworks } =
-    useSwitchNetwork({ throwForSwitchChainNotSupported: true });
-  const { disconnectAsync } = useDisconnect();
-  const { setOpen: setConnectWalletModalOpen } = useModal();
 
   if (!data) {
-    return <div key="loading">loading...</div>;
+    return <ProtectLoadingScreen key="loading" />;
   }
 
   if ("error" in data) {
     if (data.error === MessageError.PARAMS_NOT_OK) {
-      return <div>TransactionNotFoundScreen</div>;
+      return <TransactionNotFoundModal messageId={data.id} />;
     }
     if (data.error === MessageError.OUTDATED_EXTENSION) {
-      return <div>OutdatedExtensionScreen</div>;
-    }
-    if (data.error === MessageError.FETCH_ERROR) {
-      return <div>UnknownErrorScreen with retry and try to show api error</div>;
+      return <OutdatedExtensionModal />;
     }
 
-    return <div>unknown error</div>;
+    return <TransactionNotFoundModal messageId={data.id} />;
   }
 
+  return <FullfieldView data={data} />;
+};
+
+const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
+  const { reject } = useUserDecision({
+    chainId: chain?.chainId,
+    message,
+    request,
+  });
 
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
       ? message?.data.payload.method === "eth_sign"
       : false;
 
-  if (!chain?.chainInfo) {
-    return <div>unsupported chain</div>;
-  }
-
-  if (!isConnected) {
-    return <div>Account not connected</div>;
-  }
-
-  if (address !== userAccount && !isImpersonating) {
-    return <div>wrong account, please change</div>;
-  }
-
-  if (chain.chainId !== connectedChainId) {
-    return <div>wrong chain, please change</div>;
-  }
-
   if (isUnsupportedDangerousRequest) {
-    return <div>TransactionUnsupportedScreen</div>;
+    return <UnsupportedTransactionModal closeWindow={reject} />;
+  }
+
+  if (!chain?.chainInfo) {
+    return <UnsupportedChainModal />;
   }
 
   return (
@@ -71,6 +70,9 @@ export const ScanPageV2: React.FC = () => {
       messageOrigin={message.origin}
       request={request}
       chainInfo={chain.chainInfo}
+      chainId={chain.chainId}
+      isImpersonating={isImpersonating}
+      userAccount={userAccount}
     />
   );
 };
@@ -79,18 +81,33 @@ const ResultsView: React.FC<{
   messageOrigin: string | undefined;
   request: DappRequest;
   chainInfo: ChainInfo;
-}> = ({ chainInfo, messageOrigin, request }) => {
+  chainId: number;
+  userAccount: string;
+  isImpersonating: boolean;
+}> = ({
+  chainInfo,
+  chainId,
+  userAccount,
+  isImpersonating,
+  messageOrigin,
+  request,
+}) => {
+  const connectedChainId = useChainId();
+  const { address, isConnected } = useAccount();
+  const { switchNetworkAsync } = useSwitchNetwork({
+    throwForSwitchChainNotSupported: true,
+  });
   const { chainFamily, chainNetwork } = chainInfo;
   const {
     data: scanResults,
     error: scanError,
     mutate,
-    isValidating,
   } = useScanDappRequest(chainFamily, chainNetwork, request, messageOrigin);
   const simulationError = scanResults?.simulationResults?.error;
 
-  const [hasDismissedScreen, setHasDismissedScreen] = useState(false);
+  const [hasDismissedScreen] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
     if (hasDismissedScreen) {
       return null;
@@ -107,13 +124,42 @@ const ResultsView: React.FC<{
     }
 
     return null;
-  }, [scanResults?.action]);
+  }, [scanResults?.action, hasDismissedScreen, simulationError]);
 
-  if (!scanResults) {
-    return <div key="loading">loading...</div>;
+  if (!isConnected) {
+    return <AccountNotConnectedModal />;
   }
 
-  // TODO: replace with new UI
+  if (address !== userAccount && !isImpersonating) {
+    return <WrongAccountModal correctAddress={userAccount} />;
+  }
+
+  if (chainId !== connectedChainId) {
+    return (
+      <WrongNetworkModal
+        targetChainId={chainId}
+        connectedChainId={connectedChainId}
+        switchNetwork={async (chainId) => {
+          await switchNetworkAsync?.(chainId);
+        }}
+      />
+    );
+  }
+
+  if (scanError) {
+    return (
+      <UnknownErrorModal
+        onRetry={async () => {
+          await mutate();
+        }}
+      />
+    );
+  }
+
+  if (!scanResults) {
+    return <ProtectLoadingScreen key="loading" />;
+  }
+
   return (
     <ScanResults
       request={request}
@@ -124,3 +170,13 @@ const ResultsView: React.FC<{
     />
   );
 };
+
+export const ScanPageV2: React.FC = () => {
+  return (
+    <Layout>
+      <ScanPageV2Inner />
+    </Layout>
+  );
+};
+
+export default ScanPageV2;

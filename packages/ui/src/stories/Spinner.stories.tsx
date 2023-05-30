@@ -17,7 +17,7 @@ const Template: Story<SpinnerProps> = (args) => (
     justifyContent="center"
     padding={20}
     width={100}
-    style={{ backgroundColor: args.contrast ? "black" : "white" }}
+    style={{ backgroundColor: args.design === "contrast" ? "black" : "white" }}
   >
     <Spinner {...args} />
   </Column>

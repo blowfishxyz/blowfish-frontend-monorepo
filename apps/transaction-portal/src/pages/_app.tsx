@@ -25,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
             options={{
               initialChainId: requestChainId,
             }}
+            mode="light"
           >
             <Component {...pageProps} />
           </ConnectKitProvider>

@@ -16,7 +16,7 @@ export const useQueryParams = <T>() => {
   const router = useRouter();
   return useMemo(() => {
     const cleanedQs = router.asPath.split("?")[1];
-    return qs.parse(decodeURIComponent(cleanedQs), {
+    return qs.parse(cleanedQs, {
       decoder: booleanDecoder,
     }) as T;
   }, [router.asPath]);

@@ -1,5 +1,7 @@
 import React from "react";
 import { css, styled } from "styled-components";
+import { Spinner } from "../Spinner";
+import { Column } from "../Column";
 
 const resetStyles = css`
   border: none;
@@ -24,6 +26,7 @@ const resetStyles = css`
 
 const interactiveStyles = css`
   cursor: pointer;
+  user-select: none;
   transition: transform 0.2s ease-in;
 
   &:not(:disabled):hover {
@@ -40,6 +43,7 @@ const interactiveStyles = css`
 `;
 
 const baseStyles = css`
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -92,6 +96,12 @@ const tertiaryDesign = css`
   }
 `;
 
+const dangerDesign = css`
+  background: ${(p) => p.theme.severityColors.CRITICAL.backgroundLight};
+  color: ${(p) => p.theme.colors.danger};
+  border: 1px solid ${(p) => p.theme.colors.danger};
+`;
+
 function getDesignStyles({ design }: ButtonProps) {
   if (design === "secondary") {
     return secondaryDesign;
@@ -102,21 +112,56 @@ function getDesignStyles({ design }: ButtonProps) {
   if (design === "tertiary") {
     return tertiaryDesign;
   }
+  if (design === "danger") {
+    return dangerDesign;
+  }
+
   return primaryDesign;
 }
 
+function getLoadingStyles({ $loading }: { $loading?: boolean }) {
+  if ($loading) {
+    return css`
+      color: transparent;
+    `;
+  }
+}
+
 type ButtonProps = {
-  design?: "primary" | "secondary" | "tertiary";
+  design?: "primary" | "secondary" | "tertiary" | "danger";
+  loading?: boolean;
 };
 
-const ButtonComponent = styled.button<ButtonProps>`
+const ButtonComponent = styled.button<
+  Omit<ButtonProps, "loading"> & { $loading?: boolean }
+>`
   ${resetStyles}
   ${baseStyles}
   ${getDesignStyles}
   ${interactiveStyles}
+  ${getLoadingStyles}
 `;
 
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
->((props, ref) => <ButtonComponent ref={ref} {...props} />);
+>(({ loading, ...props }, ref) => {
+  return (
+    <ButtonComponent ref={ref} {...props} $loading={loading}>
+      {loading ? (
+        <Column position="absolute" absoluteCentered="both">
+          <Spinner
+            design={
+              props.design === "primary" || props.design === undefined
+                ? "contrast"
+                : props.design === "danger"
+                ? "danger"
+                : undefined
+            }
+          />
+        </Column>
+      ) : null}
+      {props.children}
+    </ButtonComponent>
+  );
+});

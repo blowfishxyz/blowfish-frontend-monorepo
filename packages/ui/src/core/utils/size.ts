@@ -1,5 +1,6 @@
 import { css } from "styled-components";
 import type { Properties } from "csstype";
+import { normalizePxProp } from "./normalizePxProp";
 
 export type Size = {
   width?: Properties["width"] | number;
@@ -12,43 +13,36 @@ export type Size = {
 
 export function size(props: Size) {
   const rules = [];
-  if (props.width) {
+  if (props.width !== undefined) {
     rules.push(css`
-      width: ${normalizeProp(props.width)};
+      width: ${normalizePxProp(props.width)};
     `);
   }
-  if (props.height) {
+  if (props.height !== undefined) {
     rules.push(css`
-      height: ${normalizeProp(props.height)};
+      height: ${normalizePxProp(props.height)};
     `);
   }
-  if (props.maxWidth) {
+  if (props.maxWidth !== undefined) {
     rules.push(css`
-      max-width: ${normalizeProp(props.maxWidth)};
+      max-width: ${normalizePxProp(props.maxWidth)};
     `);
   }
-  if (props.maxHeight) {
+  if (props.maxHeight !== undefined) {
     rules.push(css`
-      max-height: ${normalizeProp(props.maxHeight)};
+      max-height: ${normalizePxProp(props.maxHeight)};
     `);
   }
-  if (props.minWidth) {
+  if (props.minWidth !== undefined) {
     rules.push(css`
-      min-width: ${normalizeProp(props.minWidth)};
+      min-width: ${normalizePxProp(props.minWidth)};
     `);
   }
-  if (props.minHeight) {
+  if (props.minHeight !== undefined) {
     rules.push(css`
-      min-height: ${normalizeProp(props.minHeight)};
+      min-height: ${normalizePxProp(props.minHeight)};
     `);
   }
 
   return rules;
-}
-
-function normalizeProp<T>(prop: T | number) {
-  if (typeof prop === "number") {
-    return `${prop}px`;
-  }
-  return prop;
 }

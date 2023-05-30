@@ -24,8 +24,10 @@ async function report(domain: string) {
       throw new Error((await x.json()).error);
     });
     logger.debug(`Reported ${domain}`);
-  } catch (e) {
-    logger.debug(`Report failed: ${(e as any).message}`);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      logger.debug(`Report failed: ${e?.message}`);
+    }
   }
 }
 

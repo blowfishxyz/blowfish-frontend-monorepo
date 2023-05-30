@@ -11,7 +11,7 @@ const rotate = keyframes`
     }
 `;
 
-export type SpinnerProps = { contrast?: boolean };
+export type SpinnerProps = { design?: "contrast" | "danger" };
 
 const Base = styled(StyledBaseDiv)<SpinnerProps>`
   display: inline-block;
@@ -21,16 +21,22 @@ const Base = styled(StyledBaseDiv)<SpinnerProps>`
   border-width: 2px;
   border-style: solid;
   animation: ${rotate} 1s linear infinite;
-  ${getContrastStyles}
+  ${getDesignStyles}
 `;
 
 export const Spinner = React.memo(Base);
 
-function getContrastStyles(props: SpinnerProps) {
-  if (props.contrast) {
+function getDesignStyles(props: SpinnerProps) {
+  if (props.design === "contrast") {
     return css`
       border-color: rgba(255, 255, 255, 0.3);
       border-top-color: ${(p) => p.theme.colors.backgroundPrimary};
+    `;
+  }
+  if (props.design === "danger") {
+    return css`
+      border-color: ${(p) => p.theme.colors.dangerLight};
+      border-top-color: ${(p) => p.theme.colors.danger};
     `;
   }
   return css`
