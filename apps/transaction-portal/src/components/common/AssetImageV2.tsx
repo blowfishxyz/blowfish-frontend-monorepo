@@ -27,7 +27,7 @@ const SimulationIconWrapper = styled.div<{
   height: 16px;
   width: 16px;
   border-radius: 50%;
-  top: 0px;
+  top: -4px;
   right: -4px;
   box-sizing: initial;
   background: ${({ $isPositiveEffect }) =>

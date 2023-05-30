@@ -11,6 +11,7 @@ import {
 import {
   DappRequest,
   Message,
+  Severity,
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
@@ -20,11 +21,11 @@ import { logger } from "@blowfish/utils/logger";
 import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
 
-const ScanResultsWrapper = styled(Row)<{ severity: string | undefined }>`
+const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
   height: 100%;
 
   background-color: ${({ severity, theme }) =>
-    theme.severityColors[severity ?? "INFO"].backgroundV2};
+    theme.severityColors[severity ?? "INFO"].background};
 `;
 
 export type UIWarning = {

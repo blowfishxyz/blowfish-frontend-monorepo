@@ -18,6 +18,7 @@ import {
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { Severity } from "@blowfish/utils/types";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -46,32 +47,34 @@ const StyledColumn = styled(Column).attrs({
 })``;
 
 const TxnDataWrapper = styled.div`
+  padding: 5px 0 0;
   max-height: 200px;
   height: 100%;
   overflow-y: auto;
-
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: transparent;
 
   &::-webkit-scrollbar {
     width: 8px;
-    background-color: #f5f5f5;
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: #e0e0e0;
+    background-color: ${({ theme }) => theme.colors.backgroundSecondary};
     border-radius: 4px;
   }
 
-  scrollbar-color: #e0e0e0 #f5f5f5;
+  scrollbar-color: ${({ theme }) =>
+    `${theme.colors.backgroundPrimary} ${theme.colors.backgroundSecondary}`};
 
   & {
     scrollbar-width: thin;
   }
 
   & {
-    scrollbar-color: #e0e0e0 #f5f5f5;
+    scrollbar-color: ${({ theme }) =>
+      `${theme.colors.backgroundPrimary} ${theme.colors.backgroundSecondary}`};
     scrollbar-width: thin;
   }
 `;
@@ -83,7 +86,7 @@ interface PreviewCardProps {
   website?: string;
   contract: string;
   warnings: UIWarning[];
-  severity: string | undefined;
+  severity: Severity | undefined;
   children: ReactNode;
   onContinue: () => void;
   onCancel: () => void;
@@ -148,7 +151,7 @@ export interface PreviewTxnProps {
   txnSimulationData?: TxnSimulationDataType;
   signatureData: SignatureDataType[];
   warnings: UIWarning[];
-  severity: string | undefined;
+  severity: Severity | undefined;
   onContinue: () => void;
   onCancel: () => void;
 }
