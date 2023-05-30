@@ -182,7 +182,10 @@ export const Footer: React.FC = () => {
             </Link>
           </FooterLink>
           <FooterLink>
-            <Link href="mailto:contact@blowfish.xyz" target="_blank">
+            <Link
+              href="https://5d2jxjxzxqq.typeform.com/to/BHue5Hg0"
+              target="_blank"
+            >
               Contact Us
             </Link>
           </FooterLink>
