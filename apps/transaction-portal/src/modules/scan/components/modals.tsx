@@ -1,10 +1,10 @@
 import { Modal } from "~components/common/Modal";
 import useSWR from "swr";
 import { capitalize, getExtensionInstallationUrl, sleep } from "~utils/utils";
-import { Text } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfish/ui/core";
 import { useCallback, useMemo } from "react";
 import { shortenHex } from "~utils/hex";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import { useLocalStorage } from "react-use";
 import {
@@ -16,32 +16,26 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import { sendAbort, sendPauseResumeSelection } from "~utils/messages";
+import { sendPauseResumeSelection } from "~utils/messages";
 import { useRouter } from "next/router";
-import { logger } from "~utils/logger";
+import {
+  BlowfishInvertedWarningIcon,
+  BlowfishWarningIcon,
+} from "@blowfish/ui/icons";
+import styled from "styled-components";
+import { getConnectorMetadata } from "~utils/wagmi";
+import { ContentToggle } from "~components/ContentToggle";
 
-export const TransactionNotFoundModal: React.FC<{
-  messageId: string | undefined;
-}> = ({ messageId }) => {
+export const TransactionNotFoundModal: React.FC = () => {
+  const router = useRouter();
   return (
     <Modal
       title="Something went wrong"
       description="Please close the window and try again"
-      action={
-        messageId
-          ? {
-              cb: async () => {
-                try {
-                  await sendAbort(messageId);
-                } catch (e) {
-                  logger.debug("Error sending abort message: " + e);
-                }
-              },
-              closeOnComplete: true,
-              title: "Close",
-            }
-          : undefined
-      }
+      icon={<InvertedWarningIcon />}
+      onCancel={() => {
+        router.push("/dashboard");
+      }}
     />
   );
 };
@@ -56,6 +50,7 @@ export const OutdatedExtensionModal: React.FC = () => {
       title="Outdated extension"
       description="Please update the Blowfish extension to the latest version and retry
       the transaction"
+      icon={<InvertedWarningIcon />}
       options={{ blocking: true }}
       action={{
         closeOnComplete: false,
@@ -70,11 +65,16 @@ export const OutdatedExtensionModal: React.FC = () => {
   );
 };
 
-export const UnsupportedChainModal: React.FC = () => {
+export const UnsupportedChainModal: React.FC<{
+  closeWindow: () => Promise<void>;
+}> = ({ closeWindow }) => {
   return (
     <Modal
       title="Unsupported Chain"
       description="This chain is currently not supported. More chains coming soon!"
+      icon={<InvertedWarningIcon />}
+      options={{ blocking: true }}
+      action={{ cb: closeWindow, title: "Close" }}
     />
   );
 };
@@ -111,8 +111,9 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
   return (
     <Modal
       title="Switch account"
+      icon={<InvertedWarningIcon />}
       description={description}
-      action={{ cb: disconnectAsync, title: "Disconnect" }}
+      action={{ cb: () => disconnectAsync(), title: "Disconnect" }}
       options={{ blocking: true }}
     />
   );
@@ -183,6 +184,7 @@ export const WrongNetworkModal: React.FC<{
     <Modal
       title="Switch network"
       description={description}
+      icon={<InvertedWarningIcon />}
       action={{ cb: action, title: actionText, closeOnComplete: true }}
       options={{ blocking: true }}
     />
@@ -215,6 +217,7 @@ export const UnsupportedTransactionModal: React.FC<{
     <Modal
       width={480}
       title="Dangerous unsupported action"
+      icon={<WarningIcon />}
       description={
         <>
           Signing messages with the <b>eth_sign method</b> is dangerous. This
@@ -241,22 +244,82 @@ export const UnsupportedTransactionModal: React.FC<{
 
 export const AccountNotConnectedModal: React.FC = () => {
   const router = useRouter();
+  const { connectors } = useConnect();
+  const { connectAsync } = useConnect();
+  const connector = connectors.filter((x) => x.id !== "injected")[0];
+  const { label, installLink } = getConnectorMetadata(connector?.id);
 
-  return (
-    <Modal
-      title="Connect account"
-      description="To scan transactions, you need to connect your account"
-      action={{
+  const action = useMemo(() => {
+    if (!connector) {
+      return {
         cb: async () => {
           router.push(`/start?redirect=${encodeURIComponent(router.asPath)}`);
         },
         title: "Continue",
         closeOnComplete: true,
-      }}
+      };
+    }
+
+    return {
+      cb: async (hide: () => void) => {
+        if (connector.ready) {
+          await connectAsync({ connector });
+          hide();
+          return;
+        }
+        if (installLink) {
+          window.open(installLink, "_blank");
+        }
+      },
+      closeOnComplete: false,
+      title: connector.ready ? `Connect to ${label}` : `Install ${label}`,
+    };
+  }, [connectAsync, connector, installLink, label, router]);
+
+  return (
+    <Modal
+      title="Connect account"
+      description="To scan transactions, you need to connect your account"
+      action={action}
       options={{ blocking: true }}
     />
   );
 };
+
+export const BlockedTransactionModal: React.FC<{
+  closeWindow: undefined | (() => Promise<void>);
+}> = ({ closeWindow }) => {
+  return (
+    <Modal
+      title="Transaction Flagged"
+      description={
+        <>
+          We believe this transaction is malicious and unsafe to sign. <br />
+          <b>Approving may lead to loss of funds</b>
+        </>
+      }
+      icon={<WarningIcon />}
+      onCancel={() => closeWindow?.()}
+      options={{ blocking: true }}
+      action={{
+        closeOnComplete: true,
+        title: "Ignore warning",
+        design: "danger",
+        cb: () => Promise.resolve(),
+      }}
+    />
+  );
+};
+
+const WarningIcon = styled(BlowfishWarningIcon)`
+  width: 92px;
+  height: 92px;
+`;
+
+const InvertedWarningIcon = styled(BlowfishInvertedWarningIcon)`
+  width: 92px;
+  height: 92px;
+`;
 
 export const UnknownErrorModal: React.FC<{ onRetry: () => Promise<void> }> = ({
   onRetry,
@@ -264,7 +327,55 @@ export const UnknownErrorModal: React.FC<{ onRetry: () => Promise<void> }> = ({
   return (
     <Modal
       title="Something went wrong"
+      icon={<InvertedWarningIcon />}
       description="Something unexpected happened. Please try again later."
+      action={{ cb: onRetry, title: "Retry", closeOnComplete: false }}
+    />
+  );
+};
+
+export const TransactionRevertedModal: React.FC<{
+  error: string | undefined;
+}> = ({ error }) => {
+  return (
+    <Modal
+      title="Transaction Reverted"
+      icon={<InvertedWarningIcon />}
+      description={
+        <>
+          The transaction reverted when we simulated it. Approving may lead to
+          loss of funds
+          <br />
+          <br />
+          {error ? (
+            <ContentToggle message="View error message">
+              <WarningMessageWrapper>
+                <Text design="danger">{error}</Text>
+              </WarningMessageWrapper>
+            </ContentToggle>
+          ) : null}
+        </>
+      }
+    />
+  );
+};
+
+const WarningMessageWrapper = styled(Column).attrs({
+  padding: 12,
+  borderRadius: 12,
+})`
+  background: ${(p) => p.theme.severityColors.CRITICAL.backgroundLight};
+  word-break: break-word;
+`;
+
+export const SimulationErrorModal: React.FC<{
+  onRetry: () => Promise<void>;
+}> = ({ onRetry }) => {
+  return (
+    <Modal
+      title="Simulation Failed"
+      icon={<InvertedWarningIcon />}
+      description="We are unable to simulate this transaction. Approving may lead to loss of funds"
       action={{ cb: onRetry, title: "Retry", closeOnComplete: false }}
     />
   );

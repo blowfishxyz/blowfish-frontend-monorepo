@@ -1,7 +1,7 @@
 import { ChainInfo } from "@blowfish/utils/chains";
 import { DappRequest, isSignMessageRequest } from "@blowfish/utils/types";
-import { useMemo, useState } from "react";
-import { useAccount, useChainId, useSwitchNetwork } from "wagmi";
+import { useMemo } from "react";
+import { useAccount, useSwitchNetwork } from "wagmi";
 import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import {
@@ -11,8 +11,11 @@ import {
 import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
+  BlockedTransactionModal,
   OutdatedExtensionModal,
+  SimulationErrorModal,
   TransactionNotFoundModal,
+  TransactionRevertedModal,
   UnknownErrorModal,
   UnsupportedChainModal,
   UnsupportedTransactionModal,
@@ -22,6 +25,7 @@ import {
 import { Layout } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
+import { useConnectedChainId } from "~utils/wagmi";
 
 export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
@@ -32,13 +36,13 @@ export const ScanPageV2Inner: React.FC = () => {
 
   if ("error" in data) {
     if (data.error === MessageError.PARAMS_NOT_OK) {
-      return <TransactionNotFoundModal messageId={data.id} />;
+      return <TransactionNotFoundModal />;
     }
     if (data.error === MessageError.OUTDATED_EXTENSION) {
       return <OutdatedExtensionModal />;
     }
 
-    return <TransactionNotFoundModal messageId={data.id} />;
+    return <TransactionNotFoundModal />;
   }
 
   return <FullfieldView data={data} />;
@@ -62,7 +66,7 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
   }
 
   if (!chain?.chainInfo) {
-    return <UnsupportedChainModal />;
+    return <UnsupportedChainModal closeWindow={reject} />;
   }
 
   return (
@@ -73,6 +77,7 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
       chainId={chain.chainId}
       isImpersonating={isImpersonating}
       userAccount={userAccount}
+      reject={reject}
     />
   );
 };
@@ -84,16 +89,19 @@ const ResultsView: React.FC<{
   chainId: number;
   userAccount: string;
   isImpersonating: boolean;
+  reject?: () => Promise<void>;
 }> = ({
   chainInfo,
   chainId,
   userAccount,
   isImpersonating,
   messageOrigin,
+  reject,
   request,
 }) => {
-  const connectedChainId = useChainId();
   const { address, isConnected } = useAccount();
+  const connectedChainId = useConnectedChainId();
+
   const { switchNetworkAsync } = useSwitchNetwork({
     throwForSwitchChainNotSupported: true,
   });
@@ -105,28 +113,38 @@ const ResultsView: React.FC<{
   } = useScanDappRequest(chainFamily, chainNetwork, request, messageOrigin);
   const simulationError = scanResults?.simulationResults?.error;
 
-  const [hasDismissedScreen] = useState(false);
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
-    if (hasDismissedScreen) {
-      return null;
-    }
     if (scanResults?.action === "BLOCK") {
-      return <div>block screen</div>;
+      return <BlockedTransactionModal closeWindow={reject} />;
     }
     if (simulationError) {
       if (simulationError.kind === "SIMULATION_FAILED") {
-        return <div>transaction reverted</div>;
-      } else {
-        return <div>simulation failed</div>;
+        return (
+          <TransactionRevertedModal
+            // HACK(Alex): Remove after API version update
+            error={
+              simulationError.humanReadableError ||
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (simulationError as any).parsedErrorMessage
+            }
+          />
+        );
       }
+
+      return (
+        <SimulationErrorModal
+          onRetry={async () => {
+            await mutate();
+          }}
+        />
+      );
     }
 
     return null;
-  }, [scanResults?.action, hasDismissedScreen, simulationError]);
+  }, [scanResults?.action, simulationError, reject, mutate]);
 
-  if (!isConnected) {
+  if (!isConnected || !connectedChainId) {
     return <AccountNotConnectedModal />;
   }
 
@@ -161,13 +179,16 @@ const ResultsView: React.FC<{
   }
 
   return (
-    <ScanResults
-      request={request}
-      scanResults={scanResults}
-      dappUrl={messageOrigin || ""}
-      chainFamily={chainFamily}
-      chainNetwork={chainNetwork}
-    />
+    <>
+      {overlay}
+      <ScanResults
+        request={request}
+        scanResults={scanResults}
+        dappUrl={messageOrigin || ""}
+        chainFamily={chainFamily}
+        chainNetwork={chainNetwork}
+      />
+    </>
   );
 };
 
