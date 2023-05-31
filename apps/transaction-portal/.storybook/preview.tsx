@@ -9,6 +9,7 @@ import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
 import { themes } from "@blowfish/ui/core";
 import { Wallet } from "ethers";
+import { ConnectKitProvider } from "connectkit";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -60,7 +61,14 @@ export const decorators = [
   (Story: StoryType) => (
     <ThemeProvider theme={themes.light}>
       <WagmiConfig client={mockWagmiClient}>
-        <Story />
+        <ConnectKitProvider
+          options={{
+            initialChainId: 1,
+          }}
+          mode="light"
+        >
+          <Story />
+        </ConnectKitProvider>
       </WagmiConfig>
     </ThemeProvider>
   ),

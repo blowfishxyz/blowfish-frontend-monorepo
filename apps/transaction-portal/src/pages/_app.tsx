@@ -9,6 +9,7 @@ import { GlobalStyle } from "~styles/global";
 
 import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
+import { BLOWFISH_V2_ENABLED } from "~config";
 
 export default function App({ Component, pageProps }: AppProps) {
   const requestChainId = useRequestChainId();
@@ -24,7 +25,9 @@ export default function App({ Component, pageProps }: AppProps) {
           <ConnectKitProvider
             options={{
               initialChainId: requestChainId,
+              enforceSupportedChains: !BLOWFISH_V2_ENABLED,
             }}
+            mode="light"
           >
             <Component {...pageProps} />
           </ConnectKitProvider>

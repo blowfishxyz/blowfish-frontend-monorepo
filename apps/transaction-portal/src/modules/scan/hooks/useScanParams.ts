@@ -1,4 +1,3 @@
-import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
 import { ChainInfo } from "@blowfish/utils/chains";
 import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import {
@@ -14,7 +13,7 @@ import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
 type HexString = `0x${string}`;
 
-type ChainMetadata =
+export type ChainMetadata =
   | {
       chainId: number;
       chainInfo: ChainInfo | undefined;
@@ -36,15 +35,17 @@ export function useChainFromUrl(): ChainMetadata {
   return { chainId, chainInfo: chain };
 }
 
-type ScanParams =
-  | {
-      message: Message<DappRequest["type"], DappRequest>;
-      request: DappRequest;
-      userAccount: HexString;
-      chain: ChainMetadata;
-      isImpersonating: boolean;
-    }
-  | { error: MessageError | undefined }
+export type ScanParamsSuccess = {
+  message: Message<DappRequest["type"], DappRequest>;
+  request: DappRequest;
+  userAccount: HexString;
+  chain: ChainMetadata;
+  isImpersonating: boolean;
+};
+
+export type ScanParams =
+  | ScanParamsSuccess
+  | { error: MessageError | undefined; id: string | undefined }
   | undefined;
 
 async function fetcher([messageId]: [string]): Promise<
@@ -69,18 +70,18 @@ export function useScanParams(): ScanParams {
   const { id } = useQueryParams<{ id?: string }>();
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
   if (fetchError) {
-    return { error: MessageError.PARAMS_NOT_OK };
+    return { error: MessageError.PARAMS_NOT_OK, id };
   }
   if (!data) {
     return undefined; // loading
   }
   if ("error" in data) {
-    return { error: data.error };
+    return { error: data.error, id };
   }
   const { message } = data;
   const dappRequest = parseRequestFromMessage(message);
   if (!dappRequest || !message.origin) {
-    return { error: MessageError.PARAMS_NOT_OK };
+    return { error: MessageError.PARAMS_NOT_OK, id };
   }
   const { isImpersonatingWallet, userAccount } = dappRequest;
 

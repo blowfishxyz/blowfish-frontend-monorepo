@@ -23,7 +23,7 @@ export const ProtectHeader = () => {
     <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull />
       <RightContentWrapper gap="md">
-        <UserWalletConnectKitWrapper />
+        <UserWalletConnectKitWrapper hideConnect />
         <Menu />
       </RightContentWrapper>
     </ProtectScreenContent>
