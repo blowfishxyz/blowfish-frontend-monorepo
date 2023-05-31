@@ -1,5 +1,12 @@
 import React, { FC, ReactNode } from "react";
-import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
+import {
+  BlockExplorerLink,
+  Column,
+  LinkWithArrow,
+  Row,
+  Text,
+  device,
+} from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import {
@@ -19,6 +26,7 @@ import {
 } from "~components/simulation-results-types/mock-data";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
+import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -90,6 +98,8 @@ interface PreviewCardProps {
   children: ReactNode;
   onContinue: () => void;
   onCancel: () => void;
+  chainNetwork: ChainNetwork;
+  chainFamily: ChainFamily;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -102,6 +112,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onContinue,
   onCancel,
   children,
+  chainNetwork,
+  chainFamily,
 }) => (
   <CardWrapper>
     <CardContent>
@@ -127,9 +139,13 @@ const PreviewCard: FC<PreviewCardProps> = ({
         <SmallGrayText>Contract</SmallGrayText>
         <CardText>
           <CardBlackTextLink>
-            <LinkWithArrow href={contract}>
+            <BlockExplorerLink
+              chainFamily={chainFamily}
+              chainNetwork={chainNetwork}
+              address={contract}
+            >
               {shortenHex(contract)}
-            </LinkWithArrow>
+            </BlockExplorerLink>
           </CardBlackTextLink>
         </CardText>
       </StyledColumn>
@@ -152,6 +168,8 @@ export interface PreviewTxnProps {
   signatureData: SignatureDataType[];
   warnings: UIWarning[];
   severity: Severity | undefined;
+  chainNetwork: ChainNetwork;
+  chainFamily: ChainFamily;
   onContinue: () => void;
   onCancel: () => void;
 }
@@ -164,6 +182,8 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
   severity,
   onContinue,
   onCancel,
+  chainNetwork,
+  chainFamily,
 }) => {
   const renderTransactionPreview = () => (
     <PreviewCard
@@ -176,15 +196,17 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
       severity={severity}
       onContinue={onContinue}
       onCancel={onCancel}
+      chainNetwork={chainNetwork}
+      chainFamily={chainFamily}
     >
       <Column gap="lg">
         <Row justifyContent="space-between">
           <SmallGrayText>State</SmallGrayText>
         </Row>
         <TxnDataWrapper>
-          {txnSimulationData?.data?.map((data, index) => (
-            <TxnSimulation key={index} txnData={data} />
-          ))}
+          {txnSimulationData?.data?.map((data, index) => {
+            return <TxnSimulation key={index} txnData={data} />;
+          })}
         </TxnDataWrapper>
       </Column>
     </PreviewCard>
@@ -204,6 +226,8 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
           severity={severity}
           onContinue={onContinue}
           onCancel={onCancel}
+          chainNetwork={chainNetwork}
+          chainFamily={chainFamily}
         >
           <Column gap="md">
             <Row justifyContent="space-between">

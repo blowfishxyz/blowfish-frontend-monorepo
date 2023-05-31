@@ -12,9 +12,16 @@ interface PreviewNftProps {
   imageUrl: string | undefined;
   name: string | undefined;
   symbol?: string | undefined;
+  tokenId: string | null;
+  price: React.ReactNode;
 }
 
-export const PreviewNfts: React.FC<PreviewNftProps> = ({ imageUrl, name }) => {
+export const PreviewNfts: React.FC<PreviewNftProps> = ({
+  imageUrl,
+  name,
+  tokenId,
+  price,
+}) => {
   return (
     <PreviewTokenContainer>
       <TxnImage src={imageUrl} alt={name} $width={"120px"} $height={"120px"} />
@@ -25,29 +32,12 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({ imageUrl, name }) => {
           </Text>
           <VerifiedIcon />
         </Row>
-        <Text size="xs">
-          #2831{" "}
-          <Text design="secondary" size="xs">
-            of 10,000
-          </Text>
-        </Text>
+        <Text size="xs">#{tokenId}</Text>
       </Column>
       <Divider margin="13px 0" />
       <div>
-        <DataRowComponent label="Value (est.)" value="93.33 ETH" />
-        <DataRowComponent
-          label="Rarity"
-          value={
-            <>
-              <Text size="xs">3,345</Text>
-              <Text design="secondary" size="sm">
-                / 10,000
-              </Text>
-            </>
-          }
-        />
-        <DataRowComponent label="Floor Price" value="28.99 ETH" />
-        <DataRowComponent label="Owners" value="1,899" />
+        <DataRowComponent label="Price" value={price} />
+        <DataRowComponent label="Floor Price" value={price} />
       </div>
     </PreviewTokenContainer>
   );

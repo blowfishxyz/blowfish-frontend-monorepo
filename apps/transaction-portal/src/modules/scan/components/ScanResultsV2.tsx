@@ -224,6 +224,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         txnSimulationData={txnData}
         warnings={warnings}
         severity={severity}
+        chainNetwork={props.chainNetwork}
+        chainFamily={props.chainFamily}
         onContinue={() => handleUserAction(true)}
         onCancel={() => handleUserAction(false)}
       />

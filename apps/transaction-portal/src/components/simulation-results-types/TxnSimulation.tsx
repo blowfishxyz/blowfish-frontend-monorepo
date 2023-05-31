@@ -12,6 +12,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~components/common/Tooltip";
+import {
+  EvmExpectedStateChangesInner,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+} from "@blowfish/api-client";
+import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -56,12 +61,15 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
 `;
 
 interface TxnSimulationProps {
-  txnData: any;
+  txnData:
+    | EvmExpectedStateChangesInner
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 }
 
 export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { rawInfo } = txnData;
-  const { name, symbol, imageSrc, isNft } = getTxnSimulationData(rawInfo);
+  const { name, symbol, imageSrc, isNft, tokenId, tokenList } =
+    getTxnSimulationData(rawInfo);
   const isApproval = checkIsApproval(rawInfo);
   const diff = useMemo(() => {
     const { amount } = rawInfo.data;
@@ -75,25 +83,6 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
 
   const isPositiveEffect =
     (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
-
-  const modifyText = (text: string) => {
-    const splitText = text.split(" ");
-    if (splitText.length < 2) {
-      return text;
-    }
-    const centerText = splitText.slice(1, -1).join(" ");
-    const lastWord = splitText[splitText.length - 1];
-
-    return (
-      <TxnSimulationText>
-        {splitText[0]}{" "}
-        <TxnSimulationText weight="semi-bold">{centerText}</TxnSimulationText>{" "}
-        <TxnSimulationText design="secondary" weight="semi-bold">
-          {lastWord}
-        </TxnSimulationText>
-      </TxnSimulationText>
-    );
-  };
 
   return (
     <TxnSimulationWrapper
@@ -111,12 +100,20 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             </TxnSimulationImage>
             <PreviewTokenTooltipContent showArrow={false}>
               {isNft ? (
-                <PreviewNfts imageUrl={imageSrc} symbol={symbol} name={name} />
+                <PreviewNfts
+                  imageUrl={imageSrc}
+                  symbol={symbol}
+                  name={name}
+                  tokenId={tokenId}
+                  price={<AssetPriceV2 stateChange={txnData} />}
+                />
               ) : (
                 <PreviewTokens
                   imageUrl={imageSrc}
                   symbol={symbol}
                   name={name}
+                  price={<AssetPriceV2 stateChange={txnData} />}
+                  tokenList={tokenList}
                 />
               )}
             </PreviewTokenTooltipContent>
@@ -124,16 +121,22 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
         </Tooltip>
         <Column gap="xs">
           <TxnSimulationText weight="normal">
-            {modifyText(txnData.humanReadableDiff)}
+            {txnData.humanReadableDiff}
           </TxnSimulationText>
           {isNft ? (
             <Text size="sm" design="secondary">
-              Type: ERC-721
+              Type:{" "}
+              <Text size="sm" design="primary">
+                ERC-721
+              </Text>
             </Text>
           ) : (
             name && (
               <Text size="sm" design="secondary">
-                Asset: {name}
+                Asset:{" "}
+                <Text size="sm" design="primary">
+                  {name}
+                </Text>
               </Text>
             )
           )}

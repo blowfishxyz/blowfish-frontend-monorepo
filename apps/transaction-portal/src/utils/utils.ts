@@ -178,12 +178,16 @@ const filterNullImageUrls = (imageUrl: string | undefined | null) => {
 };
 
 export const getTxnSimulationData = (
-  rawInfo: EvmExpectedStateChangesInnerRawInfo
+  rawInfo:
+    | EvmExpectedStateChangesInnerRawInfo
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
 ) => {
   let name = "";
   let imageSrc;
   let symbol = "";
   let isNft = false;
+  let tokenId = null;
+  let tokenList = null;
 
   if (
     rawInfo.kind === "ERC721_APPROVAL" ||
@@ -192,6 +196,7 @@ export const getTxnSimulationData = (
     isNft = true;
     name = rawInfo.data.name;
     imageSrc = filterNullImageUrls(rawInfo.data.metadata.rawImageUrl);
+    tokenId = rawInfo.data.tokenId;
   } else if (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_TRANSFER" ||
@@ -204,16 +209,24 @@ export const getTxnSimulationData = (
     symbol = rawInfo.data.asset.symbol;
   }
 
+  if (rawInfo.kind === "ERC20_TRANSFER") {
+    tokenList = rawInfo.data.asset.lists.length;
+  }
+
   return {
     name,
     imageSrc,
     symbol,
     isNft,
+    tokenId,
+    tokenList,
   };
 };
 
 export const checkIsApproval = (
-  rawInfo: EvmExpectedStateChangesInnerRawInfo
+  rawInfo:
+    | EvmExpectedStateChangesInnerRawInfo
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
 ): boolean => {
   const { kind } = rawInfo;
 
