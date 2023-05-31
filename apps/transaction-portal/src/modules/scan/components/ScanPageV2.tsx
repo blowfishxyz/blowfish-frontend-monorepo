@@ -1,5 +1,9 @@
 import { ChainInfo } from "@blowfish/utils/chains";
-import { DappRequest, Message, isSignMessageRequest } from "@blowfish/utils/types";
+import {
+  DappRequest,
+  Message,
+  isSignMessageRequest,
+} from "@blowfish/utils/types";
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { ScanResults } from "~components/ScanResults";
