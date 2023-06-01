@@ -6,7 +6,6 @@ import {
 } from "@blowfish/utils/types";
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
-import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import {
   ScanParamsSuccess,
@@ -30,6 +29,7 @@ import { Layout } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
+import ScanResultsV2 from "./ScanResultsV2";
 
 export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
@@ -185,9 +185,10 @@ const ResultsView: React.FC<{
   return (
     <>
       {overlay}
-      <ScanResults
+      <ScanResultsV2
         request={request}
         scanResults={scanResults}
+        message={message}
         dappUrl={message.origin || ""}
         chainFamily={chainFamily}
         chainNetwork={chainNetwork}
