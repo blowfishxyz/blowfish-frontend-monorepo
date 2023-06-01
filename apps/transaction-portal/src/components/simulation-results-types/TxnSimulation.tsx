@@ -5,8 +5,6 @@ import { Column, Row, Text, device } from "@blowfish/ui/core";
 import { SmallGrayText } from "./common";
 import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { PreviewNfts } from "~components/cards/PreviewNfts";
-import { TxnSimulationDataType } from "./mock-data";
-import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 import { AssetImageV2 } from "~components/common/AssetImageV2";
 import { checkIsApproval, getTxnSimulationData } from "~utils/utils";
 import {
@@ -14,10 +12,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~components/common/Tooltip";
+import {
+  EvmExpectedStateChangesInner,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+} from "@blowfish/api-client";
+import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
-  position: relative;
 `;
 
 const TxnSimulationImageMsgWrapper = styled(Row)`
@@ -25,7 +27,7 @@ const TxnSimulationImageMsgWrapper = styled(Row)`
   cursor: pointer;
 
   @media (${device.lg}) {
-    gap: 24px;
+    gap: 16px;
   }
 `;
 
@@ -35,18 +37,10 @@ const TxnSimulationImage = styled.div`
   cursor: pointer;
 `;
 
-const TxnSimulationText = styled(Text)`
-  max-width: 180px;
-  font-size: 13px;
-  line-height: 21px;
-
+const TxnSimulationText = styled(Text).attrs({ size: "sm" })`
   @media (${device.lg}) {
-    font-size: 15px;
+    font-size: 16px;
   }
-`;
-
-const TxnSimulationValue = styled(Column)`
-  width: unset;
 `;
 
 const PreviewTokenTooltipContent = styled(TooltipContent)`
@@ -67,12 +61,14 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
 `;
 
 interface TxnSimulationProps {
-  txnData: TxnSimulationDataType;
+  txnData:
+    | EvmExpectedStateChangesInner
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 }
 
 export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { rawInfo } = txnData;
-  const { name, symbol, imageSrc, isNft, displayText } =
+  const { name, symbol, imageSrc, isNft, tokenId, tokenList } =
     getTxnSimulationData(rawInfo);
   const isApproval = checkIsApproval(rawInfo);
   const diff = useMemo(() => {
@@ -93,7 +89,7 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
       justifyContent="space-between"
       alignItems="flex-start"
     >
-      <TxnSimulationImageMsgWrapper gap="lg" alignItems="flex-start">
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
         <Tooltip placement="top-start">
           <TooltipTrigger>
             <TxnSimulationImage>
@@ -104,28 +100,48 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             </TxnSimulationImage>
             <PreviewTokenTooltipContent showArrow={false}>
               {isNft ? (
-                <PreviewNfts imageUrl={imageSrc} symbol={symbol} name={name} />
+                <PreviewNfts
+                  imageUrl={imageSrc}
+                  symbol={symbol}
+                  name={name}
+                  tokenId={tokenId}
+                  price={<AssetPriceV2 stateChange={txnData} />}
+                />
               ) : (
                 <PreviewTokens
                   imageUrl={imageSrc}
                   symbol={symbol}
                   name={name}
+                  price={<AssetPriceV2 stateChange={txnData} />}
+                  tokenList={tokenList}
                 />
               )}
             </PreviewTokenTooltipContent>
           </TooltipTrigger>
         </Tooltip>
-
-        <TxnSimulationText>
-          {isPositiveEffect ? "Receive" : "Send"} {displayText}
-        </TxnSimulationText>
+        <Column gap="xs">
+          <TxnSimulationText weight="normal">
+            {txnData.humanReadableDiff}
+          </TxnSimulationText>
+          {isNft ? (
+            <Text size="sm" design="secondary">
+              Type:{" "}
+              <Text size="sm" design="primary">
+                ERC-721
+              </Text>
+            </Text>
+          ) : (
+            name && (
+              <Text size="sm" design="secondary">
+                Asset:{" "}
+                <Text size="sm" design="primary">
+                  {name}
+                </Text>
+              </Text>
+            )
+          )}
+        </Column>
       </TxnSimulationImageMsgWrapper>
-      <TxnSimulationValue alignItems="flex-end">
-        <TxnSimulationText weight="semi-bold" design="primary">
-          <AssetPriceV2 stateChange={txnData} />
-        </TxnSimulationText>
-        <SmallGrayText>18.99 ETH</SmallGrayText>
-      </TxnSimulationValue>
     </TxnSimulationWrapper>
   );
 };

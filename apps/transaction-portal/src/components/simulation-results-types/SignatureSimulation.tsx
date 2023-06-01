@@ -2,65 +2,71 @@ import React from "react";
 import { TxnImage, SmallGrayText } from "./common";
 import { styled } from "styled-components";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
-import { CardBlackTextLink, Divider } from "~components/cards/common";
-import { shortenHex } from "~utils/hex";
 import { SignatureDataType } from "./mock-data";
+import { PlaceholderSimulationImage } from "~components/cards/common";
+import { BlowfishIcon } from "@blowfish/ui/icons";
 
 export interface SignatureSimulationProps {
   data: SignatureDataType;
 }
 
-const SignatureSimulationWrapper = styled(Row)`
-  margin-bottom: 10px;
+const SignatureSimulationMsgWrapper = styled(Column)`
+  flex: 1;
 `;
 
-const SignatureSimulationMsgWrapper = styled(Column)``;
-
-const SignatureSimulationAction = styled(Text)`
-  font-size: 13px;
-  line-height: 19px;
-
+const SignatureSimulationAction = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})`
   @media (${device.lg}) {
     font-size: 17px;
   }
 `;
 
-const SmallSignatureSimulationText = styled(Text)`
-  font-size: 13px;
-  margin-left: 3px;
+const SignatureSimulationMsg = styled(Row)`
+  flex-wrap: wrap;
 `;
 
-const SignatureSimulationMsg = styled(Row)`
-  margin-top: 5px;
+const SignatureSimulatioMsgText = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+  marginInline: 3,
+})`
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
   data,
 }) => {
   return (
-    <SignatureSimulationWrapper alignItems="center" gap="md">
-      <TxnImage src={data.imageUrl} />
+    <Row alignItems="flex-start" gap="md" marginBottom={10}>
+      {data.imageUrl ? (
+        <TxnImage src={data.imageUrl} />
+      ) : (
+        <PlaceholderSimulationImage>
+          <BlowfishIcon />
+        </PlaceholderSimulationImage>
+      )}
+
       <SignatureSimulationMsgWrapper>
         <SignatureSimulationAction>
-          <Text weight="semi-bold">Connect wallet</Text> to{" "}
-          <CardBlackTextLink href={`${data.url}`}>{data.url}</CardBlackTextLink>
+          <Text weight="semi-bold">Connect wallet</Text>
         </SignatureSimulationAction>
-        <SignatureSimulationMsg>
-          <SmallGrayText>
-            Message:
-            <SmallSignatureSimulationText>
-              {data.message}
-            </SmallSignatureSimulationText>
-          </SmallGrayText>
-          <Divider orientation="vertical" margin="0 5px" />
-          <SmallGrayText>
-            Challenge:
-            <SmallSignatureSimulationText>
-              {shortenHex(data.challenge)}
-            </SmallSignatureSimulationText>
-          </SmallGrayText>
+        <SignatureSimulationMsg marginTop={5}>
+          {data.message && (
+            <SmallGrayText>
+              Message:
+              <SignatureSimulatioMsgText>
+                {data.message}
+              </SignatureSimulatioMsgText>
+            </SmallGrayText>
+          )}
         </SignatureSimulationMsg>
       </SignatureSimulationMsgWrapper>
-    </SignatureSimulationWrapper>
+    </Row>
   );
 };

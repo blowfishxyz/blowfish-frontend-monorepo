@@ -25,12 +25,16 @@ interface PreviewTokensProps {
   imageUrl: string | undefined;
   name: string | undefined;
   symbol?: string | undefined;
+  price: React.ReactNode;
+  tokenList: number | null;
 }
 
 export const PreviewTokens: React.FC<PreviewTokensProps> = ({
   imageUrl,
   name,
   symbol,
+  price,
+  tokenList,
 }) => {
   return (
     <PreviewTokenContainer>
@@ -47,12 +51,9 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
         </Text>
       </Column>
       <Divider margin="13px 0" />
-
       <div>
-        <DataRowComponent label="Price" value="$1.00" />
-        <DataRowComponent label="Market Cap." value="$38.4bn" />
-        <DataRowComponent label="Trading Volume" value="$221.2m" />
-        <DataRowComponent label="Token Lists" value="3" />
+        <DataRowComponent label="Price" value={price} />
+        <DataRowComponent label="Token Lists" value={tokenList} />
       </div>
     </PreviewTokenContainer>
   );

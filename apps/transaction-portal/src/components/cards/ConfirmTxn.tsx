@@ -1,29 +1,47 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { styled } from "styled-components";
-import { Column, device, Text } from "@blowfish/ui/core";
+import styled from "styled-components";
 import {
-  CardWrapper,
-  CardContent,
-  CardText,
-  CardSmallSecondaryButton,
-  CardRow,
-  CardPrimaryButton,
-} from "./common";
+  Column,
+  PrimaryButton,
+  Row,
+  SecondaryButton,
+  Text,
+} from "@blowfish/ui/core";
+import { ContinueIcon, ReportIcon } from "@blowfish/ui/icons";
+import { CardWrapper, CardContent } from "./common";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
+import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { Severity } from "@blowfish/utils/types";
 
 const StyledCardWrapper = styled(CardWrapper)`
   flex: unset;
   width: 100%;
-
-  @media (${device.lg}) {
-    width: 45%;
-  }
+  background: ${({ theme }) => theme.colors.backgroundSecondary};
 `;
 
-const CenterContent = styled.div`
-  text-align: center;
-  width: 100%;
+const CancelButton = styled(SecondaryButton)`
+  height: 46px;
+  font-size: 15px;
+  border: 1px solid ${({ theme }) => theme.colors.danger};
+  color: ${({ theme }) => theme.colors.danger};
+`;
+
+const ReportButton = styled(SecondaryButton)`
+  height: 46px;
+  font-size: 15px;
+`;
+
+const ContinueButton = styled(PrimaryButton)`
+  height: 46px;
+  font-size: 18px;
+`;
+
+const ConfirmTxnWarningMsg = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})`
+  max-width: 300px;
 `;
 
 const ViewState = {
@@ -53,7 +71,19 @@ const Fade = styled.div`
   }
 `;
 
-export const ConfirmTxn: React.FC = () => {
+export interface ConfirmTxnProps {
+  onContinue: () => void;
+  onCancel: () => void;
+  warnings: UIWarning[] | undefined;
+  severity: Severity | undefined;
+}
+
+export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
+  onContinue,
+  onCancel,
+  warnings,
+  severity,
+}) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
 
@@ -78,30 +108,78 @@ export const ConfirmTxn: React.FC = () => {
     }, animationDuration);
   }, []);
 
-  const renderContent = () => {
+  const getWarningTitle = () => {
+    if (severity === "CRITICAL") {
+      return <Text size="xl">Do not proceed!</Text>;
+    } else if (severity === "WARNING") {
+      return (
+        <Text size="xl">
+          This seems{" "}
+          <Text design="warning" size="xl" weight="semi-bold">
+            fishy...
+          </Text>
+        </Text>
+      );
+    } else {
+      return (
+        <Text size="xl">
+          This seems{" "}
+          <Text design="success" size="xl" weight="semi-bold">
+            low risk
+          </Text>
+        </Text>
+      );
+    }
+  };
+
+  const getContent = () => {
     switch (viewState) {
       case ViewState.WARNING:
         return (
-          <>
-            <Column gap="md">
-              <Text size="xxl">This seems low risk.</Text>
-              <CardText>
-                This application is requesting permission to exchange assets
-                that are held in your wallet for others.
-              </CardText>
+          <Row justifyContent="space-between" alignItems="center" gap="lg">
+            <Column gap="md" flex={1}>
+              <Text size="xl">{getWarningTitle()}</Text>
+              {warnings?.length ? (
+                warnings?.map((warning, index) => (
+                  <ConfirmTxnWarningMsg key={index}>
+                    {warning.message}
+                  </ConfirmTxnWarningMsg>
+                ))
+              ) : (
+                <ConfirmTxnWarningMsg>
+                  This signature request seems to be trustworthy. If something
+                  feels fishy, you should report it.
+                </ConfirmTxnWarningMsg>
+              )}
             </Column>
-            <CardRow gap="md">
-              <CardSmallSecondaryButton>Flag</CardSmallSecondaryButton>
-              <CardPrimaryButton onClick={handleContinueClick}>
-                Continue
-              </CardPrimaryButton>
-            </CardRow>
-            <CenterContent>
-              <Text size="sm" design="secondary">
-                Click Continue to proceed to your wallet.
-              </Text>
-            </CenterContent>
-          </>
+            <Column gap="md" flex={0.7}>
+              <Row gap="md">
+                {severity === "INFO" ? (
+                  <ContinueButton onClick={onContinue}>
+                    <ContinueIcon />
+                    Continue
+                  </ContinueButton>
+                ) : (
+                  <ContinueButton>
+                    <ReportIcon />
+                    Report
+                  </ContinueButton>
+                )}
+              </Row>
+              <Row gap="md">
+                <CancelButton onClick={onCancel}>Cancel</CancelButton>
+                {severity === "INFO" ? (
+                  <ReportButton onClick={handleContinueClick}>
+                    Report
+                  </ReportButton>
+                ) : severity === "WARNING" ? (
+                  <ReportButton onClick={handleContinueClick}>
+                    Continue
+                  </ReportButton>
+                ) : null}
+              </Row>
+            </Column>
+          </Row>
         );
       case ViewState.CONFIRMING:
         return <ConfirmingView />;
@@ -124,7 +202,7 @@ export const ConfirmTxn: React.FC = () => {
               : ""
           }
         >
-          {renderContent()}
+          {getContent()}
         </Fade>
       </CardContent>
     </StyledCardWrapper>

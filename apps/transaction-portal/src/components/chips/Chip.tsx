@@ -1,10 +1,12 @@
-import { device } from "@blowfish/ui/core";
+import { Text, device } from "@blowfish/ui/core";
+import { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
 
 export interface ChipProps {
   variant?: "primary";
-  text: React.ReactNode | string;
+  text?: React.ReactNode | string;
+  severity: Severity | undefined;
   clickable?: boolean;
 }
 
@@ -14,8 +16,7 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
   align-items: center;
   border-radius: 50px;
   font-size: 13px;
-  padding: 10px;
-  color: #6a6a6a;
+  padding: 8px 10px;
   background-color: #6a6a6a1a;
 
   @media (${device.lg}) {
@@ -26,18 +27,49 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
     cursor: pointer;
   }
 
-  ${({ variant }) =>
-    variant === "primary" &&
+  ${({ theme, severity }) =>
+    severity &&
     css`
-      background-color: rgba(0, 185, 74, 0.102);
-      color: #00b94a;
+      background-color: ${theme.severityColors[severity ?? "INFO"]
+        .backgroundV2};
     `}
 `;
 
-export const Chip = ({ text, ...rest }: ChipProps) => {
+const WarningText = styled(Text).attrs({ size: "md" })`
+  color: ${({ theme }) => theme.colors.foregroundSecondaryLight};
+`;
+
+const SeverityText = styled(Text).attrs({ size: "md" })`
+  color: ${({ theme }) => theme.colors.backgroundPrimary};
+`;
+
+export const Chip = ({ severity, ...rest }: ChipProps) => {
+  const getSeverityText = () => {
+    switch (severity) {
+      case "WARNING":
+        return (
+          <Text size="md">
+            Risk level <Text weight="semi-bold">Medium</Text>
+          </Text>
+        );
+      case "CRITICAL":
+        return (
+          <WarningText size="md" design="primary">
+            Risk level <SeverityText weight="semi-bold">Critical</SeverityText>
+          </WarningText>
+        );
+      default:
+        return (
+          <WarningText>
+            Risk level <SeverityText weight="semi-bold">Low</SeverityText>
+          </WarningText>
+        );
+    }
+  };
+
   return (
-    <ChipContainer {...rest}>
-      <span>{text}</span>
+    <ChipContainer severity={severity} {...rest}>
+      {getSeverityText()}
     </ChipContainer>
   );
 };

@@ -1,4 +1,7 @@
-import { EvmExpectedStateChangesInner } from "@blowfish/api-client";
+import {
+  EvmExpectedStateChangesInner,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+} from "@blowfish/api-client";
 import {
   receiveErc20,
   sendErc20,
@@ -7,23 +10,22 @@ import {
 
 const dummyTxnSimulationData = [sendErc721, sendErc20, receiveErc20];
 
-const dummySignatureData = [
-  {
-    imageUrl: "/placeholder/placeholder-signature-image.svg",
-    url: "blur.io",
-    challenge: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
-    message: "Sign in to Blur",
-  },
-];
-
-type TxnSimulationDataType = EvmExpectedStateChangesInner;
+type TxnSimulationDataType = {
+  data:
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner[]
+    | EvmExpectedStateChangesInner[]
+    | undefined;
+  dappUrl: URL | undefined;
+  account: string;
+};
 
 type SignatureDataType = {
   imageUrl: string;
-  url: string;
-  challenge: string;
-  message: string;
+  dappUrl: URL | undefined;
+  state: string;
+  message: string | undefined;
+  account: string;
 };
 
-export { dummyTxnSimulationData, dummySignatureData };
+export { dummyTxnSimulationData };
 export type { TxnSimulationDataType, SignatureDataType };

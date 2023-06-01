@@ -19,7 +19,12 @@ const PreviewNftContainer = styled.div`
 
 const PreviewNFTStory = () => (
   <PreviewNftContainer>
-    <PreviewNfts imageUrl="/placeholder/placeholder-nft.svg" name="NFT Name" />
+    <PreviewNfts
+      imageUrl="/placeholder/placeholder-nft.svg"
+      name="NFT Name"
+      tokenId="123"
+      price="$100"
+    />
   </PreviewNftContainer>
 );
 

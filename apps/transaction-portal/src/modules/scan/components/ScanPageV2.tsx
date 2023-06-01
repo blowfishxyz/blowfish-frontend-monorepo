@@ -1,8 +1,11 @@
 import { ChainInfo } from "@blowfish/utils/chains";
-import { DappRequest, isSignMessageRequest } from "@blowfish/utils/types";
+import {
+  DappRequest,
+  Message,
+  isSignMessageRequest,
+} from "@blowfish/utils/types";
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
-import { ScanResults } from "~components/ScanResults";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import {
   ScanParamsSuccess,
@@ -26,6 +29,7 @@ import { Layout } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
+import ScanResultsV2 from "./ScanResultsV2";
 
 export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
@@ -71,7 +75,7 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
 
   return (
     <ResultsView
-      messageOrigin={message.origin}
+      message={message}
       request={request}
       chainInfo={chain.chainInfo}
       chainId={chain.chainId}
@@ -83,7 +87,7 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
 };
 
 const ResultsView: React.FC<{
-  messageOrigin: string | undefined;
+  message: Message<DappRequest["type"], DappRequest>;
   request: DappRequest;
   chainInfo: ChainInfo;
   chainId: number;
@@ -95,7 +99,7 @@ const ResultsView: React.FC<{
   chainId,
   userAccount,
   isImpersonating,
-  messageOrigin,
+  message,
   reject,
   request,
 }) => {
@@ -110,7 +114,7 @@ const ResultsView: React.FC<{
     data: scanResults,
     error: scanError,
     mutate,
-  } = useScanDappRequest(chainFamily, chainNetwork, request, messageOrigin);
+  } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
   const simulationError = scanResults?.simulationResults?.error;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -181,10 +185,11 @@ const ResultsView: React.FC<{
   return (
     <>
       {overlay}
-      <ScanResults
+      <ScanResultsV2
         request={request}
         scanResults={scanResults}
-        dappUrl={messageOrigin || ""}
+        message={message}
+        dappUrl={message.origin || ""}
         chainFamily={chainFamily}
         chainNetwork={chainNetwork}
       />
