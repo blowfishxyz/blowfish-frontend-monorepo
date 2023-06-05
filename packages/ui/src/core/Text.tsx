@@ -103,7 +103,7 @@ function getWeightStyles({ weight }: TextProps) {
 function getDesignStyles({ design }: TextProps) {
   if (design === "danger") {
     return css`
-      color: ${(p) => p.theme.colors.foregroundDanger};
+      color: ${(p) => p.theme.colors.danger};
     `;
   }
   if (design === "success") {

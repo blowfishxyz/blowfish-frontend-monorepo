@@ -1,14 +1,9 @@
 import React from "react";
-import { TxnImage, SmallGrayText } from "./common";
 import { styled } from "styled-components";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
-import { SignatureDataType } from "./mock-data";
 import { PlaceholderSimulationImage } from "~components/cards/common";
 import { BlowfishIcon } from "@blowfish/ui/icons";
-
-export interface SignatureSimulationProps {
-  data: SignatureDataType;
-}
+import { TxnImage } from "~components/simulation-results/TxnImage";
 
 const SignatureSimulationMsgWrapper = styled(Column)`
   flex: 1;
@@ -30,7 +25,6 @@ const SignatureSimulationMsg = styled(Row)`
 const SignatureSimulatioMsgText = styled(Text).attrs({
   size: "sm",
   design: "primary",
-  marginInline: 3,
 })`
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -39,13 +33,19 @@ const SignatureSimulatioMsgText = styled(Text).attrs({
   text-overflow: ellipsis;
 `;
 
+export interface SignatureSimulationProps {
+  message?: string;
+  imageUrl?: string;
+}
+
 export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
-  data,
+  imageUrl,
+  message,
 }) => {
   return (
     <Row alignItems="flex-start" gap="md" marginBottom={10}>
-      {data.imageUrl ? (
-        <TxnImage src={data.imageUrl} />
+      {imageUrl ? (
+        <TxnImage src={imageUrl} />
       ) : (
         <PlaceholderSimulationImage>
           <BlowfishIcon />
@@ -54,16 +54,11 @@ export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
 
       <SignatureSimulationMsgWrapper>
         <SignatureSimulationAction>
-          <Text weight="semi-bold">Connect wallet</Text>
+          <Text weight="semi-bold">Message</Text>
         </SignatureSimulationAction>
         <SignatureSimulationMsg marginTop={5}>
-          {data.message && (
-            <SmallGrayText>
-              Message:
-              <SignatureSimulatioMsgText>
-                {data.message}
-              </SignatureSimulatioMsgText>
-            </SmallGrayText>
+          {message && (
+            <SignatureSimulatioMsgText>{message}</SignatureSimulatioMsgText>
           )}
         </SignatureSimulationMsg>
       </SignatureSimulationMsgWrapper>

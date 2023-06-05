@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { styled } from "styled-components";
 import { Row } from "@blowfish/ui/core";
-import PreviewTxn from "~components/cards/PreviewTxn";
+import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
   ChainFamily,
   ChainNetwork,
@@ -178,9 +178,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return warning ? [warning] : [];
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
-  const simulationType =
-    request.type === "SIGN_MESSAGE" ? "signature" : "transaction";
-
   const severity = useMemo(() => {
     if (
       request?.payload &&
@@ -194,21 +191,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       : undefined;
   }, [request?.payload, scanResults?.action]);
 
-  const signatureData = [
-    {
-      imageUrl: "",
-      state: scanResults.simulationResults?.error
-        ? simulationFailedMessage
-        : "No state changes found. Proceed with caution",
-      dappUrl,
-      message: parsedMessageContent,
-      account: request.userAccount,
-    },
-  ];
-
   const txnData = {
+    message: parsedMessageContent,
     data: scanResults?.simulationResults?.expectedStateChanges,
-    dappUrl: dappUrl,
+    dappUrl,
     account: request.userAccount,
   };
 
@@ -219,9 +205,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       severity={severity}
     >
       <PreviewTxn
-        simulationType={simulationType}
-        signatureData={signatureData}
-        txnSimulationData={txnData}
+        txnData={txnData}
         warnings={warnings}
         severity={severity}
         chainNetwork={props.chainNetwork}
