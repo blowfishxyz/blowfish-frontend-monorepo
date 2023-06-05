@@ -9,13 +9,7 @@ import {
 } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
-import {
-  CardWrapper,
-  CardContent,
-  Divider,
-  CardText,
-  CardBlackTextLink,
-} from "./common";
+import { CardWrapper, CardContent, Divider, CardText } from "./common";
 import { shortenHex } from "~utils/hex";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
@@ -147,15 +141,13 @@ const PreviewCard: FC<PreviewCardProps> = ({
       <StyledColumn gap="sm">
         <SmallGrayText>Contract</SmallGrayText>
         <CardText>
-          <CardBlackTextLink>
-            <BlockExplorerLink
-              chainFamily={chainFamily}
-              chainNetwork={chainNetwork}
-              address={contract}
-            >
-              {shortenHex(contract)}
-            </BlockExplorerLink>
-          </CardBlackTextLink>
+          <BlockExplorerLink
+            chainFamily={chainFamily}
+            chainNetwork={chainNetwork}
+            address={contract}
+          >
+            {shortenHex(contract)}
+          </BlockExplorerLink>
         </CardText>
       </StyledColumn>
     </StyledCardContent>

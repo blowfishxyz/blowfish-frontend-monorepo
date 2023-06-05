@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { styled } from "styled-components";
 import { Row } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
@@ -11,7 +11,6 @@ import {
 import {
   DappRequest,
   Message,
-  Severity,
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
@@ -20,12 +19,10 @@ import {
 import { logger } from "@blowfish/utils/logger";
 import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
+import { useLayoutConfig } from "~components/layout/Layout";
 
-const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
+const ScanResultsWrapper = styled(Row)`
   height: 100%;
-
-  background-color: ${({ severity, theme }) =>
-    theme.severityColors[severity ?? "INFO"].background};
 `;
 
 export type UIWarning = {
@@ -48,6 +45,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   message,
   ...props
 }) => {
+  const [, setLayoutConfig] = useLayoutConfig();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
 
   const hasPunycode = containsPunycode(dappUrl?.hostname);
@@ -186,10 +184,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     ) {
       return actionToSeverity("BLOCK");
     }
-    return scanResults?.action
-      ? actionToSeverity(scanResults?.action)
-      : undefined;
+    return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
   }, [request?.payload, scanResults?.action]);
+
+  useEffect(() => {
+    setLayoutConfig({ severity });
+  }, [severity, setLayoutConfig]);
 
   const txnData = {
     message: parsedMessageContent,
@@ -199,11 +199,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   };
 
   return (
-    <ScanResultsWrapper
-      justifyContent="center"
-      alignItems="center"
-      severity={severity}
-    >
+    <ScanResultsWrapper justifyContent="center" alignItems="center">
       <PreviewTxn
         txnData={txnData}
         warnings={warnings}
