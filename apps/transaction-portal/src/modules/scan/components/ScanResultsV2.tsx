@@ -13,6 +13,8 @@ import {
   Message,
   Severity,
   actionToSeverity,
+  SignTypedDataVersion,
+  TransactionPayload,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
@@ -20,9 +22,11 @@ import {
 import { logger } from "@blowfish/utils/logger";
 import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
+import Decimal from "decimal.js";
+import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 
 const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
-  height: 100%;
+  padding: 32px;
 
   background-color: ${({ severity, theme }) =>
     theme.severityColors[severity ?? "INFO"].background};
@@ -206,6 +210,33 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     },
   ];
 
+  const content = useMemo(() => {
+    if (isTransactionRequest(request)) {
+      // NOTE: For display purposes we want to show 0 when value is null
+      const { to, from, value, data } = request.payload;
+      const displayTransaction: TransactionPayload = {
+        to,
+        from,
+        value: new Decimal(value || 0).toString(),
+        data,
+      };
+      return displayTransaction;
+    } else if (isSignTypedDataRequest(request)) {
+      const { domain, message } =
+        request.signTypedDataVersion === SignTypedDataVersion.V1
+          ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
+          : request.payload;
+      return { domain, message };
+    } else if (isSignMessageRequest(request)) {
+      const { message } = request.payload;
+      return {
+        message,
+      };
+    } else {
+      logger.error("AdvancedDetails: Unhandled request type", request);
+    }
+  }, [request]);
+
   const txnData = {
     data: scanResults?.simulationResults?.expectedStateChanges,
     dappUrl: dappUrl,
@@ -226,6 +257,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         severity={severity}
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
+        content={content}
         onContinue={() => handleUserAction(true)}
         onCancel={() => handleUserAction(false)}
       />

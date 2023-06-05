@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode, useState } from "react";
 import {
   BlockExplorerLink,
   Column,
@@ -7,7 +7,7 @@ import {
   Text,
   device,
 } from "@blowfish/ui/core";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Chip } from "../chips/Chip";
 import {
   CardWrapper,
@@ -25,8 +25,10 @@ import {
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
-import { Severity } from "@blowfish/utils/types";
+import { Severity, TransactionPayload } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
+import dynamic from "next/dynamic";
+import { ArrowDownIcon } from "@blowfish/ui/icons";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -87,6 +89,39 @@ const TxnDataWrapper = styled.div`
   }
 `;
 
+const ViewDetailsWrapper = styled(Row)`
+  cursor: pointer;
+  width: 100%;
+`;
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    max-height: 1000px;
+  }
+`;
+
+const fadeOut = keyframes`
+  0% {
+    opacity: 1;
+    max-height: 1000px;
+  }
+  100% {
+    opacity: 0;
+    max-height: 0;
+  }
+`;
+
+const DynamicJsonViewerWrapper = styled.div<{ show: boolean }>`
+  animation: ${(props) => (props.show ? fadeIn : fadeOut)} 1s ease forwards;
+  opacity: ${(props) => (props.show ? "1" : "0")};
+  overflow: hidden;
+`;
+
 interface PreviewCardProps {
   title: string;
   simulationType: "transaction" | "signature";
@@ -96,6 +131,7 @@ interface PreviewCardProps {
   warnings: UIWarning[];
   severity: Severity | undefined;
   children: ReactNode;
+  content: TransactionPayload | any;
   onContinue: () => void;
   onCancel: () => void;
   chainNetwork: ChainNetwork;
@@ -112,55 +148,92 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onContinue,
   onCancel,
   children,
+  content,
   chainNetwork,
   chainFamily,
-}) => (
-  <CardWrapper>
-    <CardContent>
-      <Row justifyContent="space-between">
-        <Title>{title}</Title>
-        <Chip severity={severity} />
-      </Row>
-    </CardContent>
-    <Divider margin="16px 0" />
-    <CardContent>{children}</CardContent>
-    <Divider margin="24px 0 0" />
-    <StyledCardContent>
-      <StyledColumn gap="sm">
-        <SmallGrayText>Website</SmallGrayText>
-        <Row gap="xs" alignItems="center">
-          <CardText>
-            <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
-          </CardText>
+}) => {
+  const [showAdvancedDetails, setShowAdvancedDetails] =
+    useState<boolean>(false);
+  const DynamicJsonViewer = dynamic(
+    () =>
+      import("../../modules/scan/components/JsonViewerV2").then(
+        (mod) => mod.JsonViewer
+      ),
+    {
+      ssr: false,
+      loading: () => <Text size="sm">Loading...</Text>,
+    }
+  );
+
+  return (
+    <CardWrapper>
+      <CardContent>
+        <Row justifyContent="space-between">
+          <Title>{title}</Title>
+          <Chip severity={severity} />
         </Row>
-      </StyledColumn>
-      <Divider orientation="vertical" margin="0 36px" />
-      <StyledColumn gap="sm">
-        <SmallGrayText>Contract</SmallGrayText>
-        <CardText>
-          <CardBlackTextLink>
-            <BlockExplorerLink
-              chainFamily={chainFamily}
-              chainNetwork={chainNetwork}
-              address={contract}
-            >
-              {shortenHex(contract)}
-            </BlockExplorerLink>
-          </CardBlackTextLink>
-        </CardText>
-      </StyledColumn>
-    </StyledCardContent>
-    <Divider margin="0 0 16px" />
-    <CardContent>
-      <ConfirmTxn
-        onContinue={onContinue}
-        onCancel={onCancel}
-        warnings={warnings}
-        severity={severity}
-      />
-    </CardContent>
-  </CardWrapper>
-);
+      </CardContent>
+      <Divider margin="16px 0" />
+      <CardContent>{children}</CardContent>
+      <Divider margin="24px 0 0" />
+      <StyledCardContent>
+        <StyledColumn gap="sm">
+          <SmallGrayText>Website</SmallGrayText>
+          <Row gap="xs" alignItems="center">
+            <CardText>
+              <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
+            </CardText>
+          </Row>
+        </StyledColumn>
+        <Divider orientation="vertical" margin="0 36px" />
+        <StyledColumn gap="sm">
+          <SmallGrayText>Contract</SmallGrayText>
+          <CardText>
+            <CardBlackTextLink>
+              <BlockExplorerLink
+                chainFamily={chainFamily}
+                chainNetwork={chainNetwork}
+                address={contract}
+              >
+                {shortenHex(contract)}
+              </BlockExplorerLink>
+            </CardBlackTextLink>
+          </CardText>
+        </StyledColumn>
+      </StyledCardContent>
+      <Divider margin="0 0 16px" />
+      <DynamicJsonViewerWrapper show={showAdvancedDetails}>
+        <CardContent>
+          {showAdvancedDetails && content && (
+            <DynamicJsonViewer data={content} />
+          )}
+        </CardContent>
+      </DynamicJsonViewerWrapper>
+      {showAdvancedDetails && <Divider margin="16px 0" />}
+      <CardContent>
+        <ViewDetailsWrapper
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom={16}
+          onClick={() => {
+            setShowAdvancedDetails((prev) => !prev);
+          }}
+        >
+          <Text design="secondary" size="sm">
+            View more details
+          </Text>
+          <ArrowDownIcon expanded={showAdvancedDetails} />
+        </ViewDetailsWrapper>
+        <ConfirmTxn
+          onContinue={onContinue}
+          onCancel={onCancel}
+          warnings={warnings}
+          severity={severity}
+        />
+      </CardContent>
+    </CardWrapper>
+  );
+};
 
 export interface PreviewTxnProps {
   simulationType: "transaction" | "signature";
@@ -170,6 +243,7 @@ export interface PreviewTxnProps {
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
+  content: TransactionPayload | any;
   onContinue: () => void;
   onCancel: () => void;
 }
@@ -184,6 +258,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
   onCancel,
   chainNetwork,
   chainFamily,
+  content,
 }) => {
   const renderTransactionPreview = () => (
     <PreviewCard
@@ -194,6 +269,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
       contract={txnSimulationData?.account || ""}
       warnings={warnings}
       severity={severity}
+      content={content}
       onContinue={onContinue}
       onCancel={onCancel}
       chainNetwork={chainNetwork}
@@ -224,6 +300,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
           contract={data.account}
           warnings={warnings}
           severity={severity}
+          content={content}
           onContinue={onContinue}
           onCancel={onCancel}
           chainNetwork={chainNetwork}
