@@ -23,6 +23,8 @@ const PreviewTokensStory = () => (
       imageUrl="/placeholder/placeholder-token.svg"
       name="Token Name"
       symbol="TKN"
+      price="$100"
+      tokenList={3}
     />
   </PreviewTokenContainer>
 );

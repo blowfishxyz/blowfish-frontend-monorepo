@@ -1,4 +1,7 @@
-import { EvmExpectedStateChangesInner } from "@blowfish/api-client";
+import {
+  EvmExpectedStateChangesInner,
+  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
+} from "@blowfish/api-client";
 import { Row } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { calculateTotalValue, getAssetPricePerToken } from "~utils/utils";
@@ -11,7 +14,9 @@ const AssetPriceWrapper = styled(Row)`
 `;
 
 interface AssetPriceProps {
-  stateChange: EvmExpectedStateChangesInner;
+  stateChange:
+    | EvmExpectedStateChangesInner
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 }
 
 export const AssetPriceV2 = ({ stateChange }: AssetPriceProps) => {

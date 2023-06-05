@@ -2,6 +2,10 @@ import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { ArrowRightIcon, BlowfishIcon, VerifiedIcon } from "@blowfish/ui/icons";
 import { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
+import {
+  PlaceholderSimulationImage,
+  SimulationImage,
+} from "~components/cards/common";
 
 import { getImageInfo } from "~utils/utils";
 
@@ -10,37 +14,6 @@ interface AssetImageProps {
   isPositiveEffect: boolean;
 }
 
-interface SimulationImageProps {
-  $width?: string;
-  $height?: string;
-}
-
-const SimulationImage = styled.img<SimulationImageProps>`
-  width: ${({ $width }) => ($width ? $width : "38px")};
-  height: ${({ $height }) => ($height ? $height : "38px")};
-  object-fit: cover;
-  border-radius: 6px;
-`;
-
-const PlaceholderSimulationImage = styled.div<SimulationImageProps>`
-  width: ${({ $width }) => ($width ? $width : "38px")};
-  height: ${({ $height }) => ($height ? $height : "38px")};
-  background: ${({ theme }) => theme.colors.base10};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 6px;
-
-  svg {
-    height: 24px;
-    width: 24px;
-
-    path {
-      fill: ${({ theme }) => theme.colors.border};
-    }
-  }
-`;
-
 const SimulationResultImageWrapper = styled.div`
   position: relative;
 `;
@@ -48,13 +21,14 @@ const SimulationResultImageWrapper = styled.div`
 const SimulationIconWrapper = styled.div<{
   $isPositiveEffect: boolean;
 }>`
+  display: flex;
+  justify-content: center;
   position: absolute;
-  height: 14px;
-  width: 14px;
-  padding: 6px;
+  height: 16px;
+  width: 16px;
   border-radius: 50%;
-  top: -10px;
-  right: -10px;
+  top: -4px;
+  right: -4px;
   box-sizing: initial;
   background: ${({ $isPositiveEffect }) =>
     $isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
@@ -66,12 +40,14 @@ const SimulationIconWrapper = styled.div<{
           fill: #00bfa6;
           transform: rotate(135deg);
           transform-origin: center;
+          width: 9px;
         `;
       }
       return css`
         fill: ${theme.colors.danger};
         transform: rotate(-45deg);
         transform-origin: center;
+        width: 9px;
       `;
     }};
   }
