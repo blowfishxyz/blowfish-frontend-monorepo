@@ -97,6 +97,7 @@ interface PreviewCardProps {
   severity: Severity | undefined;
   children: ReactNode;
   onContinue: () => void;
+  onReport: () => void;
   onCancel: () => void;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
@@ -110,6 +111,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   warnings,
   severity,
   onContinue,
+  onReport,
   onCancel,
   children,
   chainNetwork,
@@ -154,6 +156,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
     <CardContent>
       <ConfirmTxn
         onContinue={onContinue}
+        onReport={onReport}
         onCancel={onCancel}
         warnings={warnings}
         severity={severity}
@@ -171,16 +174,18 @@ export interface PreviewTxnProps {
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
   onContinue: () => void;
+  onReport: () => void;
   onCancel: () => void;
 }
 
-const PreviewTxn: FC<PreviewTxnProps> = ({
+export const PreviewTxn: FC<PreviewTxnProps> = ({
   simulationType,
   txnSimulationData,
   signatureData,
   warnings,
   severity,
   onContinue,
+  onReport,
   onCancel,
   chainNetwork,
   chainFamily,
@@ -195,6 +200,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
       warnings={warnings}
       severity={severity}
       onContinue={onContinue}
+      onReport={onReport}
       onCancel={onCancel}
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
@@ -224,6 +230,7 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
           contract={data.account}
           warnings={warnings}
           severity={severity}
+          onReport={onReport}
           onContinue={onContinue}
           onCancel={onCancel}
           chainNetwork={chainNetwork}
@@ -259,5 +266,3 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     </>
   );
 };
-
-export default PreviewTxn;
