@@ -18,12 +18,6 @@ TransactionPreview.args = {
     dappUrl: new URL("https://www.blur.io"),
     account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
   },
-  onContinue: () => {
-    console.log("Continue clicked");
-  },
-  onCancel: () => {
-    console.log("Cancel clicked");
-  },
 };
 
 export const SignaturePreview = Template.bind({});
@@ -38,10 +32,4 @@ SignaturePreview.args = {
       account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
     },
   ],
-  onContinue: () => {
-    console.log("Continue clicked");
-  },
-  onCancel: () => {
-    console.log("Cancel clicked");
-  },
 };

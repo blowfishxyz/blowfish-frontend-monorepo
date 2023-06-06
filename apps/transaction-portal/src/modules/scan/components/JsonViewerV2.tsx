@@ -132,7 +132,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
 
     return (
       <ReactJson
-        style={{ wordBreak: "break-all", fontSize: "12px"}}
+        style={{ wordBreak: "break-all", fontSize: "12px" }}
         src={data}
         indentWidth={2}
         enableClipboard={false}
