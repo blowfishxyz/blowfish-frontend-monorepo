@@ -1,31 +1,40 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Column, Text } from "@blowfish/ui/core";
-import { CardText, CardGrayLink, CardSecondaryButton } from "../cards/common";
+import { Button, Column, Row, Text } from "@blowfish/ui/core";
 import { ConfirmIcon } from "@blowfish/ui/icons";
 
-const CancelButton = styled(CardSecondaryButton)`
-  margin-top: 15px;
-`;
-
 const CardConfirmIcon = styled(ConfirmIcon)`
-  margin-bottom: 10px;
+  width: 22px;
 `;
 
-export const ConfirmingView = () => {
+export const ConfirmingView: React.FC<{ className?: string }> = ({
+  className,
+}) => {
   return (
-    <Column gap="md">
-      <CardConfirmIcon />
-      <Text size="xxl">Confirm in wallet</Text>
-      <CardText>
-        We have forwarded this signature request to your wallet. Please confirm
-        it if you want to proceed with this signature.
-      </CardText>
-      <Text design="secondary">
-        Make sure that the request is coming from{" "}
-        <CardGrayLink href="">blowfish.xyz</CardGrayLink>!
-      </Text>
-      <CancelButton>Cancel</CancelButton>
-    </Column>
+    <Row gap="xl" justifyContent="space-between" flex={1} className={className}>
+      <Column maxWidth={300}>
+        <Row gap="sm" alignItems="center" marginBottom={4}>
+          <CardConfirmIcon />
+          <Text size="xl" weight="semi-bold">
+            Check your wallet
+          </Text>
+        </Row>
+        <Text size="md" color="base75">
+          We forwarded the transaction request to your connected wallet.{" "}
+          <Text weight="semi-bold" color="base75">
+            Always make sure that the request is from{" "}
+            <span style={{ textDecoration: "underline" }}>blowfish.xyz</span>.
+          </Text>
+        </Text>
+      </Column>
+      <Column gap="md" flex={1}>
+        <Button design="secondary" stretch>
+          Try again
+        </Button>
+        <Button design="danger" stretch>
+          Cancel
+        </Button>
+      </Column>
+    </Row>
   );
 };

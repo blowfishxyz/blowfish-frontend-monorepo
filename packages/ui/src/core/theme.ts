@@ -53,6 +53,7 @@ const base = {
   base30: "rgba(0, 0, 0, 0.3)",
   base40: "rgba(0, 0, 0, 0.4)",
   base50: "rgba(0, 0, 0, 0.5)",
+  base75: "rgba(0, 0, 0, 0.75)",
   base100: "rgb(0, 0, 0)",
 };
 
@@ -64,6 +65,7 @@ const backgroundColors = {
 const foregroundColors = {
   foregroundPrimary: "#000000",
   foregroundSecondary: base.base50,
+  foregroundContrast: "#FFFFFF",
   foregroundDanger: "#FF6332",
   foregroundSecondaryLight: "#FFFFFFCC",
 };

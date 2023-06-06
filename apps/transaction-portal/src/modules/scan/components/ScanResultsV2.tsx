@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { styled } from "styled-components";
 import { Row } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
@@ -20,10 +19,6 @@ import { logger } from "@blowfish/utils/logger";
 import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
-
-const ScanResultsWrapper = styled(Row)`
-  height: 100%;
-`;
 
 export type UIWarning = {
   message: string;
@@ -199,7 +194,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   };
 
   return (
-    <ScanResultsWrapper justifyContent="center" alignItems="center">
+    <Row justifyContent="center">
       <PreviewTxn
         txnData={txnData}
         warnings={warnings}
@@ -209,7 +204,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         onContinue={() => handleUserAction(true)}
         onCancel={() => handleUserAction(false)}
       />
-    </ScanResultsWrapper>
+    </Row>
   );
 };
 

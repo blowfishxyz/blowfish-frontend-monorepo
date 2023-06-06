@@ -55,7 +55,7 @@ export const Chip = ({ severity, ...rest }: ChipProps) => {
         );
       case "CRITICAL":
         return (
-          <WarningText size="md" design="contrast">
+          <WarningText size="md">
             Risk level <SeverityText weight="semi-bold">Critical</SeverityText>
           </WarningText>
         );

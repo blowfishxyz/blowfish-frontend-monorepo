@@ -13,7 +13,15 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [{ severity }] = useLayoutConfig();
 
   return (
-    <Wrapper width="100%" height="100%" severity={severity}>
+    <Wrapper
+      width="100%"
+      minHeight="100%"
+      paddingBottom={24}
+      paddingTop={82}
+      paddingInline={24}
+      severity={severity}
+      alignItems="center"
+    >
       <WrapperInner>
         <HeaderWrapper severity={severity} alignItems="center">
           <Column maxWidth={1072} width="100%" padding={24} paddingBottom={12}>
@@ -27,16 +35,15 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
 };
 
 const Wrapper = styled(Column)<{ severity: Severity }>`
+  overflow-y: auto;
   background-color: ${({ theme, severity }) =>
     theme.severityColors[severity].backgroundV2};
 `;
 
 const WrapperInner = styled(Column)`
-  height: calc(100% - 100px);
+  min-height: calc(100% - 100px);
   width: 100%;
   max-width: 1072px;
-  margin: 82px auto 18px;
-  padding: 0 24px;
 `;
 
 const HeaderWrapper = styled(Column)<{ severity: Severity }>`

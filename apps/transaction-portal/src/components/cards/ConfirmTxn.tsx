@@ -1,42 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import styled from "styled-components";
-import {
-  Button,
-  Column,
-  PrimaryButton,
-  Row,
-  SecondaryButton,
-  Text,
-} from "@blowfish/ui/core";
+import { Button, Column, Row, Text } from "@blowfish/ui/core";
 import { ContinueIcon, ReportIcon } from "@blowfish/ui/icons";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
-
-const CancelButton = styled(SecondaryButton)`
-  height: 46px;
-  font-size: 15px;
-  border: 1px solid ${({ theme }) => theme.colors.danger};
-  color: ${({ theme }) => theme.colors.danger};
-`;
-
-const ReportButton = styled(SecondaryButton)`
-  height: 46px;
-  font-size: 15px;
-`;
-
-const ContinueButton = styled(PrimaryButton)`
-  height: 46px;
-  font-size: 18px;
-`;
-
-const ConfirmTxnWarningMsg = styled(Text).attrs({
-  size: "sm",
-  design: "primary",
-})`
-  max-width: 300px;
-`;
 
 const ViewState = {
   WARNING: "warning",
@@ -89,7 +58,50 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
     }, animationDuration);
   }, []);
 
-  const getWarningTitle = () => {
+  const getContent = () => {
+    switch (viewState) {
+      case ViewState.WARNING:
+        return (
+          <DefaultView
+            severity={severity}
+            onContinue={handleContinueClick}
+            onCancel={onCancel}
+          />
+        );
+      case ViewState.CONFIRMING:
+        return <ConfirmingView />;
+      case ViewState.PENDING:
+        return <PendingView />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Row backgroundColor="backgroundSecondary" borderRadius={12} width="100%">
+      <Wrapper
+        padding={24}
+        width="100%"
+        className={
+          animating
+            ? viewState === ViewState.WARNING
+              ? "fade-exit-active"
+              : "fade-enter-active"
+            : ""
+        }
+      >
+        {getContent()}
+      </Wrapper>
+    </Row>
+  );
+};
+
+const DefaultView: React.FC<{
+  severity: Severity | undefined;
+  onContinue: () => void;
+  onCancel: () => void;
+}> = ({ severity, onContinue, onCancel }) => {
+  const title = useMemo(() => {
     if (severity === "CRITICAL") {
       return (
         <Text size="xl" weight="semi-bold">
@@ -112,9 +124,9 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
         </Text>
       );
     }
-  };
+  }, [severity]);
 
-  const getDescription = () => {
+  const description = useMemo(() => {
     if (severity === "CRITICAL") {
       return (
         <Text size="sm">
@@ -137,81 +149,64 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
         </Text>
       );
     }
-  };
+  }, [severity]);
 
-  const getContent = () => {
-    switch (viewState) {
-      case ViewState.WARNING:
-        return (
-          <Row
-            width="100%"
-            justifyContent="space-between"
-            alignItems="center"
-            gap="lg"
-          >
-            <Column gap="xs" flex={1}>
-              {getWarningTitle()}
-              {getDescription()}
-            </Column>
-            <Column gap="md" flex={1}>
-              <Row gap="md">
-                {severity === "INFO" ? (
-                  <Button stretch onClick={onContinue}>
-                    <ContinueIcon />
-                    Continue
-                  </Button>
-                ) : (
-                  <Button stretch>
-                    <ReportIcon />
-                    Report
-                  </Button>
-                )}
-              </Row>
-              <Row gap="md">
-                <Button stretch design="secondary" onClick={onCancel}>
-                  Cancel
-                </Button>
-                {severity === "INFO" ? (
-                  <Button
-                    stretch
-                    design="primary"
-                    onClick={handleContinueClick}
-                  >
-                    Report
-                  </Button>
-                ) : (
-                  <Button stretch design="danger" onClick={handleContinueClick}>
-                    Continue
-                  </Button>
-                )}
-              </Row>
-            </Column>
+  const buttons = useMemo(() => {
+    if (severity === "WARNING" || severity === "CRITICAL") {
+      return (
+        <>
+          <Row gap="md">
+            <Button stretch>
+              <ReportIcon />
+              Report
+            </Button>
           </Row>
-        );
-      case ViewState.CONFIRMING:
-        return <ConfirmingView />;
-      case ViewState.PENDING:
-        return <PendingView />;
-      default:
-        return null;
+          <Row gap="md">
+            <Button stretch design="secondary" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button stretch design="danger" onClick={onContinue}>
+              Continue
+            </Button>
+          </Row>
+        </>
+      );
     }
-  };
+
+    return (
+      <>
+        <Row gap="md">
+          <Button stretch onClick={onContinue}>
+            <ContinueIcon />
+            Continue
+          </Button>
+        </Row>
+        <Row gap="md">
+          <Button stretch design="danger" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button stretch design="secondary" onClick={onContinue}>
+            Report
+          </Button>
+        </Row>
+      </>
+    );
+  }, [severity, onCancel, onContinue]);
 
   return (
-    <Wrapper
-      className={
-        animating
-          ? viewState === ViewState.WARNING
-            ? "fade-exit-active"
-            : "fade-enter-active"
-          : ""
-      }
-      backgroundColor="backgroundSecondary"
-      borderRadius={12}
-      padding={24}
+    <Row
       width="100%"
+      justifyContent="space-between"
+      alignItems="center"
+      gap="lg"
     >
-      {getContent()}
-    </Wrapper>
+      <Column gap="xs" flex={1}>
+        {title}
+        {description}
+      </Column>
+      <Column gap="md" flex={1}>
+        {buttons}
+      </Column>
+    </Row>
   );
 };
