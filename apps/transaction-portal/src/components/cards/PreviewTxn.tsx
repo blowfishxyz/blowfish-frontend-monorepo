@@ -80,6 +80,7 @@ interface PreviewCardProps {
   severity: Severity | undefined;
   children: ReactNode;
   onContinue: () => void;
+  onReport: () => void;
   onCancel: () => void;
 }
 
@@ -90,6 +91,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   warnings,
   severity,
   onContinue,
+  onReport,
   onCancel,
   children,
 }) => (
@@ -130,6 +132,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
     <CardContent>
       <ConfirmTxn
         onContinue={onContinue}
+        onReport={onReport}
         onCancel={onCancel}
         warnings={warnings}
         severity={severity}
@@ -145,6 +148,7 @@ export interface PreviewTxnProps {
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
   onContinue: () => void;
+  onReport: () => void;
   onCancel: () => void;
 }
 
@@ -153,6 +157,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   warnings,
   severity,
   onContinue,
+  onReport,
   onCancel,
 }) => {
   const { dappUrl, data, message } = txnData;
@@ -166,6 +171,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       warnings={warnings}
       severity={severity}
       onContinue={onContinue}
+      onReport={onReport}
       onCancel={onCancel}
     >
       {message ? <SignaturePreview message={message} /> : null}

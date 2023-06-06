@@ -89,7 +89,7 @@ const ConnectorButton: React.FC<{
       return;
     }
     if (installLink) {
-      window.open(installLink, "_blank");
+      window.open(installLink, "_blank", "noopener,noreferrer");
     }
   };
 

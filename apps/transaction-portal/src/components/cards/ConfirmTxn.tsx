@@ -36,6 +36,7 @@ const Wrapper = styled(Row)`
 
 export interface ConfirmTxnProps {
   onContinue: () => void;
+  onReport: () => void;
   onCancel: () => void;
   warnings: UIWarning[] | undefined;
   severity: Severity | undefined;
@@ -44,6 +45,7 @@ export interface ConfirmTxnProps {
 export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   onContinue,
   onCancel,
+  onReport,
   warnings,
   severity,
 }) => {
@@ -67,6 +69,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
             severity={severity}
             onContinue={handleContinueClick}
             onCancel={onCancel}
+            onReport={onReport}
           />
         );
       case ViewState.CONFIRMING:
@@ -101,7 +104,8 @@ const DefaultView: React.FC<{
   severity: Severity | undefined;
   onContinue: () => void;
   onCancel: () => void;
-}> = ({ severity, onContinue, onCancel }) => {
+  onReport: () => void;
+}> = ({ severity, onContinue, onCancel, onReport }) => {
   const title = useMemo(() => {
     if (severity === "CRITICAL") {
       return (
@@ -157,7 +161,7 @@ const DefaultView: React.FC<{
       return (
         <>
           <Row gap="md">
-            <Button stretch>
+            <Button stretch onClick={onReport}>
               <ReportIcon />
               Report
             </Button>
@@ -186,13 +190,13 @@ const DefaultView: React.FC<{
           <Button stretch design="danger" onClick={onCancel}>
             Cancel
           </Button>
-          <Button stretch design="secondary" onClick={onContinue}>
+          <Button stretch design="secondary" onClick={onReport}>
             Report
           </Button>
         </Row>
       </>
     );
-  }, [severity, onCancel, onContinue]);
+  }, [severity, onCancel, onContinue, onReport]);
 
   return (
     <Row

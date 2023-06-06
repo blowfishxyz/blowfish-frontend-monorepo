@@ -19,6 +19,7 @@ import { containsPunycode, createValidURL } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 
 export type UIWarning = {
   message: string;
@@ -69,6 +70,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     message,
     request,
   });
+
+  const reportUrl = useReportTransactionUrl(request);
+
+  const onReport = useCallback(() => {
+    window.open(reportUrl, "_blank", "noopener,noreferrer");
+  }, [reportUrl]);
 
   const requestTypeStr = useMemo(() => {
     if (isTransactionRequest(request)) {
@@ -174,6 +181,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainFamily={props.chainFamily}
         onContinue={() => confirm()}
         onCancel={() => reject()}
+        onReport={onReport}
       />
     </Row>
   );
