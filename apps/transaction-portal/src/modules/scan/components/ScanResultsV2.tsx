@@ -1,6 +1,6 @@
-import React, { useCallback, useMemo } from "react";
-import { styled } from "styled-components";
-import { Row } from "@blowfish/ui/core";
+import React, { useCallback, useMemo, useState } from "react";
+import { keyframes, styled } from "styled-components";
+import { Row, Text } from "@blowfish/ui/core";
 import PreviewTxn from "~components/cards/PreviewTxn";
 import {
   ChainFamily,
@@ -24,12 +24,50 @@ import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
 import Decimal from "decimal.js";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
+import dynamic from "next/dynamic";
+import { CardContent, Divider } from "~components/cards/common";
+import { ArrowDownIcon } from "@blowfish/ui/icons";
+import { ConfirmTxn } from "~components/cards/ConfirmTxn";
 
 const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
-  padding: 32px;
+  padding: 16px 32px;
+  overflow: hidden;
 
   background-color: ${({ severity, theme }) =>
     theme.severityColors[severity ?? "INFO"].background};
+`;
+
+const ViewDetailsWrapper = styled(Row)`
+  cursor: pointer;
+  width: 100%;
+`;
+
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    max-height: 1000px;
+  }
+`;
+
+const fadeOut = keyframes`
+  0% {
+    opacity: 1;
+    max-height: 1000px;
+  }
+  100% {
+    opacity: 0;
+    max-height: 0;
+  }
+`;
+
+const DynamicJsonViewerWrapper = styled.div<{ show: boolean }>`
+  animation: ${(props) => (props.show ? fadeIn : fadeOut)} 1s ease forwards;
+  opacity: ${(props) => (props.show ? "1" : "0")};
+  overflow: hidden;
 `;
 
 export type UIWarning = {
@@ -52,6 +90,15 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   message,
   ...props
 }) => {
+  const [showAdvancedDetails, setShowAdvancedDetails] =
+    useState<boolean>(false);
+  const DynamicJsonViewer = dynamic(
+    () => import("../components/JsonViewerV2").then((mod) => mod.JsonViewer),
+    {
+      ssr: false,
+      loading: () => <Text size="sm">Loading...</Text>,
+    }
+  );
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
 
   const hasPunycode = containsPunycode(dappUrl?.hostname);
@@ -237,6 +284,42 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     }
   }, [request]);
 
+  const displayAdvancedDetails = () => {
+    return (
+      <>
+        <DynamicJsonViewerWrapper show={showAdvancedDetails}>
+          <CardContent>
+            {showAdvancedDetails && content && (
+              <DynamicJsonViewer data={content} />
+            )}
+          </CardContent>
+        </DynamicJsonViewerWrapper>
+        {showAdvancedDetails && <Divider margin="16px 0" />}
+        <CardContent>
+          <ViewDetailsWrapper
+            justifyContent="space-between"
+            alignItems="center"
+            marginBottom={16}
+            onClick={() => {
+              setShowAdvancedDetails((prev) => !prev);
+            }}
+          >
+            <Text design="secondary" size="sm">
+              {showAdvancedDetails ? "View less details" : "View more details"}
+            </Text>
+            <ArrowDownIcon expanded={showAdvancedDetails} />
+          </ViewDetailsWrapper>
+          <ConfirmTxn
+            onContinue={() => handleUserAction(true)}
+            onCancel={() => handleUserAction(false)}
+            warnings={warnings}
+            severity={severity}
+          />
+        </CardContent>
+      </>
+    );
+  };
+
   const txnData = {
     data: scanResults?.simulationResults?.expectedStateChanges,
     dappUrl: dappUrl,
@@ -257,9 +340,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         severity={severity}
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
-        content={content}
-        onContinue={() => handleUserAction(true)}
-        onCancel={() => handleUserAction(false)}
+        advancedDetails={displayAdvancedDetails}
       />
     </ScanResultsWrapper>
   );

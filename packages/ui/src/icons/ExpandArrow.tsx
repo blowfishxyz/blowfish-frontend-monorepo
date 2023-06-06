@@ -1,6 +1,6 @@
 import React from "react";
-import { StyledBaseSvg } from "../core/StyledBase";
 import { styled, css } from "styled-components";
+import { StyledBaseSvg } from "../core/StyledBase";
 
 interface ExpandIconProps {
   className?: string;

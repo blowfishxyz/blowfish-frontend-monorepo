@@ -13,6 +13,20 @@ const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 32px 0;
+  max-height: 100%;
+  overflow-y: overlay;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
 
   padding: 32px 0
     ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};

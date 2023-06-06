@@ -1,28 +1,57 @@
+import { getAddress, isAddress } from "@ethersproject/address";
 import React, { useMemo } from "react";
 import ReactJson from "react-json-view";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-import { Row, Text } from "@blowfish/ui/core";
-import { Divider } from "~components/cards/common";
+import { Text } from "@blowfish/ui/core";
 
 const Wrapper = styled.div`
   width: 100%;
 `;
 
-const LeftColumn = styled.div`
-  flex: 1;
-  margin-right: 8px;
+type StyledTextSmallProps = { capitalize?: boolean; isValue?: boolean };
+const StyledTextSmall = styled(Text).attrs({
+  size: "sm",
+})<StyledTextSmallProps>`
+  word-wrap: break-word;
+  ${(props) =>
+    props.isValue &&
+    css`
+      font-size: 12px;
+      line-height: 14px;
+      font-family: "SF Mono", ui-monospace, monospace;
+    `}
+  ${(props) =>
+    props.capitalize &&
+    css`
+      text-transform: capitalize;
+    `}
+`;
+const DetailsRow = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  ${StyledTextSmall} + ${StyledTextSmall} {
+    margin-top: 4px;
+  }
+
+  & + & {
+    margin-top: 16px;
+  }
 `;
 
-const RightColumn = styled.div`
-  flex: 1;
-  margin-left: 8px;
+const isFlatObject = (obj: object) =>
+  Object.values(obj).every((v) => !(typeof v === "object" && v !== null));
+
+const FlatSectionContainer = styled.div`
+  & + & {
+    margin-top: 16px;
+  }
 `;
 
 const JsonData = styled.div`
   margin-top: 8px;
   max-height: 100px;
-  max-width: 280px;
   width: 100%;
   height: 100%;
   overflow: auto;
@@ -39,30 +68,78 @@ const JsonData = styled.div`
   }
 `;
 
-// TO-DO: Replace with proper type definition
+interface FlatSectionProps {
+  title?: string;
+  data: object;
+}
+const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
+  return (
+    <FlatSectionContainer>
+      {title && (
+        <StyledTextSmall
+          capitalize
+          weight="semi-bold"
+          as="div"
+          style={{ marginBottom: "4px" }}
+        >
+          {title}
+        </StyledTextSmall>
+      )}
+      {Object.entries(data).map(([key, value]) => {
+        const displayValue = isAddress(value) ? getAddress(value) : value;
+
+        return (
+          <DetailsRow key={`details-${key}`}>
+            <StyledTextSmall capitalize design="secondary">
+              {key}
+            </StyledTextSmall>
+            <StyledTextSmall isValue>{displayValue}</StyledTextSmall>
+          </DetailsRow>
+        );
+      })}
+    </FlatSectionContainer>
+  );
+};
+
 interface JsonViewerProps {
-  data: any;
+  data: object;
 }
 
 export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
-  const domainData = useMemo(() => data?.domain || {}, [data]);
-  const messageData = useMemo(() => data?.message || {}, [data]);
+  const FlattenedData = useMemo(() => {
+    if (isFlatObject(data)) {
+      return <FlatSection data={data} />;
+    } else {
+      const entries = Object.entries(data);
+      const isSectionedFlatObject = entries.every(([, value]) =>
+        isFlatObject(value)
+      );
 
-  const renderData = (dataObject: object) => {
-    if (Object.keys(dataObject).length === 0) {
-      return <Text>No data available</Text>;
+      if (isSectionedFlatObject) {
+        return (
+          <>
+            {entries.map(([key, value]) => (
+              <FlatSection
+                key={`flat-section-${key}`}
+                title={key}
+                data={value}
+              />
+            ))}
+          </>
+        );
+      }
     }
 
     return (
       <ReactJson
-        src={dataObject}
-        indentWidth={1}
+        style={{ wordBreak: "break-all", fontSize: "12px"}}
+        src={data}
+        indentWidth={2}
         enableClipboard={false}
         displayObjectSize={false}
         displayDataTypes={false}
         quotesOnKeys={false}
         name={false}
-        collapseStringsAfterLength={2}
         theme={{
           base00: "tranparent",
           base01: "tranparent",
@@ -83,25 +160,11 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         }}
       />
     );
-  };
+  }, [data]);
 
   return (
     <Wrapper>
-      <Row justifyContent="space-between" gap="md">
-        <RightColumn>
-          <Text size="xs" design="secondary" marginBottom={8}>
-            Contract
-          </Text>
-          <JsonData>{renderData(domainData)}</JsonData>
-        </RightColumn>
-        <Divider orientation="vertical" margin="0 32px" />
-        <LeftColumn>
-          <Text size="xs" design="secondary" marginBottom={8}>
-            Message
-          </Text>
-          <JsonData>{renderData(messageData)}</JsonData>
-        </LeftColumn>
-      </Row>
+      <JsonData>{FlattenedData}</JsonData>
     </Wrapper>
   );
 };

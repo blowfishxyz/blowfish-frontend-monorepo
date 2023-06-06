@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from "react";
+import React, { FC, ReactElement, ReactNode } from "react";
 import {
   BlockExplorerLink,
   Column,
@@ -7,7 +7,7 @@ import {
   Text,
   device,
 } from "@blowfish/ui/core";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import {
   CardWrapper,
@@ -19,16 +19,13 @@ import {
 import { TxnSimulation } from "~components/simulation-results-types/TxnSimulation";
 import { SignatureSimulation } from "~components/simulation-results-types/SignatureSimulation";
 import { shortenHex } from "~utils/hex";
-import { ConfirmTxn } from "./ConfirmTxn";
 import {
   SignatureDataType,
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
-import { Severity, TransactionPayload } from "@blowfish/utils/types";
+import { Severity } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
-import dynamic from "next/dynamic";
-import { ArrowDownIcon } from "@blowfish/ui/icons";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -58,7 +55,7 @@ const StyledColumn = styled(Column).attrs({
 
 const TxnDataWrapper = styled.div`
   padding: 5px 0 0;
-  max-height: 200px;
+  max-height: 168px;
   height: 100%;
   overflow-y: auto;
   position: relative;
@@ -89,53 +86,17 @@ const TxnDataWrapper = styled.div`
   }
 `;
 
-const ViewDetailsWrapper = styled(Row)`
-  cursor: pointer;
-  width: 100%;
-`;
-
-const fadeIn = keyframes`
-  0% {
-    opacity: 0;
-    max-height: 0;
-  }
-  100% {
-    opacity: 1;
-    max-height: 1000px;
-  }
-`;
-
-const fadeOut = keyframes`
-  0% {
-    opacity: 1;
-    max-height: 1000px;
-  }
-  100% {
-    opacity: 0;
-    max-height: 0;
-  }
-`;
-
-const DynamicJsonViewerWrapper = styled.div<{ show: boolean }>`
-  animation: ${(props) => (props.show ? fadeIn : fadeOut)} 1s ease forwards;
-  opacity: ${(props) => (props.show ? "1" : "0")};
-  overflow: hidden;
-`;
-
 interface PreviewCardProps {
   title: string;
   simulationType: "transaction" | "signature";
   origin?: string;
   website?: string;
   contract: string;
-  warnings: UIWarning[];
   severity: Severity | undefined;
   children: ReactNode;
-  content: TransactionPayload | any;
-  onContinue: () => void;
-  onCancel: () => void;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
+  advancedDetails: () => ReactElement;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -143,28 +104,12 @@ const PreviewCard: FC<PreviewCardProps> = ({
   origin,
   website,
   contract,
-  warnings,
   severity,
-  onContinue,
-  onCancel,
   children,
-  content,
   chainNetwork,
   chainFamily,
+  advancedDetails,
 }) => {
-  const [showAdvancedDetails, setShowAdvancedDetails] =
-    useState<boolean>(false);
-  const DynamicJsonViewer = dynamic(
-    () =>
-      import("../../modules/scan/components/JsonViewerV2").then(
-        (mod) => mod.JsonViewer
-      ),
-    {
-      ssr: false,
-      loading: () => <Text size="sm">Loading...</Text>,
-    }
-  );
-
   return (
     <CardWrapper>
       <CardContent>
@@ -202,35 +147,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
         </StyledColumn>
       </StyledCardContent>
       <Divider margin="0 0 16px" />
-      <DynamicJsonViewerWrapper show={showAdvancedDetails}>
-        <CardContent>
-          {showAdvancedDetails && content && (
-            <DynamicJsonViewer data={content} />
-          )}
-        </CardContent>
-      </DynamicJsonViewerWrapper>
-      {showAdvancedDetails && <Divider margin="16px 0" />}
-      <CardContent>
-        <ViewDetailsWrapper
-          justifyContent="space-between"
-          alignItems="center"
-          marginBottom={16}
-          onClick={() => {
-            setShowAdvancedDetails((prev) => !prev);
-          }}
-        >
-          <Text design="secondary" size="sm">
-            View more details
-          </Text>
-          <ArrowDownIcon expanded={showAdvancedDetails} />
-        </ViewDetailsWrapper>
-        <ConfirmTxn
-          onContinue={onContinue}
-          onCancel={onCancel}
-          warnings={warnings}
-          severity={severity}
-        />
-      </CardContent>
+      {advancedDetails()}
     </CardWrapper>
   );
 };
@@ -243,22 +160,17 @@ export interface PreviewTxnProps {
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
-  content: TransactionPayload | any;
-  onContinue: () => void;
-  onCancel: () => void;
+  advancedDetails: () => ReactElement;
 }
 
 const PreviewTxn: FC<PreviewTxnProps> = ({
   simulationType,
   txnSimulationData,
   signatureData,
-  warnings,
   severity,
-  onContinue,
-  onCancel,
   chainNetwork,
   chainFamily,
-  content,
+  advancedDetails,
 }) => {
   const renderTransactionPreview = () => (
     <PreviewCard
@@ -267,13 +179,10 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
       origin={txnSimulationData?.dappUrl?.origin}
       website={txnSimulationData?.dappUrl?.host}
       contract={txnSimulationData?.account || ""}
-      warnings={warnings}
       severity={severity}
-      content={content}
-      onContinue={onContinue}
-      onCancel={onCancel}
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
+      advancedDetails={advancedDetails}
     >
       <Column gap="lg">
         <Row justifyContent="space-between">
@@ -298,13 +207,10 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
           origin={data.dappUrl?.origin}
           website={data.dappUrl?.host}
           contract={data.account}
-          warnings={warnings}
           severity={severity}
-          content={content}
-          onContinue={onContinue}
-          onCancel={onCancel}
           chainNetwork={chainNetwork}
           chainFamily={chainFamily}
+          advancedDetails={advancedDetails}
         >
           <Column gap="md">
             <Row justifyContent="space-between">
