@@ -6,7 +6,13 @@ import type { Properties } from "csstype";
 export interface TextProps {
   className?: string;
   style?: React.CSSProperties;
-  design?: "primary" | "secondary" | "danger" | "success" | "warning";
+  design?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "success"
+    | "warning"
+    | "tertiary";
   weight?: "semi-bold" | "bold" | "normal";
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   textAlign?: Properties["textAlign"];
@@ -124,6 +130,11 @@ function getDesignStyles({ design }: TextProps) {
   if (design === "primary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundPrimary};
+    `;
+  }
+  if (design === "tertiary") {
+    return css`
+      color: ${(p) => p.theme.colors.backgroundPrimary};
     `;
   }
   return css`
