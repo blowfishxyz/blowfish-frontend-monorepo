@@ -110,7 +110,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   const reportUrl = useReportTransactionUrl(request);
 
   const onReport = useCallback(() => {
-    window.open(reportUrl, "_blank");
+    window.open(reportUrl, "_blank", "noopener,noreferrer");
   }, [reportUrl]);
 
   const requestTypeStr = useMemo(() => {

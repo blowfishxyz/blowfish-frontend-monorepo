@@ -268,7 +268,7 @@ export const AccountNotConnectedModal: React.FC = () => {
           return;
         }
         if (installLink) {
-          window.open(installLink, "_blank");
+          window.open(installLink, "_blank", "noopener,noreferrer");
         }
       },
       closeOnComplete: false,
