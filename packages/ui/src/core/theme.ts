@@ -51,6 +51,7 @@ const severityColors: {
 const base = {
   base10: "rgba(0, 0, 0, 0.1)",
   base30: "rgba(0, 0, 0, 0.3)",
+  base40: "rgba(0, 0, 0, 0.4)",
   base50: "rgba(0, 0, 0, 0.5)",
   base100: "rgb(0, 0, 0)",
 };

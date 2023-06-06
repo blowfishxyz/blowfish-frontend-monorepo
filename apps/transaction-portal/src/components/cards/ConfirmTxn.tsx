@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
 import {
+  Button,
   Column,
   PrimaryButton,
   Row,
@@ -8,17 +9,10 @@ import {
   Text,
 } from "@blowfish/ui/core";
 import { ContinueIcon, ReportIcon } from "@blowfish/ui/icons";
-import { CardWrapper, CardContent } from "./common";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
-
-const StyledCardWrapper = styled(CardWrapper)`
-  flex: unset;
-  width: 100%;
-  background: ${({ theme }) => theme.colors.backgroundSecondary};
-`;
 
 const CancelButton = styled(SecondaryButton)`
   height: 46px;
@@ -54,7 +48,7 @@ type ViewStateType = (typeof ViewState)[keyof typeof ViewState];
 
 const animationDuration = 300;
 
-const Fade = styled.div`
+const Wrapper = styled(Row)`
   &.fade-enter {
     opacity: 0;
   }
@@ -87,19 +81,6 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
 
-  // NOTE: This is just to simulate an actual txn loading, it can/should be removed during integration
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-    if (viewState === ViewState.CONFIRMING) {
-      timeout = setTimeout(() => {
-        setViewState(ViewState.PENDING);
-      }, 3000);
-    }
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [viewState]);
-
   const handleContinueClick = useCallback(() => {
     setAnimating(true);
     setTimeout(() => {
@@ -110,10 +91,14 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
 
   const getWarningTitle = () => {
     if (severity === "CRITICAL") {
-      return <Text size="xl">Do not proceed!</Text>;
+      return (
+        <Text size="xl" weight="semi-bold">
+          Do not proceed!
+        </Text>
+      );
     } else if (severity === "WARNING") {
       return (
-        <Text size="xl">
+        <Text size="xl" weight="semi-bold">
           This seems{" "}
           <Text design="warning" size="xl" weight="semi-bold">
             fishy...
@@ -122,11 +107,33 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
       );
     } else {
       return (
-        <Text size="xl">
-          This seems{" "}
-          <Text design="success" size="xl" weight="semi-bold">
-            low risk
-          </Text>
+        <Text size="xl" weight="semi-bold">
+          This is low risk
+        </Text>
+      );
+    }
+  };
+
+  const getDescription = () => {
+    if (severity === "CRITICAL") {
+      return (
+        <Text size="sm">
+          We believe this transaction is malicious and unsafe to sign, and is
+          likely to steal funds.
+        </Text>
+      );
+    } else if (severity === "WARNING") {
+      return (
+        <Text size="sm">
+          This transaction does not appear to be safe. We strongly recommend
+          that you do not proceed.
+        </Text>
+      );
+    } else {
+      return (
+        <Text size="sm">
+          This signature request seems to be trustworthy. If something feels
+          fishy, you should report it.
         </Text>
       );
     }
@@ -136,47 +143,47 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
     switch (viewState) {
       case ViewState.WARNING:
         return (
-          <Row justifyContent="space-between" alignItems="center" gap="lg">
-            <Column gap="md" flex={1}>
-              <Text size="xl">{getWarningTitle()}</Text>
-              {warnings?.length ? (
-                warnings?.map((warning, index) => (
-                  <ConfirmTxnWarningMsg key={index}>
-                    {warning.message}
-                  </ConfirmTxnWarningMsg>
-                ))
-              ) : (
-                <ConfirmTxnWarningMsg>
-                  This signature request seems to be trustworthy. If something
-                  feels fishy, you should report it.
-                </ConfirmTxnWarningMsg>
-              )}
+          <Row
+            width="100%"
+            justifyContent="space-between"
+            alignItems="center"
+            gap="lg"
+          >
+            <Column gap="xs" flex={1}>
+              {getWarningTitle()}
+              {getDescription()}
             </Column>
-            <Column gap="md" flex={0.7}>
+            <Column gap="md" flex={1}>
               <Row gap="md">
                 {severity === "INFO" ? (
-                  <ContinueButton onClick={onContinue}>
+                  <Button stretch onClick={onContinue}>
                     <ContinueIcon />
                     Continue
-                  </ContinueButton>
+                  </Button>
                 ) : (
-                  <ContinueButton>
+                  <Button stretch>
                     <ReportIcon />
                     Report
-                  </ContinueButton>
+                  </Button>
                 )}
               </Row>
               <Row gap="md">
-                <CancelButton onClick={onCancel}>Cancel</CancelButton>
+                <Button stretch design="secondary" onClick={onCancel}>
+                  Cancel
+                </Button>
                 {severity === "INFO" ? (
-                  <ReportButton onClick={handleContinueClick}>
+                  <Button
+                    stretch
+                    design="primary"
+                    onClick={handleContinueClick}
+                  >
                     Report
-                  </ReportButton>
-                ) : severity === "WARNING" ? (
-                  <ReportButton onClick={handleContinueClick}>
+                  </Button>
+                ) : (
+                  <Button stretch design="danger" onClick={handleContinueClick}>
                     Continue
-                  </ReportButton>
-                ) : null}
+                  </Button>
+                )}
               </Row>
             </Column>
           </Row>
@@ -191,20 +198,20 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   };
 
   return (
-    <StyledCardWrapper>
-      <CardContent>
-        <Fade
-          className={
-            animating
-              ? viewState === ViewState.WARNING
-                ? "fade-exit-active"
-                : "fade-enter-active"
-              : ""
-          }
-        >
-          {getContent()}
-        </Fade>
-      </CardContent>
-    </StyledCardWrapper>
+    <Wrapper
+      className={
+        animating
+          ? viewState === ViewState.WARNING
+            ? "fade-exit-active"
+            : "fade-enter-active"
+          : ""
+      }
+      backgroundColor="backgroundSecondary"
+      borderRadius={12}
+      padding={24}
+      width="100%"
+    >
+      {getContent()}
+    </Wrapper>
   );
 };

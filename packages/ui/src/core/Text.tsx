@@ -2,8 +2,9 @@ import React from "react";
 import { css, styled } from "styled-components";
 import { StyledBaseText } from "./StyledBase";
 import type { Properties } from "csstype";
+import { Colors, colors } from "./utils/colors";
 
-export interface TextProps {
+export type TextProps = {
   className?: string;
   style?: React.CSSProperties;
   design?: "primary" | "secondary" | "danger" | "success" | "warning";
@@ -11,7 +12,7 @@ export interface TextProps {
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   textAlign?: Properties["textAlign"];
   truncate?: boolean;
-}
+} & Colors;
 
 const StyledText = styled(StyledBaseText)<TextProps>`
   font-family: "GT-Planar";
@@ -19,6 +20,7 @@ const StyledText = styled(StyledBaseText)<TextProps>`
   ${getSizeStyles}
   ${getWeightStyles}
   ${getTextSpecificStyles}
+  ${colors}
 `;
 
 export const Text = React.memo(
@@ -39,8 +41,8 @@ function getSizeStyles({ size }: TextProps) {
   }
   if (size === "xl") {
     return css`
-      font-size: 24px;
-      line-height: 31.2px;
+      font-size: 22px;
+      line-height: 28.6px;
     `;
   }
   if (size === "lg") {

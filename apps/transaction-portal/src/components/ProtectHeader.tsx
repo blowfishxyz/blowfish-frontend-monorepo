@@ -32,7 +32,7 @@ export const ProtectHeader = () => {
         $contrast={layoutConfig.severity === "CRITICAL"}
       />
       <RightContentWrapper gap="md">
-        <UserWalletConnectKitWrapper hideConnect />
+        <UserWalletConnectKitWrapper />
         <Menu />
       </RightContentWrapper>
     </ProtectScreenContent>

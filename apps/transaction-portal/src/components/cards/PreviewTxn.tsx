@@ -1,16 +1,8 @@
 import React, { FC, ReactNode } from "react";
-import {
-  BlockExplorerLink,
-  Column,
-  LinkWithArrow,
-  Row,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";
-import { shortenHex } from "~utils/hex";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
@@ -32,18 +24,7 @@ export type TxnSimulationDataType = {
     | undefined;
 };
 
-const Title = styled(Text)`
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 20px;
-
-  @media (${device.lg}) {
-    font-size: 22px;
-    line-height: 25px;
-  }
-`;
-
-const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
+const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
 
 const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
@@ -95,33 +76,27 @@ interface PreviewCardProps {
   title: string;
   origin?: string;
   website?: string;
-  contract: string;
   warnings: UIWarning[];
   severity: Severity | undefined;
   children: ReactNode;
   onContinue: () => void;
   onCancel: () => void;
-  chainNetwork: ChainNetwork;
-  chainFamily: ChainFamily;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
   title,
   origin,
   website,
-  contract,
   warnings,
   severity,
   onContinue,
   onCancel,
   children,
-  chainNetwork,
-  chainFamily,
 }) => (
   <CardWrapper>
     <CardContent>
-      <Row justifyContent="space-between">
-        <Title>{title}</Title>
+      <Row justifyContent="space-between" alignItems="center">
+        <Text size="lg">{title}</Text>
         <Chip severity={severity} />
       </Row>
     </CardContent>
@@ -130,16 +105,16 @@ const PreviewCard: FC<PreviewCardProps> = ({
     <Divider margin="24px 0 0" />
     <StyledCardContent>
       <StyledColumn gap="sm">
-        <SmallGrayText>Website</SmallGrayText>
+        <SectionHeading>Website</SectionHeading>
         <Row gap="xs" alignItems="center">
           <CardText>
             <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
           </CardText>
         </Row>
       </StyledColumn>
-      <Divider orientation="vertical" margin="0 36px" />
+      {/* <Divider orientation="vertical" margin="0 36px" />
       <StyledColumn gap="sm">
-        <SmallGrayText>Contract</SmallGrayText>
+        <SectionHeading>Contract</SectionHeading>
         <CardText>
           <BlockExplorerLink
             chainFamily={chainFamily}
@@ -149,7 +124,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
             {shortenHex(contract)}
           </BlockExplorerLink>
         </CardText>
-      </StyledColumn>
+      </StyledColumn> */}
     </StyledCardContent>
     <Divider margin="0 0 16px" />
     <CardContent>
@@ -179,10 +154,8 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   severity,
   onContinue,
   onCancel,
-  chainNetwork,
-  chainFamily,
 }) => {
-  const { account, dappUrl, data, message } = txnData;
+  const { dappUrl, data, message } = txnData;
   const { origin, host } = dappUrl || {};
 
   return (
@@ -190,13 +163,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       title="Preview changes"
       origin={origin}
       website={host}
-      contract={account}
       warnings={warnings}
       severity={severity}
       onContinue={onContinue}
       onCancel={onCancel}
-      chainNetwork={chainNetwork}
-      chainFamily={chainFamily}
     >
       {message ? <SignaturePreview message={message} /> : null}
       {<StateChangePreview data={data} />}
@@ -208,7 +178,7 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   return (
     <Column gap="sm" marginBottom={18}>
       <Row justifyContent="space-between">
-        <SmallGrayText>Signatures</SmallGrayText>
+        <SectionHeading>Signatures</SectionHeading>
       </Row>
       <Text
         size="sm"
@@ -227,7 +197,7 @@ const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
     return (
       <Column gap="lg">
         <Row justifyContent="space-between">
-          <SmallGrayText>State</SmallGrayText>
+          <SectionHeading>State</SectionHeading>
         </Row>
         <TxnDataWrapper>
           {data.map((data, index) => {
@@ -241,9 +211,9 @@ const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
   return (
     <Column gap="sm">
       <Row justifyContent="space-between">
-        <SmallGrayText>State</SmallGrayText>
+        <SectionHeading>State</SectionHeading>
       </Row>
-      <Text size="md" design="danger">
+      <Text size="md" color="base30">
         No state changes found. Proceed with caution
       </Text>
     </Column>
