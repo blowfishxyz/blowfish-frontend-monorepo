@@ -3,10 +3,9 @@ import { Story, Meta } from "@storybook/react";
 import { PreviewTxnProps, PreviewTxn } from "~components/cards/PreviewTxn";
 import { sendErc721 } from "~components/fixtures/state-changes";
 import { CardContent } from "~components/cards/common";
-import { Text } from "@blowfish/ui/core";
+import { Text, Row } from "@blowfish/ui/core";
 import { ArrowDownIcon } from "@blowfish/ui/icons";
-import { Row } from "@blowfish/ui/core";
-import { ConfirmTxn } from "~components/cards/ConfirmTxn";
+import { styled } from "styled-components";
 
 export default {
   title: "Components/PreviewTxn",
@@ -14,6 +13,11 @@ export default {
 } as Meta;
 
 const Template: Story<PreviewTxnProps> = (args) => <PreviewTxn {...args} />;
+
+const StyledArrowDownIcon = styled(ArrowDownIcon)`
+  width: 16px;
+  height: 17px;
+`;
 
 export const TransactionPreview = Template.bind({});
 TransactionPreview.args = {
@@ -23,7 +27,7 @@ TransactionPreview.args = {
     dappUrl: new URL("https://www.blur.io"),
     account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
   },
-  advancedDetails: () => (
+  advancedDetails: (
     <>
       <CardContent>
         <Row
@@ -37,18 +41,20 @@ TransactionPreview.args = {
           <Text design="secondary" size="sm">
             View more details
           </Text>
-          <ArrowDownIcon />
+          <StyledArrowDownIcon />
         </Row>
-        <ConfirmTxn
-          onContinue={() => console.log("clicked")}
-          onCancel={() => console.log("clicked")}
-          onReport={() => console.log("clicked")}
-          severity="INFO"
-          warnings={undefined}
-        />
       </CardContent>
     </>
   ),
+  onContinue: () => {
+    console.log("Continue clicked");
+  },
+  onCancel: () => {
+    console.log("Cancel clicked");
+  },
+  onReport: () => {
+    console.log("Cancel clicked");
+  },
 };
 
 export const SignaturePreview = Template.bind({});
@@ -63,7 +69,7 @@ SignaturePreview.args = {
       account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
     },
   ],
-  advancedDetails: () => (
+  advancedDetails: (
     <>
       <CardContent>
         <Row
@@ -77,16 +83,18 @@ SignaturePreview.args = {
           <Text design="secondary" size="sm">
             View more details
           </Text>
-          <ArrowDownIcon />
+          <StyledArrowDownIcon />
         </Row>
-        <ConfirmTxn
-          onContinue={() => console.log("clicked")}
-          onCancel={() => console.log("clicked")}
-          onReport={() => console.log("clicked")}
-          severity="INFO"
-          warnings={undefined}
-        />
       </CardContent>
     </>
   ),
+  onContinue: () => {
+    console.log("Continue clicked");
+  },
+  onCancel: () => {
+    console.log("Cancel clicked");
+  },
+  onReport: () => {
+    console.log("Cancel clicked");
+  },
 };

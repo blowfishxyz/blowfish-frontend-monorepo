@@ -26,6 +26,7 @@ import {
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
+import { ConfirmTxn } from "./ConfirmTxn";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -96,7 +97,11 @@ interface PreviewCardProps {
   children: ReactNode;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
-  advancedDetails: () => ReactElement;
+  advancedDetails: ReactElement;
+  onContinue: () => void;
+  onCancel: () => void;
+  onReport: () => void;
+  warnings: UIWarning[] | undefined;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -109,6 +114,10 @@ const PreviewCard: FC<PreviewCardProps> = ({
   chainNetwork,
   chainFamily,
   advancedDetails,
+  onContinue,
+  onCancel,
+  onReport,
+  warnings,
 }) => {
   return (
     <CardWrapper>
@@ -147,7 +156,16 @@ const PreviewCard: FC<PreviewCardProps> = ({
         </StyledColumn>
       </StyledCardContent>
       <Divider margin="0 0 16px" />
-      {advancedDetails()}
+      {advancedDetails}
+      <CardContent>
+        <ConfirmTxn
+          onContinue={onContinue}
+          onCancel={onCancel}
+          onReport={onReport}
+          warnings={warnings}
+          severity={severity}
+        />
+      </CardContent>
     </CardWrapper>
   );
 };
@@ -160,7 +178,10 @@ export interface PreviewTxnProps {
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
-  advancedDetails: () => ReactElement;
+  advancedDetails: ReactElement;
+  onContinue: () => void;
+  onCancel: () => void;
+  onReport: () => void;
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({
@@ -171,6 +192,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   chainNetwork,
   chainFamily,
   advancedDetails,
+  onContinue,
+  onCancel,
+  onReport,
+  warnings,
 }) => {
   const renderTransactionPreview = () => (
     <PreviewCard
@@ -183,6 +208,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       chainNetwork={chainNetwork}
       chainFamily={chainFamily}
       advancedDetails={advancedDetails}
+      onContinue={onContinue}
+      onCancel={onCancel}
+      onReport={onReport}
+      warnings={warnings}
     >
       <Column gap="lg">
         <Row justifyContent="space-between">
@@ -211,6 +240,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
           chainNetwork={chainNetwork}
           chainFamily={chainFamily}
           advancedDetails={advancedDetails}
+          onContinue={onContinue}
+          onCancel={onCancel}
+          onReport={onReport}
+          warnings={warnings}
         >
           <Column gap="md">
             <Row justifyContent="space-between">
