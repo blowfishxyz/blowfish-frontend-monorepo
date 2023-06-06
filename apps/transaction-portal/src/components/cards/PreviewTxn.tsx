@@ -163,7 +163,7 @@ export interface PreviewTxnProps {
   advancedDetails: () => ReactElement;
 }
 
-const PreviewTxn: FC<PreviewTxnProps> = ({
+export const PreviewTxn: FC<PreviewTxnProps> = ({
   simulationType,
   txnSimulationData,
   signatureData,
@@ -242,5 +242,3 @@ const PreviewTxn: FC<PreviewTxnProps> = ({
     </>
   );
 };
-
-export default PreviewTxn;

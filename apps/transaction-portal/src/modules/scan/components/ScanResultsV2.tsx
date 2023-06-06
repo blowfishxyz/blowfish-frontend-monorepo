@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { keyframes, styled } from "styled-components";
 import { Row, Text } from "@blowfish/ui/core";
-import PreviewTxn from "~components/cards/PreviewTxn";
+import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
   ChainFamily,
   ChainNetwork,
@@ -28,6 +28,7 @@ import dynamic from "next/dynamic";
 import { CardContent, Divider } from "~components/cards/common";
 import { ArrowDownIcon } from "@blowfish/ui/icons";
 import { ConfirmTxn } from "~components/cards/ConfirmTxn";
+import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 
 const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
   padding: 16px 32px;
@@ -156,6 +157,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     },
     [message, request, closeWindow]
   );
+
+  const reportUrl = useReportTransactionUrl(request);
+
+  const onReport = useCallback(() => {
+    window.open(reportUrl, "_blank", "noopener,noreferrer");
+  }, [reportUrl]);
 
   const requestTypeStr = useMemo(() => {
     if (isTransactionRequest(request)) {
@@ -312,6 +319,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           <ConfirmTxn
             onContinue={() => handleUserAction(true)}
             onCancel={() => handleUserAction(false)}
+            onReport={onReport}
             warnings={warnings}
             severity={severity}
           />
