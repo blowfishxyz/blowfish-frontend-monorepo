@@ -15,4 +15,6 @@ export * from "./VerifiedIcon";
 export * from "./SpeedUpIcon";
 export * from "./ConfirmIcon";
 export * from "./MenuIcon";
-export * from "./PlusIcon"
+export * from "./PlusIcon";
+export * from "./ContinueIcon";
+export * from "./ReportIcon";

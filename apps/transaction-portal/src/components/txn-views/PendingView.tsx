@@ -1,15 +1,8 @@
 import React from "react";
 import { styled, keyframes } from "styled-components";
-import { Row, Text, Column, size } from "@blowfish/ui/core";
+import { Row, Text, Column, size, SecondaryButton } from "@blowfish/ui/core";
 import { BlowfishIcon, SpeedUpIcon } from "@blowfish/ui/icons";
-import {
-  Divider,
-  CardText,
-  CardSmallSecondaryButton,
-  CardRow,
-  CardGrayLink,
-  CardPrimaryButton,
-} from "../cards/common";
+import { Divider, CardText, CardGrayLink } from "../cards/common";
 
 const pulse = keyframes`
   0% {
@@ -61,6 +54,11 @@ const StyledBlowfishIcon = styled(BlowfishIcon)`
   opacity: 0.2;
 `;
 
+const ReportButton = styled(SecondaryButton)`
+  height: 46px;
+  font-size: 15px;
+`;
+
 type InfoRowProps = {
   label: string;
   value: string | React.ReactNode;
@@ -107,13 +105,13 @@ export const PendingView = () => {
         />
         <InfoRow label="Transaction Fee" value="$4.55" />
       </TxnInfoWrapper>
-      <CardRow gap="md" width="100%">
-        <CardSmallSecondaryButton>Report</CardSmallSecondaryButton>
-        <CardPrimaryButton>
+      <Row gap="md" width="100%">
+        <ReportButton>Report</ReportButton>
+        <ReportButton>
           <StyledSpeedUpIcon />
           Speed up transaction
-        </CardPrimaryButton>
-      </CardRow>
+        </ReportButton>
+      </Row>
     </Column>
   );
 };

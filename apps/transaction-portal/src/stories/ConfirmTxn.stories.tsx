@@ -1,13 +1,20 @@
 import React from "react";
-import { Meta, Story } from "@storybook/react";
-import { ConfirmTxn } from "~components/cards/ConfirmTxn";
+import { Story, Meta } from "@storybook/react";
+import { ConfirmTxn, ConfirmTxnProps } from "~components/cards/ConfirmTxn";
 
 export default {
   title: "Components/ConfirmTxn",
   component: ConfirmTxn,
 } as Meta;
 
-const Template: Story = (args) => <ConfirmTxn {...args} />;
+const Template: Story<ConfirmTxnProps> = (args) => <ConfirmTxn {...args} />;
 
 export const Default = Template.bind({});
-Default.args = {};
+Default.args = {
+  onContinue: () => {
+    console.log("Continue clicked");
+  },
+  onCancel: () => {
+    console.log("Cancel clicked");
+  },
+};

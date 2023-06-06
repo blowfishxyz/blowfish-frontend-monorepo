@@ -147,7 +147,7 @@ export const evmStateChangeHasImage = (
   return EVM_STATE_CHANGE_KIND_WITH_IMAGE.includes(kind);
 };
 
-export const containsPunycode = (url: string): boolean => {
+export const containsPunycode = (url: string | undefined): boolean => {
   try {
     const decoded = punycode.toUnicode(url);
     return decoded !== url;
@@ -178,13 +178,16 @@ const filterNullImageUrls = (imageUrl: string | undefined | null) => {
 };
 
 export const getTxnSimulationData = (
-  rawInfo: EvmExpectedStateChangesInnerRawInfo
+  rawInfo:
+    | EvmExpectedStateChangesInnerRawInfo
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
 ) => {
   let name = "";
   let imageSrc;
   let symbol = "";
   let isNft = false;
-  let displayText = "";
+  let tokenId = null;
+  let tokenList = null;
 
   if (
     rawInfo.kind === "ERC721_APPROVAL" ||
@@ -193,8 +196,7 @@ export const getTxnSimulationData = (
     isNft = true;
     name = rawInfo.data.name;
     imageSrc = filterNullImageUrls(rawInfo.data.metadata.rawImageUrl);
-
-    displayText = `${name} #${rawInfo.data.tokenId}`;
+    tokenId = rawInfo.data.tokenId;
   } else if (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_TRANSFER" ||
@@ -205,7 +207,10 @@ export const getTxnSimulationData = (
     imageSrc = filterNullImageUrls(rawInfo.data.asset.imageUrl);
 
     symbol = rawInfo.data.asset.symbol;
-    displayText = `${name} (${symbol})`;
+  }
+
+  if (rawInfo.kind === "ERC20_TRANSFER") {
+    tokenList = rawInfo.data.asset.lists.length;
   }
 
   return {
@@ -213,12 +218,15 @@ export const getTxnSimulationData = (
     imageSrc,
     symbol,
     isNft,
-    displayText,
+    tokenId,
+    tokenList,
   };
 };
 
 export const checkIsApproval = (
-  rawInfo: EvmExpectedStateChangesInnerRawInfo
+  rawInfo:
+    | EvmExpectedStateChangesInnerRawInfo
+    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
 ): boolean => {
   const { kind } = rawInfo;
 
@@ -323,4 +331,12 @@ export const getImageInfo = (
   }
 
   return { altText: "Asset", imageSrc: undefined };
+};
+
+export const createValidURL = (url: string): URL | undefined => {
+  try {
+    return new URL(url);
+  } catch (error) {
+    return undefined;
+  }
 };

@@ -1,5 +1,12 @@
-import React, { FC } from "react";
-import { Column, Row, Text, device } from "@blowfish/ui/core";
+import React, { FC, ReactNode } from "react";
+import {
+  BlockExplorerLink,
+  Column,
+  LinkWithArrow,
+  Row,
+  Text,
+  device,
+} from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import {
@@ -11,11 +18,15 @@ import {
 } from "./common";
 import { TxnSimulation } from "~components/simulation-results-types/TxnSimulation";
 import { SignatureSimulation } from "~components/simulation-results-types/SignatureSimulation";
-import { VerifiedIcon } from "@blowfish/ui/icons";
+import { shortenHex } from "~utils/hex";
+import { ConfirmTxn } from "./ConfirmTxn";
 import {
   SignatureDataType,
   TxnSimulationDataType,
 } from "~components/simulation-results-types/mock-data";
+import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { Severity } from "@blowfish/utils/types";
+import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
 
 const Title = styled(Text)`
   font-size: 18px;
@@ -30,137 +41,223 @@ const Title = styled(Text)`
 
 const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
 
-const TxnSimulationResultsWrapper = styled.div`
-  margin-top: 16px;
-`;
-
-const StyledCardContent = styled(CardContent)`
-  display: flex;
-  align-items: center;
-`;
-
-const WrappedRow = styled(Row).attrs({
+const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
-  flexWrap: "wrap",
+  paddingInline: 16,
 })`
   @media (${device.lg}) {
-    &:last-child {
-      gap: 12px;
-    }
+    padding: 0 32px;
   }
 `;
 
-const StyledColumn = styled(Column)`
-  padding: 8px 0;
+const StyledColumn = styled(Column).attrs({
+  paddingBlock: 18,
+})``;
+
+const TxnDataWrapper = styled.div`
+  padding: 5px 0 0;
+  max-height: 200px;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: ${({ theme }) => theme.colors.backgroundSecondary};
+    border-radius: 4px;
+  }
+
+  scrollbar-color: ${({ theme }) =>
+    `${theme.colors.backgroundPrimary} ${theme.colors.backgroundSecondary}`};
+
+  & {
+    scrollbar-width: thin;
+  }
+
+  & {
+    scrollbar-color: ${({ theme }) =>
+      `${theme.colors.backgroundPrimary} ${theme.colors.backgroundSecondary}`};
+    scrollbar-width: thin;
+  }
 `;
 
-const ChipWrapper = styled(Row)`
-  margin-top: 3px;
-  flex-wrap: wrap;
-`;
-
-export interface PreviewTxnProps {
+interface PreviewCardProps {
+  title: string;
   simulationType: "transaction" | "signature";
-  txnSimulationData?: TxnSimulationDataType[];
-  signatureData?: SignatureDataType[];
+  origin?: string;
+  website?: string;
+  contract: string;
+  warnings: UIWarning[];
+  severity: Severity | undefined;
+  children: ReactNode;
+  onContinue: () => void;
+  onCancel: () => void;
+  chainNetwork: ChainNetwork;
+  chainFamily: ChainFamily;
 }
 
-const renderSimulation = (
-  simulationType: string,
-  txnSimulationData: TxnSimulationDataType[],
-  signatureData: SignatureDataType[]
-) => {
-  if (simulationType === "transaction") {
-    return txnSimulationData.map((txnData, i) => (
-      <TxnSimulation key={i} txnData={txnData} />
-    ));
-  } else if (simulationType === "signature") {
-    return signatureData.map((data, i) => (
-      <SignatureSimulation key={i} data={data} />
-    ));
-  }
-  return null;
-};
-
-const labels = ["Marketplace", "Label2", "Label3", "Label4"];
-
-export const PreviewTxn: FC<PreviewTxnProps> = ({
-  simulationType,
-  txnSimulationData = [],
-  signatureData = [],
+const PreviewCard: FC<PreviewCardProps> = ({
+  title,
+  origin,
+  website,
+  contract,
+  warnings,
+  severity,
+  onContinue,
+  onCancel,
+  children,
+  chainNetwork,
+  chainFamily,
 }) => (
-  <CardWrapper $removePaddingBottom>
+  <CardWrapper>
     <CardContent>
       <Row justifyContent="space-between">
-        <Title>Preview</Title>
-        <Chip
-          text={
-            <span>
-              <b>Low</b> Risk
-            </span>
-          }
-          variant="primary"
-        />
+        <Title>{title}</Title>
+        <Chip severity={severity} />
       </Row>
     </CardContent>
     <Divider margin="16px 0" />
-    <CardContent>
-      <Row justifyContent="space-between">
-        <SmallGrayText>Simulation</SmallGrayText>
-        {simulationType === "transaction" && (
-          <SmallGrayText>Value</SmallGrayText>
-        )}
-      </Row>
-      <TxnSimulationResultsWrapper>
-        {renderSimulation(simulationType, txnSimulationData, signatureData)}
-      </TxnSimulationResultsWrapper>
-    </CardContent>
+    <CardContent>{children}</CardContent>
     <Divider margin="24px 0 0" />
     <StyledCardContent>
-      <StyledColumn flex={1}>
-        <SmallGrayText>Counterparty</SmallGrayText>
-        <Row gap="sm" alignItems="center">
+      <StyledColumn gap="sm">
+        <SmallGrayText>Website</SmallGrayText>
+        <Row gap="xs" alignItems="center">
           <CardText>
-            <CardBlackTextLink href="">marketplace.blur.eth</CardBlackTextLink>
+            <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
           </CardText>
-          <VerifiedIcon />
         </Row>
       </StyledColumn>
-      <Divider orientation="vertical" />
-      <StyledColumn flex={1}>
-        <SmallGrayText>Others Involved</SmallGrayText>
+      <Divider orientation="vertical" margin="0 36px" />
+      <StyledColumn gap="sm">
+        <SmallGrayText>Contract</SmallGrayText>
         <CardText>
-          <CardBlackTextLink>None</CardBlackTextLink>
+          <CardBlackTextLink>
+            <BlockExplorerLink
+              chainFamily={chainFamily}
+              chainNetwork={chainNetwork}
+              address={contract}
+            >
+              {shortenHex(contract)}
+            </BlockExplorerLink>
+          </CardBlackTextLink>
         </CardText>
       </StyledColumn>
     </StyledCardContent>
-    <Divider />
-    <StyledCardContent>
-      <StyledColumn flex={1}>
-        <SmallGrayText>Performed?</SmallGrayText>
-        <WrappedRow gap="sm">
-          <CardText>Yes</CardText>
-          <SmallGrayText>3 times</SmallGrayText>
-        </WrappedRow>
-      </StyledColumn>
-      <Divider orientation="vertical" />
-      <StyledColumn flex={1}>
-        <SmallGrayText>Used?</SmallGrayText>
-        <WrappedRow gap="sm">
-          <CardText>Yes</CardText>
-          <SmallGrayText>481 wallets</SmallGrayText>
-        </WrappedRow>
-      </StyledColumn>
-      <Divider orientation="vertical" />
-      <StyledColumn flex={1}>
-        <SmallGrayText>Labels</SmallGrayText>
-        <ChipWrapper gap="sm">
-          {labels.length > 0 && <Chip text={labels[0]} />}
-          {labels.length > 1 && (
-            <Chip text={`+${labels.length - 1}`} data-clickable="true" />
-          )}
-        </ChipWrapper>
-      </StyledColumn>
-    </StyledCardContent>
+    <Divider margin="0 0 16px" />
+    <CardContent>
+      <ConfirmTxn
+        onContinue={onContinue}
+        onCancel={onCancel}
+        warnings={warnings}
+        severity={severity}
+      />
+    </CardContent>
   </CardWrapper>
 );
+
+export interface PreviewTxnProps {
+  simulationType: "transaction" | "signature";
+  txnSimulationData?: TxnSimulationDataType;
+  signatureData: SignatureDataType[];
+  warnings: UIWarning[];
+  severity: Severity | undefined;
+  chainNetwork: ChainNetwork;
+  chainFamily: ChainFamily;
+  onContinue: () => void;
+  onCancel: () => void;
+}
+
+const PreviewTxn: FC<PreviewTxnProps> = ({
+  simulationType,
+  txnSimulationData,
+  signatureData,
+  warnings,
+  severity,
+  onContinue,
+  onCancel,
+  chainNetwork,
+  chainFamily,
+}) => {
+  const renderTransactionPreview = () => (
+    <PreviewCard
+      title="Preview"
+      simulationType="transaction"
+      origin={txnSimulationData?.dappUrl?.origin}
+      website={txnSimulationData?.dappUrl?.host}
+      contract={txnSimulationData?.account || ""}
+      warnings={warnings}
+      severity={severity}
+      onContinue={onContinue}
+      onCancel={onCancel}
+      chainNetwork={chainNetwork}
+      chainFamily={chainFamily}
+    >
+      <Column gap="lg">
+        <Row justifyContent="space-between">
+          <SmallGrayText>State</SmallGrayText>
+        </Row>
+        <TxnDataWrapper>
+          {txnSimulationData?.data?.map((data, index) => {
+            return <TxnSimulation key={index} txnData={data} />;
+          })}
+        </TxnDataWrapper>
+      </Column>
+    </PreviewCard>
+  );
+
+  const renderSignaturePreview = () => (
+    <>
+      {signatureData.map((data, index) => (
+        <PreviewCard
+          key={index}
+          title="Preview"
+          simulationType="signature"
+          origin={data.dappUrl?.origin}
+          website={data.dappUrl?.host}
+          contract={data.account}
+          warnings={warnings}
+          severity={severity}
+          onContinue={onContinue}
+          onCancel={onCancel}
+          chainNetwork={chainNetwork}
+          chainFamily={chainFamily}
+        >
+          <Column gap="md">
+            <Row justifyContent="space-between">
+              <SmallGrayText>Signatures</SmallGrayText>
+            </Row>
+            <div>
+              <SignatureSimulation data={data} />
+            </div>
+          </Column>
+          <Column gap="sm" paddingTop={4}>
+            <Row justifyContent="space-between">
+              <SmallGrayText>State</SmallGrayText>
+            </Row>
+            <div>
+              <Text design="secondary" size="md" marginTop={30}>
+                {data.state}
+              </Text>
+            </div>
+          </Column>
+        </PreviewCard>
+      ))}
+    </>
+  );
+
+  return (
+    <>
+      {simulationType === "transaction" && renderTransactionPreview()}
+      {simulationType === "signature" && renderSignaturePreview()}
+    </>
+  );
+};
+
+export default PreviewTxn;

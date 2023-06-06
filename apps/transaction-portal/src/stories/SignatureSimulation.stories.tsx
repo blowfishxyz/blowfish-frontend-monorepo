@@ -1,6 +1,5 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import { dummySignatureData } from "~components/simulation-results-types/mock-data";
 import {
   SignatureSimulation,
   SignatureSimulationProps,
@@ -17,5 +16,11 @@ const Template: Story<SignatureSimulationProps> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  data: dummySignatureData[0],
+  data: {
+    imageUrl: "",
+    dappUrl: new URL("https://www.blur.io"),
+    message: "Sign in to Blur",
+    state: "No state changes found. Proceed with caution",
+    account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
+  },
 };
