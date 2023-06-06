@@ -55,7 +55,7 @@ const StyledColumn = styled(Column).attrs({
 
 const TxnDataWrapper = styled.div`
   padding: 5px 0 0;
-  max-height: 168px;
+  max-height: 175px;
   height: 100%;
   overflow-y: auto;
   position: relative;
