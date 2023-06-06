@@ -7,9 +7,10 @@ const CardConfirmIcon = styled(ConfirmIcon)`
   width: 22px;
 `;
 
-export const ConfirmingView: React.FC<{ className?: string }> = ({
-  className,
-}) => {
+export const ConfirmingView: React.FC<{
+  className?: string;
+  onCancel: () => void;
+}> = ({ className, onCancel }) => {
   return (
     <Row gap="xl" justifyContent="space-between" flex={1} className={className}>
       <Column maxWidth={300}>
@@ -28,10 +29,10 @@ export const ConfirmingView: React.FC<{ className?: string }> = ({
         </Text>
       </Column>
       <Column gap="md" flex={1}>
-        <Button design="secondary" stretch>
+        <Button design="secondary" stretch loading>
           Try again
         </Button>
-        <Button design="danger" stretch>
+        <Button design="danger" stretch onClick={onCancel}>
           Cancel
         </Button>
       </Column>

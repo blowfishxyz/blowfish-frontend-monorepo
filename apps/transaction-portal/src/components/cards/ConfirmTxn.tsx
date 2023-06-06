@@ -52,11 +52,12 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
 
   const handleContinueClick = useCallback(() => {
     setAnimating(true);
+    onContinue();
     setTimeout(() => {
       setAnimating(false);
       setViewState(ViewState.CONFIRMING);
     }, animationDuration);
-  }, []);
+  }, [onContinue]);
 
   const getContent = () => {
     switch (viewState) {
@@ -69,7 +70,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
           />
         );
       case ViewState.CONFIRMING:
-        return <ConfirmingView />;
+        return <ConfirmingView onCancel={onCancel} />;
       case ViewState.PENDING:
         return <PendingView />;
       default:
