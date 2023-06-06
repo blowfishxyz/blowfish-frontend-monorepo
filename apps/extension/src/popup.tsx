@@ -9,11 +9,7 @@ import {
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
 import { Column, PrimaryButton, Row, Text } from "@blowfish/ui/core";
-import {
-  CloseIcon,
-  PauseIcon,
-  PlayIcon,
-} from "@blowfish/ui/icons";
+import { CloseIcon, PauseIcon, PlayIcon } from "@blowfish/ui/icons";
 import { transformDate } from "@blowfish/utils/helpers";
 import {
   BlowfishOption,
