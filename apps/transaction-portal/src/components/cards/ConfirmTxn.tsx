@@ -73,6 +73,7 @@ const Fade = styled.div`
 
 export interface ConfirmTxnProps {
   onContinue: () => void;
+  onReport: () => void;
   onCancel: () => void;
   warnings: UIWarning[] | undefined;
   severity: Severity | undefined;
@@ -81,6 +82,7 @@ export interface ConfirmTxnProps {
 export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   onContinue,
   onCancel,
+  onReport,
   warnings,
   severity,
 }) => {
@@ -160,7 +162,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
                     Continue
                   </ContinueButton>
                 ) : (
-                  <ContinueButton>
+                  <ContinueButton onClick={onReport}>
                     <ReportIcon />
                     Report
                   </ContinueButton>
@@ -169,9 +171,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
               <Row gap="md">
                 <CancelButton onClick={onCancel}>Cancel</CancelButton>
                 {severity === "INFO" ? (
-                  <ReportButton onClick={handleContinueClick}>
-                    Report
-                  </ReportButton>
+                  <ReportButton onClick={onReport}>Report</ReportButton>
                 ) : severity === "WARNING" ? (
                   <ReportButton onClick={handleContinueClick}>
                     Continue

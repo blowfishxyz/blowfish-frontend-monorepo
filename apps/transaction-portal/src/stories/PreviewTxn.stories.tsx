@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import PreviewTxn, { PreviewTxnProps } from "~components/cards/PreviewTxn";
+import { PreviewTxnProps, PreviewTxn } from "~components/cards/PreviewTxn";
 import { sendErc721 } from "~components/fixtures/state-changes";
 
 export default {

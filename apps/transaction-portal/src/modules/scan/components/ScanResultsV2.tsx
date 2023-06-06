@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { styled } from "styled-components";
 import { Row } from "@blowfish/ui/core";
-import PreviewTxn from "~components/cards/PreviewTxn";
+import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
   ChainFamily,
   ChainNetwork,
@@ -20,6 +20,7 @@ import {
 import { logger } from "@blowfish/utils/logger";
 import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
+import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 
 const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
   height: 100%;
@@ -105,6 +106,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     },
     [message, request, closeWindow]
   );
+
+  const reportUrl = useReportTransactionUrl(request);
+
+  const onReport = useCallback(() => {
+    window.open(reportUrl, "_blank", "noopener,noreferrer");
+  }, [reportUrl]);
 
   const requestTypeStr = useMemo(() => {
     if (isTransactionRequest(request)) {
@@ -227,6 +234,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
         onContinue={() => handleUserAction(true)}
+        onReport={onReport}
         onCancel={() => handleUserAction(false)}
       />
     </ScanResultsWrapper>
