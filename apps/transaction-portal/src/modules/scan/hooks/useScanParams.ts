@@ -1,5 +1,3 @@
-import { ChainInfo } from "@blowfish/utils/chains";
-import { chainIdToSupportedChainMapping } from "@blowfish/utils/chains";
 import {
   DappRequest,
   Message,
@@ -8,32 +6,14 @@ import {
 import useSWR from "swr";
 
 import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
+import {
+  ChainMetadata,
+  useChainMetadata,
+} from "~modules/common/hooks/useChainMetadata";
 import { getScanRequestFromMessageChannel } from "~utils/messages";
 import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
 type HexString = `0x${string}`;
-
-export type ChainMetadata =
-  | {
-      chainId: number;
-      chainInfo: ChainInfo | undefined;
-    }
-  | undefined;
-export function useChainFromUrl(): ChainMetadata {
-  const params = useQueryParams<{ chainId?: string }>();
-  const chainId = params.chainId ? parseInt(params.chainId) : undefined;
-  if (!chainId) {
-    return undefined;
-  }
-  const chain = chainIdToSupportedChainMapping[chainId];
-  if (!chain) {
-    return {
-      chainId,
-      chainInfo: undefined,
-    };
-  }
-  return { chainId, chainInfo: chain };
-}
 
 export type ScanParamsSuccess = {
   message: Message<DappRequest["type"], DappRequest>;
@@ -66,7 +46,7 @@ async function fetcher([messageId]: [string]): Promise<
 }
 
 export function useScanParams(): ScanParams {
-  const chain = useChainFromUrl();
+  const chain = useChainMetadata();
   const { id } = useQueryParams<{ id?: string }>();
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
   if (fetchError) {

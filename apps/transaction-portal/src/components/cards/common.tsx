@@ -1,25 +1,15 @@
 import { styled } from "styled-components";
-import {
-  PrimaryButton,
-  SecondaryButton,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Text, device } from "@blowfish/ui/core";
 
-const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
+const CardWrapper = styled.div`
   width: 100%;
+  max-width: 720px;
   box-sizing: border-box;
   background: ${({ theme }) => theme.colors.backgroundPrimary};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 32px 0;
-
-  padding: 32px 0
-    ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
-
-  @media (${device.lg}) {
-    width: 55%;
-  }
+  margin-bottom: 32px;
 `;
 
 const CardContent = styled.div`
@@ -58,22 +48,6 @@ const CardText = styled(Text).attrs({ size: "md", design: "primary" })`
   @media (${device.lg}) {
     font-size: 16px;
     line-height: 25.76px;
-  }
-`;
-
-const CardSecondaryButton = styled(SecondaryButton)`
-  font-size: 16px;
-
-  @media (${device.lg}) {
-    font-size: 20px;
-  }
-`;
-
-const CardPrimaryButton = styled(PrimaryButton)`
-  font-size: 16px;
-
-  @media (${device.lg}) {
-    font-size: 20px;
   }
 `;
 
@@ -122,8 +96,6 @@ export {
   CardContent,
   Divider,
   CardText,
-  CardSecondaryButton,
-  CardPrimaryButton,
   CardGrayLink,
   CardBlackTextLink,
   SimulationImage,

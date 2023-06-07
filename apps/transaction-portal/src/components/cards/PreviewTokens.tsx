@@ -1,9 +1,9 @@
 import { Column, Row, Text } from "@blowfish/ui/core";
 import React from "react";
 import styled from "styled-components";
-import { TxnImage } from "~components/simulation-results-types/common";
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
+import { TxnImage } from "~components/simulation-results/TxnImage";
 
 const PreviewTokenContainer = styled.div``;
 

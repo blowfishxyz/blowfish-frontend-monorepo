@@ -7,6 +7,6 @@ export default {
   component: ConfirmingView,
 } as Meta;
 
-const Template: Story = () => <ConfirmingView />;
+const Template: Story = () => <ConfirmingView onCancel={() => undefined} />;
 
 export const Default = Template.bind({});

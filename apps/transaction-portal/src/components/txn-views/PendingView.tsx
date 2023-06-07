@@ -74,9 +74,11 @@ const InfoRow = ({ label, value }: InfoRowProps) => (
   </>
 );
 
-export const PendingView = () => {
+export const PendingView: React.FC<{ className?: string }> = ({
+  className,
+}) => {
   return (
-    <Column gap="md" alignItems="center">
+    <Column gap="md" alignItems="center" className={className}>
       <StyledBlowfishIcon />
       <StyledTextXL>Pending</StyledTextXL>
       <StyledCenteredText>
