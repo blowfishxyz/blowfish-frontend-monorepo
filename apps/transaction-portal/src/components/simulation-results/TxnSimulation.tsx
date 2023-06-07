@@ -19,6 +19,10 @@ import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
 `;
 
 const TxnSimulationImageMsgWrapper = styled(Row)`
@@ -48,7 +52,7 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  z-index: 1;
+  z-index: 4;
   top: 0;
   left: 55px;
   width: 237px;

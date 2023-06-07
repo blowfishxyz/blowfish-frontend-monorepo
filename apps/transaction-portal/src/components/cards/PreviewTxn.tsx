@@ -1,9 +1,22 @@
-import React, { FC, ReactNode } from "react";
-import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
+import React, { FC, ReactElement, ReactNode } from "react";
+import {
+  BlockExplorerLink,
+  Column,
+  LinkWithArrow,
+  Row,
+  Text,
+  device,
+} from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
-import { CardWrapper, CardContent, Divider, CardText } from "./common";
-import { ConfirmTxn } from "./ConfirmTxn";
+import {
+  CardWrapper,
+  CardContent,
+  Divider,
+  CardText,
+  CardBlackTextLink,
+} from "./common";
+import { shortenHex } from "~utils/hex";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
@@ -12,6 +25,7 @@ import {
   EvmExpectedStateChangesInner,
   EvmMessageExpectedStateChange,
 } from "@blowfish/api-client";
+import { ConfirmTxn } from "./ConfirmTxn";
 import { TxnSimulation } from "~components/simulation-results/TxnSimulation";
 
 export type TxnSimulationDataType = {
@@ -41,7 +55,7 @@ const StyledColumn = styled(Column).attrs({
 
 const TxnDataWrapper = styled.div`
   padding: 5px 0 0;
-  max-height: 200px;
+  max-height: 175px;
   height: 100%;
   overflow-y: auto;
   position: relative;
@@ -82,18 +96,19 @@ interface PreviewCardProps {
   onContinue: () => void;
   onReport: () => void;
   onCancel: () => void;
+  advancedDetails: ReactElement;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
   title,
-  origin,
-  website,
   warnings,
   severity,
+  children,
   onContinue,
   onReport,
   onCancel,
-  children,
+  advancedDetails,
+  website,
 }) => (
   <CardWrapper>
     <CardContent>
@@ -129,6 +144,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
       </StyledColumn> */}
     </StyledCardContent>
     <Divider margin="0 0 16px" />
+    {advancedDetails}
     <CardContent>
       <ConfirmTxn
         onContinue={onContinue}
@@ -147,9 +163,10 @@ export interface PreviewTxnProps {
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
+  advancedDetails: ReactElement;
   onContinue: () => void;
-  onReport: () => void;
   onCancel: () => void;
+  onReport: () => void;
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({
@@ -159,6 +176,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   onContinue,
   onReport,
   onCancel,
+  advancedDetails,
 }) => {
   const { dappUrl, data, message } = txnData;
   const { origin, host } = dappUrl || {};
@@ -173,6 +191,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onContinue={onContinue}
       onReport={onReport}
       onCancel={onCancel}
+      advancedDetails={advancedDetails}
     >
       {message ? <SignaturePreview message={message} /> : null}
       {<StateChangePreview data={data} />}

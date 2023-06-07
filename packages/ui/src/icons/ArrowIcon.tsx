@@ -1,9 +1,21 @@
 import React from "react";
+import { css, styled } from "styled-components";
 
 interface ArrowIconProps {
   className?: string;
   style?: React.CSSProperties;
+  expanded?: boolean;
 }
+
+const StyledSvg = styled.svg<{ $expanded?: boolean }>`
+  transition: all 0.2s linear;
+
+  ${(props) =>
+    props.$expanded &&
+    css`
+      transform: rotate(180deg);
+    `}
+`;
 
 const ArrowIcon: React.FC<ArrowIconProps> = ({ className, style }) => (
   <svg
@@ -24,11 +36,7 @@ const ArrowIcon: React.FC<ArrowIconProps> = ({ className, style }) => (
   </svg>
 );
 
-
-const ArrowRightIcon: React.FC<ArrowIconProps> = ({
-  className,
-  style,
-}) => (
+const ArrowRightIcon: React.FC<ArrowIconProps> = ({ className, style }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 448 512"
@@ -39,7 +47,33 @@ const ArrowRightIcon: React.FC<ArrowIconProps> = ({
   </svg>
 );
 
+const ArrowDownIcon: React.FC<ArrowIconProps> = ({
+  className,
+  style,
+  expanded,
+}) => (
+  <StyledSvg
+    $expanded={expanded}
+    viewBox="0 0 16 17"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    style={style}
+  >
+    <path
+      opacity="0.3"
+      d="M12.6666 9.83333L7.99992 14.5M7.99992 14.5L3.33325 9.83333M7.99992 14.5L7.99992 2.5"
+      stroke="black"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </StyledSvg>
+);
+
+const ArrowDownIconMemo = React.memo(ArrowDownIcon);
 const ArrowRightIconMemo = React.memo(ArrowRightIcon);
 const ArrowIconMemo = React.memo(ArrowIcon);
 export { ArrowRightIconMemo as ArrowRightIcon };
+export { ArrowDownIconMemo as ArrowDownIcon };
 export { ArrowIconMemo as ArrowIcon };

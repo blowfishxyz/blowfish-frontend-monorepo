@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import { Text, device } from "@blowfish/ui/core";
 
-const CardWrapper = styled.div`
+const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   width: 100%;
   max-width: 720px;
   box-sizing: border-box;
@@ -9,6 +9,28 @@ const CardWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
   padding: 32px 0;
+  max-height: 100%;
+  overflow-y: overlay;
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  padding: 32px 0
+    ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
+
+  @media (${device.lg}) {
+    width: 55%;
+  }
+
   margin-bottom: 32px;
 `;
 

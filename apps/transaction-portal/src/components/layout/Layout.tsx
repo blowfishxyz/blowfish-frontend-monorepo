@@ -17,7 +17,7 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
       width="100%"
       minHeight="100%"
       paddingBottom={24}
-      paddingTop={82}
+      paddingTop={100}
       paddingInline={24}
       severity={severity}
       alignItems="center"
