@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import React from "react";
 
 const DashboardPage = dynamic(
-  () => import("../components/client/DashboardPage"),
+  () => import("../../components/client/DashboardPage"),
   {
     ssr: false,
   }

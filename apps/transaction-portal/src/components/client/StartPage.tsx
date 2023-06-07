@@ -20,7 +20,7 @@ const StartPage = () => {
       if (redirect) {
         router.replace(decodeURIComponent(redirect));
       } else {
-        router.replace("/dashboard");
+        router.replace("/v2/dashboard");
       }
     }
   }, [isConnected, redirect, router]);

@@ -188,7 +188,7 @@ const processRequestBase = async (
   logger.debug(message);
   const portalUrl = await getBlowfishPortalUrl();
   const v2Enabled = await getBlowfishV2Enabled();
-  const pathname = v2Enabled ? `scan-v2` : `scan`;
+  const pathname = v2Enabled ? `v2/scan` : `scan`;
   const tab = await Browser.tabs.create({
     url: `${portalUrl}/${pathname}?id=${message.id}&chainId=${chainId}`,
     active: true,

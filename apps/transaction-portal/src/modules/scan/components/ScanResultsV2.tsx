@@ -162,6 +162,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   useEffect(() => {
     setLayoutConfig({ severity });
+    return () => {
+      setLayoutConfig({ severity: "INFO" });
+    };
   }, [severity, setLayoutConfig]);
 
   const txnData = {
