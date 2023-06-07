@@ -1,5 +1,4 @@
-import React, { useCallback, useMemo } from "react";
-import { styled } from "styled-components";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Row } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
@@ -11,23 +10,16 @@ import {
 import {
   DappRequest,
   Message,
-  Severity,
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
   isTransactionRequest,
 } from "@blowfish/utils/types";
-import { logger } from "@blowfish/utils/logger";
-import { sendAbort, sendResult } from "~utils/messages";
 import { containsPunycode, createValidURL } from "~utils/utils";
+import { useLayoutConfig } from "~components/layout/Layout";
+import { useUserDecision } from "../hooks/useUserDecision";
+import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
-
-const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
-  height: 100%;
-
-  background-color: ${({ severity, theme }) =>
-    theme.severityColors[severity ?? "INFO"].background};
-`;
 
 export type UIWarning = {
   message: string;
@@ -49,6 +41,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   message,
   ...props
 }) => {
+  const [, setLayoutConfig] = useLayoutConfig();
+  const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
 
   const hasPunycode = containsPunycode(dappUrl?.hostname);
@@ -71,41 +65,11 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     );
   }, [scanResults]);
 
-  const closeWindow = useCallback(() => window.close(), []);
-
-  const handleUserAction = useCallback(
-    async (shouldProceed: boolean) => {
-      if (!message) {
-        logger.error("Error: Cannot proceed, no message to respond to ");
-        return;
-      }
-      if (!request) {
-        logger.error("Error: Cannot proceed, no request to respond to ");
-        return;
-      }
-
-      logger.debug(request);
-
-      if (shouldProceed) {
-        if (isSignMessageRequest(request)) {
-          const { payload } = request;
-          if (payload.method === "personal_sign") {
-            // NOTE: domain mismatch on SIWE, so we just pass the message back to the dapp
-            logger.debug("personal_sign - send message back to dapp");
-            await sendResult(message.id, payload.message);
-          }
-        } else {
-          // TODO: This should never happen
-          logger.error("Unsupported operation ", request);
-          alert("UNSUPPORTED OPERATION");
-        }
-      } else {
-        await sendAbort(message.id);
-      }
-      closeWindow();
-    },
-    [message, request, closeWindow]
-  );
+  const { reject, confirm } = useUserDecision({
+    chainId: chain?.chainId,
+    message,
+    request,
+  });
 
   const reportUrl = useReportTransactionUrl(request);
 
@@ -185,9 +149,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return warning ? [warning] : [];
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
-  const simulationType =
-    request.type === "SIGN_MESSAGE" ? "signature" : "transaction";
-
   const severity = useMemo(() => {
     if (
       request?.payload &&
@@ -196,48 +157,33 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     ) {
       return actionToSeverity("BLOCK");
     }
-    return scanResults?.action
-      ? actionToSeverity(scanResults?.action)
-      : undefined;
+    return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
   }, [request?.payload, scanResults?.action]);
 
-  const signatureData = [
-    {
-      imageUrl: "",
-      state: scanResults.simulationResults?.error
-        ? simulationFailedMessage
-        : "No state changes found. Proceed with caution",
-      dappUrl,
-      message: parsedMessageContent,
-      account: request.userAccount,
-    },
-  ];
+  useEffect(() => {
+    setLayoutConfig({ severity });
+  }, [severity, setLayoutConfig]);
 
   const txnData = {
+    message: parsedMessageContent,
     data: scanResults?.simulationResults?.expectedStateChanges,
-    dappUrl: dappUrl,
+    dappUrl,
     account: request.userAccount,
   };
 
   return (
-    <ScanResultsWrapper
-      justifyContent="center"
-      alignItems="center"
-      severity={severity}
-    >
+    <Row justifyContent="center">
       <PreviewTxn
-        simulationType={simulationType}
-        signatureData={signatureData}
-        txnSimulationData={txnData}
+        txnData={txnData}
         warnings={warnings}
         severity={severity}
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
-        onContinue={() => handleUserAction(true)}
+        onContinue={() => confirm()}
+        onCancel={() => reject()}
         onReport={onReport}
-        onCancel={() => handleUserAction(false)}
       />
-    </ScanResultsWrapper>
+    </Row>
   );
 };
 

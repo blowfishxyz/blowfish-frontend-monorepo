@@ -1,45 +1,30 @@
 import React, { FC, ReactNode } from "react";
-import {
-  BlockExplorerLink,
-  Column,
-  LinkWithArrow,
-  Row,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
-import {
-  CardWrapper,
-  CardContent,
-  Divider,
-  CardText,
-  CardBlackTextLink,
-} from "./common";
-import { TxnSimulation } from "~components/simulation-results-types/TxnSimulation";
-import { SignatureSimulation } from "~components/simulation-results-types/SignatureSimulation";
-import { shortenHex } from "~utils/hex";
+import { CardWrapper, CardContent, Divider, CardText } from "./common";
 import { ConfirmTxn } from "./ConfirmTxn";
-import {
-  SignatureDataType,
-  TxnSimulationDataType,
-} from "~components/simulation-results-types/mock-data";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
-import { ChainFamily, ChainNetwork } from "@blowfish/api-client";
+import {
+  ChainFamily,
+  ChainNetwork,
+  EvmExpectedStateChangesInner,
+  EvmMessageExpectedStateChange,
+} from "@blowfish/api-client";
+import { TxnSimulation } from "~components/simulation-results/TxnSimulation";
 
-const Title = styled(Text)`
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 20px;
+export type TxnSimulationDataType = {
+  dappUrl: URL | undefined;
+  account: string;
+  message: string | undefined;
+  data:
+    | EvmMessageExpectedStateChange[]
+    | EvmExpectedStateChangesInner[]
+    | undefined;
+};
 
-  @media (${device.lg}) {
-    font-size: 22px;
-    line-height: 25px;
-  }
-`;
-
-const SmallGrayText = styled(Text).attrs({ size: "sm", design: "secondary" })``;
+const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
 
 const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
@@ -89,38 +74,31 @@ const TxnDataWrapper = styled.div`
 
 interface PreviewCardProps {
   title: string;
-  simulationType: "transaction" | "signature";
   origin?: string;
   website?: string;
-  contract: string;
   warnings: UIWarning[];
   severity: Severity | undefined;
   children: ReactNode;
   onContinue: () => void;
   onReport: () => void;
   onCancel: () => void;
-  chainNetwork: ChainNetwork;
-  chainFamily: ChainFamily;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
   title,
   origin,
   website,
-  contract,
   warnings,
   severity,
   onContinue,
   onReport,
   onCancel,
   children,
-  chainNetwork,
-  chainFamily,
 }) => (
   <CardWrapper>
     <CardContent>
-      <Row justifyContent="space-between">
-        <Title>{title}</Title>
+      <Row justifyContent="space-between" alignItems="center">
+        <Text size="lg">{title}</Text>
         <Chip severity={severity} />
       </Row>
     </CardContent>
@@ -129,28 +107,26 @@ const PreviewCard: FC<PreviewCardProps> = ({
     <Divider margin="24px 0 0" />
     <StyledCardContent>
       <StyledColumn gap="sm">
-        <SmallGrayText>Website</SmallGrayText>
+        <SectionHeading>Website</SectionHeading>
         <Row gap="xs" alignItems="center">
           <CardText>
             <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
           </CardText>
         </Row>
       </StyledColumn>
-      <Divider orientation="vertical" margin="0 36px" />
+      {/* <Divider orientation="vertical" margin="0 36px" />
       <StyledColumn gap="sm">
-        <SmallGrayText>Contract</SmallGrayText>
+        <SectionHeading>Contract</SectionHeading>
         <CardText>
-          <CardBlackTextLink>
-            <BlockExplorerLink
-              chainFamily={chainFamily}
-              chainNetwork={chainNetwork}
-              address={contract}
-            >
-              {shortenHex(contract)}
-            </BlockExplorerLink>
-          </CardBlackTextLink>
+          <BlockExplorerLink
+            chainFamily={chainFamily}
+            chainNetwork={chainNetwork}
+            address={contract}
+          >
+            {shortenHex(contract)}
+          </BlockExplorerLink>
         </CardText>
-      </StyledColumn>
+      </StyledColumn> */}
     </StyledCardContent>
     <Divider margin="0 0 16px" />
     <CardContent>
@@ -166,9 +142,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
 );
 
 export interface PreviewTxnProps {
-  simulationType: "transaction" | "signature";
-  txnSimulationData?: TxnSimulationDataType;
-  signatureData: SignatureDataType[];
+  txnData: TxnSimulationDataType;
   warnings: UIWarning[];
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
@@ -179,90 +153,75 @@ export interface PreviewTxnProps {
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({
-  simulationType,
-  txnSimulationData,
-  signatureData,
+  txnData,
   warnings,
   severity,
   onContinue,
   onReport,
   onCancel,
-  chainNetwork,
-  chainFamily,
 }) => {
-  const renderTransactionPreview = () => (
+  const { dappUrl, data, message } = txnData;
+  const { origin, host } = dappUrl || {};
+
+  return (
     <PreviewCard
-      title="Preview"
-      simulationType="transaction"
-      origin={txnSimulationData?.dappUrl?.origin}
-      website={txnSimulationData?.dappUrl?.host}
-      contract={txnSimulationData?.account || ""}
+      title="Preview changes"
+      origin={origin}
+      website={host}
       warnings={warnings}
       severity={severity}
       onContinue={onContinue}
       onReport={onReport}
       onCancel={onCancel}
-      chainNetwork={chainNetwork}
-      chainFamily={chainFamily}
     >
+      {message ? <SignaturePreview message={message} /> : null}
+      {<StateChangePreview data={data} />}
+    </PreviewCard>
+  );
+};
+
+const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
+  return (
+    <Column gap="sm" marginBottom={18}>
+      <Row justifyContent="space-between">
+        <SectionHeading>Signatures</SectionHeading>
+      </Row>
+      <Text
+        size="sm"
+        style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
+      >
+        {message}
+      </Text>
+    </Column>
+  );
+};
+
+const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
+  data,
+}) => {
+  if (data && data.length > 0) {
+    return (
       <Column gap="lg">
         <Row justifyContent="space-between">
-          <SmallGrayText>State</SmallGrayText>
+          <SectionHeading>State</SectionHeading>
         </Row>
         <TxnDataWrapper>
-          {txnSimulationData?.data?.map((data, index) => {
+          {data.map((data, index) => {
             return <TxnSimulation key={index} txnData={data} />;
           })}
         </TxnDataWrapper>
       </Column>
-    </PreviewCard>
-  );
-
-  const renderSignaturePreview = () => (
-    <>
-      {signatureData.map((data, index) => (
-        <PreviewCard
-          key={index}
-          title="Preview"
-          simulationType="signature"
-          origin={data.dappUrl?.origin}
-          website={data.dappUrl?.host}
-          contract={data.account}
-          warnings={warnings}
-          severity={severity}
-          onReport={onReport}
-          onContinue={onContinue}
-          onCancel={onCancel}
-          chainNetwork={chainNetwork}
-          chainFamily={chainFamily}
-        >
-          <Column gap="md">
-            <Row justifyContent="space-between">
-              <SmallGrayText>Signatures</SmallGrayText>
-            </Row>
-            <div>
-              <SignatureSimulation data={data} />
-            </div>
-          </Column>
-          <Column gap="sm" paddingTop={4}>
-            <Row justifyContent="space-between">
-              <SmallGrayText>State</SmallGrayText>
-            </Row>
-            <div>
-              <Text design="secondary" size="md" marginTop={30}>
-                {data.state}
-              </Text>
-            </div>
-          </Column>
-        </PreviewCard>
-      ))}
-    </>
-  );
+    );
+  }
 
   return (
-    <>
-      {simulationType === "transaction" && renderTransactionPreview()}
-      {simulationType === "signature" && renderSignaturePreview()}
-    </>
+    <Column gap="sm">
+      <Row justifyContent="space-between">
+        <SectionHeading>State</SectionHeading>
+      </Row>
+      <Text size="md" color="base30">
+        No state changes found. Proceed with caution
+      </Text>
+    </Column>
   );
 };
