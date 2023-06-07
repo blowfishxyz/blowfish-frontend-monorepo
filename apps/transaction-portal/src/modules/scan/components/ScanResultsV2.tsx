@@ -1,4 +1,4 @@
-import React, {  useCallback, useMemo, useEffect  } from "react";
+import React, {  useCallback, useMemo, useEffect, useState  } from "react";
 import { keyframes, styled } from "styled-components";
 import { Row, Text } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
@@ -101,13 +101,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     }
     return undefined;
   }, [request]);
-
-  const simulationFailedMessage = useMemo(() => {
-    return (
-      scanResults?.simulationResults?.error?.humanReadableError ||
-      "Simulation failed"
-    );
-  }, [scanResults]);
 
   const { reject, confirm } = useUserDecision({
     chainId: chain?.chainId,
