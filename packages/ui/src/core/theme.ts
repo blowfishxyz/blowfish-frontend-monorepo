@@ -34,7 +34,7 @@ const severityColors: {
   CRITICAL: {
     background: "#FFC1AD",
     backgroundLight: "#FFFAFA",
-    backgroundV2: "#E96357",
+    backgroundV2: "#ED6A5E",
   },
   WARNING: {
     background: "#FFD567",
@@ -44,25 +44,28 @@ const severityColors: {
   INFO: {
     background: "#EFF2F0",
     backgroundLight: "#FFFFFF",
-    backgroundV2: "#00B94A",
+    backgroundV2: "#EFEFEF",
   },
 };
 
 const base = {
   base10: "rgba(0, 0, 0, 0.1)",
   base30: "rgba(0, 0, 0, 0.3)",
+  base40: "rgba(0, 0, 0, 0.4)",
   base50: "rgba(0, 0, 0, 0.5)",
+  base75: "rgba(0, 0, 0, 0.75)",
   base100: "rgb(0, 0, 0)",
 };
 
 const backgroundColors = {
   backgroundPrimary: "#FFFFFF",
-  backgroundSecondary: "#F8F8F8",
+  backgroundSecondary: "#EFEFEF",
 };
 
 const foregroundColors = {
   foregroundPrimary: "#000000",
   foregroundSecondary: base.base50,
+  foregroundContrast: "#FFFFFF",
   foregroundDanger: "#FF6332",
   foregroundSecondaryLight: "#FFFFFFCC",
 };
@@ -87,12 +90,14 @@ const lightTheme = {
   mediaQueries: generateMediaQueries(breakpoints),
 };
 
-export type ThemeBackgroundColors =
+export type ThemeBackgroundColor =
   | keyof typeof backgroundColors
+  | keyof typeof actionColors
   | keyof typeof base;
-export type ThemeForegroundColors =
+export type ThemeForegroundColor =
   | keyof typeof foregroundColors
-  | keyof typeof actionColors;
+  | keyof typeof actionColors
+  | keyof typeof base;
 
 export type ITheme = typeof lightTheme;
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
-import { PreviewTxnProps, PreviewTxn } from "~components/cards/PreviewTxn";
+import { PreviewTxn, PreviewTxnProps } from "~components/cards/PreviewTxn";
 import { sendErc721 } from "~components/fixtures/state-changes";
 import { CardContent } from "~components/cards/common";
 import { Text, Row } from "@blowfish/ui/core";
@@ -21,9 +21,9 @@ const StyledArrowDownIcon = styled(ArrowDownIcon)`
 
 export const TransactionPreview = Template.bind({});
 TransactionPreview.args = {
-  simulationType: "transaction",
-  txnSimulationData: {
+  txnData: {
     data: [sendErc721],
+    message: undefined,
     dappUrl: new URL("https://www.blur.io"),
     account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
   },
@@ -59,16 +59,21 @@ TransactionPreview.args = {
 
 export const SignaturePreview = Template.bind({});
 SignaturePreview.args = {
-  simulationType: "signature",
-  signatureData: [
-    {
-      imageUrl: "/placeholder/placeholder-signature-image.svg",
-      dappUrl: new URL("https://www.blur.io"),
-      message: "Sign in to Blur",
-      state: "No state changes found. Proceed with caution",
-      account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
-    },
-  ],
+  txnData: {
+    account: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337",
+    dappUrl: new URL("https://www.blur.io"),
+    message: "Sign in to Blur",
+    data: undefined,
+  },
+  onContinue: () => {
+    console.log("Continue clicked");
+  },
+  onCancel: () => {
+    console.log("Cancel clicked");
+  },
+  onReport: () => {
+    console.log("Cancel clicked");
+  },
   advancedDetails: (
     <>
       <CardContent>
@@ -88,13 +93,4 @@ SignaturePreview.args = {
       </CardContent>
     </>
   ),
-  onContinue: () => {
-    console.log("Continue clicked");
-  },
-  onCancel: () => {
-    console.log("Cancel clicked");
-  },
-  onReport: () => {
-    console.log("Cancel clicked");
-  },
 };

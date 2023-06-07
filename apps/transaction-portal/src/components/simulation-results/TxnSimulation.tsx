@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import Decimal from "decimal.js";
 import { Column, Row, Text, device } from "@blowfish/ui/core";
-import { SmallGrayText } from "./common";
 import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { PreviewNfts } from "~components/cards/PreviewNfts";
 import { AssetImageV2 } from "~components/common/AssetImageV2";
@@ -58,10 +57,6 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
   left: 55px;
   width: 237px;
   border-radius: 12px;
-
-  ${SmallGrayText} {
-    font-size: 12px;
-  }
 `;
 
 interface TxnSimulationProps {

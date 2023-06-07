@@ -30,8 +30,9 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
   ${({ theme, severity }) =>
     severity &&
     css`
-      background-color: ${theme.severityColors[severity ?? "INFO"]
-        .backgroundV2};
+      background-color: ${severity === "INFO"
+        ? theme.colors.success
+        : theme.severityColors[severity].backgroundV2};
     `}
 `;
 
@@ -54,7 +55,7 @@ export const Chip = ({ severity, ...rest }: ChipProps) => {
         );
       case "CRITICAL":
         return (
-          <WarningText size="md" design="primary">
+          <WarningText size="md">
             Risk level <SeverityText weight="semi-bold">Critical</SeverityText>
           </WarningText>
         );

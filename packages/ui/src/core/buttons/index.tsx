@@ -62,17 +62,17 @@ const baseStyles = css`
 const secondaryDesign = css`
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
-    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+  /* box-shadow: 0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663); */
   border-radius: 12px;
   color: #010101;
 `;
 
 const primaryDesign = css`
   background: #000000;
-  box-shadow: 0px 9.94853px 24.1177px rgba(0, 0, 0, 0.136834),
+  /* box-shadow: 0px 9.94853px 24.1177px rgba(0, 0, 0, 0.136834),
     0px 4.13211px 10.0172px rgba(0, 0, 0, 0.105),
-    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663);
+    0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663); */
   color: #ffffff;
 
   &:disabled {
@@ -119,6 +119,33 @@ function getDesignStyles({ design }: ButtonProps) {
   return primaryDesign;
 }
 
+const smallSize = css`
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 21px;
+  height: 40px;
+  max-height: 40px;
+`;
+
+const mediumSize = css`
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 23.4px;
+  height: 48px;
+  max-height: 48px;
+`;
+
+function getSizeStyles({ size }: ButtonProps) {
+  if (size === "sm") {
+    return smallSize;
+  }
+  if (size === "md") {
+    return mediumSize;
+  }
+
+  return mediumSize;
+}
+
 function getLoadingStyles({ $loading }: { $loading?: boolean }) {
   if ($loading) {
     return css`
@@ -127,8 +154,8 @@ function getLoadingStyles({ $loading }: { $loading?: boolean }) {
   }
 }
 
-function getPositioningStyles({ stretch }: { stretch?: boolean }) {
-  if (stretch) {
+function getPositioningStyles({ $stretch }: { $stretch?: boolean }) {
+  if ($stretch) {
     return css`
       flex: 1;
       align-items: center;
@@ -139,16 +166,21 @@ function getPositioningStyles({ stretch }: { stretch?: boolean }) {
 
 type ButtonProps = {
   design?: "primary" | "secondary" | "tertiary" | "danger";
+  size?: "sm" | "md";
   stretch?: boolean;
   loading?: boolean;
 };
 
 const ButtonComponent = styled.button<
-  Omit<ButtonProps, "loading"> & { $loading?: boolean }
+  Omit<ButtonProps, "loading" | "stretch"> & {
+    $loading?: boolean;
+    $stretch?: boolean;
+  }
 >`
   ${resetStyles}
   ${baseStyles}
   ${getDesignStyles}
+  ${getSizeStyles}
   ${interactiveStyles}
   ${getLoadingStyles}
   ${getPositioningStyles}
@@ -157,9 +189,9 @@ const ButtonComponent = styled.button<
 export const Button = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps
->(({ loading, ...props }, ref) => {
+>(({ loading, stretch, ...props }, ref) => {
   return (
-    <ButtonComponent ref={ref} {...props} $loading={loading}>
+    <ButtonComponent ref={ref} {...props} $loading={loading} $stretch={stretch}>
       {loading ? (
         <Column position="absolute" absoluteCentered="both">
           <Spinner

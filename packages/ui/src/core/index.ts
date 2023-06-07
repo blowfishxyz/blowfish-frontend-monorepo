@@ -18,4 +18,8 @@ export { device, size } from "./utils/breakpoints";
 export * from "./utils/animations";
 export { supportedChains } from "./supportedChains";
 export { StyledBaseDiv, StyledBaseText, StyledBaseSvg } from "./StyledBase";
-export type { ITheme } from "./theme";
+export type {
+  ITheme,
+  ThemeBackgroundColor,
+  ThemeForegroundColor,
+} from "./theme";
