@@ -1,4 +1,4 @@
-import React, {  useCallback, useMemo, useEffect, useState  } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { keyframes, styled } from "styled-components";
 import { Row, Text } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
