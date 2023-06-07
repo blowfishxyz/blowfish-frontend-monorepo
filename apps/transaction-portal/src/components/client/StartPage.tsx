@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata } from "~utils/wagmi";
 import { useEffect } from "react";
-import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useQueryParams";
 
 const StartPage = () => {
   const { isConnected } = useAccount();

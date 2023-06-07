@@ -24,6 +24,7 @@ import { updateStoredAllowlist } from "~utils/blocklist";
 import {
   getBlowfishImpersonationWallet,
   getBlowfishPortalUrl,
+  getBlowfishV2Enabled,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
@@ -186,8 +187,12 @@ const processRequestBase = async (
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   logger.debug(message);
   const portalUrl = await getBlowfishPortalUrl();
+  const v2Enabled = await getBlowfishV2Enabled();
+  const path = v2Enabled
+    ? `scan-v2?id=${message.id}&chainId=${chainId}&v2=true`
+    : `scan?id=${message.id}&chainId=${chainId}`;
   const tab = await Browser.tabs.create({
-    url: `${portalUrl}/scan?id=${message.id}&chainId=${chainId}`,
+    url: `${portalUrl}/${path}`,
     active: true,
   });
   const tabId = tab.id!;

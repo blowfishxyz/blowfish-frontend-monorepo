@@ -9,10 +9,11 @@ import { GlobalStyle } from "~styles/global";
 
 import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
-import { BLOWFISH_V2_ENABLED } from "~config";
+import { useQueryParams } from "~hooks/useQueryParams";
 
 export default function App({ Component, pageProps }: AppProps) {
   const requestChainId = useRequestChainId();
+  const { v2: isV2Enabled } = useQueryParams<{ v2?: boolean }>();
 
   return (
     <>
@@ -25,7 +26,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <ConnectKitProvider
             options={{
               initialChainId: requestChainId,
-              enforceSupportedChains: !BLOWFISH_V2_ENABLED,
+              enforceSupportedChains: !isV2Enabled,
             }}
             mode="light"
           >

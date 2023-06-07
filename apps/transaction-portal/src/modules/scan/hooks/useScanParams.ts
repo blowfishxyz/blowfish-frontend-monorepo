@@ -7,7 +7,7 @@ import {
 } from "@blowfish/utils/types";
 import useSWR from "swr";
 
-import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useQueryParams";
 import { getScanRequestFromMessageChannel } from "~utils/messages";
 import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
