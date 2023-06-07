@@ -167,10 +167,10 @@ const DefaultView: React.FC<{
             </Button>
           </Row>
           <Row gap="md">
-            <Button stretch design="secondary" onClick={onCancel}>
+            <Button size="sm" stretch design="secondary" onClick={onCancel}>
               Cancel
             </Button>
-            <Button stretch design="danger" onClick={onContinue}>
+            <Button size="sm" stretch design="danger" onClick={onContinue}>
               Continue
             </Button>
           </Row>
@@ -187,10 +187,10 @@ const DefaultView: React.FC<{
           </Button>
         </Row>
         <Row gap="md">
-          <Button stretch design="danger" onClick={onCancel}>
+          <Button size="sm" stretch design="danger" onClick={onCancel}>
             Cancel
           </Button>
-          <Button stretch design="secondary" onClick={onReport}>
+          <Button size="sm" stretch design="secondary" onClick={onReport}>
             Report
           </Button>
         </Row>

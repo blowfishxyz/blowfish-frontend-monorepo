@@ -123,14 +123,16 @@ const smallSize = css`
   font-weight: 500;
   font-size: 15px;
   line-height: 21px;
-  padding: 9px 16px;
+  height: 40px;
+  max-height: 40px;
 `;
 
 const mediumSize = css`
   font-weight: 500;
   font-size: 18px;
   line-height: 23.4px;
-  padding: 11px 16px;
+  height: 48px;
+  max-height: 48px;
 `;
 
 function getSizeStyles({ size }: ButtonProps) {
@@ -170,7 +172,10 @@ type ButtonProps = {
 };
 
 const ButtonComponent = styled.button<
-  Omit<ButtonProps, "loading" | "stretch"> & { $loading?: boolean, $stretch?: boolean }
+  Omit<ButtonProps, "loading" | "stretch"> & {
+    $loading?: boolean;
+    $stretch?: boolean;
+  }
 >`
   ${resetStyles}
   ${baseStyles}
