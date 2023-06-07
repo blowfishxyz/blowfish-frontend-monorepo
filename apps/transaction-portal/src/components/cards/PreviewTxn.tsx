@@ -2,6 +2,7 @@ import React, { FC, ReactElement, ReactNode } from "react";
 import {
   BlockExplorerLink,
   Column,
+  LinkWithArrow,
   Row,
   Text,
   device,
@@ -107,6 +108,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onReport,
   onCancel,
   advancedDetails,
+  website,
 }) => (
   <CardWrapper>
     <CardContent>
@@ -123,15 +125,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
         <SectionHeading>Website</SectionHeading>
         <Row gap="xs" alignItems="center">
           <CardText>
-            <CardBlackTextLink>
-              <BlockExplorerLink
-                chainFamily={chainFamily}
-                chainNetwork={chainNetwork}
-                address={contract}
-              >
-                {shortenHex(contract)}
-              </BlockExplorerLink>
-            </CardBlackTextLink>
+            <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
           </CardText>
         </Row>
       </StyledColumn>

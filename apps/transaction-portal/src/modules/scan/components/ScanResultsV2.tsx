@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, useEffect } from "react";
+import React, {  useCallback, useMemo, useEffect  } from "react";
 import { keyframes, styled } from "styled-components";
 import { Row, Text } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
@@ -11,7 +11,6 @@ import {
 import {
   DappRequest,
   Message,
-  Severity,
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
@@ -25,14 +24,6 @@ import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import RequestJsonViewer from "./RequestJsonViewer";
-
-const ScanResultsWrapper = styled(Row)<{ severity?: Severity }>`
-  padding: 16px 32px;
-  overflow: hidden;
-
-  background-color: ${({ severity, theme }) =>
-    theme.severityColors[severity ?? "INFO"].background};
-`;
 
 const ViewDetailsWrapper = styled(Row)`
   cursor: pointer;
