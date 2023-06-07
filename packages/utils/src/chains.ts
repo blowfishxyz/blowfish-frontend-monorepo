@@ -15,9 +15,17 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
     chainFamily: "ethereum",
     chainNetwork: "goerli",
   },
+  10: {
+    chainFamily: "optimism",
+    chainNetwork: "mainnet",
+  },
   137: {
     chainFamily: "polygon",
     chainNetwork: "mainnet",
+  },
+  420: {
+    chainFamily: "optimism",
+    chainNetwork: "goerli",
   },
   42161: {
     chainFamily: "arbitrum",
@@ -70,6 +78,10 @@ export const chainToBlockExplorerUrl = ({
   switch (chainFamily) {
     case "polygon":
       return `https://${prefix}polygonscan.com/address/${address}`;
+    case "optimism":
+      return chainNetwork === "mainnet"
+        ? `https://optimistic.etherscan.io/address/${address}`
+        : `https://goerli-optimism.etherscan.io/address/${address}`;
     case "arbitrum":
       return `https://arbiscan.io/address/${address}`;
     case "bnb":

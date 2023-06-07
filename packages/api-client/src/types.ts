@@ -5,7 +5,12 @@ import type {
   EvmExpectedStateChangesInner,
 } from "./client/models";
 
-export type ChainFamily = "ethereum" | "polygon" | "arbitrum" | "bnb";
+export type ChainFamily =
+  | "ethereum"
+  | "polygon"
+  | "arbitrum"
+  | "bnb"
+  | "optimism";
 export type ChainNetwork = "mainnet" | "goerli" | "one";
 
 export type EvmMessageExpectedStateChange =

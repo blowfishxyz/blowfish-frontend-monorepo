@@ -17,6 +17,7 @@ import {
 } from "./BottomMenus";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
 import { MaskIcon } from "./icons/MaskIcon";
+import { OptimismIcon } from "@blowfish/ui/icons";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;
@@ -33,8 +34,8 @@ const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
       return <ArbitrumIcon style={{ height: "16px", width: "auto" }} />;
     case "bnb":
       return <BnbChainIcon style={{ height: "16px", width: "auto" }} />;
-    default:
-      return <EthereumIcon style={{ height: "16px", width: "auto" }} />;
+    case "optimism":
+      return <OptimismIcon style={{ height: "16px", width: "auto" }} />;
   }
 };
 const IconForChainMemo = React.memo(IconForChain);
