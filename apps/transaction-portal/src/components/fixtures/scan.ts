@@ -189,6 +189,7 @@ export const transactionNoActionScanResult: EvmTransactionScanResult = {
   action: "NONE",
   simulationResults: {
     error: null,
+    protocol: null,
     gas: {
       gasLimit: null,
     },
@@ -201,6 +202,7 @@ export const transactionWarningScanResult: EvmTransactionScanResult = {
   action: "WARN",
   simulationResults: {
     error: null,
+    protocol: null,
     gas: {
       gasLimit: null,
     },
@@ -219,6 +221,7 @@ export const transactionBlockScanResult: EvmTransactionScanResult = {
   action: "BLOCK",
   simulationResults: {
     error: null,
+    protocol: null,
     gas: {
       gasLimit: null,
     },

@@ -1,4 +1,12 @@
-import { mainnet, polygon, goerli, arbitrum, bsc } from "@wagmi/core/chains";
+import {
+  mainnet,
+  polygon,
+  goerli,
+  arbitrum,
+  bsc,
+  optimismGoerli,
+  optimism,
+} from "@wagmi/core/chains";
 import { alchemyProvider } from "@wagmi/core/providers/alchemy";
 import { publicProvider } from "@wagmi/core/providers/public";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
@@ -14,7 +22,7 @@ export const useConnectedChainId = () => {
 };
 
 const { chains, provider } = configureChains(
-  [mainnet, polygon, goerli, arbitrum, bsc],
+  [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism],
   [
     alchemyProvider({
       apiKey: ALCHEMY_API_KEY,

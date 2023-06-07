@@ -35,7 +35,7 @@ export class BlowfishApiClient {
     readonly basePath: string,
     readonly chainFamily: ChainFamily,
     readonly chainNetwork: ChainNetwork,
-    readonly apiVersion: string = "2023-03-08"
+    readonly apiVersion: string = "2023-05-17"
   ) {}
 
   scanMessageEvm = (
