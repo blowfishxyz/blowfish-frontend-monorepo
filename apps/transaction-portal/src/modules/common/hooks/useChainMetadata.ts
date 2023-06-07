@@ -2,7 +2,7 @@ import {
   ChainInfo,
   chainIdToSupportedChainMapping,
 } from "@blowfish/utils/chains";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { createGlobalState } from "react-use";
 import { useQueryParams } from "~hooks/useQueryParams";
 
@@ -32,15 +32,18 @@ export const useChainMetadataProvider = () => {
 export function useChainFromUrl(): ChainMetadata {
   const params = useQueryParams<{ chainId?: string }>();
   const chainId = params.chainId ? parseInt(params.chainId) : undefined;
-  if (!chainId) {
-    return undefined;
-  }
-  const chain = chainIdToSupportedChainMapping[chainId];
-  if (!chain) {
-    return {
-      chainId,
-      chainInfo: undefined,
-    };
-  }
-  return { chainId, chainInfo: chain };
+
+  return useMemo(() => {
+    if (!chainId) {
+      return undefined;
+    }
+    const chain = chainIdToSupportedChainMapping[chainId];
+    if (!chain) {
+      return {
+        chainId,
+        chainInfo: undefined,
+      };
+    }
+    return { chainId, chainInfo: chain };
+  }, [chainId]);
 }

@@ -12,8 +12,6 @@ export const V2Toggle: React.FC = () => {
     mutate,
   } = useSWR("v2Toggle", getBlowfishV2Enabled);
 
-  console.log(enabled);
-
   if (isLoading) return null;
 
   const handleToggle = async () => {

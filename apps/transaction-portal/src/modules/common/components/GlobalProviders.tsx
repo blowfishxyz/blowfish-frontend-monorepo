@@ -8,15 +8,15 @@ import { GlobalStyle } from "~styles/global";
 import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
 import { useChainMetadataProvider } from "~modules/common/hooks/useChainMetadata";
-import { useQueryParams } from "~hooks/useQueryParams";
+import { useV2Enabled } from "~hooks/useV2Enabled";
 
 export const GlobalProviders = memo(function GlobalProviders({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { v2: isV2Enabled } = useQueryParams<{ v2?: boolean }>();
   const requestChainId = useRequestChainId();
+  const [v2Enabled] = useV2Enabled();
   useChainMetadataProvider();
 
   return (
@@ -26,7 +26,7 @@ export const GlobalProviders = memo(function GlobalProviders({
         <ConnectKitProvider
           options={{
             initialChainId: requestChainId,
-            enforceSupportedChains: !isV2Enabled,
+            enforceSupportedChains: !v2Enabled,
           }}
           mode="light"
         >
