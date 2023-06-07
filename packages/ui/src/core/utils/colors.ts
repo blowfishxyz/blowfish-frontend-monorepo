@@ -1,9 +1,9 @@
 import { css } from "styled-components";
-import { ThemeBackgroundColors, ThemeForegroundColors } from "../theme";
+import { ThemeBackgroundColor, ThemeForegroundColor } from "../theme";
 
 export type Colors = {
-  backgroundColor?: ThemeBackgroundColors;
-  color?: ThemeForegroundColors;
+  backgroundColor?: ThemeBackgroundColor;
+  color?: ThemeForegroundColor;
 };
 
 export function colors(props: Colors) {

@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata } from "~utils/wagmi";
 import { useEffect } from "react";
-import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useQueryParams";
 
 const StartPage = () => {
   const { isConnected } = useAccount();
@@ -20,7 +20,7 @@ const StartPage = () => {
       if (redirect) {
         router.replace(decodeURIComponent(redirect));
       } else {
-        router.replace("/dashboard");
+        router.replace("/v2/dashboard");
       }
     }
   }, [isConnected, redirect, router]);
@@ -89,7 +89,7 @@ const ConnectorButton: React.FC<{
       return;
     }
     if (installLink) {
-      window.open(installLink, "_blank");
+      window.open(installLink, "_blank", "noopener,noreferrer");
     }
   };
 

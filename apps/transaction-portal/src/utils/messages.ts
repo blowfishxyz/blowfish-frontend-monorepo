@@ -81,6 +81,15 @@ export const getPauseResumeSelection = async () => {
   return await sendAndAwaitAck(message);
 };
 
+export const getV2Enabled = async () => {
+  const message: Message<RequestType.BlowfishOptions, BlowfishOptionKey> = {
+    id: "get-v2-enabled",
+    data: { key: BlowfishOption.PREFERENCES_BLOWFISH_V2_ENABLED },
+    type: RequestType.BlowfishOptions,
+  };
+  return await sendAndAwaitAck(message);
+};
+
 export const sendAllowlistedDomain = async (domain: string) => {
   const message: Message<
     RequestType.SetBlowfishOptions,
