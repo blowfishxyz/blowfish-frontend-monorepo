@@ -137,7 +137,7 @@ const StyledOl = styled.ol`
   }
 `;
 
-const ScannerActionsContainer = styled(PrimaryButton)`
+const ScannerActionsContainer = styled(Row)`
   width: auto;
   padding: 0 10px;
   margin: 10px 0px 5px;
@@ -148,17 +148,24 @@ const ScannerActionWrapper = styled(Column).attrs({
   justifyContent: "center",
   alignContent: "center",
   marginRight: 6,
-})`
+})<{ $darkBackground?: boolean }>`
   width: 25px;
   min-width: 25px;
   height: 25px;
   border-radius: 100%;
   transition: all 0.2s linear;
-  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+  background-color: ${({ theme, $darkBackground }) =>
+    $darkBackground
+      ? theme.colors.foregroundPrimary
+      : theme.colors.backgroundPrimary};
 
   svg {
     width: 10px;
     height: 10px;
+    fill: ${({ theme, $darkBackground }) =>
+      $darkBackground
+        ? theme.colors.backgroundPrimary
+        : theme.colors.foregroundPrimary};
   }
 `;
 
@@ -190,9 +197,6 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
       }
     }};
   }
-
-  color: ${({ paused, theme }) =>
-    paused ? `${theme.colors.danger}` : `rgba(0, 191, 54, 0.8)`};
 `;
 
 const InfoContainer = styled.div``;
@@ -213,9 +217,9 @@ const StatusIndicator = ({
     <StatusIndicatorWrapper gap="sm" alignItems="center" paused={paused}>
       <Indicator paused={paused} />
       {paused && until ? (
-        <>Scanning Paused until {transformDate(until)}</>
+        <Text size="sm">Scanning Paused until {transformDate(until)}</Text>
       ) : (
-        <>Running</>
+        <Text size="sm">Running</Text>
       )}
     </StatusIndicatorWrapper>
   );
@@ -253,7 +257,7 @@ const Popup: React.FC = () => {
           paused={isScanPaused ?? false}
           until={scanPausedUntil ?? null}
         />
-        <ExtensionVersion>v.{BLOWFISH_EXTENSION_VERSION}</ExtensionVersion>
+        <ExtensionVersion>v{BLOWFISH_EXTENSION_VERSION}</ExtensionVersion>
       </Header>
       <Content>
         <WalletHeroImage
@@ -283,36 +287,43 @@ const Popup: React.FC = () => {
               Confirm transaction with confidence
             </Text>
           </StyledOl>
-          <ScannerActionsContainer onClick={onActionClick}>
-            <ScannerActionWrapper>
-              {showDurationSelector ? (
-                <CloseIcon />
-              ) : isScanPaused ? (
-                <PlayIcon />
-              ) : (
-                <PauseIcon />
-              )}
-            </ScannerActionWrapper>
-            {!showDurationSelector && (
-              <InfoContainer>
-                {isScanPaused && (
-                  <Text design="tertiary" size="lg">
-                    Click to start scanning
-                  </Text>
+          <div onClick={onActionClick}>
+            {showDurationSelector ? (
+              <ScannerActionsContainer
+                alignItems="center"
+                alignContent="center"
+              >
+                <ScannerActionWrapper $darkBackground>
+                  <CloseIcon />
+                </ScannerActionWrapper>
+                {showDurationSelector && (
+                  <PauseDurationSelector
+                    onClick={(period) => onDurationSelect(period)}
+                  />
                 )}
-                {!isScanPaused && (
-                  <Text design="tertiary" size="lg">
-                    Click to pause scanning
-                  </Text>
+              </ScannerActionsContainer>
+            ) : (
+              <PrimaryButton>
+                <ScannerActionWrapper>
+                  {isScanPaused ? <PlayIcon /> : <PauseIcon />}
+                </ScannerActionWrapper>
+                {!showDurationSelector && (
+                  <InfoContainer>
+                    {isScanPaused && (
+                      <Text design="tertiary" size="lg">
+                        Click to start scanning
+                      </Text>
+                    )}
+                    {!isScanPaused && (
+                      <Text design="tertiary" size="lg">
+                        Click to pause scanning
+                      </Text>
+                    )}
+                  </InfoContainer>
                 )}
-              </InfoContainer>
+              </PrimaryButton>
             )}
-            {showDurationSelector && (
-              <PauseDurationSelector
-                onClick={(period) => onDurationSelect(period)}
-              />
-            )}
-          </ScannerActionsContainer>
+          </div>
         </Column>
         {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
         {CUSTOM_PORTAL_URL_ENABLED && <CustomPortalUrl />}
