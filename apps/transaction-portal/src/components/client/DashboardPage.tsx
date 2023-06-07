@@ -17,7 +17,7 @@ async function fetchTransactions(
   address: string | undefined
 ): Promise<Transaction[]> {
   if (!address) return [];
-  return fetch(`api/user-transactions?address=${address}`)
+  return fetch(`/api/user-transactions?address=${address}`)
     .then(async (x) => {
       if (x.ok) {
         return x.json();
@@ -36,7 +36,7 @@ function DashboardPage() {
 
   useLayoutEffect(() => {
     if (!isConnected) {
-      router.replace("/start");
+      router.replace("/v2/start");
       return;
     }
   }, [isConnected, router]);

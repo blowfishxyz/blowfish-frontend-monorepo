@@ -11,7 +11,7 @@ import React from "react";
 import styled from "styled-components";
 
 import { BLOWFISH_WEBSITE_URL } from "~constants";
-import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useQueryParams";
 import { logger } from "~utils/logger";
 import { sendAllowlistedDomain } from "~utils/messages";
 

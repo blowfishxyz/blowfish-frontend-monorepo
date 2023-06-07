@@ -7,8 +7,8 @@ import { GlobalStyle } from "~styles/global";
 
 import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
-import { BLOWFISH_V2_ENABLED } from "~config";
 import { useChainMetadataProvider } from "~modules/common/hooks/useChainMetadata";
+import { useV2Enabled } from "~hooks/useV2Enabled";
 
 export const GlobalProviders = memo(function GlobalProviders({
   children,
@@ -16,6 +16,7 @@ export const GlobalProviders = memo(function GlobalProviders({
   children: React.ReactNode;
 }) {
   const requestChainId = useRequestChainId();
+  const [v2Enabled] = useV2Enabled();
   useChainMetadataProvider();
 
   return (
@@ -25,7 +26,7 @@ export const GlobalProviders = memo(function GlobalProviders({
         <ConnectKitProvider
           options={{
             initialChainId: requestChainId,
-            enforceSupportedChains: !BLOWFISH_V2_ENABLED,
+            enforceSupportedChains: !v2Enabled,
           }}
           mode="light"
         >

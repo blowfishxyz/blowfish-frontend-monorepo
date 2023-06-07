@@ -5,7 +5,7 @@ import {
 } from "@blowfish/utils/types";
 import useSWR from "swr";
 
-import { useQueryParams } from "~hooks/useParsedRequestScanUrl";
+import { useQueryParams } from "~hooks/useQueryParams";
 import {
   ChainMetadata,
   useChainMetadata,
