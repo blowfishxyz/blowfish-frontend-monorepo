@@ -34,21 +34,19 @@ async function fetcher([messageId]: [string]): Promise<
       error: MessageError;
     }
   | {
-      message: Message<DappRequest["type"], DappRequest> | "deleted";
+      message: Message<DappRequest["type"], DappRequest>;
     }
 > {
   if (!messageId) {
     return Promise.resolve({ error: MessageError.PARAMS_NOT_OK });
   }
-  const message = await getScanRequestFromMessageChannelV2(messageId).then(
-    (m) => {
-      if (m === "deleted") {
-        return "deleted";
-      }
-      return checkVersionAndTransformMessage(m);
-    }
-  );
-  return { message };
+  const message = await getScanRequestFromMessageChannelV2(messageId);
+
+  if ("error" in message) {
+    return message;
+  }
+
+  return { message: checkVersionAndTransformMessage(message) };
 }
 
 export function useScanParams(): ScanParams {
@@ -64,14 +62,16 @@ export function useScanParams(): ScanParams {
   if (!data) {
     return undefined; // loading
   }
-  if ("error" in data) {
-    return { error: data.error, id };
-  }
+
   let message: Message<DappRequest["type"], DappRequest> | undefined =
     undefined;
 
-  if (data.message === "deleted") {
-    message = prevMessageRef.current;
+  if ("error" in data) {
+    if (data.error === MessageError.MESSAGE_MISSING) {
+      message = prevMessageRef.current;
+    } else {
+      return { error: data.error, id };
+    }
   } else {
     prevMessageRef.current = data.message;
     message = data.message;

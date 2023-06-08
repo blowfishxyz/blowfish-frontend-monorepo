@@ -4,6 +4,7 @@ import {
   BlowfishOptionKeyValue,
   BlowfishPausedOptionType,
   BlowfishPortalBackgroundMessage,
+  DappRequest,
   Message,
   RequestType,
   UserDecisionOpts,
@@ -102,7 +103,11 @@ export const sendAllowlistedDomain = async (domain: string) => {
   return await sendAndAwaitAck(message);
 };
 
-export const getScanRequestFromMessageChannelV2 = async (messageId: string) => {
+export const getScanRequestFromMessageChannelV2 = async (
+  messageId: string
+): Promise<
+  Message<DappRequest["type"], DappRequest> | { error: MessageError }
+> => {
   const message: Message<RequestType.GetRequestToScan, { key: string }> = {
     id: "get-request-to-scan",
     data: { key: messageId },
@@ -114,11 +119,7 @@ export const getScanRequestFromMessageChannelV2 = async (messageId: string) => {
   if (isDappRequestMessage(response)) {
     return response;
   }
-  if (typeof message === "object" && message !== null) {
-    return "deleted";
-  }
-
-  throw new Error(MessageError.PARAMS_NOT_OK);
+  return { error: MessageError.MESSAGE_MISSING };
 };
 
 export const getScanRequestFromMessageChannel = async (messageId: string) => {
