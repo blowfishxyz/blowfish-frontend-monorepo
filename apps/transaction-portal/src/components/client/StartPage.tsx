@@ -7,23 +7,19 @@ import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata } from "~utils/wagmi";
 import { useEffect } from "react";
 import { useQueryParams } from "~hooks/useQueryParams";
+import { UserWalletConnectKitWrapper } from "~components/UserWalletConnectKitWrapper";
 
 const StartPage = () => {
-  const { isConnected } = useAccount();
   const router = useRouter();
   const { redirect } = useQueryParams<{
     redirect?: string;
   }>();
 
   useEffect(() => {
-    if (isConnected) {
-      if (redirect) {
-        router.replace(decodeURIComponent(redirect));
-      } else {
-        router.replace("/v2/dashboard");
-      }
+    if (redirect) {
+      router.replace(decodeURIComponent(redirect));
     }
-  }, [isConnected, redirect, router]);
+  }, [redirect, router]);
 
   return (
     <Layout>
@@ -42,6 +38,7 @@ const StartPage = () => {
 
 const ConnectWalletView: React.FC = () => {
   const { connectors } = useConnect();
+  const { isConnected } = useAccount();
 
   return (
     <Column>
@@ -63,16 +60,24 @@ const ConnectWalletView: React.FC = () => {
           <span>3</span> <span>Simulate & confirm with confidence</span>
         </StepItem>
       </Column>
-      <Text size="md" design="secondary" marginBottom={28}>
-        Connect a wallet to continue...
-      </Text>
-      <ButtonsGrid>
-        {connectors
-          .filter((x) => x.id !== "injected")
-          .map((connector) => (
-            <ConnectorButton key={connector.id} connector={connector} />
-          ))}
-      </ButtonsGrid>
+      {isConnected ? (
+        <Column marginTop={28}>
+          <UserWalletConnectKitWrapper />
+        </Column>
+      ) : (
+        <>
+          <Text size="md" design="secondary" marginBottom={28}>
+            Connect a wallet to continue...
+          </Text>
+          <ButtonsGrid>
+            {connectors
+              .filter((x) => x.id !== "injected")
+              .map((connector) => (
+                <ConnectorButton key={connector.id} connector={connector} />
+              ))}
+          </ButtonsGrid>
+        </>
+      )}
     </Column>
   );
 };

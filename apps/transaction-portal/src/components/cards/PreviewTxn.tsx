@@ -1,22 +1,8 @@
 import React, { FC, ReactElement, ReactNode } from "react";
-import {
-  BlockExplorerLink,
-  Column,
-  LinkWithArrow,
-  Row,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
-import {
-  CardWrapper,
-  CardContent,
-  Divider,
-  CardText,
-  CardBlackTextLink,
-} from "./common";
-import { shortenHex } from "~utils/hex";
+import { CardWrapper, CardContent, Divider, CardText } from "./common";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
@@ -203,7 +189,7 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   return (
     <Column gap="sm" marginBottom={18}>
       <Row justifyContent="space-between">
-        <SectionHeading>Signatures</SectionHeading>
+        <SectionHeading>Message</SectionHeading>
       </Row>
       <Text
         size="sm"
