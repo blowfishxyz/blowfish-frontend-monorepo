@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Row, Text, Column, Button } from "@blowfish/ui/core";
 import {
@@ -20,6 +20,8 @@ export const SuccessView: React.FC<{
 }> = ({ className, txHash, onReport }) => {
   const chain = useChainMetadata();
   const url = useBlockExplorerUrl(txHash);
+  const [seconds, setSeconds] = useState(5);
+
   const handleEtherscanClick = () => {
     window.open(url, "_blank", "noopener noreferrer");
   };
@@ -44,6 +46,30 @@ export const SuccessView: React.FC<{
     }
   }, [chain?.chainInfo?.chainFamily]);
 
+  const closingText = useMemo(() => {
+    if (seconds <= 0) {
+      return "now";
+    }
+    if (seconds === 1) {
+      return "in 1 second";
+    }
+
+    return `in ${seconds} seconds`;
+  }, [seconds]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds((s) => s - 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (seconds <= 0) {
+      window.close();
+    }
+  }, [seconds]);
+
   return (
     <Row gap="xl" justifyContent="space-between" flex={1} className={className}>
       <Column maxWidth={300}>
@@ -55,6 +81,9 @@ export const SuccessView: React.FC<{
         </Row>
         <Text size="md" color="base75">
           Your transaction has been successfully mined{chainText}.
+          <br />
+          <br />
+          The window will close {closingText}.
         </Text>
       </Column>
       <Column gap="md" flex={1} minWidth={200}>
