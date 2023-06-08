@@ -88,8 +88,6 @@ export function useUserDecision({
 
           logger.debug("signTypedMessage", signTypedMessage);
           await sendResult(message.id, signTypedMessage);
-          // TODO: FIXME
-          return undefined;
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
           const errMessage = err.message || err.toString();
@@ -105,8 +103,6 @@ export function useUserDecision({
           // NOTE: domain mismatch on SIWE, so we just pass the message back to the dapp
           logger.debug("personal_sign - send message back to dapp");
           await sendResult(message.id, payload.message);
-          // TODO: FIXME
-          return undefined;
         }
       } else {
         // TODO(kimpers): This should never happen
