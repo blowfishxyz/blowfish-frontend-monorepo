@@ -67,6 +67,8 @@ export function useScanParams(): ScanParams {
     undefined;
 
   if ("error" in data) {
+    // NOTE: We don't want to keep the message in the extension,
+    // we keep it in the ref to show a success message after the tx is completed.
     if (data.error === MessageError.MESSAGE_MISSING) {
       message = prevMessageRef.current;
     } else {

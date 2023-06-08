@@ -52,7 +52,6 @@ export function useUserDecision({
         });
         try {
           const { hash, wait } = await sendTransaction(config);
-          // TODO(kimpers): We need UI affordances for waiting for the tx to confirm
           logger.debug("tx hash", hash);
           await sendResult(message.id, hash);
           return { hash, wait };

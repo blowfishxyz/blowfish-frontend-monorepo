@@ -116,7 +116,6 @@ export const chainToBlockExplorerTxUrl = ({
     case "bnb":
       return `https://bscscan.com/tx/${hash}`;
     case "ethereum":
-      // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
       return `https://${prefix}etherscan.io/tx/${hash}`;
   }
 };
