@@ -93,3 +93,30 @@ export const chainToBlockExplorerUrl = ({
       }`;
   }
 };
+
+export const chainToBlockExplorerTxUrl = ({
+  chainFamily,
+  chainNetwork,
+  hash,
+}: {
+  chainFamily: ChainFamily;
+  chainNetwork: ChainNetwork;
+  hash: string;
+}): string => {
+  const prefix = chainNetwork == "mainnet" ? "" : `${chainNetwork}.`;
+  switch (chainFamily) {
+    case "polygon":
+      return `https://${prefix}polygonscan.com/tx/${hash}`;
+    case "optimism":
+      return chainNetwork === "mainnet"
+        ? `https://optimistic.etherscan.io/tx/${hash}`
+        : `https://goerli-optimism.etherscan.io/tx/${hash}`;
+    case "arbitrum":
+      return `https://arbiscan.io/tx/${hash}`;
+    case "bnb":
+      return `https://bscscan.com/tx/${hash}`;
+    case "ethereum":
+      // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
+      return `https://${prefix}etherscan.io/tx/${hash}`;
+  }
+};

@@ -102,6 +102,25 @@ export const sendAllowlistedDomain = async (domain: string) => {
   return await sendAndAwaitAck(message);
 };
 
+export const getScanRequestFromMessageChannelV2 = async (messageId: string) => {
+  const message: Message<RequestType.GetRequestToScan, { key: string }> = {
+    id: "get-request-to-scan",
+    data: { key: messageId },
+    type: RequestType.GetRequestToScan,
+  };
+
+  const response = await sendAndAwaitAck(message);
+
+  if (isDappRequestMessage(response)) {
+    return response;
+  }
+  if (typeof message === "object" && message !== null) {
+    return "deleted";
+  }
+
+  throw new Error(MessageError.PARAMS_NOT_OK);
+};
+
 export const getScanRequestFromMessageChannel = async (messageId: string) => {
   const message: Message<RequestType.GetRequestToScan, { key: string }> = {
     id: "get-request-to-scan",

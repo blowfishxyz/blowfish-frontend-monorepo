@@ -3,6 +3,7 @@ import {
   Message,
   parseRequestFromMessage,
 } from "@blowfish/utils/types";
+import { useRef } from "react";
 import useSWR from "swr";
 
 import { useQueryParams } from "~hooks/useQueryParams";
@@ -10,7 +11,7 @@ import {
   ChainMetadata,
   useChainMetadata,
 } from "~modules/common/hooks/useChainMetadata";
-import { getScanRequestFromMessageChannel } from "~utils/messages";
+import { getScanRequestFromMessageChannelV2 } from "~utils/messages";
 import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
 type HexString = `0x${string}`;
@@ -33,14 +34,19 @@ async function fetcher([messageId]: [string]): Promise<
       error: MessageError;
     }
   | {
-      message: Message<DappRequest["type"], DappRequest>;
+      message: Message<DappRequest["type"], DappRequest> | "deleted";
     }
 > {
   if (!messageId) {
     return Promise.resolve({ error: MessageError.PARAMS_NOT_OK });
   }
-  const message = await getScanRequestFromMessageChannel(messageId).then(
-    checkVersionAndTransformMessage
+  const message = await getScanRequestFromMessageChannelV2(messageId).then(
+    (m) => {
+      if (m === "deleted") {
+        return "deleted";
+      }
+      return checkVersionAndTransformMessage(m);
+    }
   );
   return { message };
 }
@@ -48,6 +54,9 @@ async function fetcher([messageId]: [string]): Promise<
 export function useScanParams(): ScanParams {
   const chain = useChainMetadata();
   const { id } = useQueryParams<{ id?: string }>();
+  const prevMessageRef = useRef<
+    Message<DappRequest["type"], DappRequest> | undefined
+  >(undefined);
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
   if (fetchError) {
     return { error: MessageError.PARAMS_NOT_OK, id };
@@ -58,7 +67,20 @@ export function useScanParams(): ScanParams {
   if ("error" in data) {
     return { error: data.error, id };
   }
-  const { message } = data;
+  let message: Message<DappRequest["type"], DappRequest> | undefined =
+    undefined;
+
+  if (data.message === "deleted") {
+    message = prevMessageRef.current;
+  } else {
+    prevMessageRef.current = data.message;
+    message = data.message;
+  }
+
+  if (!message) {
+    return { error: MessageError.PARAMS_NOT_OK, id };
+  }
+
   const dappRequest = parseRequestFromMessage(message);
   if (!dappRequest || !message.origin) {
     return { error: MessageError.PARAMS_NOT_OK, id };
