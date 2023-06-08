@@ -149,6 +149,7 @@ const ScannerActionWrapper = styled(Column).attrs({
   alignContent: "center",
   marginRight: 6,
 })<{ $darkBackground?: boolean }>`
+  cursor: pointer;
   width: 25px;
   min-width: 25px;
   height: 25px;
