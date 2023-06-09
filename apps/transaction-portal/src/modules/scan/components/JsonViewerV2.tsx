@@ -51,10 +51,7 @@ const FlatSectionContainer = styled.div`
 
 const JsonData = styled.div`
   margin-top: 8px;
-  max-height: 100px;
   width: 100%;
-  height: 100%;
-  overflow: auto;
   position: relative;
 
   &::-webkit-scrollbar {

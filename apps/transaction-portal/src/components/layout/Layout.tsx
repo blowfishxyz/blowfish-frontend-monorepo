@@ -43,7 +43,7 @@ const Wrapper = styled(Column)<{ severity: Severity }>`
 const WrapperInner = styled(Column)`
   min-height: calc(100% - 100px);
   width: 100%;
-  max-width: 1072px;
+  max-width: 1200px;
 `;
 
 const HeaderWrapper = styled(Column)<{ severity: Severity }>`

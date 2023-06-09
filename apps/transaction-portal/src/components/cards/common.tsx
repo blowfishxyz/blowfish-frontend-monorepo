@@ -3,8 +3,8 @@ import { Text, device } from "@blowfish/ui/core";
 
 const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   width: 100%;
-  max-width: 720px;
-  box-sizing: border-box;
+  max-width: 800px;
+  min-width: 580px;
   background: ${({ theme }) => theme.colors.backgroundPrimary};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
@@ -26,11 +26,6 @@ const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
 
   padding: 32px 0
     ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
-
-  @media (${device.lg}) {
-    width: 55%;
-  }
-
   margin-bottom: 32px;
 `;
 

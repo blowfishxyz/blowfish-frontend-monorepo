@@ -170,6 +170,7 @@ const overrideWindowEthereum = () => {
   const sendHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
+      console.log("@@ sendHandler ");
       const [payloadOrMethod, callbackOrParams] = argumentsList;
       const forwardToWallet = () =>
         Reflect.apply(target, thisArg, argumentsList);
@@ -200,6 +201,7 @@ const overrideWindowEthereum = () => {
   const sendAsyncHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
+      console.log("@@ sendAsyncHandler ");
       const [request, callback] = argumentsList;
       const forwardToWallet = () =>
         Reflect.apply(target, thisArg, argumentsList);
@@ -371,6 +373,7 @@ const overrideWindowEthereum = () => {
   const requestHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
+      console.log("@@ requestHandler ");
       const [request] = argumentsList;
       const forwardToWallet = () =>
         Reflect.apply(target, thisArg, argumentsList);
