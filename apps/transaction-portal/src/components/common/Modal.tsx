@@ -92,25 +92,23 @@ type ModalAction =
 type ModalProps = {
   title: string;
   description: React.ReactNode;
-  icon?: React.ReactNode;
+  content?: React.ReactNode;
   action?: ModalAction;
   width?: number;
   options?: ModalOptions;
   onCancel?: () => void;
-  replaceCancelBtn?: React.ReactElement;
-  replaceIcon?: React.ReactElement;
+  cancelText?: React.ReactElement;
 };
 
 export function Modal({
   title,
-  icon,
+  content,
   action,
   width,
   description,
   onCancel,
   options,
-  replaceCancelBtn,
-  replaceIcon,
+  cancelText,
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
 
@@ -124,7 +122,7 @@ export function Modal({
             alignSelf="center"
             gap="md"
           >
-            {icon ? icon : replaceIcon ? replaceIcon : null}
+            {content ? content : null}
             <Text
               id={modal.labelId}
               size="xl"
@@ -142,22 +140,20 @@ export function Modal({
               {description}
             </Text>
           </Column>
-          <Column gap="sm" marginTop={replaceCancelBtn ? 20 : 36}>
+          <Column gap="sm" marginTop={action ? 20 : 36}>
             {action && <ModalActionButton action={action} close={modal.hide} />}
-            {!replaceCancelBtn
-              ? (!options?.blocking || onCancel) && (
-                  <Button
-                    stretch
-                    design={action ? "secondary" : "primary"}
-                    onClick={() => {
-                      onCancel?.();
-                      modal.hide();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                )
-              : replaceCancelBtn}
+            {(!options?.blocking || onCancel) && (
+              <Button
+                stretch
+                design={action ? "tertiary" : "primary"}
+                onClick={() => {
+                  onCancel?.();
+                  modal.hide();
+                }}
+              >
+                {cancelText ? cancelText : "Cancel"}
+              </Button>
+            )}
           </Column>
         </Column>
       </ModalContent>

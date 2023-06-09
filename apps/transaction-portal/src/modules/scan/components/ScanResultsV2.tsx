@@ -24,7 +24,7 @@ import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import RequestJsonViewer from "./RequestJsonViewer";
-import { ShareToTwitterModal } from "./modals";
+import ShareToTwitterModal from "./ShareToTwitterModal";
 
 const ViewDetailsWrapper = styled(Row)`
   cursor: pointer;
@@ -239,10 +239,13 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     account: request.userAccount,
   };
 
+  console.log({ request });
+
   if (canceledTxn) {
     return (
       <ShareToTwitterModal
-        onShareToTwitter={() => console.log("shared to twitter")}
+        domain={dappUrl?.origin}
+        rejectTxn={() => reject()}
       />
     );
   }
@@ -258,7 +261,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         advancedDetails={displayAdvancedDetails}
         onContinue={() => confirm()}
         onCancel={() => {
-          reject();
           setCancelledTxn(true);
         }}
         onReport={onReport}

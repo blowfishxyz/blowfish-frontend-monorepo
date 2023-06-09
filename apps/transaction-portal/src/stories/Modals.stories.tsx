@@ -5,7 +5,6 @@ import { storiesOf } from "@storybook/react";
 import {
   AccountNotConnectedModal,
   OutdatedExtensionModal,
-  ShareToTwitterModal,
   SimulationErrorModal,
   TransactionNotFoundModal,
   TransactionRevertedModal,
@@ -15,6 +14,7 @@ import {
   WrongAccountModal,
   WrongNetworkModal,
 } from "~modules/scan/components/modals";
+import ShareToTwitterModal from "~modules/scan/components/ShareToTwitterModal";
 
 const Default: Story = () => (
   <Modal
@@ -74,8 +74,9 @@ storiesOf("Modals", module)
   ))
   .add("ShareToTwitterModal", () => (
     <ShareToTwitterModal
-      onShareToTwitter={() => {
-        alert("Retry");
+      domain="example.com"
+      rejectTxn={() => {
+        alert("Transaction rejected");
       }}
     />
   ));

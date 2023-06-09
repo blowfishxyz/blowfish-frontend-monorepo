@@ -1,7 +1,7 @@
 import { Modal } from "~components/common/Modal";
 import useSWR from "swr";
 import { capitalize, getExtensionInstallationUrl, sleep } from "~utils/utils";
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfish/ui/core";
 import { useCallback, useMemo } from "react";
 import { shortenHex } from "~utils/hex";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
@@ -19,14 +19,12 @@ import {
 import { sendPauseResumeSelection } from "~utils/messages";
 import { useRouter } from "next/router";
 import {
-  ArrowDownIcon,
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
 } from "@blowfish/ui/icons";
 import styled from "styled-components";
 import { getConnectorMetadata } from "~utils/wagmi";
 import { ContentToggle } from "~components/ContentToggle";
-import Image from "next/image";
 
 export const TransactionNotFoundModal: React.FC = () => {
   const router = useRouter();
@@ -34,7 +32,7 @@ export const TransactionNotFoundModal: React.FC = () => {
     <Modal
       title="Something went wrong"
       description="Please close the window and try again"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       onCancel={() => {
         router.push("/v2/dashboard");
       }}
@@ -52,7 +50,7 @@ export const OutdatedExtensionModal: React.FC = () => {
       title="Outdated extension"
       description="Please update the Blowfish extension to the latest version and retry
       the transaction"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       options={{ blocking: true }}
       action={{
         closeOnComplete: false,
@@ -74,7 +72,7 @@ export const UnsupportedChainModal: React.FC<{
     <Modal
       title="Unsupported Chain"
       description="This chain is currently not supported. More chains coming soon!"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       options={{ blocking: true }}
       action={{ cb: closeWindow, title: "Close" }}
     />
@@ -113,7 +111,7 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
   return (
     <Modal
       title="Switch account"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description={description}
       action={{ cb: () => disconnectAsync(), title: "Disconnect" }}
       options={{ blocking: true }}
@@ -186,7 +184,7 @@ export const WrongNetworkModal: React.FC<{
     <Modal
       title="Switch network"
       description={description}
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       action={{ cb: action, title: actionText, closeOnComplete: true }}
       options={{ blocking: true }}
     />
@@ -219,7 +217,7 @@ export const UnsupportedTransactionModal: React.FC<{
     <Modal
       width={480}
       title="Dangerous unsupported action"
-      icon={<WarningIcon />}
+      content={<WarningIcon />}
       description={
         <>
           Signing messages with the <b>eth_sign method</b> is dangerous. This
@@ -302,7 +300,7 @@ export const BlockedTransactionModal: React.FC<{
           <b>Approving may lead to loss of funds</b>
         </>
       }
-      icon={<WarningIcon />}
+      content={<WarningIcon />}
       onCancel={() => closeWindow?.()}
       options={{ blocking: true }}
       action={{
@@ -331,7 +329,7 @@ export const UnknownErrorModal: React.FC<{ onRetry: () => Promise<void> }> = ({
   return (
     <Modal
       title="Something went wrong"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description="Something unexpected happened. Please try again later."
       action={{ cb: onRetry, title: "Retry", closeOnComplete: false }}
     />
@@ -344,7 +342,7 @@ export const TransactionRevertedModal: React.FC<{
   return (
     <Modal
       title="Transaction Reverted"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description={
         <>
           The transaction reverted when we simulated it. Approving may lead to
@@ -378,76 +376,9 @@ export const SimulationErrorModal: React.FC<{
   return (
     <Modal
       title="Simulation Failed"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description="We are unable to simulate this transaction. Approving may lead to loss of funds"
       action={{ cb: onRetry, title: "Retry", closeOnComplete: false }}
-    />
-  );
-};
-
-const StyledArrowDownIcon = styled(ArrowDownIcon)`
-  margin-left: 4px;
-  width: 15px;
-  transform: rotate(-90deg);
-`;
-
-const StyledText = styled(Text)`
-  cursor: pointer;
-`;
-
-const SharetoTwitterWrapper = styled(Row).attrs({ marginBottom: 10 })`
-  background-color: ${({ theme }) => theme.colors.backgroundSecondary};
-  border: ${({ theme }) => `1px solid ${theme.colors.border}`};
-  padding: 20px 0px 20px 20px;
-  border-radius: 10px;
-`;
-
-const SharetoTwitterContent = styled(Column).attrs({ gap: "sm" })``;
-
-export const ShareToTwitterModal: React.FC<{
-  onShareToTwitter: () => void;
-}> = ({ onShareToTwitter }) => {
-  return (
-    <Modal
-      title="You are saved!"
-      description="Tell your friends that you have avoided danger with Blowfish."
-      action={{
-        cb: onShareToTwitter,
-        title: "Share to twitter",
-        closeOnComplete: true,
-      }}
-      replaceIcon={
-        <SharetoTwitterWrapper>
-          <SharetoTwitterContent>
-            <Text size="lg" weight="semi-bold">
-              Danger avoided!
-            </Text>
-            <Text size="sm" design="secondary">
-              I avoided having my funds stolen by a malicious smart contract
-              (0xAbCd...1c2B), and reported it to Blowfish.
-            </Text>
-            <Row alignItems="center">
-              <StyledText size="sm">Download Blowfish today</StyledText>
-              <StyledArrowDownIcon />
-            </Row>
-          </SharetoTwitterContent>
-          <Image
-            src="/wallet_image.svg"
-            alt="extension"
-            width="0"
-            height="0"
-            style={{ width: "100%", height: "auto", justifySelf: "flex-end" }}
-          />
-        </SharetoTwitterWrapper>
-      }
-      replaceCancelBtn={
-        <Row justifyContent="center" alignItems="center">
-          <StyledText design="secondary" size="md">
-            No thanks
-          </StyledText>
-          <StyledArrowDownIcon />
-        </Row>
-      }
     />
   );
 };
