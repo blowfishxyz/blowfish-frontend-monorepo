@@ -5,6 +5,7 @@ import { storiesOf } from "@storybook/react";
 import {
   AccountNotConnectedModal,
   OutdatedExtensionModal,
+  ShareToTwitterModal,
   SimulationErrorModal,
   TransactionNotFoundModal,
   TransactionRevertedModal,
@@ -70,4 +71,11 @@ storiesOf("Modals", module)
   ))
   .add("TransactionRevertedModal", () => (
     <TransactionRevertedModal error="UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" />
+  ))
+  .add("ShareToTwitterModal", () => (
+    <ShareToTwitterModal
+      onShareToTwitter={() => {
+        alert("Retry");
+      }}
+    />
   ));

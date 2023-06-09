@@ -83,7 +83,7 @@ export const useModalContext = () => {
 type ModalAction =
   | {
       title?: string;
-      cb: (hide: () => void) => Promise<void>;
+      cb: (() => void) | ((hide: () => void) => Promise<void>);
       design?: "primary" | "danger";
       closeOnComplete?: boolean;
     }
@@ -97,6 +97,8 @@ type ModalProps = {
   width?: number;
   options?: ModalOptions;
   onCancel?: () => void;
+  replaceCancelBtn?: React.ReactElement;
+  replaceIcon?: React.ReactElement;
 };
 
 export function Modal({
@@ -107,6 +109,8 @@ export function Modal({
   description,
   onCancel,
   options,
+  replaceCancelBtn,
+  replaceIcon,
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
 
@@ -120,7 +124,7 @@ export function Modal({
             alignSelf="center"
             gap="md"
           >
-            {icon ? icon : null}
+            {icon ? icon : replaceIcon ? replaceIcon : null}
             <Text
               id={modal.labelId}
               size="xl"
@@ -138,20 +142,22 @@ export function Modal({
               {description}
             </Text>
           </Column>
-          <Column gap="sm" marginTop={36}>
+          <Column gap="sm" marginTop={replaceCancelBtn ? 20 : 36}>
             {action && <ModalActionButton action={action} close={modal.hide} />}
-            {(!options?.blocking || onCancel) && (
-              <Button
-                stretch
-                design={action ? "secondary" : "primary"}
-                onClick={() => {
-                  onCancel?.();
-                  modal.hide();
-                }}
-              >
-                Cancel
-              </Button>
-            )}
+            {!replaceCancelBtn
+              ? (!options?.blocking || onCancel) && (
+                  <Button
+                    stretch
+                    design={action ? "secondary" : "primary"}
+                    onClick={() => {
+                      onCancel?.();
+                      modal.hide();
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )
+              : replaceCancelBtn}
           </Column>
         </Column>
       </ModalContent>

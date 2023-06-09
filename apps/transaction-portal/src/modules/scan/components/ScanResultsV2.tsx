@@ -24,6 +24,7 @@ import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import RequestJsonViewer from "./RequestJsonViewer";
+import { ShareToTwitterModal } from "./modals";
 
 const ViewDetailsWrapper = styled(Row)`
   cursor: pointer;
@@ -84,6 +85,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   ...props
 }) => {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  const [canceledTxn, setCancelledTxn] = useState(false);
 
   const [, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
@@ -237,6 +239,14 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     account: request.userAccount,
   };
 
+  if (canceledTxn) {
+    return (
+      <ShareToTwitterModal
+        onShareToTwitter={() => console.log("shared to twitter")}
+      />
+    );
+  }
+
   return (
     <Row justifyContent="center">
       <PreviewTxn
@@ -247,7 +257,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainFamily={props.chainFamily}
         advancedDetails={displayAdvancedDetails}
         onContinue={() => confirm()}
-        onCancel={() => reject()}
+        onCancel={() => {
+          reject();
+          setCancelledTxn(true);
+        }}
         onReport={onReport}
       />
     </Row>
