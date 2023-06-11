@@ -129,21 +129,12 @@ export const DefaultView: React.FC<{
   const theme = useTheme();
 
   return (
-    <Column
-      width="100%"
-      // backgroundColor="backgroundPrimary"
-      // withBorder
-      // padding={20}
-      // borderRadius={8}
-      justifyContent="space-between"
-      gap="lg"
-    >
+    <Column width="100%" justifyContent="space-between" gap="lg">
       <Row gap="md" alignItems="center" alignSelf="center">
         <Column gap="xs" flex={1} alignSelf="center" maxWidth={300}>
           {severity !== "INFO" && (
             <BlowfishWarningIcon
               style={{ width: 92, height: 92, alignSelf: "center" }}
-              // severity={severity}
               color={theme?.severityColors[severity].backgroundV2}
             />
           )}

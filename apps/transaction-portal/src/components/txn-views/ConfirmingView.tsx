@@ -21,11 +21,11 @@ export const ConfirmingView: React.FC<{
       <Column maxWidth={300}>
         <Row gap="sm" alignItems="center" marginBottom={4}>
           <CardConfirmIcon />
-          <Text size="xl" weight="semi-bold" className="mobile-centered">
+          <Text size="xl" weight="semi-bold">
             Check your wallet
           </Text>
         </Row>
-        <Text size="md" color="base75" className="mobile-centered">
+        <Text size="md" color="base75">
           We forwarded the transaction request to your connected wallet.{" "}
           <Text weight="semi-bold" color="base75">
             Always make sure that the request is from{" "}
