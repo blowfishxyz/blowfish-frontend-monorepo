@@ -45,7 +45,12 @@ export const PendingView: React.FC<{
   }, [chain?.chainInfo?.chainFamily]);
 
   return (
-    <Row gap="xl" justifyContent="space-between" flex={1} className={className}>
+    <Wrapper
+      gap="xl"
+      justifyContent="space-between"
+      flex={1}
+      className={className}
+    >
       <Column maxWidth={300}>
         <Row gap="sm" alignItems="center" marginBottom={4}>
           <LoadingIcon />
@@ -65,6 +70,12 @@ export const PendingView: React.FC<{
           Report
         </Button>
       </Column>
-    </Row>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled(Row)`
+  @media (max-width: 574px) {
+    flex-direction: column;
+  }
+`;

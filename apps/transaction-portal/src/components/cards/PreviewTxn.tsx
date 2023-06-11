@@ -95,7 +95,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   advancedDetails,
   website,
 }) => (
-  <Row gap="md" alignItems="flex-start">
+  <PreviewWrapper gap="md" alignItems="flex-start">
     <CardWrapper>
       <CardContent>
         <Row justifyContent="space-between" alignItems="center">
@@ -139,8 +139,15 @@ const PreviewCard: FC<PreviewCardProps> = ({
       warnings={warnings}
       severity={severity}
     />
-  </Row>
+  </PreviewWrapper>
 );
+
+const PreviewWrapper = styled(Row)`
+  @media (max-width: 1100px) {
+    width: 100%;
+    flex-direction: column;
+  }
+`;
 
 export interface PreviewTxnProps {
   txnData: TxnSimulationDataType;

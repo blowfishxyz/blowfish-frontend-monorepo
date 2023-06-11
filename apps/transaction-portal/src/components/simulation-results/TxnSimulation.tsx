@@ -40,11 +40,7 @@ const TxnSimulationImage = styled.div`
   cursor: pointer;
 `;
 
-const TxnSimulationText = styled(Text).attrs({ size: "sm" })`
-  @media (${device.lg}) {
-    font-size: 16px;
-  }
-`;
+const TxnSimulationText = styled(Text).attrs({ size: "md" })``;
 
 const PreviewTokenTooltipContent = styled(TooltipContent)`
   background-color: white;
