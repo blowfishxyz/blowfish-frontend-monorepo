@@ -7,6 +7,7 @@ import {
 } from "~modules/common/hooks/useChainMetadata";
 import { capitalize } from "~utils/utils";
 import { VerifiedCheckIcon } from "@blowfish/ui/icons";
+import { chainToBlockExplorerTitle } from "@blowfish/utils/chains";
 
 const SuccessIcon = styled(VerifiedCheckIcon)`
   width: 28px;
@@ -33,17 +34,7 @@ export const SuccessView: React.FC<{
   const explorerText: string = useMemo(() => {
     const chainFamily = chain?.chainInfo?.chainFamily;
     if (!chainFamily) return "Explorer";
-    switch (chainFamily) {
-      case "ethereum":
-      case "optimism":
-        return "Etherscan";
-      case "polygon":
-        return "Polygonscan";
-      case "bnb":
-        return "Bscscan";
-      case "arbitrum":
-        return "Arbiscan";
-    }
+    return chainToBlockExplorerTitle(chainFamily);
   }, [chain?.chainInfo?.chainFamily]);
 
   const closingText = useMemo(() => {

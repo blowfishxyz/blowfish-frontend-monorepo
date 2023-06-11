@@ -119,3 +119,17 @@ export const chainToBlockExplorerTxUrl = ({
       return `https://${prefix}etherscan.io/tx/${hash}`;
   }
 };
+
+export const chainToBlockExplorerTitle = (chainFamily: ChainFamily) => {
+  switch (chainFamily) {
+    case "ethereum":
+    case "optimism":
+      return "Etherscan";
+    case "polygon":
+      return "Polygonscan";
+    case "bnb":
+      return "Bscscan";
+    case "arbitrum":
+      return "Arbiscan";
+  }
+};
