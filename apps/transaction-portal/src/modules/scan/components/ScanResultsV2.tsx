@@ -246,7 +246,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
         advancedDetails={displayAdvancedDetails}
-        onContinue={() => confirm()}
+        onContinue={confirm}
         onCancel={() => reject()}
         onReport={onReport}
       />

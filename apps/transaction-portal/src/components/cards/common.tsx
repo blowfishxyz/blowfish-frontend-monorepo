@@ -27,10 +27,6 @@ const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   padding: 32px 0
     ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
 
-  @media (${device.lg}) {
-    width: 55%;
-  }
-
   margin-bottom: 32px;
 `;
 

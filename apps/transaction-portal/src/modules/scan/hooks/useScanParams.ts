@@ -3,6 +3,7 @@ import {
   Message,
   parseRequestFromMessage,
 } from "@blowfish/utils/types";
+import { useRef } from "react";
 import useSWR from "swr";
 
 import { useQueryParams } from "~hooks/useQueryParams";
@@ -10,7 +11,7 @@ import {
   ChainMetadata,
   useChainMetadata,
 } from "~modules/common/hooks/useChainMetadata";
-import { getScanRequestFromMessageChannel } from "~utils/messages";
+import { getScanRequestFromMessageChannelV2 } from "~utils/messages";
 import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
 type HexString = `0x${string}`;
@@ -39,15 +40,21 @@ async function fetcher([messageId]: [string]): Promise<
   if (!messageId) {
     return Promise.resolve({ error: MessageError.PARAMS_NOT_OK });
   }
-  const message = await getScanRequestFromMessageChannel(messageId).then(
-    checkVersionAndTransformMessage
-  );
-  return { message };
+  const message = await getScanRequestFromMessageChannelV2(messageId);
+
+  if ("error" in message) {
+    return message;
+  }
+
+  return { message: checkVersionAndTransformMessage(message) };
 }
 
 export function useScanParams(): ScanParams {
   const chain = useChainMetadata();
   const { id } = useQueryParams<{ id?: string }>();
+  const prevMessageRef = useRef<
+    Message<DappRequest["type"], DappRequest> | undefined
+  >(undefined);
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
   if (fetchError) {
     return { error: MessageError.PARAMS_NOT_OK, id };
@@ -55,10 +62,27 @@ export function useScanParams(): ScanParams {
   if (!data) {
     return undefined; // loading
   }
+
+  let message: Message<DappRequest["type"], DappRequest> | undefined =
+    undefined;
+
   if ("error" in data) {
-    return { error: data.error, id };
+    // NOTE: We don't want to keep the message in the extension,
+    // we keep it in the ref to show a success message after the tx is completed.
+    if (data.error === MessageError.MESSAGE_MISSING) {
+      message = prevMessageRef.current;
+    } else {
+      return { error: data.error, id };
+    }
+  } else {
+    prevMessageRef.current = data.message;
+    message = data.message;
   }
-  const { message } = data;
+
+  if (!message) {
+    return { error: MessageError.PARAMS_NOT_OK, id };
+  }
+
   const dappRequest = parseRequestFromMessage(message);
   if (!dappRequest || !message.origin) {
     return { error: MessageError.PARAMS_NOT_OK, id };
