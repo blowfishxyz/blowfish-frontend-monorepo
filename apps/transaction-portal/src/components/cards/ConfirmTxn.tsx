@@ -19,11 +19,15 @@ import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import { WarningInnerKindEnum } from "@blowfish/api-client";
+import { sleep } from "~utils/utils";
+import { SendTransactionResult } from "@wagmi/core";
+import { SuccessView } from "~components/txn-views/SuccessView";
 
 const ViewState = {
   WARNING: "warning",
   CONFIRMING: "confirming",
   PENDING: "pending",
+  SUCCESS: "success",
 } as const;
 
 type ViewStateType = (typeof ViewState)[keyof typeof ViewState];
@@ -48,7 +52,7 @@ const Wrapper = styled(Row)`
 `;
 
 export interface ConfirmTxnProps {
-  onContinue: () => void;
+  onContinue: () => Promise<SendTransactionResult | void>;
   onReport: () => void;
   onCancel: () => void;
   warnings: UIWarning[] | undefined;
@@ -64,14 +68,31 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
 }) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
-  const handleContinueClick = useCallback(() => {
+  const handleContinueClick = useCallback(async () => {
     setAnimating(true);
-    onContinue();
-    setTimeout(() => {
+    await sleep(animationDuration);
+    setAnimating(false);
+    setViewState(ViewState.CONFIRMING);
+
+    const result = await onContinue();
+
+    if (result) {
+      const { hash, wait } = result;
+      setTxHash(hash);
+      setAnimating(true);
+      await sleep(animationDuration);
       setAnimating(false);
-      setViewState(ViewState.CONFIRMING);
-    }, animationDuration);
+      setViewState(ViewState.PENDING);
+
+      await wait(1);
+
+      setAnimating(true);
+      await sleep(animationDuration);
+      setAnimating(false);
+      setViewState(ViewState.SUCCESS);
+    }
   }, [onContinue]);
 
   const getContent = () => {
@@ -89,7 +110,9 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
       case ViewState.CONFIRMING:
         return <ConfirmingView onCancel={onCancel} />;
       case ViewState.PENDING:
-        return <PendingView />;
+        return <PendingView onReport={onReport} txHash={txHash || ""} />;
+      case ViewState.SUCCESS:
+        return <SuccessView onReport={onReport} txHash={txHash || ""} />;
       default:
         return null;
     }

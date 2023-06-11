@@ -1,6 +1,7 @@
 import {
   ChainInfo,
   chainIdToSupportedChainMapping,
+  chainToBlockExplorerTxUrl,
 } from "@blowfish/utils/chains";
 import { useEffect, useMemo } from "react";
 import { createGlobalState } from "react-use";
@@ -13,7 +14,8 @@ export type ChainMetadata =
     }
   | undefined;
 
-const useChainMetadataContext = createGlobalState<ChainMetadata>(undefined);
+export const useChainMetadataContext =
+  createGlobalState<ChainMetadata>(undefined);
 
 export const useChainMetadata = () => {
   const [chainMetadata] = useChainMetadataContext();
@@ -46,4 +48,18 @@ export function useChainFromUrl(): ChainMetadata {
     }
     return { chainId, chainInfo: chain };
   }, [chainId]);
+}
+
+export function useBlockExplorerUrl(hash: string): string | undefined {
+  const chain = useChainMetadata();
+  if (!chain?.chainInfo) {
+    return undefined;
+  }
+  const { chainFamily, chainNetwork } = chain.chainInfo;
+
+  return chainToBlockExplorerTxUrl({
+    chainFamily,
+    chainNetwork,
+    hash,
+  });
 }

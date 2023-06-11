@@ -11,7 +11,7 @@ const Template: Story<ConfirmTxnProps> = (args) => <ConfirmTxn {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  onContinue: () => {
+  onContinue: async () => {
     console.log("Continue clicked");
   },
   onCancel: () => {

@@ -24,9 +24,7 @@ const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
     background-color: transparent;
   }
 
-  padding: 32px 0
-    ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
-  margin-bottom: 32px;
+  padding: 32px 0;
 `;
 
 const CardContent = styled.div`

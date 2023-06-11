@@ -7,6 +7,8 @@ export default {
   component: PendingView,
 } as Meta;
 
-const Template: Story = () => <PendingView />;
+const Template: Story = () => (
+  <PendingView onReport={() => undefined} txHash="" />
+);
 
 export const Default = Template.bind({});

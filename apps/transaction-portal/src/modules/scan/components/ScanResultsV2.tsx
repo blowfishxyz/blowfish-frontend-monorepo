@@ -1,13 +1,5 @@
-import React, {
-  useCallback,
-  useMemo,
-  useEffect,
-  useState,
-  useLayoutEffect,
-  useRef,
-} from "react";
-import { keyframes, styled } from "styled-components";
-import { Row, Text } from "@blowfish/ui/core";
+import React, { useCallback, useMemo, useEffect } from "react";
+import { Row } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
   ChainFamily,
@@ -188,7 +180,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
         advancedDetails={<AdvancedDetails request={request} />}
-        onContinue={() => confirm()}
+        onContinue={confirm}
         onCancel={() => reject()}
         onReport={onReport}
       />

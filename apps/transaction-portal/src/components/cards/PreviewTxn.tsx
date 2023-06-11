@@ -1,22 +1,8 @@
 import React, { FC, ReactElement, ReactNode } from "react";
-import {
-  BlockExplorerLink,
-  Column,
-  LinkWithArrow,
-  Row,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
-import {
-  CardWrapper,
-  CardContent,
-  Divider,
-  CardText,
-  CardBlackTextLink,
-} from "./common";
-import { shortenHex } from "~utils/hex";
+import { CardWrapper, CardContent, Divider, CardText } from "./common";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
@@ -27,6 +13,7 @@ import {
 } from "@blowfish/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { TxnSimulation } from "~components/simulation-results/TxnSimulation";
+import { SendTransactionResult } from "@wagmi/core";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
@@ -91,7 +78,7 @@ interface PreviewCardProps {
   warnings: UIWarning[];
   severity: Severity | undefined;
   children: ReactNode;
-  onContinue: () => void;
+  onContinue: () => Promise<SendTransactionResult | void>;
   onReport: () => void;
   onCancel: () => void;
   advancedDetails: ReactElement;
@@ -162,7 +149,7 @@ export interface PreviewTxnProps {
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
   advancedDetails: ReactElement;
-  onContinue: () => void;
+  onContinue: () => Promise<SendTransactionResult | void>;
   onCancel: () => void;
   onReport: () => void;
 }

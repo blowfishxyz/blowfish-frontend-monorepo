@@ -106,6 +106,7 @@ export const getTransformersForVersion = (extensionVersion: string) => {
 
 export enum MessageError {
   PARAMS_NOT_OK = "PARAMS_NOT_OK",
+  MESSAGE_MISSING = "MESSAGE_MISSING",
   OUTDATED_EXTENSION = "OUTDATED_EXTENSION",
   FETCH_ERROR = "FETCH_ERROR",
 }

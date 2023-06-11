@@ -1,119 +1,70 @@
-import React from "react";
-import { styled, keyframes } from "styled-components";
-import { Row, Text, Column, size, SecondaryButton } from "@blowfish/ui/core";
-import { BlowfishIcon, SpeedUpIcon } from "@blowfish/ui/icons";
-import { Divider, CardText, CardGrayLink } from "../cards/common";
+import React, { useMemo } from "react";
+import { styled } from "styled-components";
+import { Row, Text, Column, Button } from "@blowfish/ui/core";
+import { LoadingAnimation } from "~components/LoadingAnimation";
+import {
+  useBlockExplorerUrl,
+  useChainMetadata,
+} from "~modules/common/hooks/useChainMetadata";
+import { capitalize } from "~utils/utils";
 
-const pulse = keyframes`
-  0% {
-    box-shadow: 0 0 0 0 rgba(214, 162, 67, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 10px rgba(214, 162, 67, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(214, 162, 67, 0);
-  }
+const LoadingIcon = styled(LoadingAnimation)`
+  width: 48px;
+  flex-shrink: 0;
 `;
 
-const TinyCircle = styled.div`
-  width: 7px;
-  height: 7px;
-  background-color: #d6a243;
-  border-radius: 50%;
-  animation: ${pulse} 2s infinite ease-in-out;
-`;
+export const PendingView: React.FC<{
+  className?: string;
+  txHash: string;
+  onReport: () => void;
+}> = ({ className, txHash, onReport }) => {
+  const chain = useChainMetadata();
+  const url = useBlockExplorerUrl(txHash);
+  const handleEtherscanClick = () => {
+    window.open(url, "_blank", "noopener noreferrer");
+  };
 
-const StyledSpeedUpIcon = styled(SpeedUpIcon)`
-  @media only screen and (max-width: ${size.lg}) {
-    display: none;
-  }
-`;
+  const chainText = chain?.chainInfo?.chainFamily
+    ? ` on the ${capitalize(chain.chainInfo.chainFamily)} network`
+    : null;
 
-const StyledTextXL = styled(Text).attrs({ size: "xxl" })`
-  margin: 8px;
-`;
+  const explorerText: string = useMemo(() => {
+    const chainFamily = chain?.chainInfo?.chainFamily;
+    if (!chainFamily) return "Explorer";
+    switch (chainFamily) {
+      case "ethereum":
+      case "optimism":
+        return "Etherscan";
+      case "polygon":
+        return "Polygonscan";
+      case "bnb":
+        return "Bscscan";
+      case "arbitrum":
+        return "Arbiscan";
+    }
+  }, [chain?.chainInfo?.chainFamily]);
 
-const StyledCenteredText = styled(CardText)`
-  width: 250px;
-  text-align: center;
-`;
-
-const TxnInfoWrapper = styled.div`
-  width: 100%;
-  margin-top: 1rem;
-`;
-
-const StyledGrayLink = styled(CardGrayLink)`
-  text-decoration: none;
-`;
-
-const StyledBlowfishIcon = styled(BlowfishIcon)`
-  width: 77px;
-  height: 76px;
-  opacity: 0.2;
-`;
-
-const ReportButton = styled(SecondaryButton)`
-  height: 46px;
-  font-size: 15px;
-`;
-
-type InfoRowProps = {
-  label: string;
-  value: string | React.ReactNode;
-};
-
-const InfoRow = ({ label, value }: InfoRowProps) => (
-  <>
-    <Row justifyContent="space-between">
-      <Text design="secondary">{label}</Text>
-      <CardText>{value}</CardText>
-    </Row>
-    <Divider margin="0.8rem 0" />
-  </>
-);
-
-export const PendingView: React.FC<{ className?: string }> = ({
-  className,
-}) => {
   return (
-    <Column gap="md" alignItems="center" className={className}>
-      <StyledBlowfishIcon />
-      <StyledTextXL>Pending</StyledTextXL>
-      <StyledCenteredText>
-        Your transaction is being sent to the Ethereum blockchain.
-      </StyledCenteredText>
-      <Text design="secondary">
-        <StyledGrayLink href="">View on Etherscan →</StyledGrayLink>
-      </Text>
-      <TxnInfoWrapper>
-        <InfoRow
-          label="Status"
-          value={
-            <Row gap="md" alignItems="center">
-              <TinyCircle />
-              <CardText>Being mined</CardText>
-            </Row>
-          }
-        />
-        <InfoRow
-          label="Confirmations"
-          value={
-            <>
-              3 <Text design="secondary">of 30</Text>
-            </>
-          }
-        />
-        <InfoRow label="Transaction Fee" value="$4.55" />
-      </TxnInfoWrapper>
-      <Row gap="md" width="100%">
-        <ReportButton>Report</ReportButton>
-        <ReportButton>
-          <StyledSpeedUpIcon />
-          Speed up transaction
-        </ReportButton>
-      </Row>
-    </Column>
+    <Row gap="xl" justifyContent="space-between" flex={1} className={className}>
+      <Column maxWidth={300}>
+        <Row gap="sm" alignItems="center" marginBottom={4}>
+          <LoadingIcon />
+          <Text size="xl" weight="semi-bold">
+            Pending
+          </Text>
+        </Row>
+        <Text size="md" color="base75">
+          Your transaction is being mined{chainText}.
+        </Text>
+      </Column>
+      <Column gap="md" flex={1} minWidth={140}>
+        <Button design="primary" stretch onClick={handleEtherscanClick}>
+          {explorerText}
+        </Button>
+        <Button design="secondary" stretch onClick={onReport}>
+          Report
+        </Button>
+      </Column>
+    </Row>
   );
 };
