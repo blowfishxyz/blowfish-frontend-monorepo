@@ -64,9 +64,9 @@ const ArrowDownIcon: React.FC<ArrowIconProps> = ({
       opacity="0.3"
       d="M12.6666 9.83333L7.99992 14.5M7.99992 14.5L3.33325 9.83333M7.99992 14.5L7.99992 2.5"
       stroke="black"
-      stroke-width="1.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     />
   </StyledSvg>
 );

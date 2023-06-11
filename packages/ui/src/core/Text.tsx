@@ -15,6 +15,15 @@ export type TextProps = {
     | "warning"
     | "tertiary";
   weight?: "semi-bold" | "bold" | "normal";
+  /**
+   * xxs-10px
+   * xs-12px
+   * sm-13.5px
+   * md-15px
+   * lg-18px
+   * xl-22px
+   * xxl-28px
+   * */
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   textAlign?: Properties["textAlign"];
   truncate?: boolean;

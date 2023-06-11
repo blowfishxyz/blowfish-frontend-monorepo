@@ -1,16 +1,20 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback } from "react";
 import styled from "styled-components";
-import { Button, Column, Row, Text } from "@blowfish/ui/core";
-import { ContinueIcon, ReportIcon } from "@blowfish/ui/icons";
+import { Row } from "@blowfish/ui/core";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
+import { sleep } from "~utils/utils";
+import { SendTransactionResult } from "@wagmi/core";
+import { SuccessView } from "~components/txn-views/SuccessView";
+import { DefaultView } from "~components/txn-views/DefaultView";
 
 const ViewState = {
   WARNING: "warning",
   CONFIRMING: "confirming",
   PENDING: "pending",
+  SUCCESS: "success",
 } as const;
 
 type ViewStateType = (typeof ViewState)[keyof typeof ViewState];
@@ -18,6 +22,15 @@ type ViewStateType = (typeof ViewState)[keyof typeof ViewState];
 const animationDuration = 300;
 
 const Wrapper = styled(Row)`
+  width: 100%;
+
+  @media (min-width: 800px) {
+    width: auto;
+    min-width: 460px;
+  }
+`;
+
+const WrapperInner = styled(Row)`
   &.fade-enter {
     opacity: 0;
   }
@@ -35,7 +48,7 @@ const Wrapper = styled(Row)`
 `;
 
 export interface ConfirmTxnProps {
-  onContinue: () => void;
+  onContinue: () => Promise<SendTransactionResult | void>;
   onReport: () => void;
   onCancel: () => void;
   warnings: UIWarning[] | undefined;
@@ -51,14 +64,31 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
 }) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
+  const [txHash, setTxHash] = useState<string | undefined>(undefined);
 
-  const handleContinueClick = useCallback(() => {
+  const handleContinueClick = useCallback(async () => {
     setAnimating(true);
-    onContinue();
-    setTimeout(() => {
+    await sleep(animationDuration);
+    setAnimating(false);
+    setViewState(ViewState.CONFIRMING);
+
+    const result = await onContinue();
+
+    if (result) {
+      const { hash, wait } = result;
+      setTxHash(hash);
+      setAnimating(true);
+      await sleep(animationDuration);
       setAnimating(false);
-      setViewState(ViewState.CONFIRMING);
-    }, animationDuration);
+      setViewState(ViewState.PENDING);
+
+      await wait(1);
+
+      setAnimating(true);
+      await sleep(animationDuration);
+      setAnimating(false);
+      setViewState(ViewState.SUCCESS);
+    }
   }, [onContinue]);
 
   const getContent = () => {
@@ -67,6 +97,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
         return (
           <DefaultView
             severity={severity}
+            warnings={warnings}
             onContinue={handleContinueClick}
             onCancel={onCancel}
             onReport={onReport}
@@ -75,15 +106,22 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
       case ViewState.CONFIRMING:
         return <ConfirmingView onCancel={onCancel} />;
       case ViewState.PENDING:
-        return <PendingView />;
+        return <PendingView onReport={onReport} txHash={txHash || ""} />;
+      case ViewState.SUCCESS:
+        return <SuccessView onReport={onReport} txHash={txHash || ""} />;
       default:
         return null;
     }
   };
 
   return (
-    <Row backgroundColor="backgroundSecondary" borderRadius={12} width="100%">
-      <Wrapper
+    <Wrapper
+      borderRadius={12}
+      backgroundColor="backgroundPrimary"
+      flex={1}
+      marginBottom={32}
+    >
+      <WrapperInner
         padding={24}
         width="100%"
         className={
@@ -95,123 +133,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
         }
       >
         {getContent()}
-      </Wrapper>
-    </Row>
-  );
-};
-
-const DefaultView: React.FC<{
-  severity: Severity | undefined;
-  onContinue: () => void;
-  onCancel: () => void;
-  onReport: () => void;
-}> = ({ severity, onContinue, onCancel, onReport }) => {
-  const title = useMemo(() => {
-    if (severity === "CRITICAL") {
-      return (
-        <Text size="xl" weight="semi-bold">
-          Do not proceed!
-        </Text>
-      );
-    } else if (severity === "WARNING") {
-      return (
-        <Text size="xl" weight="semi-bold">
-          This seems{" "}
-          <Text design="warning" size="xl" weight="semi-bold">
-            fishy...
-          </Text>
-        </Text>
-      );
-    } else {
-      return (
-        <Text size="xl" weight="semi-bold">
-          This is low risk
-        </Text>
-      );
-    }
-  }, [severity]);
-
-  const description = useMemo(() => {
-    if (severity === "CRITICAL") {
-      return (
-        <Text size="sm">
-          We believe this transaction is malicious and unsafe to sign, and is
-          likely to steal funds.
-        </Text>
-      );
-    } else if (severity === "WARNING") {
-      return (
-        <Text size="sm">
-          This transaction does not appear to be safe. We strongly recommend
-          that you do not proceed.
-        </Text>
-      );
-    } else {
-      return (
-        <Text size="sm">
-          This signature request seems to be trustworthy. If something feels
-          fishy, you should report it.
-        </Text>
-      );
-    }
-  }, [severity]);
-
-  const buttons = useMemo(() => {
-    if (severity === "WARNING" || severity === "CRITICAL") {
-      return (
-        <>
-          <Row gap="md">
-            <Button stretch onClick={onReport}>
-              <ReportIcon />
-              Report
-            </Button>
-          </Row>
-          <Row gap="md">
-            <Button size="sm" stretch design="secondary" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button size="sm" stretch design="danger" onClick={onContinue}>
-              Continue
-            </Button>
-          </Row>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <Row gap="md">
-          <Button stretch onClick={onContinue}>
-            <ContinueIcon />
-            Continue
-          </Button>
-        </Row>
-        <Row gap="md">
-          <Button size="sm" stretch design="danger" onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button size="sm" stretch design="secondary" onClick={onReport}>
-            Report
-          </Button>
-        </Row>
-      </>
-    );
-  }, [severity, onCancel, onContinue, onReport]);
-
-  return (
-    <Row
-      width="100%"
-      justifyContent="space-between"
-      alignItems="center"
-      gap="lg"
-    >
-      <Column gap="xs" flex={1}>
-        {title}
-        {description}
-      </Column>
-      <Column gap="md" flex={1}>
-        {buttons}
-      </Column>
-    </Row>
+      </WrapperInner>
+    </Wrapper>
   );
 };

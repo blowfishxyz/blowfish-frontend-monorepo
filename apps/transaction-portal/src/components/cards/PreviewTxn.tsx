@@ -13,6 +13,7 @@ import {
 } from "@blowfish/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { TxnSimulation } from "~components/simulation-results/TxnSimulation";
+import { SendTransactionResult } from "@wagmi/core";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
@@ -41,9 +42,7 @@ const StyledColumn = styled(Column).attrs({
 
 const TxnDataWrapper = styled.div`
   padding: 5px 0 0;
-  max-height: 175px;
   height: 100%;
-  overflow-y: auto;
   position: relative;
   scrollbar-width: thin;
   scrollbar-color: transparent;
@@ -79,7 +78,7 @@ interface PreviewCardProps {
   warnings: UIWarning[];
   severity: Severity | undefined;
   children: ReactNode;
-  onContinue: () => void;
+  onContinue: () => Promise<SendTransactionResult | void>;
   onReport: () => void;
   onCancel: () => void;
   advancedDetails: ReactElement;
@@ -96,26 +95,27 @@ const PreviewCard: FC<PreviewCardProps> = ({
   advancedDetails,
   website,
 }) => (
-  <CardWrapper>
-    <CardContent>
-      <Row justifyContent="space-between" alignItems="center">
-        <Text size="lg">{title}</Text>
-        <Chip severity={severity} />
-      </Row>
-    </CardContent>
-    <Divider margin="16px 0" />
-    <CardContent>{children}</CardContent>
-    <Divider margin="24px 0 0" />
-    <StyledCardContent>
-      <StyledColumn gap="sm">
-        <SectionHeading>Website</SectionHeading>
-        <Row gap="xs" alignItems="center">
-          <CardText>
-            <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
-          </CardText>
+  <PreviewWrapper gap="md" alignItems="flex-start">
+    <CardWrapper>
+      <CardContent>
+        <Row justifyContent="space-between" alignItems="center">
+          <Text size="lg">{title}</Text>
+          <Chip severity={severity} />
         </Row>
-      </StyledColumn>
-      {/* <Divider orientation="vertical" margin="0 36px" />
+      </CardContent>
+      <Divider margin="16px 0" />
+      <CardContent>{children}</CardContent>
+      <Divider margin="24px 0 0" />
+      <StyledCardContent>
+        <StyledColumn gap="sm">
+          <SectionHeading>Website</SectionHeading>
+          <Row gap="xs" alignItems="center">
+            <CardText>
+              <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
+            </CardText>
+          </Row>
+        </StyledColumn>
+        {/* <Divider orientation="vertical" margin="0 36px" />
       <StyledColumn gap="sm">
         <SectionHeading>Contract</SectionHeading>
         <CardText>
@@ -128,20 +128,26 @@ const PreviewCard: FC<PreviewCardProps> = ({
           </BlockExplorerLink>
         </CardText>
       </StyledColumn> */}
-    </StyledCardContent>
-    <Divider margin="0 0 16px" />
-    {advancedDetails}
-    <CardContent>
-      <ConfirmTxn
-        onContinue={onContinue}
-        onReport={onReport}
-        onCancel={onCancel}
-        warnings={warnings}
-        severity={severity}
-      />
-    </CardContent>
-  </CardWrapper>
+      </StyledCardContent>
+      <Divider margin="0 0 16px" />
+      {advancedDetails}
+    </CardWrapper>
+    <ConfirmTxn
+      onContinue={onContinue}
+      onReport={onReport}
+      onCancel={onCancel}
+      warnings={warnings}
+      severity={severity}
+    />
+  </PreviewWrapper>
 );
+
+const PreviewWrapper = styled(Row)`
+  @media (max-width: 1100px) {
+    width: 100%;
+    flex-direction: column;
+  }
+`;
 
 export interface PreviewTxnProps {
   txnData: TxnSimulationDataType;
@@ -150,7 +156,7 @@ export interface PreviewTxnProps {
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
   advancedDetails: ReactElement;
-  onContinue: () => void;
+  onContinue: () => Promise<SendTransactionResult | void>;
   onCancel: () => void;
   onReport: () => void;
 }

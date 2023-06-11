@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Column, Row, Text, device } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui/core";
 import { PlaceholderSimulationImage } from "~components/cards/common";
 import { BlowfishIcon } from "@blowfish/ui/icons";
 import { TxnImage } from "~components/simulation-results/TxnImage";
@@ -10,13 +10,9 @@ const SignatureSimulationMsgWrapper = styled(Column)`
 `;
 
 const SignatureSimulationAction = styled(Text).attrs({
-  size: "sm",
+  size: "md",
   design: "primary",
-})`
-  @media (${device.lg}) {
-    font-size: 17px;
-  }
-`;
+})``;
 
 const SignatureSimulationMsg = styled(Row)`
   flex-wrap: wrap;
