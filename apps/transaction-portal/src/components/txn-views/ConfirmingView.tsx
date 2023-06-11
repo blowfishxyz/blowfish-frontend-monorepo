@@ -12,7 +12,12 @@ export const ConfirmingView: React.FC<{
   onCancel: () => void;
 }> = ({ className, onCancel }) => {
   return (
-    <Row gap="xl" justifyContent="space-between" flex={1} className={className}>
+    <Wrapper
+      gap="xl"
+      justifyContent="space-between"
+      flex={1}
+      className={className}
+    >
       <Column maxWidth={300}>
         <Row gap="sm" alignItems="center" marginBottom={4}>
           <CardConfirmIcon />
@@ -28,7 +33,7 @@ export const ConfirmingView: React.FC<{
           </Text>
         </Text>
       </Column>
-      <Column gap="md" flex={1}>
+      <Column gap="md" flex={1} minWidth={120}>
         <Button design="secondary" stretch loading>
           Try again
         </Button>
@@ -36,6 +41,12 @@ export const ConfirmingView: React.FC<{
           Cancel
         </Button>
       </Column>
-    </Row>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled(Row)`
+  @media (max-width: 574px) {
+    flex-direction: column;
+  }
+`;
