@@ -1,13 +1,12 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { ArrowRightIcon, BlowfishIcon, VerifiedIcon } from "@blowfish/ui/icons";
-import { useCallback, useState } from "react";
+import { ArrowRightIcon, VerifiedIcon } from "@blowfish/ui/icons";
 import styled, { css } from "styled-components";
+import { ImageBase, PlaceholderImage } from "./ImageBase";
 import {
-  PlaceholderSimulationImage,
-  SimulationImage,
-} from "~components/cards/common";
-
-import { getImageInfo } from "~utils/utils";
+  isCurrencyStateChange,
+  isNftStateChangeWithMetadata,
+} from "~utils/utils";
+import { useMemo } from "react";
 
 interface AssetImageProps {
   stateChange: EvmExpectedStateChange;
@@ -66,37 +65,44 @@ export const AssetImageV2 = ({
   isPositiveEffect,
 }: AssetImageProps) => {
   const rawInfo = stateChange.rawInfo;
-  const { altText, imageSrc, verified } = getImageInfo(rawInfo);
-  const [hasPlaceholder, setHasPlaceholder] = useState(!imageSrc);
-  const handleImageError = useCallback(() => {
-    setHasPlaceholder(true);
-  }, []);
+  const content = useMemo(() => {
+    if (isCurrencyStateChange(rawInfo)) {
+      return (
+        <>
+          {rawInfo.data.asset.verified && <VerifiedBadge />}
+          <ImageBase
+            src={rawInfo.data.asset.imageUrl}
+            alt={rawInfo.data.asset.name}
+            width={38}
+            height={38}
+            borderRadius="100%"
+          />
+        </>
+      );
+    }
 
-  if (!hasPlaceholder && !imageSrc) {
-    return null;
-  }
+    if (isNftStateChangeWithMetadata(rawInfo)) {
+      return (
+        <ImageBase
+          src={rawInfo.data.metadata.rawImageUrl}
+          alt={rawInfo.data.tokenId || ""}
+          width={38}
+          height={38}
+          borderRadius={6}
+        />
+      );
+    }
+
+    return <PlaceholderImage width={38} height={38} borderRadius={6} />;
+  }, [rawInfo]);
 
   return (
     <SimulationResultImageWrapper>
-      <div>
-        <div>
-          {verified && <VerifiedBadge />}
-          {hasPlaceholder ? (
-            <PlaceholderSimulationImage>
-              <BlowfishIcon />
-            </PlaceholderSimulationImage>
-          ) : (
-            <SimulationImage
-              src={imageSrc}
-              onError={handleImageError}
-              alt={altText}
-            />
-          )}
-        </div>
-        <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
-          <ArrowRightIcon />
-        </SimulationIconWrapper>
-      </div>
+      {content}
+
+      <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
+        <ArrowRightIcon />
+      </SimulationIconWrapper>
     </SimulationResultImageWrapper>
   );
 };

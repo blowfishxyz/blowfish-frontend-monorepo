@@ -22,6 +22,7 @@ const PreviewNFTStory = () => (
     <PreviewNfts
       imageUrl="/placeholder/placeholder-nft.svg"
       name="NFT Name"
+      type="ERC-721"
       tokenId="123"
       price="$100"
     />

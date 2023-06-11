@@ -1,7 +1,13 @@
 import {
+  CurrencyStateChange,
   EvmExpectedStateChange,
-  EvmExpectedStateChangesInnerRawInfo,
-  ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo,
+  EvmStateChangeErc1155ApprovalForAll,
+  EvmStateChangeErc1155Transfer,
+  EvmStateChangeErc20Approval,
+  EvmStateChangeErc721Approval,
+  EvmStateChangeErc721ApprovalForAll,
+  EvmStateChangeErc721Transfer,
+  NftStateChange,
 } from "@blowfish/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 import Decimal from "decimal.js";
@@ -170,117 +176,88 @@ export const copyToClipboard = (address: string | undefined) => {
     });
 };
 
-const filterNullImageUrls = (imageUrl: string | undefined | null) => {
-  if (imageUrl === null) {
-    return undefined;
-  } else {
-    return imageUrl;
-  }
+export const isNftStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is NftStateChange => {
+  return rawInfo.kind.includes("ERC721") || rawInfo.kind.includes("ERC1155");
 };
 
-export const getTxnSimulationData = (
-  rawInfo:
-    | EvmExpectedStateChangesInnerRawInfo
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+export const isCurrencyStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is CurrencyStateChange => {
+  return (
+    rawInfo.kind.includes("ERC20") || rawInfo.kind.includes("NATIVE_ASSET")
+  );
+};
+
+const isApprovalStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is
+  | EvmStateChangeErc20Approval
+  | EvmStateChangeErc1155ApprovalForAll
+  | EvmStateChangeErc721Approval
+  | EvmStateChangeErc721ApprovalForAll => {
+  return rawInfo.kind.includes("APPROVAL");
+};
+
+const getSimulationDiff = (rawInfo: EvmExpectedStateChange["rawInfo"]) => {
+  const { amount } = rawInfo.data;
+
+  if (!amount) {
+    return new Decimal(0);
+  }
+
+  if (typeof amount === "string") {
+    return new Decimal(amount);
+  }
+
+  return new Decimal(amount.before).sub(amount.after);
+};
+
+export const isPositiveStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
 ) => {
-  let name = "";
-  let imageSrc;
-  let symbol = "";
-  let isNft = false;
-  let tokenId = null;
-  let tokenList = null;
+  const isApproval = isApprovalStateChange(rawInfo);
+  const diff = getSimulationDiff(rawInfo);
 
-  if (
-    rawInfo.kind === "ERC721_APPROVAL" ||
-    rawInfo.kind === "ERC721_TRANSFER"
-  ) {
-    isNft = true;
-    name = rawInfo.data.name;
-    imageSrc = filterNullImageUrls(rawInfo.data.metadata.rawImageUrl);
-    tokenId = rawInfo.data.tokenId;
-  } else if (
-    rawInfo.kind === "ERC20_APPROVAL" ||
-    rawInfo.kind === "ERC20_TRANSFER" ||
-    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
-  ) {
-    isNft = false;
-    name = rawInfo.data.asset.name;
-    imageSrc = filterNullImageUrls(rawInfo.data.asset.imageUrl);
-
-    symbol = rawInfo.data.asset.symbol;
-  }
-
-  if (rawInfo.kind === "ERC20_TRANSFER") {
-    tokenList = rawInfo.data.asset.lists.length;
-  }
-
-  return {
-    name,
-    imageSrc,
-    symbol,
-    isNft,
-    tokenId,
-    tokenList,
-  };
+  return (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
 };
 
-export const checkIsApproval = (
-  rawInfo:
-    | EvmExpectedStateChangesInnerRawInfo
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-): boolean => {
-  const { kind } = rawInfo;
-
-  if (
-    kind === "ERC20_APPROVAL" ||
-    kind === "ERC1155_APPROVAL_FOR_ALL" ||
-    kind === "ERC721_APPROVAL_FOR_ALL"
-  ) {
-    return true;
-  }
-
-  return false;
-};
-
-export const calculateTotalValue = (
-  kind: string,
-  data: any,
-  pricePerToken: number
+export const getAssetPriceInUsd = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
 ): number | null => {
-  if (
-    kind === "ERC20_TRANSFER" ||
-    kind === "ERC20_APPROVAL" ||
-    kind === "NATIVE_ASSET_TRANSFER"
-  ) {
-    const { before, after } = data.amount;
+  const pricePerToken = getAssetPricePerToken(rawInfo);
 
-    const difference = new Decimal(before).sub(after).abs();
+  if (isNftStateChange(rawInfo)) {
+    return getAssetPricePerToken(rawInfo);
+  }
 
-    if (kind === "ERC20_APPROVAL" && difference.eq(U256_MAX_VALUE)) {
+  if (rawInfo.kind === "ERC20_PERMIT") {
+    return null;
+  }
+
+  if (isCurrencyStateChange(rawInfo) && pricePerToken !== null) {
+    const difference = getSimulationDiff(rawInfo).abs();
+
+    if (
+      rawInfo.kind === "ERC20_APPROVAL" &&
+      // U256_MAX_VALUE - unlimited approval
+      difference.eq(U256_MAX_VALUE)
+    ) {
       return null;
     }
 
     return new Decimal(pricePerToken)
       .times(difference)
-      .dividedBy(new Decimal(10).pow(data.asset.decimals))
+      .dividedBy(new Decimal(10).pow(rawInfo.data.asset.decimals))
       .toNumber();
-  }
-
-  if (
-    kind === "ERC721_TRANSFER" ||
-    kind === "ERC1155_TRANSFER" ||
-    kind === "ERC721_APPROVAL"
-  ) {
-    return pricePerToken;
   }
 
   return null;
 };
 
 export const getAssetPricePerToken = (
-  rawInfo:
-    | EvmExpectedStateChangesInnerRawInfo
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
+  rawInfo: EvmExpectedStateChange["rawInfo"]
 ): number | null => {
   if ("asset" in rawInfo.data) {
     return rawInfo.data.asset.price?.dollarValuePerToken || null;
@@ -293,45 +270,27 @@ export const getAssetPricePerToken = (
   return null;
 };
 
-export const getImageInfo = (
-  rawInfo:
-    | EvmExpectedStateChangesInnerRawInfo
-    | ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
-): {
-  altText: string;
-  imageSrc: string | undefined;
-  verified?: boolean;
-} => {
-  let altText = "Asset";
-  let imageSrc;
-  let verified;
-
-  if (
-    rawInfo.kind === "ERC721_TRANSFER" ||
-    rawInfo.kind === "ERC721_APPROVAL" ||
-    rawInfo.kind === "ERC1155_TRANSFER"
-  ) {
-    altText =
-      rawInfo.kind !== "ERC1155_TRANSFER"
-        ? rawInfo.data.name
-        : `${altText} ${rawInfo.data.tokenId}`;
-    imageSrc = filterNullImageUrls(rawInfo.data?.metadata?.rawImageUrl);
-
-    return { altText, imageSrc };
-  } else if (
-    rawInfo.kind === "ERC20_TRANSFER" ||
-    rawInfo.kind === "ERC20_APPROVAL" ||
-    rawInfo.kind === "ERC20_PERMIT" ||
-    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
-  ) {
-    imageSrc = filterNullImageUrls(rawInfo.data.asset?.imageUrl);
-
-    altText = rawInfo.data.asset.name;
-    verified = rawInfo.data.asset.verified;
-    return { altText, imageSrc, verified };
+export const isNftStateChangeWithMetadata = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is
+  | EvmStateChangeErc1155Transfer
+  | EvmStateChangeErc721Approval
+  | EvmStateChangeErc721Transfer => {
+  switch (rawInfo.kind) {
+    case "ERC1155_TRANSFER":
+    case "ERC721_APPROVAL":
+    case "ERC721_TRANSFER":
+      return true;
   }
+  return false;
+};
 
-  return { altText: "Asset", imageSrc: undefined };
+export const hasStateChangeImage = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+) => {
+  return (
+    isCurrencyStateChange(rawInfo) || isNftStateChangeWithMetadata(rawInfo)
+  );
 };
 
 export const createValidURL = (url: string): URL | undefined => {

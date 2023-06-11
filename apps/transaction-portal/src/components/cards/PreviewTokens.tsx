@@ -22,10 +22,10 @@ export const DataRowComponent: React.FC<DataRowProps> = ({ label, value }) => (
 );
 
 interface PreviewTokensProps {
-  imageUrl: string | undefined;
+  imageUrl: string | null;
   name: string | undefined;
   symbol?: string | undefined;
-  price: React.ReactNode;
+  price: React.ReactNode | null;
   tokenList: number | null;
 }
 
@@ -38,7 +38,12 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
 }) => {
   return (
     <PreviewTokenContainer>
-      <TxnImage src={imageUrl} alt={name} $width={"48px"} $height={"48px"} />
+      <TxnImage
+        src={imageUrl || undefined}
+        alt={name}
+        $width={"48px"}
+        $height={"48px"}
+      />
       <Column marginTop={10}>
         <Row alignItems="flex-start">
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
@@ -52,8 +57,10 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
       </Column>
       <Divider margin="13px 0" />
       <div>
-        <DataRowComponent label="Price" value={price} />
-        <DataRowComponent label="Token Lists" value={tokenList} />
+        {price ? <DataRowComponent label="Price" value={price} /> : null}
+        {tokenList ? (
+          <DataRowComponent label="Token Lists" value={tokenList} />
+        ) : null}
       </div>
     </PreviewTokenContainer>
   );
