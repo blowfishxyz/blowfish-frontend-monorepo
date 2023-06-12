@@ -11,6 +11,7 @@ import {
 import {
   DappRequest,
   Message,
+  SignTypedDataVersion,
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
@@ -232,6 +233,20 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     </>
   );
 
+  const scammerInfo = useMemo(() => {
+    if (isTransactionRequest(request)) {
+      return request.payload?.to;
+    }
+    if (
+      isSignTypedDataRequest(request) &&
+      request.signTypedDataVersion !== SignTypedDataVersion.V1
+    ) {
+      return request.payload.domain.verifyingContract;
+    }
+
+    return undefined;
+  }, [request]);
+
   const txnData = {
     message: parsedMessageContent,
     data: scanResults?.simulationResults?.expectedStateChanges,
@@ -239,10 +254,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     account: request.userAccount,
   };
 
-  if (canceledTxn) {
+  if (canceledTxn && !isSignMessageRequest(request)) {
     return (
       <ShareToTwitterModal
-        domain={dappUrl?.origin}
+        scammerInfo={scammerInfo}
         rejectTxn={() => reject()}
       />
     );
@@ -260,6 +275,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         onContinue={() => confirm()}
         onCancel={() => {
           setCancelledTxn(true);
+          isSignMessageRequest(request) && reject();
         }}
         onReport={onReport}
       />

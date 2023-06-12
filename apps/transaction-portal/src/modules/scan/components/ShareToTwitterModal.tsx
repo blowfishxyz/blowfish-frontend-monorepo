@@ -4,6 +4,7 @@ import { Row, Column, Text } from "@blowfish/ui/core";
 import Image from "next/image";
 import { Modal } from "~components/common/Modal";
 import { ArrowDownIcon } from "@blowfish/ui/icons";
+import { shortenHex } from "~utils/hex";
 
 const StyledArrowDownIcon = styled(ArrowDownIcon)`
   margin-left: 4px;
@@ -15,6 +16,7 @@ const SharetoTwitterWrapper = styled(Row).attrs({
   marginBottom: 10,
   paddingBlock: 20,
   paddingLeft: 20,
+  gap: "lg",
 })`
   background-color: ${({ theme }) => theme.colors.backgroundSecondary};
   border: ${({ theme }) => `1px solid ${theme.colors.border}`};
@@ -28,15 +30,17 @@ const WalletImage = styled(Image)`
 `;
 
 interface ShareToTwitterModalProps {
-  domain: string | undefined;
+  scammerInfo: string | undefined;
   rejectTxn: () => void;
 }
 
 const ShareToTwitterModal = ({
-  domain,
+  scammerInfo,
   rejectTxn,
 }: ShareToTwitterModalProps) => {
-  const shareMessage = `I avoided having my funds stolen by a malicious website (${domain}) and reported it to Blowfish.`;
+  const shareMessage = `I avoided having my funds stolen by a malicious contract (${shortenHex(
+    scammerInfo ? scammerInfo : ""
+  )}) and reported it to Blowfish.`;
 
   const handleShareToTwitter = () => {
     const hashtags = ["Blowfish", "Security"];
@@ -45,9 +49,10 @@ const ShareToTwitterModal = ({
       `https://twitter.com/intent/tweet?&text=${encodeURIComponent(
         shareMessage
       )}&hashtags=${encodeURIComponent(hashtags.join(","))}`,
-      "Share to Twitter",
-      "width=600,height=300"
+      "Share to Twitter"
     );
+
+    rejectTxn();
   };
 
   return (

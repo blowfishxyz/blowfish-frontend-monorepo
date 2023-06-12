@@ -74,7 +74,7 @@ storiesOf("Modals", module)
   ))
   .add("ShareToTwitterModal", () => (
     <ShareToTwitterModal
-      domain="example.com"
+      scammerInfo="0x00000000000001ad428e4906ae43d8f9852d0dd6"
       rejectTxn={() => {
         alert("Transaction rejected");
       }}
