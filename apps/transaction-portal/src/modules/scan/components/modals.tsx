@@ -194,7 +194,6 @@ export const WrongNetworkModal: React.FC<{
 export const UnsupportedTransactionModal: React.FC<{
   closeWindow: () => void;
 }> = ({ closeWindow }) => {
-  const router = useRouter();
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
     BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
@@ -231,7 +230,7 @@ export const UnsupportedTransactionModal: React.FC<{
           </b>
         </>
       }
-      onCancel={() => router.replace("/v2/dashboard")}
+      options={{ blocking: true }}
       action={{
         closeOnComplete: false,
         title: "Pause for 1 hour",

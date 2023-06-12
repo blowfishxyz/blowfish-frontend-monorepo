@@ -46,7 +46,7 @@ TransactionPreview.args = {
       </CardContent>
     </>
   ),
-  onContinue: () => {
+  onContinue: async () => {
     console.log("Continue clicked");
   },
   onCancel: () => {
@@ -65,7 +65,7 @@ SignaturePreview.args = {
     message: "Sign in to Blur",
     data: undefined,
   },
-  onContinue: () => {
+  onContinue: async () => {
     console.log("Continue clicked");
   },
   onCancel: () => {

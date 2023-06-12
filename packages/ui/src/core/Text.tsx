@@ -7,8 +7,23 @@ import { Colors, colors } from "./utils/colors";
 export type TextProps = {
   className?: string;
   style?: React.CSSProperties;
-  design?: "primary" | "secondary" | "danger" | "success" | "warning";
+  design?:
+    | "primary"
+    | "secondary"
+    | "danger"
+    | "success"
+    | "warning"
+    | "tertiary";
   weight?: "semi-bold" | "bold" | "normal";
+  /**
+   * xxs-10px
+   * xs-12px
+   * sm-13.5px
+   * md-15px
+   * lg-18px
+   * xl-22px
+   * xxl-28px
+   * */
   size?: "xxs" | "xs" | "sm" | "md" | "lg" | "xl" | "xxl";
   textAlign?: Properties["textAlign"];
   truncate?: boolean;
@@ -126,6 +141,11 @@ function getDesignStyles({ design }: TextProps) {
   if (design === "primary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundPrimary};
+    `;
+  }
+  if (design === "tertiary") {
+    return css`
+      color: ${(p) => p.theme.colors.backgroundPrimary};
     `;
   }
   return css`

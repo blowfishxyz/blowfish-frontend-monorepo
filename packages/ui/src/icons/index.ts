@@ -18,3 +18,4 @@ export * from "./MenuIcon";
 export * from "./PlusIcon";
 export * from "./ContinueIcon";
 export * from "./ReportIcon";
+export * from "./SimulationWarningIcons";

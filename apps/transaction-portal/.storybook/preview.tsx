@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { Story as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
 import { ThemeProvider } from "styled-components";
@@ -7,6 +7,7 @@ import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
+import { useChainMetadataContext } from "../src/modules/common/hooks/useChainMetadata";
 import { themes } from "@blowfish/ui/core";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
@@ -58,18 +59,32 @@ export const decorators = [
   withThemeFromJSXProvider({
     GlobalStyles: GlobalStyle,
   }),
-  (Story: StoryType) => (
-    <ThemeProvider theme={themes.light}>
-      <WagmiConfig client={mockWagmiClient}>
-        <ConnectKitProvider
-          options={{
-            initialChainId: 1,
-          }}
-          mode="light"
-        >
-          <Story />
-        </ConnectKitProvider>
-      </WagmiConfig>
-    </ThemeProvider>
-  ),
+  (Story: StoryType) => {
+    const [, setChainMetadata] = useChainMetadataContext();
+
+    useEffect(() => {
+      setChainMetadata({
+        chainId: 1,
+        chainInfo: {
+          chainFamily: "ethereum",
+          chainNetwork: "mainnet",
+        },
+      });
+    }, []);
+
+    return (
+      <ThemeProvider theme={themes.light}>
+        <WagmiConfig client={mockWagmiClient}>
+          <ConnectKitProvider
+            options={{
+              initialChainId: 1,
+            }}
+            mode="light"
+          >
+            <Story />
+          </ConnectKitProvider>
+        </WagmiConfig>
+      </ThemeProvider>
+    );
+  },
 ];

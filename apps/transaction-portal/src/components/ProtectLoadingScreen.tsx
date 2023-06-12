@@ -12,11 +12,6 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const ProtectLoadingScreenContainer = styled(CardWrapper)`
-  flex: unset;
-  width: 370px;
-`;
-
 const StyledLoadingAnimation = styled(LoadingAnimation)`
   width: 104px;
   height: auto;
@@ -42,18 +37,25 @@ export const ProtectLoadingScreen = ({
 }: ProtectLoadingScreenProps) => {
   return (
     <Wrapper>
-      <ProtectLoadingScreenContainer>
-        <Column gap="md" alignItems="center">
-          <StyledLoadingAnimation animate={animate} />
-          <ProtectLoadingScreenTitle size="xl" weight="semi-bold">
-            Simulating...
-          </ProtectLoadingScreenTitle>
-          <ProtectLoadingScreenMessage size="md">
-            We are making sure that it is safe for you to proceed with this
-            transaction.
-          </ProtectLoadingScreenMessage>
-        </Column>
-      </ProtectLoadingScreenContainer>
+      <Column
+        width="100%"
+        maxWidth={400}
+        gap="md"
+        alignItems="center"
+        withBorder
+        backgroundColor="backgroundPrimary"
+        borderRadius={12}
+        padding={32}
+      >
+        <StyledLoadingAnimation animate={animate} />
+        <ProtectLoadingScreenTitle size="xl" weight="semi-bold">
+          Simulating...
+        </ProtectLoadingScreenTitle>
+        <ProtectLoadingScreenMessage size="md">
+          We are making sure that it is safe for you to proceed with this
+          transaction.
+        </ProtectLoadingScreenMessage>
+      </Column>
     </Wrapper>
   );
 };

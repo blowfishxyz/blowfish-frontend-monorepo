@@ -3,12 +3,9 @@ import { Text, device } from "@blowfish/ui/core";
 
 const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   width: 100%;
-  max-width: 720px;
-  box-sizing: border-box;
   background: ${({ theme }) => theme.colors.backgroundPrimary};
   border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 12px;
-  padding: 32px 0;
   max-height: 100%;
   overflow-y: overlay;
   position: relative;
@@ -24,14 +21,11 @@ const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
     background-color: transparent;
   }
 
-  padding: 32px 0
-    ${({ $removePaddingBottom }) => ($removePaddingBottom ? "0" : "32px")};
+  padding: 20px 0 8px;
 
-  @media (${device.lg}) {
-    width: 55%;
+  @media (min-width: 800px) {
+    min-width: 480px;
   }
-
-  margin-bottom: 32px;
 `;
 
 const CardContent = styled.div`

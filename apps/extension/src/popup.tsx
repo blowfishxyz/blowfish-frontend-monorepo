@@ -9,12 +9,7 @@ import {
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
 import { Column, PrimaryButton, Row, Text } from "@blowfish/ui/core";
-import {
-  BlowfishIcon,
-  CloseIcon,
-  PauseIcon,
-  PlayIcon,
-} from "@blowfish/ui/icons";
+import { CloseIcon, PauseIcon, PlayIcon } from "@blowfish/ui/icons";
 import { transformDate } from "@blowfish/utils/helpers";
 import {
   BlowfishOption,
@@ -40,6 +35,30 @@ import {
 import { PopupContainer } from "./components/PopupContainer";
 import { Providers } from "./components/Providers";
 
+const scanNotPaused = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 185, 74, 0.302);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 185, 74, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 185, 74, 0);
+  }
+`;
+
+const scanPaused = keyframes`
+  0% {
+    box-shadow: 0 0 0 0 rgba(197, 56, 56, 0.302);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(197, 56, 56, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(197, 56, 56, 0);
+  }
+`;
+
 const StyledPopupContainer = styled(PopupContainer)`
   position: relative;
   width: 392px;
@@ -57,7 +76,7 @@ const Content = styled.div`
   align-items: center;
   overflow-y: auto;
   width: 100%;
-  padding: 58px 20px 0;
+  padding: 58px 30px 0;
   box-sizing: border-box;
 
   &::-webkit-scrollbar {
@@ -95,7 +114,6 @@ const StyledOl = styled.ol`
   list-style: none;
   counter-reset: item;
   padding-left: 0;
-  margin-left: 10px;
 
   li {
     counter-increment: item;
@@ -123,21 +141,34 @@ const StyledOl = styled.ol`
 
 const ScannerActionsContainer = styled(Row)`
   width: auto;
+  padding: 0 10px;
+  margin: 10px 0px 5px;
 `;
 
-const ScannerActionButton = styled(PrimaryButton)<{ paused: boolean }>`
-  width: 50px;
-  min-width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  border: none;
+const ScannerActionWrapper = styled(Column).attrs({
+  alignItems: "center",
+  justifyContent: "center",
+  alignContent: "center",
+  marginRight: 6,
+})<{ $darkBackground?: boolean }>`
   cursor: pointer;
+  width: 25px;
+  min-width: 25px;
+  height: 25px;
+  border-radius: 100%;
   transition: all 0.2s linear;
+  background-color: ${({ theme, $darkBackground }) =>
+    $darkBackground
+      ? theme.colors.foregroundPrimary
+      : theme.colors.backgroundPrimary};
 
   svg {
-    width: 25px;
-    height: 25px;
-    fill: white;
+    width: 10px;
+    height: 10px;
+    fill: ${({ theme, $darkBackground }) =>
+      $darkBackground
+        ? theme.colors.backgroundPrimary
+        : theme.colors.foregroundPrimary};
   }
 `;
 
@@ -146,11 +177,7 @@ const Indicator = styled.div<{ paused: boolean }>`
   height: 18px;
   border-radius: 100%;
 `;
-const blink = keyframes`
-  50% {
-    opacity: 0.5;
-  }
-`;
+
 const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
   font-size: 12px;
 
@@ -159,28 +186,28 @@ const StatusIndicatorWrapper = styled(Row)<{ paused: boolean }>`
       if (paused) {
         return css`
           background-color: ${theme.colors.danger};
+          width: 7px;
+          height: 7px;
+          animation: ${scanPaused} 2s infinite ease-in-out;
         `;
       } else {
         return css`
           background-color: rgba(0, 191, 54, 0.8);
-          animation: ${blink} 2s ease-in-out infinite;
+          width: 7px;
+          height: 7px;
+          animation: ${scanNotPaused} 2s infinite ease-in-out;
         `;
       }
     }};
   }
-
-  color: ${({ paused, theme }) =>
-    paused ? `${theme.colors.danger}` : `rgba(0, 191, 54, 0.8)`};
 `;
 
-const InfoContainer = styled.div`
-  opacity: 0.2;
-`;
+const InfoContainer = styled.div``;
 
-const ExtensionVersion = styled(Text)`
-  font-size: 12px;
-  opacity: 0.2;
-`;
+const ExtensionVersion = styled(Text).attrs({
+  size: "xs",
+  design: "secondary",
+})``;
 
 const StatusIndicator = ({
   paused,
@@ -193,9 +220,9 @@ const StatusIndicator = ({
     <StatusIndicatorWrapper gap="sm" alignItems="center" paused={paused}>
       <Indicator paused={paused} />
       {paused && until ? (
-        <>Scanning Paused until {transformDate(until)}</>
+        <Text size="sm">Scanning Paused until {transformDate(until)}</Text>
       ) : (
-        <>Running</>
+        <Text size="sm">Running</Text>
       )}
     </StatusIndicatorWrapper>
   );
@@ -233,24 +260,28 @@ const Popup: React.FC = () => {
           paused={isScanPaused ?? false}
           until={scanPausedUntil ?? null}
         />
-        <ExtensionVersion>v.{BLOWFISH_EXTENSION_VERSION}</ExtensionVersion>
+        <ExtensionVersion>v{BLOWFISH_EXTENSION_VERSION}</ExtensionVersion>
       </Header>
       <Content>
         <WalletHeroImage
           src={walletHero}
           alt="wallet"
-          width={160}
-          height={160}
+          width={180}
+          height={180}
           isScanPaused={isScanPaused ?? false}
         />
-        <Row gap="sm" alignSelf="flex-start">
-          <BlowfishIcon />
-          <Text size="xxl">Blowfish</Text>
-        </Row>
+        <Column gap="sm" alignSelf="flex-start">
+          <Text size="xxl" weight="semi-bold">
+            You’re protected!
+          </Text>
+          <Text size="md" design="secondary">
+            Blowfish is actively scanning. To invoke it...
+          </Text>
+        </Column>
         <Column flex={1} alignSelf="flex-start" width="100%">
           <StyledOl>
             <Text as="li" size="md">
-              Invoke a transaction on web3
+              Start a transaction on a web3 app
             </Text>
             <Text as="li" size="md">
               Check Blowfish before your wallet
@@ -259,31 +290,43 @@ const Popup: React.FC = () => {
               Confirm transaction with confidence
             </Text>
           </StyledOl>
-          <ScannerActionsContainer gap="md" alignItems="center">
-            <ScannerActionButton
-              paused={isScanPaused ?? false}
-              onClick={onActionClick}
-            >
-              {showDurationSelector ? (
-                <CloseIcon />
-              ) : isScanPaused ? (
-                <PlayIcon />
-              ) : (
-                <PauseIcon />
-              )}
-            </ScannerActionButton>
-            {!showDurationSelector && (
-              <InfoContainer>
-                {isScanPaused && <Text>Click to start scanning</Text>}
-                {!isScanPaused && <Text>Click to pause scanning</Text>}
-              </InfoContainer>
+          <div onClick={onActionClick}>
+            {showDurationSelector ? (
+              <ScannerActionsContainer
+                alignItems="center"
+                alignContent="center"
+              >
+                <ScannerActionWrapper $darkBackground>
+                  <CloseIcon />
+                </ScannerActionWrapper>
+                {showDurationSelector && (
+                  <PauseDurationSelector
+                    onClick={(period) => onDurationSelect(period)}
+                  />
+                )}
+              </ScannerActionsContainer>
+            ) : (
+              <PrimaryButton>
+                <ScannerActionWrapper>
+                  {isScanPaused ? <PlayIcon /> : <PauseIcon />}
+                </ScannerActionWrapper>
+                {!showDurationSelector && (
+                  <InfoContainer>
+                    {isScanPaused && (
+                      <Text design="tertiary" size="lg">
+                        Click to start scanning
+                      </Text>
+                    )}
+                    {!isScanPaused && (
+                      <Text design="tertiary" size="lg">
+                        Click to pause scanning
+                      </Text>
+                    )}
+                  </InfoContainer>
+                )}
+              </PrimaryButton>
             )}
-            {showDurationSelector && (
-              <PauseDurationSelector
-                onClick={(period) => onDurationSelect(period)}
-              />
-            )}
-          </ScannerActionsContainer>
+          </div>
         </Column>
         {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
         {CUSTOM_PORTAL_URL_ENABLED && <CustomPortalUrl />}
