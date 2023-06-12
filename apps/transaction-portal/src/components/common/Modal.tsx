@@ -116,18 +116,14 @@ export function Modal({
     <ModalContext.Provider value={modal}>
       <ModalContent width={width}>
         <Column height="100%" justifyContent="space-between">
-          <Column
-            alignItems="center"
-            maxWidth="90%"
-            alignSelf="center"
-            gap="md"
-          >
+          <Column alignItems="center" alignSelf="center" gap="md">
             {content ? content : null}
             <Text
               id={modal.labelId}
               size="xl"
               weight="semi-bold"
               textAlign="center"
+              maxWidth="90%"
             >
               {title}
             </Text>
@@ -136,6 +132,7 @@ export function Modal({
               textAlign="center"
               size="md"
               design="secondary"
+              maxWidth="90%"
             >
               {description}
             </Text>
@@ -146,6 +143,7 @@ export function Modal({
               <Button
                 stretch
                 design={action ? "tertiary" : "primary"}
+                size={action && "sm"}
                 onClick={() => {
                   onCancel?.();
                   modal.hide();

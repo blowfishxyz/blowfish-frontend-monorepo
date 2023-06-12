@@ -239,8 +239,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     account: request.userAccount,
   };
 
-  console.log({ request });
-
   if (canceledTxn) {
     return (
       <ShareToTwitterModal
