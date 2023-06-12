@@ -59,6 +59,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   onContinue,
   onCancel,
   onReport,
+  warnings,
   severity,
 }) => {
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
