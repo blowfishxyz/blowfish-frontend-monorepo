@@ -1,6 +1,5 @@
 import { Button, Column, Row, Text } from "@blowfish/ui/core";
-import { BlowfishIconStroke } from "@blowfish/ui/icons";
-import { ArrowRightIcon } from "@blowfish/ui/icons";
+import { BlowfishIconStroke, ArrowRightIcon } from "@blowfish/ui/icons";
 import Decimal from "decimal.js";
 import { useRouter } from "next/router";
 import { useLayoutEffect } from "react";

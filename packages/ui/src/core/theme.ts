@@ -44,7 +44,7 @@ const severityColors: {
   INFO: {
     background: "#EFEFEF",
     backgroundLight: "#FFFFFF",
-    backgroundV2: "#EFEFEF",
+    backgroundV2: "#f2f4f1",
   },
 };
 
