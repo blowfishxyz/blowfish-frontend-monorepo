@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Modal } from "~components/common/Modal";
 import { ArrowDownIcon } from "@blowfish/ui/icons";
 import { shortenHex } from "~utils/hex";
+import { useLocalStorage } from "react-use";
 
 const StyledArrowDownIcon = styled(ArrowDownIcon)`
   margin-left: 4px;
@@ -14,9 +15,10 @@ const StyledArrowDownIcon = styled(ArrowDownIcon)`
 
 const SharetoTwitterWrapper = styled(Row).attrs({
   marginBottom: 10,
-  paddingBlock: 20,
+  paddingBlock: 10,
   paddingLeft: 20,
   gap: "lg",
+  alignItems: "center",
 })`
   background-color: ${({ theme }) => theme.colors.backgroundSecondary};
   border: ${({ theme }) => `1px solid ${theme.colors.border}`};
@@ -29,18 +31,29 @@ const WalletImage = styled(Image)`
   justify-self: flex-end;
 `;
 
+const CheckboxWrapper = styled(Row)`
+  cursor: pointer;
+`;
+
 interface ShareToTwitterModalProps {
-  scammerInfo: string | undefined;
+  scammerAddress: string | undefined;
   rejectTxn: () => void;
 }
 
-const ShareToTwitterModal = ({
-  scammerInfo,
+const ShareToTwitterModal: React.FC<ShareToTwitterModalProps> = ({
+  scammerAddress,
   rejectTxn,
-}: ShareToTwitterModalProps) => {
-  const shareMessage = `I avoided having my funds stolen by a malicious contract (${shortenHex(
-    scammerInfo ? scammerInfo : ""
-  )}) and reported it to Blowfish.`;
+}) => {
+  const [shouldNotShowModal, setShouldNotShowModal] = useLocalStorage(
+    "shouldNotShowModal",
+    false
+  );
+
+  const shareMessage = scammerAddress
+    ? `I avoided having my funds stolen by a malicious address (${shortenHex(
+        scammerAddress
+      )}) and reported it to Blowfish.`
+    : "I avoided having my funds stolen and reported it to Blowfish.";
 
   const handleShareToTwitter = () => {
     const hashtags = ["Blowfish", "Security"];
@@ -49,7 +62,8 @@ const ShareToTwitterModal = ({
       `https://twitter.com/intent/tweet?&text=${encodeURIComponent(
         shareMessage
       )}&hashtags=${encodeURIComponent(hashtags.join(","))}`,
-      "Share to Twitter"
+      "_blank",
+      "noopener noreferrer"
     );
 
     rejectTxn();
@@ -58,13 +72,31 @@ const ShareToTwitterModal = ({
   return (
     <Modal
       title="You are saved!"
-      description="Tell your friends that you have avoided danger with Blowfish."
+      description={
+        <Column gap="md">
+          <Text>
+            Tell your friends that you have avoided danger with Blowfish.
+          </Text>
+          <CheckboxWrapper
+            gap="sm"
+            justifyContent="center"
+            onClick={() => {
+              setShouldNotShowModal(!shouldNotShowModal);
+            }}
+          >
+            <input type="checkbox" checked={shouldNotShowModal} />
+            <Text size="sm" design="secondary">
+              Don&apos;t show this again
+            </Text>
+          </CheckboxWrapper>
+        </Column>
+      }
       action={{
         cb: handleShareToTwitter,
         title: "Share to twitter",
         closeOnComplete: true,
       }}
-      options={{ onClose: rejectTxn }}
+      onCancel={rejectTxn}
       content={
         <SharetoTwitterWrapper>
           <Column gap="sm">
@@ -74,10 +106,6 @@ const ShareToTwitterModal = ({
             <Text size="sm" design="secondary">
               {shareMessage}
             </Text>
-            <Row alignItems="center">
-              <Text size="sm">Download Blowfish today</Text>
-              <StyledArrowDownIcon />
-            </Row>
           </Column>
           <WalletImage
             src="/wallet_image.svg"

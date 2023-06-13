@@ -46,6 +46,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   message,
   ...props
 }) => {
+  const shouldNotShowModal = window.localStorage.getItem("shouldNotShowModal");
   const [canceledTxn, setCancelledTxn] = useState(false);
   const [, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
@@ -160,7 +161,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
   }, [request?.payload, scanResults?.action]);
 
-  const scammerInfo = useMemo(() => {
+  const scammerAddress = useMemo(() => {
     if (isTransactionRequest(request)) {
       return request.payload?.to;
     }
@@ -188,17 +189,14 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     account: request.userAccount,
   };
 
-  if (canceledTxn && !isSignMessageRequest(request)) {
-    return (
-      <ShareToTwitterModal
-        scammerInfo={scammerInfo}
-        rejectTxn={() => reject()}
-      />
-    );
-  }
-
   return (
     <Row justifyContent="center">
+      {canceledTxn && !isSignMessageRequest(request) && !shouldNotShowModal && (
+        <ShareToTwitterModal
+          scammerAddress={scammerAddress}
+          rejectTxn={() => reject()}
+        />
+      )}
       <PreviewTxn
         txnData={txnData}
         warnings={warnings}
@@ -209,7 +207,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         onContinue={confirm}
         onCancel={() => {
           setCancelledTxn(true);
-          isSignMessageRequest(request) && reject();
+          if (isSignMessageRequest(request) || shouldNotShowModal) {
+            reject();
+          }
         }}
         onReport={onReport}
       />
