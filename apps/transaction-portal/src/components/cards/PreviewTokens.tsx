@@ -3,7 +3,8 @@ import React from "react";
 import styled from "styled-components";
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
-import { TxnImage } from "~components/simulation-results/TxnImage";
+import { AssetPriceV2 } from "~components/common/AssetPriceV2";
+import { ImageBase } from "~components/common/ImageBase";
 
 const PreviewTokenContainer = styled.div``;
 
@@ -25,7 +26,7 @@ interface PreviewTokensProps {
   imageUrl: string | null;
   name: string | undefined;
   symbol?: string | undefined;
-  price: React.ReactNode | null;
+  price: number | null;
   tokenList: number | null;
 }
 
@@ -38,11 +39,12 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
 }) => {
   return (
     <PreviewTokenContainer>
-      <TxnImage
+      <ImageBase
         src={imageUrl || undefined}
-        alt={name}
-        $width={"48px"}
-        $height={"48px"}
+        alt={name || "Token preview"}
+        width={48}
+        height={48}
+        borderRadius="100%"
       />
       <Column marginTop={10}>
         <Row alignItems="flex-start">
@@ -57,7 +59,12 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
       </Column>
       <Divider margin="13px 0" />
       <div>
-        {price ? <DataRowComponent label="Price" value={price} /> : null}
+        {price ? (
+          <DataRowComponent
+            label="Price"
+            value={<AssetPriceV2 totalValue={price} />}
+          />
+        ) : null}
         {tokenList ? (
           <DataRowComponent label="Token Lists" value={tokenList} />
         ) : null}

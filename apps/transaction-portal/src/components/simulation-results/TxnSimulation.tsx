@@ -127,7 +127,7 @@ const TokenTooltipContent: React.FC<{
         imageUrl={rawInfo.data.asset.imageUrl}
         symbol={rawInfo.data.asset.symbol}
         name={rawInfo.data.asset.name}
-        price={<AssetPriceV2 totalValue={getAssetPricePerToken(rawInfo)} />}
+        price={getAssetPricePerToken(rawInfo)}
         tokenList={
           rawInfo.kind !== "NATIVE_ASSET_TRANSFER"
             ? rawInfo.data.asset.lists.length
@@ -144,7 +144,7 @@ const TokenTooltipContent: React.FC<{
           type="ERC-1155"
           name={undefined}
           tokenId={rawInfo.data.tokenId}
-          price={<AssetPriceV2 totalValue={getAssetPriceInUsd(rawInfo)} />}
+          price={getAssetPriceInUsd(rawInfo)}
         />
       );
     }
@@ -155,7 +155,7 @@ const TokenTooltipContent: React.FC<{
         type="ERC-721"
         imageUrl={rawInfo.data.metadata?.rawImageUrl}
         tokenId={rawInfo.data.tokenId}
-        price={<AssetPriceV2 totalValue={getAssetPriceInUsd(rawInfo)} />}
+        price={getAssetPriceInUsd(rawInfo)}
       />
     );
   }
