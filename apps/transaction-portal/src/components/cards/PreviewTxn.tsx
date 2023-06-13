@@ -195,7 +195,7 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   return (
     <Column gap="sm" marginBottom={18}>
       <Row justifyContent="space-between">
-        <SectionHeading>Signatures</SectionHeading>
+        <SectionHeading>Message</SectionHeading>
       </Row>
       <Text
         size="sm"
