@@ -95,7 +95,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   advancedDetails,
   website,
 }) => (
-  <PreviewWrapper gap="md" alignItems="flex-start">
+  <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
     <CardWrapper>
       <CardContent>
         <Row justifyContent="space-between" alignItems="center">

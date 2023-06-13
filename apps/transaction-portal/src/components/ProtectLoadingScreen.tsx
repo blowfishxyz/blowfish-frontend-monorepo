@@ -1,5 +1,5 @@
 import React from "react";
-import { CardText, CardWrapper } from "./cards/common";
+import { CardText } from "./cards/common";
 import { styled } from "styled-components";
 import { Column, Text } from "@blowfish/ui/core";
 import { LoadingAnimation } from "./LoadingAnimation";

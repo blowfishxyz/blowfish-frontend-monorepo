@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 import { Column, Row, Text } from "@blowfish/ui/core";
 import { PlaceholderSimulationImage } from "~components/cards/common";
 import { BlowfishIcon } from "@blowfish/ui/icons";
-import { TxnImage } from "~components/simulation-results/TxnImage";
+import { ImageBase } from "~components/common/ImageBase";
 
 const SignatureSimulationMsgWrapper = styled(Column)`
   flex: 1;
@@ -41,7 +41,12 @@ export const SignatureSimulation: React.FC<SignatureSimulationProps> = ({
   return (
     <Row alignItems="flex-start" gap="md" marginBottom={10}>
       {imageUrl ? (
-        <TxnImage src={imageUrl} />
+        <ImageBase
+          src={imageUrl}
+          alt="Message signing"
+          width={38}
+          height={38}
+        />
       ) : (
         <PlaceholderSimulationImage>
           <BlowfishIcon />

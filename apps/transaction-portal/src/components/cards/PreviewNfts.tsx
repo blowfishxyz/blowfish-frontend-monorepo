@@ -1,19 +1,18 @@
 import { Column, Row, Text } from "@blowfish/ui/core";
 import React from "react";
-import styled from "styled-components";
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
 import { DataRowComponent } from "./PreviewTokens";
-import { TxnImage } from "~components/simulation-results/TxnImage";
-
-const PreviewTokenContainer = styled.div``;
+import { ImageBase } from "~components/common/ImageBase";
+import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 
 interface PreviewNftProps {
   imageUrl: string | undefined;
   name: string | undefined;
   symbol?: string | undefined;
   tokenId: string | null;
-  price: React.ReactNode;
+  type: string;
+  price: number | null;
 }
 
 export const PreviewNfts: React.FC<PreviewNftProps> = ({
@@ -21,10 +20,18 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
   name,
   tokenId,
   price,
+  symbol,
+  type,
 }) => {
   return (
-    <PreviewTokenContainer>
-      <TxnImage src={imageUrl} alt={name} $width={"120px"} $height={"120px"} />
+    <div>
+      <ImageBase
+        src={imageUrl}
+        alt={name || "Token preview"}
+        width={120}
+        height={120}
+        borderRadius={6}
+      />
       <Column marginTop={10}>
         <Row alignItems="flex-start">
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
@@ -36,9 +43,15 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
       </Column>
       <Divider margin="13px 0" />
       <div>
-        <DataRowComponent label="Price" value={price} />
-        <DataRowComponent label="Floor Price" value={price} />
+        <DataRowComponent label="Type" value={type} />
+        {symbol ? <DataRowComponent label="Symbol" value={symbol} /> : null}
+        {price ? (
+          <DataRowComponent
+            label="Floor Price"
+            value={<AssetPriceV2 totalValue={price} />}
+          />
+        ) : null}
       </div>
-    </PreviewTokenContainer>
+    </div>
   );
 };

@@ -64,7 +64,7 @@ export interface BlockExplorerUrlOptions {
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   address: string;
-  nftTokenId?: string;
+  nftTokenId?: string | null;
 }
 
 export const chainToBlockExplorerUrl = ({
