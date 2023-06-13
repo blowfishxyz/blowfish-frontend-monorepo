@@ -12,6 +12,7 @@ import {
   isNftStateChange,
   isNftStateChangeWithMetadata,
   isPositiveStateChange,
+  isApprovalForAllStateChange,
 } from "~utils/utils";
 import {
   Tooltip,
@@ -20,6 +21,8 @@ import {
 } from "~components/common/Tooltip";
 import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { AssetPriceV2 } from "~components/common/AssetPriceV2";
+import { chainToBlockExplorerUrl } from "@blowfish/utils/chains";
+import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -27,6 +30,11 @@ const TxnSimulationWrapper = styled(Row)`
   &:last-child {
     margin-bottom: 0;
   }
+`;
+
+const LinkWrapper = styled.a`
+  text-decoration: none;
+  color: inherit;
 `;
 
 const TxnSimulationImageMsgWrapper = styled(Row)`
@@ -63,6 +71,7 @@ interface TxnSimulationProps {
 
 export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
   const { rawInfo } = txnData;
+  const assetLink = useAssetLinkFromRawInfo(rawInfo);
 
   const isPositiveEffect = isPositiveStateChange(rawInfo);
   const tooltipContent = <TokenTooltipContent rawInfo={rawInfo} />;
@@ -72,37 +81,39 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
       justifyContent="space-between"
       alignItems="flex-start"
     >
-      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
-        {hasStateChangeImage(rawInfo) ? (
-          <Tooltip placement="bottom-start">
-            <TooltipTrigger>
-              <TxnSimulationImage>
-                <AssetImageV2
-                  stateChange={txnData}
-                  isPositiveEffect={isPositiveEffect}
-                />
-              </TxnSimulationImage>
-              <PreviewTokenTooltipContent showArrow={false}>
-                {tooltipContent}
-              </PreviewTokenTooltipContent>
-            </TooltipTrigger>
-          </Tooltip>
-        ) : (
-          <TxnSimulationImage>
-            <AssetImageV2
-              stateChange={txnData}
-              isPositiveEffect={isPositiveEffect}
-            />
-          </TxnSimulationImage>
-        )}
+      <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
+        <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+          {hasStateChangeImage(rawInfo) ? (
+            <Tooltip placement="bottom-start">
+              <TooltipTrigger>
+                <TxnSimulationImage>
+                  <AssetImageV2
+                    stateChange={txnData}
+                    isPositiveEffect={isPositiveEffect}
+                  />
+                </TxnSimulationImage>
+                <PreviewTokenTooltipContent showArrow={false}>
+                  {tooltipContent}
+                </PreviewTokenTooltipContent>
+              </TooltipTrigger>
+            </Tooltip>
+          ) : (
+            <TxnSimulationImage>
+              <AssetImageV2
+                stateChange={txnData}
+                isPositiveEffect={isPositiveEffect}
+              />
+            </TxnSimulationImage>
+          )}
 
-        <Column gap="xs">
-          <TxnSimulationText weight="normal">
-            {txnData.humanReadableDiff}
-          </TxnSimulationText>
-          <TokenFooter rawInfo={txnData.rawInfo} />
-        </Column>
-      </TxnSimulationImageMsgWrapper>
+          <Column gap="xs">
+            <TxnSimulationText weight="normal">
+              {txnData.humanReadableDiff}
+            </TxnSimulationText>
+            <TokenFooter rawInfo={txnData.rawInfo} />
+          </Column>
+        </TxnSimulationImageMsgWrapper>
+      </LinkWrapper>
     </TxnSimulationWrapper>
   );
 };
@@ -196,3 +207,28 @@ const TokenFooter: React.FC<{
   }
   return null;
 };
+
+function useAssetLinkFromRawInfo(rawInfo: EvmExpectedStateChange["rawInfo"]) {
+  const chain = useChainMetadata();
+  if (!chain?.chainInfo) {
+    return undefined;
+  }
+  const { chainFamily, chainNetwork } = chain.chainInfo;
+  if (isCurrencyStateChange(rawInfo)) {
+    return chainToBlockExplorerUrl({
+      chainFamily,
+      chainNetwork,
+      address: rawInfo.data.contract.address,
+    });
+  } else if (
+    isNftStateChange(rawInfo) &&
+    !isApprovalForAllStateChange(rawInfo)
+  ) {
+    return chainToBlockExplorerUrl({
+      chainFamily,
+      chainNetwork,
+      address: rawInfo.data.contract.address,
+      nftTokenId: rawInfo.data.tokenId,
+    });
+  }
+}

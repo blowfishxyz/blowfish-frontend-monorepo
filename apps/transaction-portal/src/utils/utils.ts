@@ -200,6 +200,14 @@ const isApprovalStateChange = (
   return rawInfo.kind.includes("APPROVAL");
 };
 
+export const isApprovalForAllStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is
+  | EvmStateChangeErc1155ApprovalForAll
+  | EvmStateChangeErc721ApprovalForAll => {
+  return rawInfo.kind.includes("APPROVAL_FOR_ALL");
+};
+
 const getSimulationDiff = (rawInfo: EvmExpectedStateChange["rawInfo"]) => {
   const { amount } = rawInfo.data;
 
