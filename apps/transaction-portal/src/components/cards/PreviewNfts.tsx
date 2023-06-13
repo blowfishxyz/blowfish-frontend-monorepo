@@ -1,6 +1,5 @@
 import { Column, Row, Text } from "@blowfish/ui/core";
 import React from "react";
-import styled from "styled-components";
 import { Divider } from "./common";
 import { VerifiedIcon } from "@blowfish/ui/icons";
 import { DataRowComponent } from "./PreviewTokens";

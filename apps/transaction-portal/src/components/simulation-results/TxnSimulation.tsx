@@ -141,7 +141,6 @@ const TokenTooltipContent: React.FC<{
       return (
         <PreviewNfts
           imageUrl={rawInfo.data.metadata.rawImageUrl}
-          // name={rawInfo.data.tokenId || undefined}
           type="ERC-1155"
           name={undefined}
           tokenId={rawInfo.data.tokenId}
