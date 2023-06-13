@@ -10,7 +10,7 @@ const Home = () => {
       return;
     }
     if (v2Enabled) {
-      router.replace("/v2/start");
+      router.replace("/v2");
     } else {
       router.replace("https://extension.blowfish.xyz");
     }
