@@ -5,6 +5,7 @@
 import { isSupportedChainId } from "@blowfish/utils/chains";
 import { logger } from "@blowfish/utils/logger";
 import {
+  BatchRequestsRequest,
   BlowfishOption,
   BlowfishOptionKeyValue,
   Identifier,
@@ -24,6 +25,7 @@ import { providers } from "ethers";
 
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
 import {
+  createBatchRequestsRequestMessage,
   createSignMessageRequestMessage,
   createSignTypedDataRequestMessage,
   createTransactionRequestMessage,
@@ -200,11 +202,49 @@ const overrideWindowEthereum = () => {
   const sendAsyncHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: (target: any, thisArg: any, argumentsList: any[]) => {
-      const [request, callback] = argumentsList;
+      const [req, callback] = argumentsList;
+      let request = req;
       const forwardToWallet = () =>
         Reflect.apply(target, thisArg, argumentsList);
 
-      if (request?.method === "eth_sendTransaction") {
+      if (
+        Array.isArray(request) &&
+        request.filter((x) => x !== null).length === 1
+      ) {
+        request = request.filter((x) => x !== null)[0];
+      }
+
+      if (
+        Array.isArray(request) &&
+        request.filter((x) => x !== null).length > 1
+      ) {
+        getChainIdAndUserAccount(provider)
+          .then(({ chainId, userAccount }) =>
+            sendAndAwaitResponseFromStream<
+              BatchRequestsRequest,
+              UserDecisionResponse
+            >(
+              stream,
+              createBatchRequestsRequestMessage(chainId, userAccount)
+            ).then((response) => ({ response, chainId, userAccount }))
+          )
+          .then(({ response, chainId }) => {
+            if (shouldForwardToWallet(response, chainId)) {
+              return forwardToWallet();
+            }
+            const error = ethErrors.provider.userRejectedRequest(
+              "User denied transaction signature."
+            );
+            const res: JsonRpcError = {
+              id: request?.id ?? randomId(),
+              jsonrpc: "2.0",
+              error,
+            };
+
+            callback(error, res);
+            return;
+          });
+      } else if (request?.method === "eth_sendTransaction") {
         const [transaction] = request?.params ?? [];
         if (!transaction) return forwardToWallet();
 
@@ -371,10 +411,39 @@ const overrideWindowEthereum = () => {
   const requestHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
-      const [request] = argumentsList;
+      let [request] = argumentsList;
       const forwardToWallet = () =>
         Reflect.apply(target, thisArg, argumentsList);
 
+      if (Array.isArray(request)) {
+        if (request.filter((x) => x !== null).length > 1) {
+          const { chainId, userAccount } = await getChainIdAndUserAccount(
+            provider
+          );
+
+          const response = await sendAndAwaitResponseFromStream<
+            BatchRequestsRequest,
+            UserDecisionResponse
+          >(stream, createBatchRequestsRequestMessage(chainId, userAccount));
+
+          if (shouldForwardToWallet(response, chainId)) {
+            return forwardToWallet();
+          }
+
+          logger.debug(response);
+          const { isOk } = response.data;
+
+          if (isOk) {
+            return response.data.result;
+          } else {
+            throw ethErrors.provider.userRejectedRequest(
+              "User denied transaction signature."
+            );
+          }
+        } else if (request.length === 1) {
+          request = request[0];
+        }
+      }
       if (
         request.method === "wallet_requestPermissions" &&
         IS_IMPERSONATION_AVAILABLE &&

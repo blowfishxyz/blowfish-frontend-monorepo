@@ -1,5 +1,6 @@
 import { logger } from "@blowfish/utils/logger";
 import {
+  BatchRequestsRequest,
   BlowfishBlockDomainPayload,
   BlowfishOption,
   BlowfishOptionKey,
@@ -12,6 +13,7 @@ import {
   SignTypedDataRequest,
   TransactionRequest,
   UserDecisionResponse,
+  isBatchRequestsMessage,
   isSignRequestMessage,
   isSignTypedDataRequestMessage,
   isTransactionRequestMessage,
@@ -66,6 +68,8 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
         return processSignTypedDataRequest(message, remotePort);
       } else if (isSignRequestMessage(message)) {
         return processSignMessageRequest(message, remotePort);
+      } else if (isBatchRequestsMessage(message)) {
+        return processBatchRequestsRequest(message, remotePort);
       }
     }
   );
@@ -252,6 +256,13 @@ const processSignTypedDataRequest = async (
 
 const processSignMessageRequest = async (
   message: Message<RequestType.SignMessage, SignMessageRequest>,
+  remotePort: Browser.Runtime.Port
+): Promise<void> => {
+  await processRequestBase(message, remotePort);
+};
+
+const processBatchRequestsRequest = async (
+  message: Message<RequestType.BatchRequests, BatchRequestsRequest>,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);

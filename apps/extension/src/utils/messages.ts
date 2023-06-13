@@ -1,4 +1,5 @@
 import {
+  BatchRequestsRequest,
   BlowfishBlockDomainPayload,
   DappRequest,
   Message,
@@ -72,6 +73,21 @@ export const createSignMessageRequestMessage = (
     extensionVersion: BLOWFISH_EXTENSION_VERSION,
   };
   return createRawMessage(type, messageRequest);
+};
+
+export const createBatchRequestsRequestMessage = (
+  chainId: number,
+  userAccount: string
+): Message<RequestType, BatchRequestsRequest> => {
+  const type = RequestType.BatchRequests;
+  const batchRequests: BatchRequestsRequest = {
+    type,
+    payload: undefined,
+    chainId: chainId.toString(),
+    userAccount,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION,
+  };
+  return createRawMessage(type, batchRequests);
 };
 
 export const sendAndAwaitResponseFromStream = <
