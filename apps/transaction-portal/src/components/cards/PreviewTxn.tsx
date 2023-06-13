@@ -151,6 +151,7 @@ const PreviewWrapper = styled(Row)`
 
 export interface PreviewTxnProps {
   txnData: TxnSimulationDataType;
+  simulationError: string | undefined;
   warnings: UIWarning[];
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
@@ -169,6 +170,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   onReport,
   onCancel,
   advancedDetails,
+  simulationError,
 }) => {
   const { dappUrl, data, message } = txnData;
   const { origin, host } = dappUrl || {};
@@ -186,7 +188,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       advancedDetails={advancedDetails}
     >
       {message ? <SignaturePreview message={message} /> : null}
-      {<StateChangePreview data={data} />}
+      {<StateChangePreview data={data} simulationError={simulationError} />}
     </PreviewCard>
   );
 };
@@ -207,9 +209,10 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   );
 };
 
-const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
-  data,
-}) => {
+const StateChangePreview: React.FC<{
+  data: TxnSimulationDataType["data"];
+  simulationError: string | undefined;
+}> = ({ data, simulationError }) => {
   if (data && data.length > 0) {
     return (
       <Column gap="lg">
@@ -221,6 +224,19 @@ const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
             return <TxnSimulation key={index} txnData={data} />;
           })}
         </TxnDataWrapper>
+      </Column>
+    );
+  }
+
+  if (simulationError) {
+    return (
+      <Column gap="sm">
+        <Row justifyContent="space-between">
+          <SectionHeading>State</SectionHeading>
+        </Row>
+        <Text size="md" color="danger">
+          {simulationError}
+        </Text>
       </Column>
     );
   }

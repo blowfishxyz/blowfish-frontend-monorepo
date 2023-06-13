@@ -48,6 +48,7 @@ storiesOf("Modals", module)
   ))
   .add("UnsupportedTransactionModal", () => (
     <UnsupportedTransactionModal
+      type="eth_sign"
       closeWindow={() => {
         alert("Close");
       }}
