@@ -193,7 +193,8 @@ export const WrongNetworkModal: React.FC<{
 
 export const UnsupportedTransactionModal: React.FC<{
   closeWindow: () => void;
-}> = ({ closeWindow }) => {
+  type: "eth_sign" | "batch_requests";
+}> = ({ closeWindow, type }) => {
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
     BlowfishOption.PREFERENCES_BLOWFISH_PAUSED
   );
@@ -212,6 +213,26 @@ export const UnsupportedTransactionModal: React.FC<{
     closeWindow();
   };
 
+  const description = useMemo(() => {
+    if (type === "batch_requests") {
+      return (
+        <>
+          We currently don’t support <b>batch requests</b>.
+        </>
+      );
+    }
+    if (type === "eth_sign") {
+      return (
+        <>
+          Signing messages with the <b>eth_sign method</b> is dangerous. This
+          dApp is trying to get you to sign a message that looks like a
+          transaction. We cannot scan the transaction and have no way of knowing
+          what it does.
+        </>
+      );
+    }
+  }, [type]);
+
   return (
     <Modal
       width={480}
@@ -219,10 +240,7 @@ export const UnsupportedTransactionModal: React.FC<{
       icon={<WarningIcon />}
       description={
         <>
-          Signing messages with the <b>eth_sign method</b> is dangerous. This
-          dApp is trying to get you to sign a message that looks like a
-          transaction. We cannot scan the transaction and have no way of knowing
-          what it does.
+          {description}
           <br />
           <br />{" "}
           <b>

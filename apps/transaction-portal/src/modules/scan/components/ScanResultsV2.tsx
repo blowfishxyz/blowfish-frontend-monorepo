@@ -175,6 +175,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     <Row justifyContent="center">
       <PreviewTxn
         txnData={txnData}
+        simulationError={
+          scanResults?.simulationResults?.error?.humanReadableError
+        }
         warnings={warnings}
         severity={severity}
         chainNetwork={props.chainNetwork}
