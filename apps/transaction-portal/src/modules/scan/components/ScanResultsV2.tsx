@@ -24,6 +24,7 @@ import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import { AdvancedDetails } from "./AdvancedDetails";
 import ShareToTwitterModal from "./ShareToTwitterModal";
+import { useLocalStorage } from "react-use";
 
 export type UIWarning = {
   message: string;
@@ -46,7 +47,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   message,
   ...props
 }) => {
-  const shouldNotShowModal = window.localStorage.getItem("shouldNotShowModal");
+  const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
   const [canceledTxn, setCancelledTxn] = useState(false);
   const [, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
