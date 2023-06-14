@@ -31,6 +31,7 @@ import {
   createTransactionRequestMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
+import { requestHandler } from "~utils/proxy-handlers";
 
 interface JsonRpcResponse {
   id: number;
@@ -408,188 +409,26 @@ const overrideWindowEthereum = () => {
     },
   };
 
-  const requestHandler = {
+  const requestProxyHandler = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     apply: async (target: any, thisArg: any, argumentsList: any[]) => {
-      let [request] = argumentsList;
+      const [request] = argumentsList;
       const forwardToWallet = () =>
         Reflect.apply(target, thisArg, argumentsList);
 
-      if (Array.isArray(request)) {
-        if (request.filter((x) => x !== null).length > 1) {
-          const { chainId, userAccount } = await getChainIdAndUserAccount(
-            provider
-          );
+      const res = await requestHandler({
+        request,
+        forwardToWallet,
+        stream,
+        provider,
+        impersonatingAddress,
+      });
 
-          const response = await sendAndAwaitResponseFromStream<
-            BatchRequestsRequest,
-            UserDecisionResponse
-          >(stream, createBatchRequestsRequestMessage(chainId, userAccount));
-
-          if (shouldForwardToWallet(response, chainId)) {
-            return forwardToWallet();
-          }
-
-          logger.debug(response);
-          const { isOk } = response.data;
-
-          if (isOk) {
-            return response.data.result;
-          } else {
-            throw ethErrors.provider.userRejectedRequest(
-              "User denied transaction signature."
-            );
-          }
-        } else if (request.length === 1) {
-          request = request[0];
-        }
-      }
-      if (
-        request.method === "wallet_requestPermissions" &&
-        IS_IMPERSONATION_AVAILABLE &&
-        impersonatingAddress
-      ) {
-        return [
-          {
-            type: "restrictReturnedAccounts",
-            value: [impersonatingAddress],
-          },
-        ];
-      }
-
-      if (
-        (request.method === "eth_requestAccounts" ||
-          request.method === "eth_accounts") &&
-        IS_IMPERSONATION_AVAILABLE &&
-        impersonatingAddress
-      ) {
-        return [impersonatingAddress];
-      }
-
-      if (request?.method === "eth_sendTransaction") {
-        const [transaction] = request?.params ?? [];
-        if (!transaction) return forwardToWallet();
-
-        const { chainId, userAccount } = await getChainIdAndUserAccount(
-          provider
-        );
-        const response = await sendAndAwaitResponseFromStream<
-          TransactionRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createTransactionRequestMessage(transaction, chainId, userAccount)
-        );
-
-        if (shouldForwardToWallet(response, chainId)) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const { isOk } = response.data;
-
-        if (isOk) {
-          return response.data.result;
-        } else {
-          throw ethErrors.provider.userRejectedRequest(
-            "User denied transaction signature."
-          );
-        }
-      } else if (
-        request?.method === "eth_signTypedData" ||
-        request?.method === "eth_signTypedData_v1" ||
-        request?.method === "eth_signTypedData_v3" ||
-        request?.method === "eth_signTypedData_v4"
-      ) {
-        const { signTypedDataVersion, address, typedData } =
-          enhanceSignTypedData(request);
-        if (!address || !typedData) return forwardToWallet();
-
-        const { chainId, userAccount } = await getChainIdAndUserAccount(
-          provider
-        );
-        const response = await sendAndAwaitResponseFromStream<
-          SignTypedDataRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createSignTypedDataRequestMessage(
-            {
-              payload: typedData,
-              signTypedDataVersion,
-            },
-            userAccount,
-            chainId
-          )
-        );
-
-        if (shouldForwardToWallet(response, chainId)) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const { isOk } = response.data;
-
-        if (isOk) {
-          return response.data.result;
-        } else {
-          throw ethErrors.provider.userRejectedRequest(
-            "User denied message signature."
-          );
-        }
-      } else if (
-        request?.method === "eth_sign" ||
-        request?.method === "personal_sign"
-      ) {
-        const method: SignMessageMethod = request?.method;
-        const [first, second] = request?.params ?? [];
-        if (!first || !second) return forwardToWallet();
-
-        // if the first parameter is the address, the second is the message, otherwise the first is the message
-        const message =
-          String(first).replace(/0x/, "").length === 40 ? second : first;
-
-        const { chainId, userAccount } = await getChainIdAndUserAccount(
-          provider
-        );
-        const response = await sendAndAwaitResponseFromStream<
-          SignMessageRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createSignMessageRequestMessage(
-            { method, message },
-            chainId,
-            userAccount
-          )
-        );
-
-        const isConfirmedPersonalSign =
-          response.data.isOk && request.method === "personal_sign";
-        if (
-          shouldForwardToWallet(response, chainId) ||
-          isConfirmedPersonalSign
-        ) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const { isOk } = response.data;
-
-        if (isOk) {
-          return response.data.result;
-        } else {
-          throw ethErrors.provider.userRejectedRequest(
-            "User denied message signature."
-          );
-        }
-      } else {
-        return forwardToWallet();
-      }
+      return res;
     },
   };
 
-  requestProxy = new Proxy(window.ethereum.request, requestHandler);
+  requestProxy = new Proxy(window.ethereum.request, requestProxyHandler);
   sendProxy = new Proxy(window.ethereum.send, sendHandler);
   sendAsyncProxy = new Proxy(window.ethereum.sendAsync, sendAsyncHandler);
 
