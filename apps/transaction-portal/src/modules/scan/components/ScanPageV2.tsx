@@ -66,7 +66,7 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
       : false;
 
   if (isUnsupportedDangerousRequest) {
-    return <UnsupportedTransactionModal closeWindow={reject} />;
+    return <UnsupportedTransactionModal type="eth_sign" closeWindow={reject} />;
   }
 
   if (!chain?.chainInfo) {

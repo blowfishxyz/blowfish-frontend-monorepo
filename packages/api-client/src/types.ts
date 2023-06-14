@@ -3,6 +3,15 @@ import type {
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
   ScanTransactionEvm200Response,
   EvmExpectedStateChangesInner,
+  EvmStateChangeErc1155ApprovalForAll,
+  EvmStateChangeErc1155Transfer,
+  EvmStateChangeErc721Approval,
+  EvmStateChangeErc721ApprovalForAll,
+  EvmStateChangeErc721Transfer,
+  EvmStateChangeNativeAssetTransfer,
+  EvmStateChangeErc20Approval,
+  EvmStateChangeErc20Transfer,
+  EvmStateChangeErc20Permit,
 } from "./client/models";
 
 export type ChainFamily =
@@ -17,6 +26,19 @@ export type EvmMessageExpectedStateChange =
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 
 export type EvmTransactionExpectedStateChange = EvmExpectedStateChangesInner;
+
+export type NftStateChange =
+  | EvmStateChangeErc1155ApprovalForAll
+  | EvmStateChangeErc1155Transfer
+  | EvmStateChangeErc721Approval
+  | EvmStateChangeErc721ApprovalForAll
+  | EvmStateChangeErc721Transfer;
+
+export type CurrencyStateChange =
+  | EvmStateChangeNativeAssetTransfer
+  | EvmStateChangeErc20Transfer
+  | EvmStateChangeErc20Permit
+  | EvmStateChangeErc20Approval;
 
 export type EvmExpectedStateChange =
   | EvmMessageExpectedStateChange

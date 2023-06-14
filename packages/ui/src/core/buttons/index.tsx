@@ -81,9 +81,9 @@ const primaryDesign = css`
 `;
 
 const tertiaryDesign = css`
-  background: ${(p) => p.theme.colors.backgroundPrimary};
-  color: ${(p) => p.theme.colors.foregroundPrimary};
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: transparent;
+  color: ${(p) => p.theme.colors.foregroundSecondary};
+  border: none;
   padding: 9px 12px;
   border-radius: 56px;
   font-weight: 400;

@@ -83,7 +83,7 @@ export const useModalContext = () => {
 type ModalAction =
   | {
       title?: string;
-      cb: (hide: () => void) => Promise<void>;
+      cb: (() => void) | ((hide: () => void) => Promise<void>);
       design?: "primary" | "danger";
       closeOnComplete?: boolean;
     }
@@ -92,21 +92,23 @@ type ModalAction =
 type ModalProps = {
   title: string;
   description: React.ReactNode;
-  icon?: React.ReactNode;
+  content?: React.ReactNode;
   action?: ModalAction;
   width?: number;
   options?: ModalOptions;
   onCancel?: () => void;
+  cancelText?: React.ReactElement;
 };
 
 export function Modal({
   title,
-  icon,
+  content,
   action,
   width,
   description,
   onCancel,
   options,
+  cancelText,
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
 
@@ -114,18 +116,14 @@ export function Modal({
     <ModalContext.Provider value={modal}>
       <ModalContent width={width}>
         <Column height="100%" justifyContent="space-between">
-          <Column
-            alignItems="center"
-            maxWidth="90%"
-            alignSelf="center"
-            gap="md"
-          >
-            {icon ? icon : null}
+          <Column alignItems="center" alignSelf="center" gap="md">
+            {content ? content : null}
             <Text
               id={modal.labelId}
               size="xl"
               weight="semi-bold"
               textAlign="center"
+              maxWidth="90%"
             >
               {title}
             </Text>
@@ -134,22 +132,24 @@ export function Modal({
               textAlign="center"
               size="md"
               design="secondary"
+              maxWidth="90%"
             >
               {description}
             </Text>
           </Column>
-          <Column gap="sm" marginTop={36}>
+          <Column gap="sm" marginTop={action ? 20 : 36}>
             {action && <ModalActionButton action={action} close={modal.hide} />}
             {(!options?.blocking || onCancel) && (
               <Button
                 stretch
-                design={action ? "secondary" : "primary"}
+                design={action ? "tertiary" : "primary"}
+                size={action && "sm"}
                 onClick={() => {
                   onCancel?.();
                   modal.hide();
                 }}
               >
-                Cancel
+                {cancelText ? cancelText : "Cancel"}
               </Button>
             )}
           </Column>

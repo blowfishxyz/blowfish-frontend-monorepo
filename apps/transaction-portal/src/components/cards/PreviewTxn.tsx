@@ -109,7 +109,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   advancedDetails,
   website,
 }) => (
-  <PreviewWrapper gap="md" alignItems="flex-start">
+  <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
     <CardWrapper>
       <CardContent>
         <Row justifyContent="space-between" alignItems="center">
@@ -165,6 +165,7 @@ const PreviewWrapper = styled(Row)`
 
 export interface PreviewTxnProps {
   txnData: TxnSimulationDataType;
+  simulationError: string | undefined;
   warnings: UIWarning[];
   severity: Severity | undefined;
   chainNetwork: ChainNetwork;
@@ -183,6 +184,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   onReport,
   onCancel,
   advancedDetails,
+  simulationError,
 }) => {
   const { dappUrl, data, message } = txnData;
   const { origin, host } = dappUrl || {};
@@ -199,10 +201,8 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onCancel={onCancel}
       advancedDetails={advancedDetails}
     >
-      {message ? (
-        <SignaturePreview message="I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old." />
-      ) : null}
-      {<StateChangePreview data={data} />}
+      {message ? <SignaturePreview message="I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old." /> : null}
+      {<StateChangePreview data={data} simulationError={simulationError} />}
     </PreviewCard>
   );
 };
@@ -244,7 +244,7 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   return (
     <Column gap="sm" marginBottom={18}>
       <Row justifyContent="space-between">
-        <SectionHeading>Signatures</SectionHeading>
+        <SectionHeading>Message</SectionHeading>
       </Row>
       <SignatureSimulatioMsgText ref={textRef} $expanded={expanded}>
         {message}
@@ -258,9 +258,10 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   );
 };
 
-const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
-  data,
-}) => {
+const StateChangePreview: React.FC<{
+  data: TxnSimulationDataType["data"];
+  simulationError: string | undefined;
+}> = ({ data, simulationError }) => {
   if (data && data.length > 0) {
     return (
       <Column gap="lg">
@@ -272,6 +273,19 @@ const StateChangePreview: React.FC<{ data: TxnSimulationDataType["data"] }> = ({
             return <TxnSimulation key={index} txnData={data} />;
           })}
         </TxnDataWrapper>
+      </Column>
+    );
+  }
+
+  if (simulationError) {
+    return (
+      <Column gap="sm">
+        <Row justifyContent="space-between">
+          <SectionHeading>State</SectionHeading>
+        </Row>
+        <Text size="md" color="danger">
+          {simulationError}
+        </Text>
       </Column>
     );
   }

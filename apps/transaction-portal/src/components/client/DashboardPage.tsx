@@ -35,7 +35,7 @@ function DashboardPage() {
 
   useLayoutEffect(() => {
     if (!isConnected) {
-      router.replace("/v2/start");
+      router.replace("/v2");
       return;
     }
   }, [isConnected, router]);
