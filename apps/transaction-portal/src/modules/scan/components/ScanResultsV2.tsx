@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect } from "react";
+import React, { useCallback, useMemo, useEffect, useState } from "react";
 import { Row } from "@blowfish/ui/core";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
@@ -11,6 +11,7 @@ import {
 import {
   DappRequest,
   Message,
+  SignTypedDataVersion,
   actionToSeverity,
   isSignMessageRequest,
   isSignTypedDataRequest,
@@ -22,6 +23,8 @@ import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import { AdvancedDetails } from "./AdvancedDetails";
+import ShareToTwitterModal from "./ShareToTwitterModal";
+import { useLocalStorage } from "react-use";
 
 export type UIWarning = {
   message: string;
@@ -44,6 +47,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   message,
   ...props
 }) => {
+  const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
+  const [canceledTxn, setCancelledTxn] = useState(false);
   const [, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
@@ -157,6 +162,20 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
   }, [request?.payload, scanResults?.action]);
 
+  const scammerAddress = useMemo(() => {
+    if (isTransactionRequest(request)) {
+      return request.payload?.to;
+    }
+    if (
+      isSignTypedDataRequest(request) &&
+      request.signTypedDataVersion !== SignTypedDataVersion.V1
+    ) {
+      return request.payload.domain.verifyingContract;
+    }
+
+    return undefined;
+  }, [request]);
+
   useEffect(() => {
     setLayoutConfig({ severity });
     return () => {
@@ -173,6 +192,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   return (
     <Row justifyContent="center">
+      {canceledTxn && !isSignMessageRequest(request) && !shouldNotShowModal && (
+        <ShareToTwitterModal
+          scammerAddress={scammerAddress}
+          rejectTxn={() => reject()}
+        />
+      )}
       <PreviewTxn
         txnData={txnData}
         simulationError={
@@ -184,7 +209,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainFamily={props.chainFamily}
         advancedDetails={<AdvancedDetails request={request} />}
         onContinue={confirm}
-        onCancel={() => reject()}
+        onCancel={() => {
+          setCancelledTxn(true);
+          if (isSignMessageRequest(request) || shouldNotShowModal) {
+            reject();
+          }
+        }}
         onReport={onReport}
       />
     </Row>

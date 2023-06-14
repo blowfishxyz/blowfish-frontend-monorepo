@@ -14,6 +14,7 @@ import {
   WrongAccountModal,
   WrongNetworkModal,
 } from "~modules/scan/components/modals";
+import ShareToTwitterModal from "~modules/scan/components/ShareToTwitterModal";
 
 const Default: Story = () => (
   <Modal
@@ -71,4 +72,12 @@ storiesOf("Modals", module)
   ))
   .add("TransactionRevertedModal", () => (
     <TransactionRevertedModal error="UniswapV2Router: INSUFFICIENT_OUTPUT_AMOUNT" />
+  ))
+  .add("ShareToTwitterModal", () => (
+    <ShareToTwitterModal
+      scammerAddress="0x00000000000001ad428e4906ae43d8f9852d0dd6"
+      rejectTxn={() => {
+        alert("Transaction rejected");
+      }}
+    />
   ));

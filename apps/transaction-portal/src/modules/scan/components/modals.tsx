@@ -32,7 +32,7 @@ export const TransactionNotFoundModal: React.FC = () => {
     <Modal
       title="Something went wrong"
       description="Please close the window and try again"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       onCancel={() => {
         router.push("/v2/dashboard");
       }}
@@ -50,7 +50,7 @@ export const OutdatedExtensionModal: React.FC = () => {
       title="Outdated extension"
       description="Please update the Blowfish extension to the latest version and retry
       the transaction"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       options={{ blocking: true }}
       action={{
         closeOnComplete: false,
@@ -72,7 +72,7 @@ export const UnsupportedChainModal: React.FC<{
     <Modal
       title="Unsupported Chain"
       description="This chain is currently not supported. More chains coming soon!"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       options={{ blocking: true }}
       action={{ cb: closeWindow, title: "Close" }}
     />
@@ -111,7 +111,7 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
   return (
     <Modal
       title="Switch account"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description={description}
       action={{ cb: () => disconnectAsync(), title: "Disconnect" }}
       options={{ blocking: true }}
@@ -184,7 +184,7 @@ export const WrongNetworkModal: React.FC<{
     <Modal
       title="Switch network"
       description={description}
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       action={{ cb: action, title: actionText, closeOnComplete: true }}
       options={{ blocking: true }}
     />
@@ -237,7 +237,7 @@ export const UnsupportedTransactionModal: React.FC<{
     <Modal
       width={480}
       title="Dangerous unsupported action"
-      icon={<WarningIcon />}
+      content={<WarningIcon />}
       description={
         <>
           {description}
@@ -317,7 +317,7 @@ export const BlockedTransactionModal: React.FC<{
           <b>Approving may lead to loss of funds</b>
         </>
       }
-      icon={<WarningIcon />}
+      content={<WarningIcon />}
       onCancel={() => closeWindow?.()}
       options={{ blocking: true }}
       action={{
@@ -346,7 +346,7 @@ export const UnknownErrorModal: React.FC<{ onRetry: () => Promise<void> }> = ({
   return (
     <Modal
       title="Something went wrong"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description="Something unexpected happened. Please try again later."
       action={{ cb: onRetry, title: "Retry", closeOnComplete: false }}
     />
@@ -359,7 +359,7 @@ export const TransactionRevertedModal: React.FC<{
   return (
     <Modal
       title="Transaction Reverted"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description={
         <>
           The transaction reverted when we simulated it. Approving may lead to
@@ -393,7 +393,7 @@ export const SimulationErrorModal: React.FC<{
   return (
     <Modal
       title="Simulation Failed"
-      icon={<InvertedWarningIcon />}
+      content={<InvertedWarningIcon />}
       description="We are unable to simulate this transaction. Approving may lead to loss of funds"
       action={{ cb: onRetry, title: "Retry", closeOnComplete: false }}
     />
