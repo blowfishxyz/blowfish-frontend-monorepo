@@ -65,12 +65,6 @@ export const Menu = () => {
   };
 
   const menuItems = [
-    // { title: "Protect", description: "Keep your assets safe from scams" },
-    {
-      title: "Home",
-      description: "Learn more about Blowfish",
-      url: "https://blowfish.xyz/",
-    },
     {
       title: "Documentation",
       description: "Integrate Blowfish with your app",

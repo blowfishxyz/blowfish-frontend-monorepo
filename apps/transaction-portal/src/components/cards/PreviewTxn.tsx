@@ -1,5 +1,19 @@
-import React, { FC, ReactElement, ReactNode } from "react";
-import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
+import React, {
+  FC,
+  ReactElement,
+  ReactNode,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Button,
+  Column,
+  LinkWithArrow,
+  Row,
+  Text,
+  device,
+} from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";
@@ -185,24 +199,61 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onCancel={onCancel}
       advancedDetails={advancedDetails}
     >
-      {message ? <SignaturePreview message={message} /> : null}
+      {message ? (
+        <SignaturePreview message="I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old." />
+      ) : null}
       {<StateChangePreview data={data} />}
     </PreviewCard>
   );
 };
 
+const SignatureSimulatioMsgText = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})<{ $expanded?: boolean }>`
+  display: -webkit-box;
+  -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "2")};
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: max-height 0.3s ease;
+  max-height: ${({ $expanded }) => ($expanded ? "none" : "40px")};
+`;
+
+const ShowMoreButton = styled(Button).attrs({
+  design: "tertiary",
+  size: "sm",
+})``;
+
 const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
+  const [expanded, setExpanded] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      const isOverflowing =
+        textRef.current.scrollHeight > textRef.current.clientHeight;
+      setExpanded(!isOverflowing);
+    }
+  }, []);
+
+  const handleShowMore = () => {
+    setExpanded(true);
+  };
+
   return (
     <Column gap="sm" marginBottom={18}>
       <Row justifyContent="space-between">
         <SectionHeading>Signatures</SectionHeading>
       </Row>
-      <Text
-        size="sm"
-        style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
-      >
+      <SignatureSimulatioMsgText ref={textRef} $expanded={expanded}>
         {message}
-      </Text>
+      </SignatureSimulatioMsgText>
+      {!expanded && (
+        <ShowMoreButton design="tertiary" size="sm" onClick={handleShowMore}>
+          Show more
+        </ShowMoreButton>
+      )}
     </Column>
   );
 };
