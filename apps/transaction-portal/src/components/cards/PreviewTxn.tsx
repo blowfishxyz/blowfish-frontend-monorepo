@@ -201,7 +201,9 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onCancel={onCancel}
       advancedDetails={advancedDetails}
     >
-      {message ? <SignaturePreview message="I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old. I want to login on Rarible at 2023-06-14T15:06:52.206Z. I accept the Rarible Terms of Service https://static.rarible.com/terms.pdf and I am at least 13 years old." /> : null}
+      {message ? (
+        <SignaturePreview message={message} />
+      ) : null}
       {<StateChangePreview data={data} simulationError={simulationError} />}
     </PreviewCard>
   );
@@ -223,22 +225,29 @@ const SignatureSimulatioMsgText = styled(Text).attrs({
 const ShowMoreButton = styled(Button).attrs({
   design: "tertiary",
   size: "sm",
-})``;
+})`
+  width: 10%;
+  height: 15px;
+  padding: 0;
+  justify-content: flex-start;
+`;
 
 const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
   const [expanded, setExpanded] = useState(false);
+  const [isTextOverflowing, setIsTextOverflowing] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
     if (textRef.current) {
       const isOverflowing =
         textRef.current.scrollHeight > textRef.current.clientHeight;
+      setIsTextOverflowing(isOverflowing);
       setExpanded(!isOverflowing);
     }
   }, []);
 
   const handleShowMore = () => {
-    setExpanded(true);
+    setExpanded(!expanded);
   };
 
   return (
@@ -249,11 +258,12 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
       <SignatureSimulatioMsgText ref={textRef} $expanded={expanded}>
         {message}
       </SignatureSimulatioMsgText>
-      {!expanded && (
-        <ShowMoreButton design="tertiary" size="sm" onClick={handleShowMore}>
-          Show more
-        </ShowMoreButton>
-      )}
+
+      <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
+        <Text size="xs" design="secondary">
+          {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
+          </Text>
+      </ShowMoreButton>
     </Column>
   );
 };
