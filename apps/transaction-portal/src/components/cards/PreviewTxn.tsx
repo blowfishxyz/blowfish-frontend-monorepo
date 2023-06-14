@@ -201,9 +201,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onCancel={onCancel}
       advancedDetails={advancedDetails}
     >
-      {message ? (
-        <SignaturePreview message={message} />
-      ) : null}
+      {message ? <SignaturePreview message={message} /> : null}
       {<StateChangePreview data={data} simulationError={simulationError} />}
     </PreviewCard>
   );
@@ -262,7 +260,7 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
       <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
         <Text size="xs" design="secondary">
           {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
-          </Text>
+        </Text>
       </ShowMoreButton>
     </Column>
   );
