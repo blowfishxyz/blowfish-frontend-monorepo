@@ -71,7 +71,6 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
   }
 
   if (message && isBatchRequests(message.data)) {
-    console.log("@@ HER", message, request);
     return (
       <UnsupportedTransactionModal type="batch_requests" closeWindow={reject} />
     );

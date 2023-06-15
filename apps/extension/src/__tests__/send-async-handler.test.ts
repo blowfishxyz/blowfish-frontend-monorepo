@@ -76,6 +76,7 @@ describe("sendAsync proxy", () => {
   });
 
   describe(`when intercepts batch requests`, () => {
+    // TODO(Alex): add test when batch requests are implemented
     // test(`returns data if approved through Blowfish`, async () => {
     //   const request = [sendTransactionMock, sendTransactionMock];
     //   const mockResult = "mock-result-approve-123";
