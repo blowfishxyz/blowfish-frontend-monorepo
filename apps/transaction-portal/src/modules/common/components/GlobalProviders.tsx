@@ -3,7 +3,6 @@ import { ThemeProvider } from "styled-components";
 import { WagmiConfig } from "wagmi";
 import { wagmiClient } from "~utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
-import { GlobalStyle } from "~styles/global";
 
 import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
@@ -21,7 +20,6 @@ export const GlobalProviders = memo(function GlobalProviders({
 
   return (
     <ThemeProvider theme={themes.light}>
-      <GlobalStyle />
       <WagmiConfig client={wagmiClient}>
         <ConnectKitProvider
           options={{

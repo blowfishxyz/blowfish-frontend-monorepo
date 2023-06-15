@@ -21,7 +21,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Regular.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
@@ -29,7 +29,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
   
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Italic-15-Regular.woff2") format("woff2");
     font-weight: normal;
     font-style: italic;
@@ -37,7 +37,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Bold.woff2") format("woff2");
     font-weight: bold;
     font-style: normal;
@@ -45,7 +45,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Italic-15-Bold.woff2") format("woff2");
     font-weight: bold;
     font-style: italic;
@@ -53,7 +53,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Light.woff2") format("woff2");
     font-weight: 300;
     font-style: normal;
@@ -61,7 +61,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Italic-15-Light.woff2") format("woff2");
     font-weight: 300;
     font-style: italic;
@@ -69,7 +69,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Thin.woff2") format("woff2");
     font-weight: 200;
     font-style: normal;
@@ -77,7 +77,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Italic-15-Thin.woff2") format("woff2");
     font-weight: 200;
     font-style: italic;
@@ -85,7 +85,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Medium.woff2") format("woff2");
     font-weight: 500;
     font-style: normal;
@@ -93,7 +93,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Italic-15-Medium.woff2") format("woff2");
     font-weight: 500;
     font-style: italic;
@@ -101,7 +101,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
 
   @font-face {
     font-family: "GT-Planar";
-    font-display: fallback;
+    font-display: swap;
     src: url("/fonts/GT-Planar-Black.woff2") format("woff2");
     font-weight: 900;
     font-style: normal;
