@@ -4,5 +4,5 @@ import { getV2Enabled } from "~utils/messages";
 export const useV2Enabled = () => {
   const state = useAsync(getV2Enabled, []);
 
-  return [state.value, state.loading];
+  return [!!state.value, state.loading] as const;
 };

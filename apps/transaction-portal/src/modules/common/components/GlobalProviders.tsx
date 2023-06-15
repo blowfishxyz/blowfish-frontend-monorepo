@@ -1,7 +1,7 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { ThemeProvider } from "styled-components";
 import { WagmiConfig } from "wagmi";
-import { wagmiClient } from "~utils/wagmi";
+import { createWagmiClient } from "~utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
 
 import { themes } from "@blowfish/ui/core";
@@ -16,6 +16,7 @@ export const GlobalProviders = memo(function GlobalProviders({
 }) {
   const requestChainId = useRequestChainId();
   const [v2Enabled] = useV2Enabled();
+  const wagmiClient = useMemo(() => createWagmiClient(v2Enabled), [v2Enabled]);
   useChainMetadataProvider();
 
   return (
