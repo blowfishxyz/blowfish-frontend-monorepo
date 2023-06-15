@@ -63,7 +63,7 @@ export const requestHandler = async ({
   forwardToWallet: () => unknown;
   impersonatingAddress: string | undefined;
 }) => {
-  const step1 = await processBatchRequests(req, provider, stream);
+  const step1 = await processIfBatchRequests(req, provider, stream);
   if (step1.shouldForward) {
     return forwardToWallet();
   }
@@ -95,7 +95,7 @@ export const requestHandler = async ({
     return [impersonatingAddress];
   }
 
-  const step2 = await processSendTransaction(request, provider, stream);
+  const step2 = await processIfSendTransaction(request, provider, stream);
   if (step2.shouldForward) {
     return forwardToWallet();
   }
@@ -103,7 +103,7 @@ export const requestHandler = async ({
     return step2.data;
   }
 
-  const step3 = await processSignTypedData(request, provider, stream);
+  const step3 = await processIfSignTypedData(request, provider, stream);
   if (step3.shouldForward) {
     return forwardToWallet();
   }
@@ -111,7 +111,7 @@ export const requestHandler = async ({
     return step3.data;
   }
 
-  const step4 = await processMessageSignData(request, provider, stream);
+  const step4 = await processIfMessageSignData(request, provider, stream);
   if (step4.shouldForward) {
     return forwardToWallet();
   }
@@ -137,7 +137,7 @@ export const sendAsyncHandler = async ({
 }) => {
   let request = req;
   try {
-    const step1 = await processBatchRequests(req, provider, stream);
+    const step1 = await processIfBatchRequests(req, provider, stream);
     if (step1.shouldForward) {
       return forwardToWallet();
     }
@@ -158,7 +158,7 @@ export const sendAsyncHandler = async ({
   }
 
   try {
-    const step2 = await processSendTransaction(request, provider, stream);
+    const step2 = await processIfSendTransaction(request, provider, stream);
     if (step2.shouldForward) {
       return forwardToWallet();
     }
@@ -178,7 +178,7 @@ export const sendAsyncHandler = async ({
   }
 
   try {
-    const step3 = await processSignTypedData(request, provider, stream);
+    const step3 = await processIfSignTypedData(request, provider, stream);
     if (step3.shouldForward) {
       return forwardToWallet();
     }
@@ -198,7 +198,7 @@ export const sendAsyncHandler = async ({
   }
 
   try {
-    const step4 = await processMessageSignData(request, provider, stream);
+    const step4 = await processIfMessageSignData(request, provider, stream);
     if (step4.shouldForward) {
       return forwardToWallet();
     }
@@ -220,7 +220,7 @@ export const sendAsyncHandler = async ({
   forwardToWallet();
 };
 
-const processBatchRequests = async (
+const processIfBatchRequests = async (
   request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
@@ -263,7 +263,7 @@ const processBatchRequests = async (
   return { shouldForward: false, request };
 };
 
-const processSendTransaction = async (
+const processIfSendTransaction = async (
   request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
@@ -301,7 +301,7 @@ const processSendTransaction = async (
   return { shouldForward: false };
 };
 
-const processSignTypedData = async (
+const processIfSignTypedData = async (
   request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
@@ -352,7 +352,7 @@ const processSignTypedData = async (
   return { shouldForward: false };
 };
 
-const processMessageSignData = async (
+const processIfMessageSignData = async (
   request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
