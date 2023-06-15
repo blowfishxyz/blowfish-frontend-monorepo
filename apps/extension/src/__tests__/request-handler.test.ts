@@ -48,6 +48,7 @@ describe("request proxy", () => {
   beforeAll(() => {
     process.env = {
       PLASMO_PUBLIC_BLOWFISH_WALLET_IMPERSONATION_AVAILABLE: "true",
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
   });
 
@@ -741,6 +742,7 @@ function setupTest({
   address,
   chainId = 1,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockResponse?: any;
   address?: string;
   chainId?: number;

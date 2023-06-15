@@ -2,7 +2,7 @@ import { ChainInfo } from "@blowfish/utils/chains";
 import {
   DappRequest,
   Message,
-  isBatchRequestsRequest,
+  isBatchRequests,
   isSignMessageRequest,
 } from "@blowfish/utils/types";
 import { useMemo } from "react";
@@ -70,7 +70,8 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
     return <UnsupportedTransactionModal type="eth_sign" closeWindow={reject} />;
   }
 
-  if (message && isBatchRequestsRequest(message.data)) {
+  if (message && isBatchRequests(message.data)) {
+    console.log("@@ HER", message, request);
     return (
       <UnsupportedTransactionModal type="batch_requests" closeWindow={reject} />
     );

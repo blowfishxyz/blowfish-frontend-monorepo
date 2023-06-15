@@ -71,7 +71,7 @@ export type DappRequest =
   | TransactionRequest
   | SignTypedDataRequest
   | SignMessageRequest
-  | BatchRequestsRequest;
+  | BatchRequests;
 
 export const parseRequestFromMessage = (
   message: Message<DappRequest["type"], DappRequest>
@@ -152,17 +152,17 @@ export const isSignMessageRequest = (
   req: DappRequest
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
 
-export interface BatchRequestsRequest extends BaseRequest {
+export type BatchRequestsPayload = Message<DappRequest["type"], DappRequest>[];
+
+export interface BatchRequests extends BaseRequest {
   type: RequestType.BatchRequests;
-  // TODO: Add payload when supporting batch requests inside the portal
-  payload: undefined;
+  payload: BatchRequestsPayload;
   isImpersonatingWallet?: boolean;
   extensionVersion: string;
 }
 
-export const isBatchRequestsRequest = (
-  req: DappRequest
-): req is BatchRequestsRequest => req.type === RequestType.BatchRequests;
+export const isBatchRequests = (req: DappRequest): req is BatchRequests =>
+  req.type === RequestType.BatchRequests;
 
 export type UserDecisionOpts = {
   pauseScan?: boolean;
@@ -257,7 +257,7 @@ export const isSignRequestMessage = (
 
 export const isBatchRequestsMessage = (
   message: Message<DappRequest["type"], DappRequest>
-): message is Message<RequestType.BatchRequests, BatchRequestsRequest> => {
+): message is Message<RequestType.BatchRequests, BatchRequests> => {
   return message.type === RequestType.BatchRequests;
 };
 

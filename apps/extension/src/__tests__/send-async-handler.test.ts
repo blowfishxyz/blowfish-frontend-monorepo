@@ -1,6 +1,6 @@
 import { sleep } from "@blowfish/utils/helpers";
 import type { WindowPostMessageStream } from "@metamask/post-message-stream";
-import { EthereumProviderError, ethErrors } from "eth-rpc-errors";
+import { ethErrors } from "eth-rpc-errors";
 import type { providers } from "ethers";
 import { Duplex } from "node:stream";
 
@@ -723,6 +723,7 @@ function setupTest({
   address,
   chainId = 1,
 }: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mockResponse?: any;
   address?: string;
   chainId?: number;

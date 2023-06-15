@@ -1,7 +1,7 @@
 import { isSupportedChainId } from "@blowfish/utils/chains";
 import { logger } from "@blowfish/utils/logger";
 import {
-  BatchRequestsRequest,
+  BatchRequests,
   Message,
   RequestType,
   SignMessageMethod,
@@ -19,12 +19,15 @@ import type { providers } from "ethers";
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
 
 import {
-  createBatchRequestsRequestMessage,
+  createBatchRequestsMessage,
   createSignMessageRequestMessage,
   createSignTypedDataRequestMessage,
   createTransactionRequestMessage,
   sendAndAwaitResponseFromStream,
 } from "./messages";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RpcRequest = any;
 
 interface EthereumSignTypedDataRequest {
   method:
@@ -54,7 +57,7 @@ export const requestHandler = async ({
   forwardToWallet,
   impersonatingAddress,
 }: {
-  request: any;
+  request: RpcRequest;
   provider: providers.Web3Provider;
   stream: WindowPostMessageStream;
   forwardToWallet: () => unknown;
@@ -126,11 +129,11 @@ export const sendAsyncHandler = async ({
   forwardToWallet,
   callback,
 }: {
-  request: any;
+  request: RpcRequest;
   provider: providers.Web3Provider;
   stream: WindowPostMessageStream;
   forwardToWallet: () => unknown;
-  callback: any;
+  callback: RpcRequest;
 }) => {
   let request = req;
   try {
@@ -213,27 +216,31 @@ export const sendAsyncHandler = async ({
     forwardToWallet();
     return;
   }
-  console.log("@@ HERE");
+
   forwardToWallet();
 };
 
 const processBatchRequests = async (
-  request: any,
+  request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
 ): Promise<
   | { shouldForward: true }
-  | { shouldForward: false; data?: string; request: any }
+  | { shouldForward: false; data?: string; request: RpcRequest }
 > => {
   if (Array.isArray(request)) {
     const nonNullRequest = request.filter((x) => x !== null);
     if (nonNullRequest.length > 1) {
       const { chainId, userAccount } = await getChainIdAndUserAccount(provider);
-
+      const payload = batchPayloadFromRequest(
+        nonNullRequest,
+        chainId,
+        userAccount
+      );
       const response = await sendAndAwaitResponseFromStream<
-        BatchRequestsRequest,
+        BatchRequests,
         UserDecisionResponse
-      >(stream, createBatchRequestsRequestMessage(chainId, userAccount));
+      >(stream, createBatchRequestsMessage(payload, chainId, userAccount));
 
       if (shouldForwardToWallet(response, chainId)) {
         return { shouldForward: true };
@@ -257,7 +264,7 @@ const processBatchRequests = async (
 };
 
 const processSendTransaction = async (
-  request: any,
+  request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
 ): Promise<{ shouldForward: boolean; data?: string }> => {
@@ -295,7 +302,7 @@ const processSendTransaction = async (
 };
 
 const processSignTypedData = async (
-  request: any,
+  request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
 ): Promise<{ shouldForward: boolean; data?: string }> => {
@@ -346,7 +353,7 @@ const processSignTypedData = async (
 };
 
 const processMessageSignData = async (
-  request: any,
+  request: RpcRequest,
   provider: providers.Web3Provider,
   stream: WindowPostMessageStream
 ): Promise<{ shouldForward: boolean; data?: string }> => {
@@ -388,6 +395,65 @@ const processMessageSignData = async (
     }
   }
   return { shouldForward: false };
+};
+
+const batchPayloadFromRequest = (
+  requests: RpcRequest[],
+  chainId: number,
+  userAccount: string
+) => {
+  return requests
+    .map((x) => {
+      if (x.method === "eth_sendTransaction") {
+        const [transaction] = x?.params ?? [];
+        if (transaction) {
+          return createTransactionRequestMessage(
+            transaction,
+            chainId,
+            userAccount
+          );
+        }
+      }
+
+      if (
+        x?.method === "eth_signTypedData" ||
+        x?.method === "eth_signTypedData_v1" ||
+        x?.method === "eth_signTypedData_v3" ||
+        x?.method === "eth_signTypedData_v4"
+      ) {
+        const { signTypedDataVersion, address, typedData } =
+          enhanceSignTypedData(x);
+        if (address && typedData) {
+          return createSignTypedDataRequestMessage(
+            {
+              payload: typedData,
+              signTypedDataVersion,
+            },
+            userAccount,
+            chainId
+          );
+        }
+      }
+
+      if (x?.method === "eth_sign" || x?.method === "personal_sign") {
+        const method: SignMessageMethod = x?.method;
+        const [first, second] = x?.params ?? [];
+        if (first && second) {
+          // if the first parameter is the address, the second is the message, otherwise the first is the message
+          const message =
+            String(first).replace(/0x/, "").length === 40 ? second : first;
+
+          return createSignMessageRequestMessage(
+            { method, message },
+            chainId,
+            userAccount
+          );
+        }
+      }
+
+      return null;
+    })
+    .filter(notEmpty);
 };
 
 const randomId = () => Math.floor(Math.random() * 1_000_000);
@@ -490,4 +556,10 @@ const getChainIdAndUserAccount = async (
   const userAccount = accounts[0];
 
   return { chainId, userAccount };
+};
+
+const notEmpty = <TValue>(
+  value: TValue | null | undefined
+): value is TValue => {
+  return value !== null && value !== undefined;
 };
