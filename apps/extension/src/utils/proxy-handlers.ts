@@ -60,45 +60,15 @@ export const requestHandler = async ({
   forwardToWallet: () => unknown;
   impersonatingAddress: string | undefined;
 }) => {
-  let request = req;
-  if (Array.isArray(request)) {
-    if (request.filter((x) => x !== null).length > 1) {
-      const { chainId, userAccount } = await getChainIdAndUserAccount(provider);
-
-      const response = await sendAndAwaitResponseFromStream<
-        BatchRequestsRequest,
-        UserDecisionResponse
-      >(stream, createBatchRequestsRequestMessage(chainId, userAccount));
-
-      if (shouldForwardToWallet(response, chainId)) {
-        return forwardToWallet();
-      }
-
-      logger.debug(response);
-      const { isOk } = response.data;
-
-      if (isOk) {
-        return response.data.result;
-      } else {
-        throw ethErrors.provider.userRejectedRequest(
-          "User denied transaction signature."
-        );
-      }
-    } else if (request.length === 1) {
-      request = request[0];
-    }
+  const step1 = await processBatchRequests(req, provider, stream);
+  if (step1.shouldForward) {
+    return forwardToWallet();
+  }
+  if (step1.data) {
+    return step1.data;
   }
 
-  //   const res = await processBatchRequests(req, provider, stream);
-
-  //   if (res.shouldForward) {
-  //     return forwardToWallet();
-  //   }
-  //   const { data, request } = res;
-
-  //   if (data) {
-  //     return data;
-  //   }
+  const { request } = step1;
 
   if (
     request.method === "wallet_requestPermissions" &&
@@ -122,9 +92,180 @@ export const requestHandler = async ({
     return [impersonatingAddress];
   }
 
+  const step2 = await processSendTransaction(request, provider, stream);
+  if (step2.shouldForward) {
+    return forwardToWallet();
+  }
+  if (step2.data) {
+    return step2.data;
+  }
+
+  const step3 = await processSignTypedData(request, provider, stream);
+  if (step3.shouldForward) {
+    return forwardToWallet();
+  }
+  if (step3.data) {
+    return step3.data;
+  }
+
+  const step4 = await processMessageSignData(request, provider, stream);
+  if (step4.shouldForward) {
+    return forwardToWallet();
+  }
+  if (step4.data) {
+    return step4.data;
+  }
+
+  return forwardToWallet();
+};
+
+export const sendAsyncHandler = async ({
+  request: req,
+  provider,
+  stream,
+  forwardToWallet,
+  callback,
+}: {
+  request: any;
+  provider: providers.Web3Provider;
+  stream: WindowPostMessageStream;
+  forwardToWallet: () => unknown;
+  callback: any;
+}) => {
+  let request = req;
+  try {
+    const step1 = await processBatchRequests(req, provider, stream);
+    if (step1.shouldForward) {
+      return forwardToWallet();
+    }
+    if (step1.data) {
+      const response = createRpcResponse(req[0]?.id, step1.data);
+      callback(null, response);
+      return;
+    }
+    request = step1.request;
+  } catch (error) {
+    if (error instanceof EthereumProviderError) {
+      const response = createRpcError(req[0]?.id, error);
+      callback(error, response);
+      return;
+    }
+    forwardToWallet();
+    return;
+  }
+
+  try {
+    const step2 = await processSendTransaction(request, provider, stream);
+    if (step2.shouldForward) {
+      return forwardToWallet();
+    }
+    if (step2.data) {
+      const response = createRpcResponse(request.id, step2.data);
+      callback(null, response);
+      return;
+    }
+  } catch (error) {
+    if (error instanceof EthereumProviderError) {
+      const response = createRpcError(request.id, error);
+      callback(error, response);
+      return;
+    }
+    forwardToWallet();
+    return;
+  }
+
+  try {
+    const step3 = await processSignTypedData(request, provider, stream);
+    if (step3.shouldForward) {
+      return forwardToWallet();
+    }
+    if (step3.data) {
+      const response = createRpcResponse(request.id, step3.data);
+      callback(null, response);
+      return;
+    }
+  } catch (error) {
+    if (error instanceof EthereumProviderError) {
+      const response = createRpcError(request.id, error);
+      callback(error, response);
+      return;
+    }
+    forwardToWallet();
+    return;
+  }
+
+  try {
+    const step4 = await processMessageSignData(request, provider, stream);
+    if (step4.shouldForward) {
+      return forwardToWallet();
+    }
+    if (step4.data) {
+      const response = createRpcResponse(request.id, step4.data);
+      callback(null, response);
+      return;
+    }
+  } catch (error) {
+    if (error instanceof EthereumProviderError) {
+      const response = createRpcError(request.id, error);
+      callback(error, response);
+      return;
+    }
+    forwardToWallet();
+    return;
+  }
+  console.log("@@ HERE");
+  forwardToWallet();
+};
+
+const processBatchRequests = async (
+  request: any,
+  provider: providers.Web3Provider,
+  stream: WindowPostMessageStream
+): Promise<
+  | { shouldForward: true }
+  | { shouldForward: false; data?: string; request: any }
+> => {
+  if (Array.isArray(request)) {
+    const nonNullRequest = request.filter((x) => x !== null);
+    if (nonNullRequest.length > 1) {
+      const { chainId, userAccount } = await getChainIdAndUserAccount(provider);
+
+      const response = await sendAndAwaitResponseFromStream<
+        BatchRequestsRequest,
+        UserDecisionResponse
+      >(stream, createBatchRequestsRequestMessage(chainId, userAccount));
+
+      if (shouldForwardToWallet(response, chainId)) {
+        return { shouldForward: true };
+      }
+
+      logger.debug(response);
+      const { isOk } = response.data;
+
+      if (isOk) {
+        return { shouldForward: false, data: response.data.result, request };
+      } else {
+        throw ethErrors.provider.userRejectedRequest(
+          "User denied transaction signature."
+        );
+      }
+    } else if (nonNullRequest.length === 1) {
+      return { shouldForward: false, request: request[0] };
+    }
+  }
+  return { shouldForward: false, request };
+};
+
+const processSendTransaction = async (
+  request: any,
+  provider: providers.Web3Provider,
+  stream: WindowPostMessageStream
+): Promise<{ shouldForward: boolean; data?: string }> => {
   if (request?.method === "eth_sendTransaction") {
     const [transaction] = request?.params ?? [];
-    if (!transaction) return forwardToWallet();
+    if (!transaction) {
+      return { shouldForward: true };
+    }
 
     const { chainId, userAccount } = await getChainIdAndUserAccount(provider);
     const response = await sendAndAwaitResponseFromStream<
@@ -136,20 +277,29 @@ export const requestHandler = async ({
     );
 
     if (shouldForwardToWallet(response, chainId)) {
-      return forwardToWallet();
+      return { shouldForward: true };
     }
 
     logger.debug(response);
     const { isOk } = response.data;
 
     if (isOk) {
-      return response.data.result;
+      return { shouldForward: false, data: response.data.result };
     } else {
       throw ethErrors.provider.userRejectedRequest(
         "User denied transaction signature."
       );
     }
-  } else if (
+  }
+  return { shouldForward: false };
+};
+
+const processSignTypedData = async (
+  request: any,
+  provider: providers.Web3Provider,
+  stream: WindowPostMessageStream
+): Promise<{ shouldForward: boolean; data?: string }> => {
+  if (
     request?.method === "eth_signTypedData" ||
     request?.method === "eth_signTypedData_v1" ||
     request?.method === "eth_signTypedData_v3" ||
@@ -157,7 +307,9 @@ export const requestHandler = async ({
   ) {
     const { signTypedDataVersion, address, typedData } =
       enhanceSignTypedData(request);
-    if (!address || !typedData) return forwardToWallet();
+    if (!address || !typedData) {
+      return { shouldForward: true };
+    }
 
     const { chainId, userAccount } = await getChainIdAndUserAccount(provider);
     const response = await sendAndAwaitResponseFromStream<
@@ -176,26 +328,34 @@ export const requestHandler = async ({
     );
 
     if (shouldForwardToWallet(response, chainId)) {
-      return forwardToWallet();
+      return { shouldForward: true };
     }
 
     logger.debug(response);
     const { isOk } = response.data;
 
     if (isOk) {
-      return response.data.result;
+      return { shouldForward: false, data: response.data.result };
     } else {
       throw ethErrors.provider.userRejectedRequest(
         "User denied message signature."
       );
     }
-  } else if (
-    request?.method === "eth_sign" ||
-    request?.method === "personal_sign"
-  ) {
+  }
+  return { shouldForward: false };
+};
+
+const processMessageSignData = async (
+  request: any,
+  provider: providers.Web3Provider,
+  stream: WindowPostMessageStream
+): Promise<{ shouldForward: boolean; data?: string }> => {
+  if (request?.method === "eth_sign" || request?.method === "personal_sign") {
     const method: SignMessageMethod = request?.method;
     const [first, second] = request?.params ?? [];
-    if (!first || !second) return forwardToWallet();
+    if (!first || !second) {
+      return { shouldForward: true };
+    }
 
     // if the first parameter is the address, the second is the message, otherwise the first is the message
     const message =
@@ -213,271 +373,46 @@ export const requestHandler = async ({
     const isConfirmedPersonalSign =
       response.data.isOk && request.method === "personal_sign";
     if (shouldForwardToWallet(response, chainId) || isConfirmedPersonalSign) {
-      return forwardToWallet();
+      return { shouldForward: true };
     }
 
     logger.debug(response);
     const { isOk } = response.data;
 
     if (isOk) {
-      return response.data.result;
+      return { shouldForward: false, data: response.data.result };
     } else {
       throw ethErrors.provider.userRejectedRequest(
         "User denied message signature."
       );
     }
   }
-  return forwardToWallet();
+  return { shouldForward: false };
 };
-
-export const sendAsyncHandler = async ({
-  req,
-  provider,
-  stream,
-  forwardToWallet,
-  callback,
-}: {
-  req: any;
-  provider: providers.Web3Provider;
-  stream: WindowPostMessageStream;
-  forwardToWallet: () => unknown;
-  callback: any;
-}) => {
-  let request = req;
-  if (
-    Array.isArray(request) &&
-    request.filter((x) => x !== null).length === 1
-  ) {
-    request = request.filter((x) => x !== null)[0];
-  }
-
-  if (Array.isArray(request) && request.filter((x) => x !== null).length > 1) {
-    getChainIdAndUserAccount(provider)
-      .then(({ chainId, userAccount }) =>
-        sendAndAwaitResponseFromStream<
-          BatchRequestsRequest,
-          UserDecisionResponse
-        >(stream, createBatchRequestsRequestMessage(chainId, userAccount)).then(
-          (response) => ({ response, chainId, userAccount })
-        )
-      )
-      .then(({ response, chainId }) => {
-        if (shouldForwardToWallet(response, chainId)) {
-          return forwardToWallet();
-        }
-        const error = ethErrors.provider.userRejectedRequest(
-          "User denied transaction signature."
-        );
-        const res: JsonRpcError = {
-          id: request?.id ?? randomId(),
-          jsonrpc: "2.0",
-          error,
-        };
-
-        callback(error, res);
-        return;
-      });
-  } else if (request?.method === "eth_sendTransaction") {
-    const [transaction] = request?.params ?? [];
-    if (!transaction) return forwardToWallet();
-
-    getChainIdAndUserAccount(provider)
-      .then(({ chainId, userAccount }) =>
-        sendAndAwaitResponseFromStream<
-          TransactionRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createTransactionRequestMessage(transaction, chainId, userAccount)
-        ).then((response) => ({ response, chainId, userAccount }))
-      )
-      .then(({ response, chainId }) => {
-        if (shouldForwardToWallet(response, chainId)) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const { isOk } = response.data;
-        if (isOk) {
-          const rpcResponse: JsonRpcResponse = {
-            id: request?.id ?? randomId(),
-            jsonrpc: "2.0",
-            result: response.data.result,
-          };
-          callback(null, rpcResponse);
-          return;
-        } else {
-          const error = ethErrors.provider.userRejectedRequest(
-            "User denied transaction signature."
-          );
-          const response: JsonRpcError = {
-            id: request?.id ?? randomId(),
-            jsonrpc: "2.0",
-            error,
-          };
-          callback(error, response);
-          return;
-        }
-      });
-  } else if (
-    request?.method === "eth_signTypedData" ||
-    request?.method === "eth_signTypedData_v1" ||
-    request?.method === "eth_signTypedData_v3" ||
-    request?.method === "eth_signTypedData_v4"
-  ) {
-    const { signTypedDataVersion, typedData, address } =
-      enhanceSignTypedData(request);
-    if (!address || !typedData) return forwardToWallet();
-
-    getChainIdAndUserAccount(provider)
-      .then(({ chainId, userAccount }) =>
-        sendAndAwaitResponseFromStream<
-          SignTypedDataRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createSignTypedDataRequestMessage(
-            {
-              payload: typedData,
-              signTypedDataVersion,
-            },
-            userAccount,
-            chainId
-          )
-        ).then((response) => ({ response, chainId, userAccount }))
-      )
-      .then(({ response, chainId }) => {
-        if (shouldForwardToWallet(response, chainId)) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const isOk = response.data.isOk;
-        if (isOk) {
-          const rpcResponse: JsonRpcResponse = {
-            id: request?.id ?? randomId(),
-            jsonrpc: "2.0",
-            result: response.data.result,
-          };
-
-          callback(null, rpcResponse);
-          return;
-        } else {
-          const error = ethErrors.provider.userRejectedRequest(
-            "User denied message signature."
-          );
-          const response: JsonRpcError = {
-            id: request?.id ?? randomId(),
-            jsonrpc: "2.0",
-            error,
-          };
-          callback(error, response);
-          return;
-        }
-      });
-  } else if (
-    request?.method === "eth_sign" ||
-    request?.method === "personal_sign"
-  ) {
-    const method: SignMessageMethod = request.method;
-    const [first, second] = request?.params ?? [];
-    if (!first || !second) return forwardToWallet();
-
-    // if the first parameter is the address, the second is the message, otherwise the first is the message
-    const message =
-      String(first).replace(/0x/, "").length === 40 ? second : first;
-
-    getChainIdAndUserAccount(provider)
-      .then(({ chainId, userAccount }) =>
-        sendAndAwaitResponseFromStream<
-          SignMessageRequest,
-          UserDecisionResponse
-        >(
-          stream,
-          createSignMessageRequestMessage(
-            { method, message },
-            chainId,
-            userAccount
-          )
-        ).then((response) => ({ response, chainId, userAccount }))
-      )
-      .then(({ response, chainId }) => {
-        const isConfirmedPersonalSign =
-          response.data.isOk && request.method === "personal_sign";
-        if (
-          shouldForwardToWallet(response, chainId) ||
-          isConfirmedPersonalSign
-        ) {
-          return forwardToWallet();
-        }
-
-        logger.debug(response);
-        const { isOk } = response.data;
-        if (isOk) {
-          const rpcResponse: JsonRpcResponse = {
-            id: request?.id ?? randomId(),
-            jsonrpc: "2.0",
-            result: response.data.result,
-          };
-
-          callback(null, rpcResponse);
-          return;
-        } else {
-          const error = ethErrors.provider.userRejectedRequest(
-            "User denied message signature."
-          );
-          const response: JsonRpcError = {
-            id: request?.id ?? randomId(),
-            jsonrpc: "2.0",
-            error,
-          };
-          callback(error, response);
-          return;
-        }
-      });
-  } else {
-    return forwardToWallet();
-  }
-};
-
-// const processBatchRequests = async (
-//   request: any,
-//   provider: providers.Web3Provider,
-//   stream: WindowPostMessageStream
-// ): Promise<
-//   { shouldForward: true } | { shouldForward: false; data?: any; request: any }
-// > => {
-//   if (Array.isArray(request)) {
-//     if (request.filter((x) => x !== null).length > 1) {
-//       const { chainId, userAccount } = await getChainIdAndUserAccount(provider);
-
-//       const response = await sendAndAwaitResponseFromStream<
-//         BatchRequestsRequest,
-//         UserDecisionResponse
-//       >(stream, createBatchRequestsRequestMessage(chainId, userAccount));
-
-//       if (shouldForwardToWallet(response, chainId)) {
-//         return { shouldForward: true };
-//       }
-
-//       logger.debug(response);
-//       const { isOk } = response.data;
-
-//       if (isOk) {
-//         return { shouldForward: false, data: response.data.result, request };
-//       } else {
-//         throw ethErrors.provider.userRejectedRequest(
-//           "User denied transaction signature."
-//         );
-//       }
-//     } else if (request.length === 1) {
-//       return { shouldForward: false, request: request[0] };
-//     }
-//   }
-//   return { shouldForward: false, request };
-// };
 
 const randomId = () => Math.floor(Math.random() * 1_000_000);
+
+const createRpcError = (
+  requestId: number | undefined,
+  error: EthereumProviderError<unknown>
+): JsonRpcError => {
+  return {
+    id: requestId ?? randomId(),
+    jsonrpc: "2.0",
+    error,
+  };
+};
+
+const createRpcResponse = (
+  requestId: number | undefined,
+  result: string
+): JsonRpcResponse => {
+  return {
+    id: requestId ?? randomId(),
+    jsonrpc: "2.0",
+    result,
+  };
+};
 
 const enhanceSignTypedData = (request: EthereumSignTypedDataRequest) => {
   const { method, params } = request;

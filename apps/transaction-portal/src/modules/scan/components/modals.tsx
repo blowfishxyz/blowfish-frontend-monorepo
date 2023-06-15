@@ -243,7 +243,11 @@ export const UnsupportedTransactionModal: React.FC<{
   return (
     <Modal
       width={480}
-      title="Dangerous unsupported action"
+      title={
+        type === "batch_requests"
+          ? "Unsupported action"
+          : "Dangerous unsupported action"
+      }
       icon={<WarningIcon />}
       description={description}
       options={{ blocking: true }}
