@@ -218,6 +218,8 @@ export const UnsupportedTransactionModal: React.FC<{
       return (
         <>
           We currently don’t support <b>batch requests</b>.
+          <br /> Do not proceed unless you’re absolutely sure of what you’re
+          doing.
         </>
       );
     }
@@ -228,6 +230,11 @@ export const UnsupportedTransactionModal: React.FC<{
           dApp is trying to get you to sign a message that looks like a
           transaction. We cannot scan the transaction and have no way of knowing
           what it does.
+          <br />
+          <br />{" "}
+          <b>
+            Do not proceed unless you’re absolutely sure of what you’re doing.
+          </b>
         </>
       );
     }
@@ -236,18 +243,13 @@ export const UnsupportedTransactionModal: React.FC<{
   return (
     <Modal
       width={480}
-      title="Dangerous unsupported action"
-      content={<WarningIcon />}
-      description={
-        <>
-          {description}
-          <br />
-          <br />{" "}
-          <b>
-            Do not sign it unless you’re absolutely sure of what you’re doing.
-          </b>
-        </>
+      title={
+        type === "batch_requests"
+          ? "Unsupported action"
+          : "Dangerous unsupported action"
       }
+      content={<WarningIcon />}
+      description={description}
       options={{ blocking: true }}
       action={{
         closeOnComplete: false,

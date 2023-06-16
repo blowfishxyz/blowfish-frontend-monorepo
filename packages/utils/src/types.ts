@@ -44,6 +44,7 @@ export enum RequestType {
   Transaction = "TRANSACTION",
   SignTypedData = "SIGN_TYPED_DATA",
   SignMessage = "SIGN_MESSAGE",
+  BatchRequests = "BATCH_REQUESTS",
   UserDecision = "USER_DECISION",
   BlowfishOptions = "BLOWFISH_OPTIONS",
   SetBlowfishOptions = "SET_BLOWFISH_OPTIONS",
@@ -69,7 +70,8 @@ export interface Message<TType extends RequestType, TData extends object> {
 export type DappRequest =
   | TransactionRequest
   | SignTypedDataRequest
-  | SignMessageRequest;
+  | SignMessageRequest
+  | BatchRequests;
 
 export const parseRequestFromMessage = (
   message: Message<DappRequest["type"], DappRequest>
@@ -78,6 +80,7 @@ export const parseRequestFromMessage = (
     case RequestType.Transaction:
     case RequestType.SignTypedData:
     case RequestType.SignMessage:
+    case RequestType.BatchRequests:
       return message.data;
     default:
       throw new Error(`Unhandled request type ${message.type}`);
@@ -148,6 +151,18 @@ export interface SignMessageRequest extends BaseRequest {
 export const isSignMessageRequest = (
   req: DappRequest
 ): req is SignMessageRequest => req.type === RequestType.SignMessage;
+
+export type BatchRequestsPayload = Message<DappRequest["type"], DappRequest>[];
+
+export interface BatchRequests extends BaseRequest {
+  type: RequestType.BatchRequests;
+  payload: BatchRequestsPayload;
+  isImpersonatingWallet?: boolean;
+  extensionVersion: string;
+}
+
+export const isBatchRequests = (req: DappRequest): req is BatchRequests =>
+  req.type === RequestType.BatchRequests;
 
 export type UserDecisionOpts = {
   pauseScan?: boolean;
@@ -240,13 +255,20 @@ export const isSignRequestMessage = (
   return message.type === RequestType.SignMessage;
 };
 
+export const isBatchRequestsMessage = (
+  message: Message<DappRequest["type"], DappRequest>
+): message is Message<RequestType.BatchRequests, BatchRequests> => {
+  return message.type === RequestType.BatchRequests;
+};
+
 export const isDappRequestMessage = (
   message: BlowfishPortalBackgroundMessage
 ): message is Message<DappRequest["type"], DappRequest> => {
   return (
     message.type === RequestType.Transaction ||
     message.type === RequestType.SignTypedData ||
-    message.type === RequestType.SignMessage
+    message.type === RequestType.SignMessage ||
+    message.type === RequestType.BatchRequests
   );
 };
 

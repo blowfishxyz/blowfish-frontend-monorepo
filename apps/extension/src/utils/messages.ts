@@ -1,4 +1,6 @@
 import {
+  BatchRequests,
+  BatchRequestsPayload,
   BlowfishBlockDomainPayload,
   DappRequest,
   Message,
@@ -17,10 +19,10 @@ import type Browser from "webextension-polyfill";
 
 import { BLOWFISH_EXTENSION_VERSION } from "~config";
 
-export const createRawMessage = <T extends object>(
-  type: RequestType,
+export const createRawMessage = <TType extends RequestType, T extends object>(
+  type: TType,
   data: T
-): Message<RequestType, T> => {
+): Message<TType, T> => {
   const id = objectHash(data as NotUndefined);
   return { id, data, type };
 };
@@ -29,7 +31,7 @@ export const createTransactionRequestMessage = (
   payload: TransactionPayload,
   chainId: number,
   userAccount: string
-): Message<RequestType, TransactionRequest> => {
+): Message<RequestType.Transaction, TransactionRequest> => {
   const type = RequestType.Transaction;
   const transactionRequest: TransactionRequest = {
     type,
@@ -45,7 +47,7 @@ export const createSignTypedDataRequestMessage = (
   { payload, signTypedDataVersion }: SupportedSignTypedDataPayloadVersion,
   userAccount: string,
   chainId: number
-): Message<RequestType, SignTypedDataRequest> => {
+): Message<RequestType.SignTypedData, SignTypedDataRequest> => {
   const type = RequestType.SignTypedData;
   const signTypedDataRequest: SignTypedDataRequest = {
     payload,
@@ -62,7 +64,7 @@ export const createSignMessageRequestMessage = (
   payload: SignMessagePayload,
   chainId: number,
   userAccount: string
-): Message<RequestType, SignMessageRequest> => {
+): Message<RequestType.SignMessage, SignMessageRequest> => {
   const type = RequestType.SignMessage;
   const messageRequest: SignMessageRequest = {
     type,
@@ -72,6 +74,22 @@ export const createSignMessageRequestMessage = (
     extensionVersion: BLOWFISH_EXTENSION_VERSION,
   };
   return createRawMessage(type, messageRequest);
+};
+
+export const createBatchRequestsMessage = (
+  payload: BatchRequestsPayload,
+  chainId: number,
+  userAccount: string
+): Message<RequestType.BatchRequests, BatchRequests> => {
+  const type = RequestType.BatchRequests;
+  const batchRequests: BatchRequests = {
+    type,
+    payload,
+    chainId: chainId.toString(),
+    userAccount,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION,
+  };
+  return createRawMessage(type, batchRequests);
 };
 
 export const sendAndAwaitResponseFromStream = <
