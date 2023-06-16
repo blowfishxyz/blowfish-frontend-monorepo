@@ -34,7 +34,7 @@ export const TransactionNotFoundModal: React.FC = () => {
       description="Please close the window and try again"
       content={<InvertedWarningIcon />}
       onCancel={() => {
-        router.push("/v2/dashboard");
+        router.push("/v2");
       }}
     />
   );
@@ -263,8 +263,11 @@ export const AccountNotConnectedModal: React.FC = () => {
   const router = useRouter();
   const { connectors } = useConnect();
   const { connectAsync } = useConnect();
-  const connector = connectors.filter((x) => x.id !== "injected")[0];
-  const { label, installLink } = getConnectorMetadata(connector?.id);
+  const connector = connectors.filter((x) => x.ready)[0];
+  const { label, installLink } = getConnectorMetadata({
+    id: connector?.id,
+    name: connector?.name,
+  });
 
   const action = useMemo(() => {
     if (!connector) {

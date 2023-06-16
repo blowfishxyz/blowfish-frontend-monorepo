@@ -11,7 +11,7 @@ import { alchemyProvider } from "@wagmi/core/providers/alchemy";
 import { publicProvider } from "@wagmi/core/providers/public";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import { InjectedConnector } from "wagmi/connectors/injected";
-// import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { configureChains, createClient, useNetwork } from "wagmi";
 
 import { ALCHEMY_API_KEY } from "../config";
@@ -21,46 +21,35 @@ export const useConnectedChainId = () => {
   return network.chain?.id;
 };
 
-const { chains, provider } = configureChains(
-  [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism],
-  [
-    alchemyProvider({
-      apiKey: ALCHEMY_API_KEY,
-      priority: 0,
-    }),
-    publicProvider({ priority: 1 }),
-  ]
-);
-
-export const connectors = [
-  new MetaMaskConnector({
-    chains,
-    options: {
-      shimDisconnect: true,
-      UNSTABLE_shimOnConnectSelectAccount: true,
-    },
-  }),
-  // TODO(Alex): investigate bug when both extensions enabled
-  // new CoinbaseWalletConnector({
-  //   chains,
-  //   options: {
-  //     appName: "Blowfish Protect",
-  //   },
-  // }),
-  new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-];
-
 type ConnectorMetadata = {
-  id: "metamask" | "coinbase" | "unknown";
+  id: "metamask" | "coinbase" | "injected" | "unknown";
   label: string;
   installLink?: string;
-  logoPath: string;
+  logoPath: string | undefined;
 };
 
-export const getConnectorMetadata = (
-  connectorId: string
-): ConnectorMetadata => {
-  if (connectorId === "metaMask") {
+export const getConnectorMetadata = ({
+  id,
+  name,
+}: {
+  id: string;
+  name: string;
+}): ConnectorMetadata => {
+  if (
+    id === "injected" &&
+    (name === "MetaMask" || name === "Coinbase Wallet")
+  ) {
+    return {
+      id: "injected",
+      label: name === "Coinbase Wallet" ? "Coinbase" : "Metamask",
+      logoPath:
+        name === "Coinbase Wallet"
+          ? "/images/logo-coinbase.png"
+          : "/images/logo-metamask.png",
+    };
+  }
+
+  if (name === "MetaMask") {
     return {
       id: "metamask",
       label: "Metamask",
@@ -68,7 +57,7 @@ export const getConnectorMetadata = (
       logoPath: "/images/logo-metamask.png",
     };
   }
-  if (connectorId === "coinbaseWallet") {
+  if (name === "Coinbase Wallet") {
     return {
       id: "coinbase",
       label: "Coinbase",
@@ -76,11 +65,52 @@ export const getConnectorMetadata = (
     };
   }
 
-  return { id: "unknown", label: "Unknown", logoPath: "" };
+  return { id: "unknown", label: "Unknown", logoPath: undefined };
 };
 
-export const wagmiClient = createClient({
-  autoConnect: true,
-  connectors,
-  provider,
-});
+export const createWagmiClient = (v2Enabled: boolean) => {
+  const { chains, provider } = configureChains(
+    [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism],
+    [
+      alchemyProvider({
+        apiKey: ALCHEMY_API_KEY,
+        priority: 0,
+      }),
+      publicProvider({ priority: 1 }),
+    ]
+  );
+
+  const connectors = v2Enabled
+    ? [
+        new MetaMaskConnector({
+          chains,
+          options: {
+            shimDisconnect: true,
+            UNSTABLE_shimOnConnectSelectAccount: true,
+          },
+        }),
+        new CoinbaseWalletConnector({
+          chains,
+          options: {
+            appName: "Blowfish Protect",
+          },
+        }),
+        new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+      ]
+    : [
+        new MetaMaskConnector({
+          chains,
+          options: {
+            shimDisconnect: true,
+            UNSTABLE_shimOnConnectSelectAccount: true,
+          },
+        }),
+        new InjectedConnector({ chains, options: { shimDisconnect: true } }),
+      ];
+
+  return createClient({
+    autoConnect: true,
+    connectors,
+    provider,
+  });
+};

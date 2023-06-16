@@ -39,6 +39,15 @@ const StartPage = () => {
 const ConnectWalletView: React.FC = () => {
   const { connectors } = useConnect();
   const { isConnected } = useAccount();
+  const injectedConnector = connectors.find(
+    (x) => x.id === "injected" && x.ready
+  );
+  const displayedConnectors = injectedConnector
+    ? [
+        injectedConnector,
+        ...connectors.filter((x) => x.name !== injectedConnector.name),
+      ]
+    : connectors.filter((x) => x.id !== "injected");
 
   return (
     <Column>
@@ -70,11 +79,9 @@ const ConnectWalletView: React.FC = () => {
             Connect a wallet to continue...
           </Text>
           <ButtonsGrid>
-            {connectors
-              .filter((x) => x.id !== "injected")
-              .map((connector) => (
-                <ConnectorButton key={connector.id} connector={connector} />
-              ))}
+            {displayedConnectors.map((connector) => (
+              <ConnectorButton key={connector.id} connector={connector} />
+            ))}
           </ButtonsGrid>
         </>
       )}
@@ -86,7 +93,7 @@ const ConnectorButton: React.FC<{
   connector: Connector;
 }> = ({ connector }) => {
   const { status, connect } = useConnect();
-  const { label, logoPath, installLink } = getConnectorMetadata(connector.id);
+  const { label, logoPath, installLink } = getConnectorMetadata(connector);
   const text = connector.ready ? label : `Install ${label}`;
   const handleClick = () => {
     if (connector.ready) {
@@ -102,9 +109,9 @@ const ConnectorButton: React.FC<{
     <StyledButton key={connector.id} onClick={handleClick}>
       {status === "loading" ? (
         <Spinner design="contrast" />
-      ) : (
+      ) : logoPath ? (
         <Image src={logoPath} alt={`${label} logo`} width={22} height={22} />
-      )}
+      ) : null}
       {text}
     </StyledButton>
   );
