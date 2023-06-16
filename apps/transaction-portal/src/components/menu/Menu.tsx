@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { Text } from "@blowfish/ui/core";
 import { MenuIcon } from "@blowfish/ui/icons";
 import Link from "next/link";
+import { BLOWFISH_FEEDBACK_URL } from "~constants";
 
 const Wrapper = styled.div`
   width: 45px;
@@ -78,12 +79,12 @@ export const Menu = () => {
     {
       title: "Careers",
       description: "Help us keep crypto safe for everyone",
-      url: "https://wellfound.com/company/blowfish-1",
+      url: "https://jobs.blowfish.xyz",
     },
     {
       title: "Report bug",
       description: "See something wrong? Let us know!",
-      url: "https://5d2jxjxzxqq.typeform.com/to/BHue5Hg0",
+      url: BLOWFISH_FEEDBACK_URL,
     },
   ];
 
@@ -95,8 +96,9 @@ export const Menu = () => {
           {menuItems.map((item, index) => (
             <DropdownItemWrapper
               key={index}
-              href={`${item.url}`}
+              href={item.url}
               target="_blank"
+              rel="noopener noreferrer"
             >
               <MenuTitle weight="semi-bold">{item.title}</MenuTitle>
               <div>

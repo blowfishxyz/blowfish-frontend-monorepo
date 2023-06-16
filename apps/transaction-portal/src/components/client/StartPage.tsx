@@ -28,7 +28,7 @@ const StartPage = () => {
         <ConnectWalletView />
         <VideoOuterContainer>
           <Video
-            src="https://framerusercontent.com/modules/assets/ABKGG2mazmK87jGsN6CbRkaoYP0~tV7jxL_gYFMk8GNcDbSBgx0YO-bKKnfT3gFDsePqGgs.mp4"
+            src="/videos/wallet.mp4"
             loop
             autoPlay
             muted
@@ -165,6 +165,7 @@ const VideoOuterContainer = styled.div`
   position: relative;
   height: 363px;
   width: 363px;
+  mix-blend-mode: darken;
 
   @media only screen and (${breakpoint.device.lg}) {
     width: 500px;

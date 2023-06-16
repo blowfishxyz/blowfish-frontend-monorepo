@@ -212,19 +212,21 @@ const SignatureSimulatioMsgText = styled(Text).attrs({
   design: "primary",
 })<{ $expanded?: boolean }>`
   display: -webkit-box;
-  -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "2")};
+  -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: max-height 0.3s ease;
-  max-height: ${({ $expanded }) => ($expanded ? "none" : "40px")};
+`;
+
+const ShowMoreButtonWrapper = styled.div`
+  width: 50px;
 `;
 
 const ShowMoreButton = styled(Button).attrs({
   design: "tertiary",
   size: "sm",
 })`
-  width: 10%;
   height: 15px;
   padding: 0;
   justify-content: flex-start;
@@ -257,11 +259,13 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
         {message}
       </SignatureSimulatioMsgText>
 
-      <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
-        <Text size="xs" design="secondary">
-          {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
-        </Text>
-      </ShowMoreButton>
+      <ShowMoreButtonWrapper>
+        <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
+          <Text size="xs" design="secondary">
+            {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
+          </Text>
+        </ShowMoreButton>
+      </ShowMoreButtonWrapper>
     </Column>
   );
 };
