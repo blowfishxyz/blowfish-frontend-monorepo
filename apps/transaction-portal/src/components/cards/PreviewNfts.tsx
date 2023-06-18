@@ -1,7 +1,6 @@
 import { Column, Row, Text } from "@blowfish/ui/core";
 import React from "react";
 import { Divider } from "./common";
-import { VerifiedIcon } from "@blowfish/ui/icons";
 import { DataRowComponent } from "./PreviewTokens";
 import { ImageBase } from "~components/common/ImageBase";
 import { AssetPriceV2 } from "~components/common/AssetPriceV2";
@@ -37,7 +36,6 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
             {name}
           </Text>
-          <VerifiedIcon />
         </Row>
         <Text size="xs">#{tokenId}</Text>
       </Column>
