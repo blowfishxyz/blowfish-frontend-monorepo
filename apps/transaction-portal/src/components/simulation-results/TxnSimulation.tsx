@@ -214,11 +214,19 @@ function useAssetLinkFromRawInfo(rawInfo: EvmExpectedStateChange["rawInfo"]) {
     return undefined;
   }
   const { chainFamily, chainNetwork } = chain.chainInfo;
-  if (isCurrencyStateChange(rawInfo) || isApprovalForAllStateChange(rawInfo)) {
+  if (isCurrencyStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
       address: rawInfo.data.contract.address,
+    });
+  } else if (isApprovalForAllStateChange(rawInfo)) {
+    console.log({ rawInfo });
+    return chainToBlockExplorerUrl({
+      chainFamily,
+      chainNetwork,
+      address: rawInfo.data.contract.address,
+      isApprovalForAllStateChange: rawInfo.data.contract.address,
     });
   } else if (isNftStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
