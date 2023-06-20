@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
           name="description"
           content="Blowfish makes it easy to identify & stop fraud before it happens. Join the leading wallets protecting their users funds with the blowfish security engine"
         />
-        <meta property="og:url" content="https://blowfish.xyz/" />
+        <meta property="og:url" content="https://protect.blowfish.xyz/" />
         <meta property="og:type" content="website" />
         <meta
           property="og:title"
@@ -23,13 +23,13 @@ export default function App({ Component, pageProps }: AppProps) {
           property="og:description"
           content="Blowfish makes it easy to identify & stop fraud before it happens. Join the leading wallets protecting their users funds with the blowfish security engine"
         />
-        <meta
-          property="og:image"
-          content="https://framerusercontent.com/modules/1k7kU7H0VSWN3wakq0pM/uWgu2WdBbAxpPN0zRTZx/assets/LMkkyrT6aZKMqZNobSZKDY8lnM.jpg"
-        />
+        <meta property="og:image" content="/images/wallet-banner.webp" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta property="twitter:domain" content="blowfish.xyz" />
-        <meta property="twitter:url" content="https://blowfish.xyz/" />
+        <meta
+          property="twitter:domain"
+          content="https://protect.blowfish.xyz/"
+        />
+        <meta property="twitter:url" content="https://protect.blowfish.xyz/" />
         <meta
           name="twitter:title"
           content="Blowfish - Proactive defense for web3 wallets"
@@ -38,10 +38,7 @@ export default function App({ Component, pageProps }: AppProps) {
           name="twitter:description"
           content="Blowfish makes it easy to identify & stop fraud before it happens. Join the leading wallets protecting their users funds with the blowfish security engine"
         />
-        <meta
-          name="twitter:image"
-          content="https://framerusercontent.com/modules/1k7kU7H0VSWN3wakq0pM/uWgu2WdBbAxpPN0zRTZx/assets/LMkkyrT6aZKMqZNobSZKDY8lnM.jpg"
-        />
+        <meta name="twitter:image" content="/images/wallet-banner.webp" />
       </Head>
       <GlobalProviders>
         <Component {...pageProps} />
