@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { styled } from "styled-components";
 import { Text } from "@blowfish/ui/core";
 import { MenuIcon } from "@blowfish/ui/icons";
+import Link from "next/link";
+import { BLOWFISH_FEEDBACK_URL } from "~constants";
 
 const Wrapper = styled.div`
   width: 45px;
@@ -39,10 +41,12 @@ const MenuDescription = styled(Text).attrs({
   design: "secondary",
 })``;
 
-const DropdownItem = styled.div`
+const DropdownItemWrapper = styled(Link)`
   padding: 20px;
   cursor: pointer;
   user-select: none;
+  text-decoration: none;
+  display: block;
 
   &:hover {
     background: rgba(219, 219, 219, 0.4);
@@ -62,12 +66,26 @@ export const Menu = () => {
   };
 
   const menuItems = [
-    { title: "Protect", description: "Keep your assets safe from scams" },
-    { title: "Home", description: "Learn more about Blowfish" },
-    { title: "Documentation", description: "Integrate Blowfish with your app" },
-    { title: "Blog", description: "Read about Blowfish & our users" },
-    { title: "Careers", description: "Help us keep crypto safe for everyone" },
-    { title: "Report bug", description: "See something wrong? Let us know!" },
+    {
+      title: "Documentation",
+      description: "Integrate Blowfish with your app",
+      url: "https://docs.blowfish.xyz/",
+    },
+    {
+      title: "Blog",
+      description: "Read about Blowfish & our users",
+      url: "https://blog.blowfish.xyz/",
+    },
+    {
+      title: "Careers",
+      description: "Help us keep crypto safe for everyone",
+      url: "https://jobs.blowfish.xyz",
+    },
+    {
+      title: "Report bug",
+      description: "See something wrong? Let us know!",
+      url: BLOWFISH_FEEDBACK_URL,
+    },
   ];
 
   return (
@@ -76,12 +94,17 @@ export const Menu = () => {
       {dropdownVisible && (
         <Dropdown>
           {menuItems.map((item, index) => (
-            <DropdownItem key={index}>
+            <DropdownItemWrapper
+              key={index}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <MenuTitle weight="semi-bold">{item.title}</MenuTitle>
               <div>
                 <MenuDescription>{item.description}</MenuDescription>
               </div>
-            </DropdownItem>
+            </DropdownItemWrapper>
           ))}
         </Dropdown>
       )}
