@@ -21,6 +21,7 @@ import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
+import { useV2Enabled } from "~hooks/useV2Enabled";
 
 const OnboardingButtons = dynamic(() => import("./client/OnboardingButtons"), {
   ssr: false,
@@ -431,6 +432,7 @@ const OnboardingDetails = ({
 const OnboardingWizard = () => {
   const [currentStep, setCurrentStep] = useState(OnboardingStep.ConnectWallet);
   const router = useRouter();
+  const [v2Enabled] = useV2Enabled();
 
   const back = () => {
     switch (currentStep) {
@@ -472,7 +474,11 @@ const OnboardingWizard = () => {
         setCurrentStep(OnboardingStep.Ready);
         break;
       case OnboardingStep.Ready:
-        router.replace("https://blowfish.xyz/");
+        if (v2Enabled) {
+          router.replace("/v2");
+        } else {
+          router.replace("https://blowfish.xyz/");
+        }
         break;
       default:
         break;
