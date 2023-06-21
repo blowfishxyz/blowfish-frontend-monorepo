@@ -73,7 +73,7 @@ export const chainToBlockExplorerUrl = ({
   address,
   nftTokenId,
 }: BlockExplorerUrlOptions): string => {
-  const prefix = chainNetwork == "mainnet" ? "" : `${chainFamily}.`;
+  const prefix = chainNetwork == "mainnet" ? "" : `${chainNetwork}.`;
   const assetType = nftTokenId ? "nft" : "address";
   switch (chainFamily) {
     case "polygon":

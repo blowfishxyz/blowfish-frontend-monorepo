@@ -20,7 +20,7 @@ import { UIWarning } from "~modules/scan/components/ScanResultsV2";
 export const DefaultView: React.FC<{
   severity: Severity | undefined;
   warnings: UIWarning[] | undefined;
-  onContinue: () => void;
+  onContinue: (() => void) | undefined;
   onCancel: () => void;
   onReport: () => void;
 }> = ({ severity = "INFO", warnings, onContinue, onCancel, onReport }) => {
@@ -88,7 +88,14 @@ export const DefaultView: React.FC<{
             <Button size="sm" stretch design="secondary" onClick={onCancel}>
               Cancel
             </Button>
-            <Button size="sm" stretch design="danger" onClick={onContinue}>
+            <Button
+              size="sm"
+              stretch
+              design="danger"
+              onClick={onContinue}
+              disabled={!onContinue}
+              title="Disabled while impersonating"
+            >
               Continue
             </Button>
           </Row>
@@ -99,7 +106,13 @@ export const DefaultView: React.FC<{
     return (
       <>
         <Row gap="md">
-          <Button stretch size="sm" onClick={onContinue}>
+          <Button
+            stretch
+            size="sm"
+            onClick={onContinue}
+            disabled={!onContinue}
+            title="Disabled while impersonating"
+          >
             <ContinueIcon />
             Continue
           </Button>

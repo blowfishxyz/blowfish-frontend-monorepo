@@ -2,8 +2,10 @@ import { shortenEnsName } from "~utils/utils";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { Chain } from "wagmi";
 import styled from "styled-components";
-import { Column, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui/core";
 import { ChainIcon } from "connectkit";
+import { shortenHex } from "~utils/hex";
+import { MaskIcon } from "./icons/MaskIcon";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -85,11 +87,11 @@ export const UserWallet = ({
     <StyledContainer onClick={show}>
       {!isConnected && isConnecting && <Text>Connecting...</Text>}
       {!isConnected && !isConnecting && <Text>Connect wallet</Text>}
-      {isConnected && chain && (
+      {isConnected && (
         <>
           <ChainContainer>
             <ChainIcon
-              id={chain.id}
+              id={chain?.id}
               unsupported={chain?.unsupported}
               size={30}
             />
@@ -104,6 +106,20 @@ export const UserWallet = ({
           </SwitchIconContainer>
         </>
       )}
+    </StyledContainer>
+  );
+};
+
+export const ImpersonatorWallet = ({ address }: { address: string }) => {
+  return (
+    <StyledContainer>
+      <ChainContainer>
+        <MaskIcon />
+      </ChainContainer>
+      <AddressColumn>
+        <Text>{shortenHex(address)}</Text>
+      </AddressColumn>
+      <Row width={5} />
     </StyledContainer>
   );
 };

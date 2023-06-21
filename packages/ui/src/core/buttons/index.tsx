@@ -100,6 +100,10 @@ const dangerDesign = css`
   background: ${(p) => p.theme.severityColors.CRITICAL.backgroundLight};
   color: ${(p) => p.theme.colors.danger};
   border: 1px solid ${(p) => p.theme.colors.danger};
+
+  &:disabled {
+    opacity: 0.3;
+  }
 `;
 
 function getDesignStyles({ design }: ButtonProps) {

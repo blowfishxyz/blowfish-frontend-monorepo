@@ -5,12 +5,15 @@ import { createGlobalState } from "react-use";
 import { styled } from "styled-components";
 import { ProtectHeader } from "~components/ProtectHeader";
 
-export const useLayoutConfig = createGlobalState<{ severity: Severity }>({
+export const useLayoutConfig = createGlobalState<{
+  severity: Severity;
+  impersonatingAddress?: string | undefined;
+}>({
   severity: "INFO",
 });
 
 export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [{ severity }] = useLayoutConfig();
+  const [{ severity, impersonatingAddress }] = useLayoutConfig();
 
   return (
     <Wrapper
@@ -25,7 +28,7 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
       <WrapperInner>
         <HeaderWrapper severity={severity} alignItems="center">
           <Column maxWidth={1072} width="100%" padding={24} paddingBottom={12}>
-            <ProtectHeader />
+            <ProtectHeader impersonatingAddress={impersonatingAddress} />
           </Column>
         </HeaderWrapper>
         {children}

@@ -39,7 +39,9 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
           </Text>
           <VerifiedIcon />
         </Row>
-        <Text size="xs">#{tokenId}</Text>
+        <Text size="xs" truncate>
+          #{tokenId}
+        </Text>
       </Column>
       <Divider margin="13px 0" />
       <div>

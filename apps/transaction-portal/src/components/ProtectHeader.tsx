@@ -6,6 +6,8 @@ import { Menu } from "./menu/Menu";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { useLayoutConfig } from "./layout/Layout";
 import { useRouter } from "next/router";
+import { ImpersonatorWallet } from "./UserWallet";
+import { shortenHex } from "~utils/hex";
 
 const ProtectScreenContent = styled(Row)`
   width: 100%;
@@ -25,7 +27,9 @@ const RightContentWrapper = styled(Row)`
   width: unset;
 `;
 
-export const ProtectHeader = () => {
+export const ProtectHeader: React.FC<{
+  impersonatingAddress?: string | undefined;
+}> = ({ impersonatingAddress }) => {
   const [layoutConfig] = useLayoutConfig();
   const { pathname } = useRouter();
   return (
@@ -34,6 +38,9 @@ export const ProtectHeader = () => {
         $contrast={layoutConfig.severity === "CRITICAL"}
       />
       <RightContentWrapper gap="md">
+        {impersonatingAddress ? (
+          <ImpersonatorWallet address={shortenHex(impersonatingAddress)} />
+        ) : null}
         {pathname !== "/v2" ? <UserWalletConnectKitWrapper /> : null}
         <Menu />
       </RightContentWrapper>

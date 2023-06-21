@@ -39,12 +39,14 @@ interface ScanResultsV2Props {
   chainFamily: ChainFamily;
   dappUrl: string;
   message: Message<DappRequest["type"], DappRequest>;
+  impersonatingAddress: string | undefined;
 }
 
 const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   request,
   scanResults,
   message,
+  impersonatingAddress,
   ...props
 }) => {
   const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
@@ -177,11 +179,11 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   }, [request]);
 
   useEffect(() => {
-    setLayoutConfig({ severity });
+    setLayoutConfig((prev) => ({ ...prev, severity, impersonatingAddress }));
     return () => {
-      setLayoutConfig({ severity: "INFO" });
+      setLayoutConfig({ severity: "INFO", impersonatingAddress });
     };
-  }, [severity, setLayoutConfig]);
+  }, [severity, impersonatingAddress, setLayoutConfig]);
 
   const txnData = {
     message: parsedMessageContent,
