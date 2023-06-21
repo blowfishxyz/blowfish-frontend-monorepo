@@ -7,6 +7,7 @@ import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata } from "~utils/wagmi";
 import { useEffect } from "react";
 import { useQueryParams } from "~hooks/useQueryParams";
+import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "~components/UserWalletConnectKitWrapper";
 
 const StartPage = () => {
@@ -25,12 +26,15 @@ const StartPage = () => {
     <Layout>
       <Content justifyContent="space-between" alignItems="center">
         <ConnectWalletView />
-        <HeroImage
-          src="/images/wallet-hero.webp"
-          alt="Wallet protected by Blowfish"
-          width={363}
-          height={363}
-        />
+        <VideoOuterContainer>
+          <Video
+            src="/videos/wallet.mp4"
+            loop
+            autoPlay
+            muted
+            playsInline
+          ></Video>
+        </VideoOuterContainer>
       </Content>
     </Layout>
   );
@@ -162,14 +166,23 @@ const ButtonsGrid = styled.div`
   }
 `;
 
-const HeroImage = styled(Image)`
-  @media (${device.md}) {
-    width: 363px;
-    height: 363px;
-    display: initial;
-    margin-left: 48px;
-    position: relative;
+const VideoOuterContainer = styled.div`
+  margin-left: 48px;
+  overflow: hidden;
+  position: relative;
+  height: 363px;
+  width: 363px;
+  mix-blend-mode: darken;
+
+  @media only screen and (${breakpoint.device.lg}) {
+    width: 500px;
+    height: 500px;
   }
+`;
+
+const Video = styled.video`
+  width: 100%;
+  height: 100%;
 `;
 
 export default StartPage;

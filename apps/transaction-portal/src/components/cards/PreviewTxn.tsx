@@ -1,5 +1,19 @@
-import React, { FC, ReactElement, ReactNode } from "react";
-import { Column, LinkWithArrow, Row, Text, device } from "@blowfish/ui/core";
+import React, {
+  FC,
+  ReactElement,
+  ReactNode,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  Button,
+  Column,
+  LinkWithArrow,
+  Row,
+  Text,
+  device,
+} from "@blowfish/ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";
@@ -193,18 +207,65 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   );
 };
 
+const SignatureSimulatioMsgText = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})<{ $expanded?: boolean }>`
+  display: -webkit-box;
+  -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: max-height 0.3s ease;
+`;
+
+const ShowMoreButtonWrapper = styled.div`
+  width: 50px;
+`;
+
+const ShowMoreButton = styled(Button).attrs({
+  design: "tertiary",
+  size: "sm",
+})`
+  height: 15px;
+  padding: 0;
+  justify-content: flex-start;
+`;
+
 const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [isTextOverflowing, setIsTextOverflowing] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      const isOverflowing =
+        textRef.current.scrollHeight > textRef.current.clientHeight;
+      setIsTextOverflowing(isOverflowing);
+      setExpanded(!isOverflowing);
+    }
+  }, []);
+
+  const handleShowMore = () => {
+    setExpanded(!expanded);
+  };
+
   return (
     <Column gap="sm" marginBottom={18}>
       <Row justifyContent="space-between">
         <SectionHeading>Message</SectionHeading>
       </Row>
-      <Text
-        size="sm"
-        style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
-      >
+      <SignatureSimulatioMsgText ref={textRef} $expanded={expanded}>
         {message}
-      </Text>
+      </SignatureSimulatioMsgText>
+
+      <ShowMoreButtonWrapper>
+        <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
+          <Text size="xs" design="secondary">
+            {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
+          </Text>
+        </ShowMoreButton>
+      </ShowMoreButtonWrapper>
     </Column>
   );
 };

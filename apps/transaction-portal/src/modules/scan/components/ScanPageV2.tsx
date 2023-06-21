@@ -199,6 +199,7 @@ const ResultsView: React.FC<{
         dappUrl={message.origin || ""}
         chainFamily={chainFamily}
         chainNetwork={chainNetwork}
+        impersonatingAddress={isImpersonating ? userAccount : undefined}
       />
     </>
   );

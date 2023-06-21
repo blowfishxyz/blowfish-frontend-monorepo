@@ -9,6 +9,7 @@ import { sleep } from "~utils/utils";
 import { SendTransactionResult } from "@wagmi/core";
 import { SuccessView } from "~components/txn-views/SuccessView";
 import { DefaultView } from "~components/txn-views/DefaultView";
+import { useLayoutConfig } from "~components/layout/Layout";
 
 const ViewState = {
   WARNING: "warning",
@@ -65,8 +66,12 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   const [viewState, setViewState] = useState<ViewStateType>(ViewState.WARNING);
   const [animating, setAnimating] = useState(false);
   const [txHash, setTxHash] = useState<string | undefined>(undefined);
+  const [layoutConfig] = useLayoutConfig();
 
   const handleContinueClick = useCallback(async () => {
+    if (layoutConfig.impersonatingAddress) {
+      return;
+    }
     setAnimating(true);
     await sleep(animationDuration);
     setAnimating(false);
@@ -89,7 +94,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
       setAnimating(false);
       setViewState(ViewState.SUCCESS);
     }
-  }, [onContinue]);
+  }, [onContinue, layoutConfig.impersonatingAddress]);
 
   const getContent = () => {
     switch (viewState) {
@@ -98,7 +103,11 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
           <DefaultView
             severity={severity}
             warnings={warnings}
-            onContinue={handleContinueClick}
+            onContinue={
+              layoutConfig.impersonatingAddress
+                ? undefined
+                : handleContinueClick
+            }
             onCancel={onCancel}
             onReport={onReport}
           />

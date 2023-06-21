@@ -75,12 +75,13 @@ export const chainToBlockExplorerUrl = ({
   nftTokenId,
   isApprovalForAllStateChange,
 }: BlockExplorerUrlOptions): string => {
-  const prefix = chainNetwork == "mainnet" ? "" : `${chainFamily}.`;
+  const prefix = chainNetwork == "mainnet" ? "" : `${chainNetwork}.`;
   const assetType = nftTokenId
     ? "nft"
     : isApprovalForAllStateChange
     ? "token"
     : "address";
+
   switch (chainFamily) {
     case "polygon":
       return `https://${prefix}polygonscan.com/address/${address}`;
