@@ -28,6 +28,7 @@ interface PreviewTokensProps {
   symbol?: string | undefined;
   price: number | null;
   tokenList: number | null;
+  verified: boolean;
 }
 
 export const PreviewTokens: React.FC<PreviewTokensProps> = ({
@@ -36,6 +37,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
   symbol,
   price,
   tokenList,
+  verified,
 }) => {
   return (
     <PreviewTokenContainer>
@@ -51,7 +53,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
             {name}
           </Text>
-          <VerifiedIcon />
+          {verified && <VerifiedIcon />}
         </Row>
         <Text design="secondary" size="xs">
           {symbol}

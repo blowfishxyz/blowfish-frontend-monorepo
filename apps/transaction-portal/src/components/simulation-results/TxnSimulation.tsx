@@ -133,6 +133,7 @@ const TokenTooltipContent: React.FC<{
             ? rawInfo.data.asset.lists.length
             : null
         }
+        verified={rawInfo.data.asset.verified}
       />
     );
   }
@@ -219,10 +220,15 @@ function useAssetLinkFromRawInfo(rawInfo: EvmExpectedStateChange["rawInfo"]) {
       chainNetwork,
       address: rawInfo.data.contract.address,
     });
-  } else if (
-    isNftStateChange(rawInfo) &&
-    !isApprovalForAllStateChange(rawInfo)
-  ) {
+  } else if (isApprovalForAllStateChange(rawInfo)) {
+    console.log({ rawInfo });
+    return chainToBlockExplorerUrl({
+      chainFamily,
+      chainNetwork,
+      address: rawInfo.data.contract.address,
+      isApprovalForAllStateChange: rawInfo.data.contract.address,
+    });
+  } else if (isNftStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,

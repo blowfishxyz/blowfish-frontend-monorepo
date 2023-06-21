@@ -25,6 +25,7 @@ const PreviewTokensStory = () => (
       symbol="TKN"
       price={100}
       tokenList={3}
+      verified
     />
   </PreviewTokenContainer>
 );
