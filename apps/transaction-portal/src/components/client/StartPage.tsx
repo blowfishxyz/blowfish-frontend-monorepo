@@ -4,11 +4,12 @@ import { useRouter } from "next/navigation";
 import { Button, Column, Row, Spinner, Text, device } from "@blowfish/ui/core";
 import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
-import { getConnectorMetadata } from "~utils/wagmi";
+import { getConnectorMetadata, useConnectors } from "~utils/wagmi";
 import { useEffect } from "react";
 import { useQueryParams } from "~hooks/useQueryParams";
 import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "~components/UserWalletConnectKitWrapper";
+import { EthereumIcon } from "@blowfish/ui/icons";
 
 const StartPage = () => {
   const router = useRouter();
@@ -41,17 +42,8 @@ const StartPage = () => {
 };
 
 const ConnectWalletView: React.FC = () => {
-  const { connectors } = useConnect();
   const { isConnected } = useAccount();
-  const injectedConnector = connectors.find(
-    (x) => x.id === "injected" && x.ready
-  );
-  const displayedConnectors = injectedConnector
-    ? [
-        injectedConnector,
-        ...connectors.filter((x) => x.name !== injectedConnector.name),
-      ]
-    : connectors.filter((x) => x.id !== "injected");
+  const displayedConnectors = useConnectors();
 
   return (
     <Column>
@@ -93,7 +85,7 @@ const ConnectWalletView: React.FC = () => {
   );
 };
 
-const ConnectorButton: React.FC<{
+export const ConnectorButton: React.FC<{
   connector: Connector;
 }> = ({ connector }) => {
   const { status, connect } = useConnect();
@@ -113,9 +105,19 @@ const ConnectorButton: React.FC<{
     <StyledButton key={connector.id} onClick={handleClick}>
       {status === "loading" ? (
         <Spinner design="contrast" />
-      ) : logoPath ? (
+      ) : typeof logoPath === "string" ? (
         <Image src={logoPath} alt={`${label} logo`} width={22} height={22} />
-      ) : null}
+      ) : (
+        <EthereumIcon
+          style={{
+            width: 28,
+            height: 28,
+            padding: "4px",
+            borderRadius: "100%",
+            background: "white",
+          }}
+        />
+      )}
       {text}
     </StyledButton>
   );
@@ -147,7 +149,7 @@ const StepItem = styled(Text).attrs({ size: "lg" })`
 
 const StyledButton = styled(Button)``;
 
-const ButtonsGrid = styled.div`
+export const ButtonsGrid = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;

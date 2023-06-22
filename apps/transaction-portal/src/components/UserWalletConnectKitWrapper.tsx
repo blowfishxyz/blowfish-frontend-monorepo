@@ -4,10 +4,14 @@ import { shortenHex } from "~utils/hex";
 
 export const UserWalletConnectKitWrapper: React.FC<{
   hideConnect?: boolean;
-}> = ({ hideConnect }) => {
+  onlyConnected?: boolean;
+}> = ({ hideConnect, onlyConnected }) => {
   return (
     <ConnectKitButton.Custom>
       {({ show, address, ensName, isConnecting, isConnected, chain }) => {
+        if (onlyConnected && !isConnected) {
+          return null;
+        }
         if (hideConnect && isConnected) {
           return null;
         }
