@@ -23,9 +23,8 @@ export const actionToSeverity = (action: ActionEnum): Severity => {
   switch (action) {
     case ActionEnum.Block:
       return "CRITICAL";
-    case ActionEnum.Warn:
+    case ActionEnum.Warn || ActionEnum.None:
       return "WARNING";
-    case ActionEnum.None:
     default:
       return "INFO";
   }

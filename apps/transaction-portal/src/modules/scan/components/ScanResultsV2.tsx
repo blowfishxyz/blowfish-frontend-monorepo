@@ -124,9 +124,13 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
                 "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
             };
           // TODO: Add more specific messages for these errors
+          case "UNKNOWN_ERROR":
+            return {
+              severity: "WARNING",
+              message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
+            };
           case "UNSUPPORTED_MESSAGE":
           case "TRANSACTION_REVERTED":
-          case "UNKNOWN_ERROR":
           default:
             return {
               severity: "CRITICAL",
@@ -153,6 +157,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return warning ? [warning] : [];
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
+  console.log(scanResults.simulationResults?.error?.kind, warnings);
+
   const severity = useMemo(() => {
     if (
       request?.payload &&
@@ -161,6 +167,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     ) {
       return actionToSeverity("BLOCK");
     }
+    console.log(scanResults.action);
     return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
   }, [request?.payload, scanResults?.action]);
 
