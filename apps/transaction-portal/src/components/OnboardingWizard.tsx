@@ -328,7 +328,7 @@ const OnboardingDetails = ({
   if (currentStep === OnboardingStep.ConnectWallet) {
     content = (
       <CenterColumn gap="lg">
-        <UserWalletConnectKitWrapper />
+        <UserWalletConnectKitWrapper onlyConnected />
       </CenterColumn>
     );
   }

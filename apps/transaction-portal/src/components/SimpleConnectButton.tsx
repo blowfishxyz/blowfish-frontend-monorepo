@@ -1,17 +1,15 @@
-import { PrimaryButton } from "@blowfish/ui/core";
-import { ConnectKitButton } from "connectkit";
+import { ButtonsGrid, ConnectorButton } from "./client/StartPage";
+import { useConnectors } from "~utils/wagmi";
 
 const SimpleConnectButton = () => {
+  const displayedConnectors = useConnectors();
+
   return (
-    <ConnectKitButton.Custom>
-      {({ show, isConnecting }) => {
-        return (
-          <PrimaryButton onClick={show} disabled={isConnecting}>
-            {isConnecting ? <>Connecting...</> : <>Connect Wallet</>}
-          </PrimaryButton>
-        );
-      }}
-    </ConnectKitButton.Custom>
+    <ButtonsGrid>
+      {displayedConnectors.map((connector) => (
+        <ConnectorButton key={connector.id} connector={connector} />
+      ))}
+    </ButtonsGrid>
   );
 };
 export default SimpleConnectButton;
