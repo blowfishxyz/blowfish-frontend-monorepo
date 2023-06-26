@@ -331,6 +331,7 @@ export const BlockedTransactionModal: React.FC<{
         design: "danger",
         cb: () => Promise.resolve(),
       }}
+      primaryAction
     />
   );
 };

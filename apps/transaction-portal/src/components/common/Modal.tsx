@@ -98,6 +98,7 @@ type ModalProps = {
   options?: ModalOptions;
   onCancel?: () => void;
   cancelText?: React.ReactElement;
+  primaryAction?: boolean;
 };
 
 export function Modal({
@@ -109,6 +110,7 @@ export function Modal({
   onCancel,
   options,
   cancelText,
+  primaryAction,
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
 
@@ -142,7 +144,7 @@ export function Modal({
             {(!options?.blocking || onCancel) && (
               <Button
                 stretch
-                design={action ? "tertiary" : "primary"}
+                design={action && !primaryAction ? "tertiary" : "primary"}
                 size={action && "sm"}
                 onClick={() => {
                   onCancel?.();

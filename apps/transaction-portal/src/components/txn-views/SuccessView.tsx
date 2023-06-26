@@ -21,7 +21,7 @@ export const SuccessView: React.FC<{
 }> = ({ className, txHash, onReport }) => {
   const chain = useChainMetadata();
   const url = useBlockExplorerUrl(txHash);
-  const [seconds, setSeconds] = useState(5);
+  const [seconds, setSeconds] = useState(10);
 
   const handleEtherscanClick = () => {
     window.open(url, "_blank", "noopener noreferrer");
