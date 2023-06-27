@@ -15,7 +15,7 @@ import {
   createRawMessage,
   sendAndAwaitResponseFromPort,
 } from "~utils/messages";
-import { getBlowfishImpersonationWallet, storage } from "~utils/storage";
+import { getBlowfishImpersonationWallet } from "~utils/storage";
 
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
