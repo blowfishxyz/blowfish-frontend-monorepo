@@ -86,6 +86,8 @@ type ModalAction =
       cb: (() => void) | ((hide: () => void) => Promise<void>);
       design?: "primary" | "danger";
       closeOnComplete?: boolean;
+      primaryAction?: boolean;
+      priority?: "primary" | "tertiary";
     }
   | ((hide: () => void) => Promise<void>);
 
@@ -98,7 +100,6 @@ type ModalProps = {
   options?: ModalOptions;
   onCancel?: () => void;
   cancelText?: React.ReactElement;
-  primaryAction?: boolean;
 };
 
 export function Modal({
@@ -110,9 +111,11 @@ export function Modal({
   onCancel,
   options,
   cancelText,
-  primaryAction,
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
+  const primaryAction =
+    typeof action !== "function" ? action?.primaryAction : undefined;
+  const priority = typeof action !== "function" ? action?.priority : undefined;
 
   return (
     <ModalContext.Provider value={modal}>
@@ -142,17 +145,18 @@ export function Modal({
           <Column gap="sm" marginTop={action ? 20 : 36}>
             {action && <ModalActionButton action={action} close={modal.hide} />}
             {(!options?.blocking || onCancel) && (
-              <Button
+              <StyledModalButton
                 stretch
                 design={action && !primaryAction ? "tertiary" : "primary"}
-                size={action && "sm"}
+                size={action && !primaryAction ? "sm" : "md"}
                 onClick={() => {
                   onCancel?.();
                   modal.hide();
                 }}
+                priority={priority === "primary"}
               >
                 {cancelText ? cancelText : "Cancel"}
-              </Button>
+              </StyledModalButton>
             )}
           </Column>
         </Column>
@@ -160,6 +164,10 @@ export function Modal({
     </ModalContext.Provider>
   );
 }
+
+const StyledModalButton = styled(Button)<{ priority?: boolean }>`
+  order: ${({ priority }) => (priority ? -1 : 0)};
+`;
 
 const ModalActionButton: React.FC<{
   action: ModalAction;
