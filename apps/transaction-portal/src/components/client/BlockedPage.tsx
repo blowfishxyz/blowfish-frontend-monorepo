@@ -9,6 +9,7 @@ import { ArrowRightIcon, BlowfishWarningIcon } from "@blowfish/ui/icons";
 import { useRouter } from "next/router";
 import React from "react";
 import styled from "styled-components";
+import { BLOWFISH_PORTAL_API_BASE_URL } from "~config";
 
 import { BLOWFISH_PROTECT_WEBSITE_URL, BLOWFISH_WEBSITE_URL } from "~constants";
 import { useQueryParams } from "~hooks/useQueryParams";
@@ -18,7 +19,9 @@ import { sendAllowlistedDomain } from "~utils/messages";
 
 async function report(domain: string) {
   try {
-    await fetch(`/api/report-block?domain=${domain}`).then(async (x) => {
+    await fetch(
+      `${BLOWFISH_PORTAL_API_BASE_URL}/report-block?domain=${domain}`
+    ).then(async (x) => {
       if (x.ok) {
         return x.json();
       }
