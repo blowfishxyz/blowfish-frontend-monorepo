@@ -86,7 +86,6 @@ type ModalAction =
       cb: (() => void) | ((hide: () => void) => Promise<void>);
       design?: "primary" | "danger";
       closeOnComplete?: boolean;
-      primaryAction?: boolean;
       priority?: "primary" | "tertiary";
     }
   | ((hide: () => void) => Promise<void>);
@@ -113,8 +112,6 @@ export function Modal({
   cancelText,
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
-  const primaryAction =
-    typeof action !== "function" ? action?.primaryAction : undefined;
   const priority = typeof action !== "function" ? action?.priority : undefined;
 
   return (
@@ -147,8 +144,8 @@ export function Modal({
             {(!options?.blocking || onCancel) && (
               <StyledModalButton
                 stretch
-                design={action && !primaryAction ? "tertiary" : "primary"}
-                size={action && !primaryAction ? "sm" : "md"}
+                design={action && !priority ? "tertiary" : "primary"}
+                size={action && !priority ? "sm" : "md"}
                 onClick={() => {
                   onCancel?.();
                   modal.hide();
