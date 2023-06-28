@@ -15,7 +15,7 @@ import {
   createRawMessage,
   sendAndAwaitResponseFromPort,
 } from "~utils/messages";
-import { getBlowfishImpersonationWallet, storage } from "~utils/storage";
+import { getBlowfishImpersonationWallet } from "~utils/storage";
 
 export const config: PlasmoContentScript = {
   matches: ["<all_urls>"],
@@ -64,12 +64,5 @@ if (IS_IMPERSONATION_AVAILABLE) {
     }
   };
   init();
-
-  // Watch extension storage for changes to the impersonating wallet
-  storage.watch({
-    [BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET]: () => {
-      window.location.reload();
-    },
-  });
 }
 export default {};

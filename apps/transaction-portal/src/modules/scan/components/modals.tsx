@@ -330,6 +330,7 @@ export const BlockedTransactionModal: React.FC<{
         title: "Ignore warning",
         design: "danger",
         cb: () => Promise.resolve(),
+        priority: "primary",
       }}
     />
   );
