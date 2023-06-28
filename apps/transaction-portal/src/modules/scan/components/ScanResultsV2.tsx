@@ -90,17 +90,17 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   const warnings: UIWarning[] = useMemo(() => {
     // Take warnings return from API first hand
-    if (scanResults.warnings && scanResults.warnings.length > 0) {
-      return scanResults.warnings.map((warning) => {
-        const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
-        const { message, kind } = warning;
-        return {
-          message,
-          severity,
-          kind,
-        };
-      });
-    }
+    const apiWarnings = scanResults.warnings || [];
+
+    const warnings: UIWarning[] = apiWarnings.map((warning) => {
+      const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
+      const { message, kind } = warning;
+      return {
+        message,
+        severity,
+        kind,
+      };
+    });
 
     function getInferedWarning(): UIWarning | undefined {
       // TODO(kimpers): Should simulation errors be warnings from the API?
@@ -148,8 +148,13 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         };
       }
     }
-    const warning = getInferedWarning();
-    return warning ? [warning] : [];
+    const inferredWarning = getInferedWarning();
+    const allWarnings: UIWarning[] = [...warnings];
+    if (inferredWarning) {
+      allWarnings.push(inferredWarning);
+    }
+
+    return allWarnings;
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
   const severity = useMemo(() => {
