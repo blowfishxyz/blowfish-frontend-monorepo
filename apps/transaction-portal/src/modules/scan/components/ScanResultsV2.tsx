@@ -109,12 +109,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         switch (simulationResults.error.kind) {
           case "SIMULATION_FAILED":
             return {
-              severity: "CRITICAL",
+              severity: "WARNING",
               message: `This transaction failed during simulation. Proceed with caution`,
             };
           case "TRANSACTION_ERROR":
             return {
-              severity: "CRITICAL",
+              severity: "WARNING",
               message: `This transaction does not seem valid. Proceed with caution`,
             };
           case "UNSUPPORTED_ORDER_TYPE":
@@ -126,10 +126,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           // TODO: Add more specific messages for these errors
           case "UNSUPPORTED_MESSAGE":
           case "TRANSACTION_REVERTED":
-          case "UNKNOWN_ERROR":
           default:
             return {
-              severity: "CRITICAL",
+              severity: "WARNING",
               message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
             };
         }
