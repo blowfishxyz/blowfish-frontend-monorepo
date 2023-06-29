@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Row } from "@blowfish/ui/core";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
-import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import { sleep } from "~utils/utils";
 import { SendTransactionResult } from "@wagmi/core";

@@ -8,10 +8,7 @@ import {
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import {
-  ScanParamsSuccess,
-  useScanParams,
-} from "~modules/scan/hooks/useScanParams";
+import { ScanParamsSuccess, useScanParams } from "~hooks/useScanParams";
 import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,

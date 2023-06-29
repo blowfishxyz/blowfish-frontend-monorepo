@@ -6,7 +6,7 @@ import { ConnectKitProvider } from "connectkit";
 
 import { themes } from "@blowfish/ui/core";
 import { useRequestChainId } from "~hooks/useRequestChainId";
-import { useChainMetadataProvider } from "~modules/common/hooks/useChainMetadata";
+import { useChainMetadataProvider } from "~hooks/useChainMetadata";
 import { useV2Enabled } from "~hooks/useV2Enabled";
 
 export const GlobalProviders = memo(function GlobalProviders({

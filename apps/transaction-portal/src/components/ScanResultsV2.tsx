@@ -20,7 +20,7 @@ import {
 import { containsPunycode, createValidURL } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
-import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+import { useChainMetadata } from "~hooks/useChainMetadata";
 import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import { AdvancedDetails } from "./AdvancedDetails";
 import ShareToTwitterModal from "./ShareToTwitterModal";

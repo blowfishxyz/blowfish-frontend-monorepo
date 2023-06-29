@@ -13,8 +13,8 @@ import {
   UnsupportedTransactionModal,
   WrongAccountModal,
   WrongNetworkModal,
-} from "~modules/scan/components/modals";
-import ShareToTwitterModal from "~modules/scan/components/ShareToTwitterModal";
+} from "~components/modals";
+import ShareToTwitterModal from "~components/ShareToTwitterModal";
 
 const Default: Story = () => (
   <Modal

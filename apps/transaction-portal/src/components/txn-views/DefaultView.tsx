@@ -15,7 +15,7 @@ import {
 import { Severity } from "@blowfish/utils/types";
 import { useMemo } from "react";
 import styled, { useTheme } from "styled-components";
-import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { UIWarning } from "~components/ScanResultsV2";
 
 export const DefaultView: React.FC<{
   severity: Severity | undefined;

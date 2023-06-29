@@ -17,7 +17,7 @@ import {
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";
-import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
   ChainFamily,

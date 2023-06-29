@@ -22,7 +22,7 @@ import {
 import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 import { chainToBlockExplorerUrl } from "@blowfish/utils/chains";
-import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+import { useChainMetadata } from "~hooks/useChainMetadata";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
