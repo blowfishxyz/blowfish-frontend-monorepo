@@ -7,7 +7,7 @@ import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
-import { useChainMetadataContext } from "../src/modules/common/hooks/useChainMetadata";
+import { useChainMetadataContext } from "../src/hooks/useChainMetadata";
 import { themes } from "@blowfish/ui/core";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
