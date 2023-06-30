@@ -149,12 +149,11 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       }
     }
     const inferredWarning = getInferedWarning();
-    const allWarnings: UIWarning[] = [...warnings];
     if (inferredWarning) {
-      allWarnings.push(inferredWarning);
+      return [...warnings, inferredWarning];
     }
 
-    return allWarnings;
+    return warnings;
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
   const severity = useMemo(() => {
