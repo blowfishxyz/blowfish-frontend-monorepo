@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Button, Column, Row, Text } from "@blowfish/ui/core";
-import { ConfirmIcon } from "@blowfish/ui/icons";
+import { Button, Column, Row, Text } from "@blowfish/ui";
+import { ConfirmIcon } from "@blowfish/protect-ui/icons";
 
 const CardConfirmIcon = styled(ConfirmIcon)`
   width: 22px;

@@ -1,4 +1,4 @@
-import { Column } from "@blowfish/ui/core";
+import { Column } from "@blowfish/ui";
 import { Severity } from "@blowfish/utils/types";
 import React from "react";
 import { createGlobalState } from "react-use";

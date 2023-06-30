@@ -1,7 +1,7 @@
 import { Layout } from "~components/layout/Layout";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Button, Column, Row, Spinner, Text, device } from "@blowfish/ui/core";
+import { Button, Column, Row, Spinner, Text, device } from "@blowfish/ui";
 import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata, useConnectors } from "~utils/wagmi";
@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useQueryParams } from "~hooks/useQueryParams";
 import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "~components/UserWalletConnectKitWrapper";
-import { EthereumIcon } from "@blowfish/ui/icons";
+import { EthereumIcon } from "@blowfish/protect-ui/icons";
 
 const StartPage = () => {
   const router = useRouter();

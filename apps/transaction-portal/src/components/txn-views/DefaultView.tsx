@@ -1,5 +1,5 @@
 import { WarningInnerKindEnum } from "@blowfish/api-client";
-import { Row, Button, Column, Text } from "@blowfish/ui/core";
+import { Row, Button, Column, Text } from "@blowfish/ui";
 import {
   ReportIcon,
   ContinueIcon,
@@ -11,7 +11,7 @@ import {
   LockOpenIcon,
   QuestionMarkIcon,
   ExclamationIcon,
-} from "@blowfish/ui/icons";
+} from "@blowfish/protect-ui/icons";
 import { Severity } from "@blowfish/utils/types";
 import { useMemo } from "react";
 import styled, { useTheme } from "styled-components";

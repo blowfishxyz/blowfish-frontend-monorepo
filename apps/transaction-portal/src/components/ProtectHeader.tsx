@@ -1,7 +1,7 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Row } from "@blowfish/ui/core";
-import { BlowfishIconFull } from "@blowfish/ui/icons";
+import { Row } from "@blowfish/ui";
+import { BlowfishIconFull } from "@blowfish/protect-ui/icons";
 import { Menu } from "./menu/Menu";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { useLayoutConfig } from "./layout/Layout";

@@ -1,5 +1,5 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { ArrowRightIcon, VerifiedIcon } from "@blowfish/ui/icons";
+import { ArrowRightIcon, VerifiedIcon } from "@blowfish/protect-ui/icons";
 import styled, { css } from "styled-components";
 import { ImageBase, PlaceholderImage } from "./ImageBase";
 import {

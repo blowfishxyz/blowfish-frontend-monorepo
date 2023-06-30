@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
-import { Row } from "@blowfish/ui/core";
+import { Row } from "@blowfish/ui";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
 import { UIWarning } from "~modules/scan/components/ScanResultsV2";

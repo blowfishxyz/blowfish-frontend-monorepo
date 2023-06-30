@@ -1,6 +1,6 @@
 import React from "react";
 import { styled, css } from "styled-components";
-import { StyledBaseSvg } from "../core/StyledBase";
+import { StyledBaseSvg } from "@blowfish/ui";
 
 interface ExpandIconProps {
   className?: string;

@@ -1,5 +1,5 @@
-import { Text } from "@blowfish/ui/core";
-import { BlowfishWarningIcon } from "@blowfish/ui/icons";
+import { Text } from "@blowfish/ui";
+import { BlowfishWarningIcon } from "@blowfish/protect-ui/icons";
 import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";

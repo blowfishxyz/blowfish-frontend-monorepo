@@ -1,5 +1,5 @@
 import React from "react";
-import { Column } from "../core";
+import { Column } from "../Column";
 import { Meta, Story } from "@storybook/react";
 
 export default {

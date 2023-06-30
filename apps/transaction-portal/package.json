@@ -20,6 +20,7 @@
     "@blowfish/api-client": "workspace:*",
     "@blowfish/hooks": "workspace:*",
     "@blowfish/ui": "workspace:*",
+    "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@floating-ui/react": "^0.23.1",

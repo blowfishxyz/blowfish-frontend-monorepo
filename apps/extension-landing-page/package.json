@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@blowfish/ui": "workspace:*",
+    "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@blowfish/hooks": "workspace:*",
     "@next/font": "13.1.5",

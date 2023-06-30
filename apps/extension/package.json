@@ -21,6 +21,7 @@
   "dependencies": {
     "@blowfish/hooks": "workspace:*",
     "@blowfish/ui": "workspace:*",
+    "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@blowfishxyz/blocklist": "^0.0.5",
     "@ethersproject/address": "^5.7.0",

@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react";
-import { Row } from "@blowfish/ui/core";
+import { Row } from "@blowfish/ui";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
   ChainFamily,

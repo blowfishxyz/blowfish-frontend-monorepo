@@ -4,7 +4,7 @@ import { WagmiConfig } from "wagmi";
 import { createWagmiClient } from "~utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
 
-import { themes } from "@blowfish/ui/core";
+import { themes } from "@blowfish/ui";
 import { useRequestChainId } from "~hooks/useRequestChainId";
 import { useChainMetadataProvider } from "~modules/common/hooks/useChainMetadata";
 import { useV2Enabled } from "~hooks/useV2Enabled";

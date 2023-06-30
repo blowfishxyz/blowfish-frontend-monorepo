@@ -1,4 +1,4 @@
-import { Text } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui";
 import styled from "styled-components";
 
 const AssetPriceWrapper = styled(Text)`

@@ -3,12 +3,12 @@ import {
   BnbChainIcon,
   EthereumIcon,
   PolygonIcon,
-} from "@blowfish/ui/icons";
+} from "@blowfish/protect-ui/icons";
 import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
-import { Text } from "@blowfish/ui/core";
+import { Text } from "@blowfish/ui";
 import { shortenHex } from "~utils/hex";
 
 import {
@@ -17,7 +17,7 @@ import {
 } from "./BottomMenus";
 import { CustomConnectkitButton } from "./CustomConnectkitButton";
 import { MaskIcon } from "./icons/MaskIcon";
-import { OptimismIcon } from "@blowfish/ui/icons";
+import { OptimismIcon } from "@blowfish/protect-ui/icons";
 
 const SLIM_BOTTOM_MENU_PADDING = SLIM_BOTTOM_MENU_HEIGHT + 12;
 const REGULAR_BOTTOM_MENU_PADDING = REGULAR_BOTTOM_MENU_HEIGHT + 12;

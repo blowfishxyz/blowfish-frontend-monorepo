@@ -3,8 +3,9 @@ import {
   EvmExpectedStateChange,
   EvmNativeAsset,
 } from "@blowfish/api-client";
-import { BlockExplorerLink, Text } from "@blowfish/ui/core";
-import { VerifiedIcon } from "@blowfish/ui/icons";
+import { Text } from "@blowfish/ui";
+import { BlockExplorerLink } from "@blowfish/protect-ui/core";
+import { VerifiedIcon } from "@blowfish/protect-ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import React, { memo } from "react";
 import styled from "styled-components";

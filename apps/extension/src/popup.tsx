@@ -8,8 +8,9 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import { Column, PrimaryButton, Row, Text } from "@blowfish/ui/core";
-import { CloseIcon, PauseIcon, PlayIcon } from "@blowfish/ui/icons";
+import { PrimaryButton } from "@blowfish/protect-ui/core";
+import { CloseIcon, PauseIcon, PlayIcon } from "@blowfish/protect-ui/icons";
+import { Column, Row, Text } from "@blowfish/ui";
 import { transformDate } from "@blowfish/utils/helpers";
 import {
   BlowfishOption,

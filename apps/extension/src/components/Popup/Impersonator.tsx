@@ -1,4 +1,5 @@
-import { SmallButtonPrimary, Text } from "@blowfish/ui/core";
+import { SmallButtonPrimary } from "@blowfish/protect-ui/core";
+import { Text } from "@blowfish/ui";
 import { isENS } from "@blowfish/utils/helpers";
 import { shortenHex } from "@blowfish/utils/hex";
 import { logger } from "@blowfish/utils/logger";

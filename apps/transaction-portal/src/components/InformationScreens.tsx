@@ -1,13 +1,14 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { TextButton, Text, Row, PrimaryButton } from "@blowfish/ui/core";
+import { Text, Row } from "@blowfish/ui";
+import { TextButton, PrimaryButton } from "@blowfish/protect-ui/core";
 import { ContentToggle } from "./ContentToggle";
 import { chainIdToName } from "@blowfish/utils/chains";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
-} from "@blowfish/ui/icons";
+} from "@blowfish/protect-ui/icons";
 import { sendPauseResumeSelection } from "~utils/messages";
 import { SlimBottomMenu } from "~components/BottomMenus";
 import { useLocalStorage } from "react-use";

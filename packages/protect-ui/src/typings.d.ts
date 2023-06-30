@@ -1,9 +1,9 @@
-import "./index.ts";
-import { ITheme } from "./index";
+declare module "@blowfish/protect-ui";
 
-declare module "@blowfish/ui/core" {
-  export * from "./index.ts";
-}
+// Add support for theme inside styled-components
+import "styled-components";
+
+import "@blowfish/ui";
 
 declare module "styled-components" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface

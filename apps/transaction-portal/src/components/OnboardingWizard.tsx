@@ -10,13 +10,8 @@ import {
 } from "~components/common/Tooltip";
 import { useTimeout } from "react-use";
 import dynamic from "next/dynamic";
-import {
-  Column,
-  PrimaryButton,
-  Row,
-  supportedChains,
-  Text,
-} from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui";
+import { PrimaryButton, supportedChains } from "@blowfish/protect-ui/core";
 import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { AnimatePresence, motion } from "framer-motion";

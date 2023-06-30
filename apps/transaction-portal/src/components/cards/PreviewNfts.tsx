@@ -1,4 +1,4 @@
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui";
 import React from "react";
 import { Divider } from "./common";
 import { DataRowComponent } from "./PreviewTokens";

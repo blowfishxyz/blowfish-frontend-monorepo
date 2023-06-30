@@ -1,5 +1,6 @@
 import { PauseDuration } from "@blowfish/hooks";
-import { Row, SmallButtonPrimary, fadeIn } from "@blowfish/ui/core";
+import { SmallButtonPrimary } from "@blowfish/protect-ui/core";
+import { Row, fadeIn } from "@blowfish/ui";
 import React from "react";
 import styled from "styled-components";
 

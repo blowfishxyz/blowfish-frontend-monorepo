@@ -1,10 +1,11 @@
 import { styled } from "styled-components";
 import { SmallButtonPrimary } from "./buttons/MainButtons";
-import { Row } from "./Row";
 import { PauseDuration } from "@blowfish/hooks";
-import { fadeIn } from "./utils/animations";
+import { Row, fadeIn } from "@blowfish/ui";
 
-export const PeriodDurationContainer = styled(Row)`
+export const PeriodDurationContainer: React.FC<React.PropsWithChildren> = styled(
+  Row
+)`
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
   height: 30px;

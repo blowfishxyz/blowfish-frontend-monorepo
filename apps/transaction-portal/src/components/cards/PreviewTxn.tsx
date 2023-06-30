@@ -6,14 +6,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  Button,
-  Column,
-  LinkWithArrow,
-  Row,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Button, Column, Row, Text, device } from "@blowfish/ui";
+import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";

@@ -1,11 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import {
-  PrimaryButton,
-  SecondaryButton,
-  Text,
-  device,
-} from "@blowfish/ui/core";
+import { Text, device } from "@blowfish/ui";
+import { PrimaryButton, SecondaryButton } from "@blowfish/protect-ui/core";
 
 export const SLIM_BOTTOM_MENU_HEIGHT = 96;
 export const REGULAR_BOTTOM_MENU_HEIGHT = 154;

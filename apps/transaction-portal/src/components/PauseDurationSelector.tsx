@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { fadeIn, Row, SmallButtonPrimary } from "@blowfish/ui/core";
+import { fadeIn, Row } from "@blowfish/ui";
+import { SmallButtonPrimary } from "@blowfish/protect-ui/core";
 import { PauseDuration } from "@blowfish/hooks";
 
 export const PeriodDurationContainer = styled(Row)`

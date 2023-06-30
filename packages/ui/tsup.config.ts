@@ -5,7 +5,6 @@ export default defineConfig({
   outDir: "build",
   dts: true,
   entry: {
-    icons: "./src/icons/index.ts",
-    core: "./src/core/index.ts",
+    index: "./src/index.ts",
   },
 });

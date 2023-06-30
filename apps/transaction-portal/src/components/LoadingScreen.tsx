@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useInterval } from "react-use";
 import styled from "styled-components";
 
-import { Text, UnstyledA } from "@blowfish/ui/core";
+import { Text, UnstyledA } from "@blowfish/ui";
 import { LoadingAnimation } from "./LoadingAnimation";
-import { BlowfishIconFull } from "@blowfish/ui/icons";
+import { BlowfishIconFull } from "@blowfish/protect-ui/icons";
 
 // TODO(kimpers): Actual copy
 const LOADING_STATES = {

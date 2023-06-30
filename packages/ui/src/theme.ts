@@ -1,4 +1,4 @@
-import type { Severity } from "@blowfish/utils/types";
+type Severity = "CRITICAL" | "WARNING" | "INFO";
 
 // Based on webflow's breakpoints
 const breakpoints = {

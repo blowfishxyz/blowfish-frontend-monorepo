@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Column, Row, Text, device } from "@blowfish/ui/core";
+import { Column, Row, Text, device } from "@blowfish/ui";
 import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { PreviewNfts } from "~components/cards/PreviewNfts";
 import { AssetImageV2 } from "~components/common/AssetImageV2";

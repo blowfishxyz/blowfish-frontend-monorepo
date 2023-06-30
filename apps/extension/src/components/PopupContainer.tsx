@@ -1,5 +1,9 @@
-import { Text } from "@blowfish/ui/core";
-import { EthereumIcon, PolygonIcon, WalletIcon } from "@blowfish/ui/icons";
+import {
+  EthereumIcon,
+  PolygonIcon,
+  WalletIcon,
+} from "@blowfish/protect-ui/icons";
+import { Text } from "@blowfish/ui";
 import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import type { Severity } from "@blowfish/utils/types";

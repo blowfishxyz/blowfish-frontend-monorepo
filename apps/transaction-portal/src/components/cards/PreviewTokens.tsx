@@ -1,8 +1,8 @@
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfish/ui";
 import React from "react";
 import styled from "styled-components";
 import { Divider } from "./common";
-import { VerifiedIcon } from "@blowfish/ui/icons";
+import { VerifiedIcon } from "@blowfish/protect-ui/icons";
 import { AssetPriceV2 } from "~components/common/AssetPriceV2";
 import { ImageBase } from "~components/common/ImageBase";
 
