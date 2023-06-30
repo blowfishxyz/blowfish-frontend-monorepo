@@ -90,17 +90,17 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   const warnings: UIWarning[] = useMemo(() => {
     // Take warnings return from API first hand
-    if (scanResults.warnings && scanResults.warnings.length > 0) {
-      return scanResults.warnings.map((warning) => {
-        const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
-        const { message, kind } = warning;
-        return {
-          message,
-          severity,
-          kind,
-        };
-      });
-    }
+    const apiWarnings = scanResults.warnings || [];
+
+    const warnings: UIWarning[] = apiWarnings.map((warning) => {
+      const severity = scanResults.action === "WARN" ? "WARNING" : "CRITICAL";
+      const { message, kind } = warning;
+      return {
+        message,
+        severity,
+        kind,
+      };
+    });
 
     function getInferedWarning(): UIWarning | undefined {
       // TODO(kimpers): Should simulation errors be warnings from the API?
@@ -109,12 +109,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         switch (simulationResults.error.kind) {
           case "SIMULATION_FAILED":
             return {
-              severity: "CRITICAL",
+              severity: "WARNING",
               message: `This transaction failed during simulation. Proceed with caution`,
             };
           case "TRANSACTION_ERROR":
             return {
-              severity: "CRITICAL",
+              severity: "WARNING",
               message: `This transaction does not seem valid. Proceed with caution`,
             };
           case "UNSUPPORTED_ORDER_TYPE":
@@ -126,10 +126,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           // TODO: Add more specific messages for these errors
           case "UNSUPPORTED_MESSAGE":
           case "TRANSACTION_REVERTED":
-          case "UNKNOWN_ERROR":
           default:
             return {
-              severity: "CRITICAL",
+              severity: "WARNING",
               message: `Something went wrong while simulating this ${requestTypeStr.toLowerCase()}. Proceed with caution`,
             };
         }
@@ -149,8 +148,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         };
       }
     }
-    const warning = getInferedWarning();
-    return warning ? [warning] : [];
+    const inferredWarning = getInferedWarning();
+    if (inferredWarning) {
+      return [...warnings, inferredWarning];
+    }
+
+    return warnings;
   }, [scanResults, requestTypeStr, request, hasPunycode]);
 
   const severity = useMemo(() => {
@@ -179,11 +182,20 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   }, [request]);
 
   useEffect(() => {
-    setLayoutConfig((prev) => ({ ...prev, severity, impersonatingAddress }));
+    if (scanResults.simulationResults?.error) {
+      setLayoutConfig({ severity: "WARNING", impersonatingAddress });
+    } else {
+      setLayoutConfig((prev) => ({ ...prev, severity, impersonatingAddress }));
+    }
     return () => {
       setLayoutConfig({ severity: "INFO", impersonatingAddress });
     };
-  }, [severity, impersonatingAddress, setLayoutConfig]);
+  }, [
+    severity,
+    impersonatingAddress,
+    setLayoutConfig,
+    scanResults.simulationResults?.error,
+  ]);
 
   const txnData = {
     message: parsedMessageContent,
