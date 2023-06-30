@@ -3,6 +3,9 @@
   "license": "MIT",
   "version": "0.0.1",
   "description": "Package containing reusable UI components",
+  "main": "./build/index.ts",
+  "module": "./build/index.mjs",
+  "types": "./build/index.d.ts",
   "private": true,
   "scripts": {
     "build": "rm -rf build && tsup",
@@ -22,7 +25,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@blowfish/tsconfig": "*",
+    "@blowfish/tsconfig": "workspace:*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "6.5.16",
     "@storybook/addon-interactions": "6.5.16",
@@ -46,13 +49,6 @@
       "types": "./build/index.d.ts",
       "import": "./build/index.mjs",
       "require": "./build/index.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "build/*"
-      ]
     }
   }
 }

@@ -1,5 +1,4 @@
 export * from "./Links";
-export * from "./PauseDurationSelector";
 export { BaseButton } from "./buttons/BaseButton";
 export {
   PrimaryButton,
