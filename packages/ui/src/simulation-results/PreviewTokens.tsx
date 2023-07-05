@@ -1,10 +1,12 @@
-import { Column, Row, Text } from "@blowfish/ui";
 import React from "react";
 import styled from "styled-components";
-import { Divider } from "./common";
-import { VerifiedIcon } from "@blowfish/protect-ui/icons";
-import { AssetPriceV2 } from "~components/common/AssetPriceV2";
-import { ImageBase } from "~components/common/ImageBase";
+import { Row } from "~/Row";
+import { Text } from "~/Text";
+import { Column } from "~/Column";
+import { AssetPrice } from "~/simulation-results/AssetPrice";
+import { Divider } from "~/simulation-results/Divider";
+import { ImageBase } from "~/simulation-results/ImageBase";
+import { Icon } from "~/Icon";
 
 const PreviewTokenContainer = styled.div``;
 
@@ -53,7 +55,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <Text weight="semi-bold" size="md" marginBottom={5} marginRight={3}>
             {name}
           </Text>
-          {verified && <VerifiedIcon />}
+          {verified && <Icon variant="verified" size={19} />}
         </Row>
         <Text design="secondary" size="xs">
           {symbol}
@@ -64,7 +66,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
         {price ? (
           <DataRowComponent
             label="Price"
-            value={<AssetPriceV2 totalValue={price} />}
+            value={<AssetPrice totalValue={price} />}
           />
         ) : null}
         {tokenList ? (

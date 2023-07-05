@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { PreviewTokens } from "~components/cards/PreviewTokens";
 import { styled } from "styled-components";
+import { PreviewTokens } from "@blowfish/ui";
 
 const PreviewTokenContainer = styled.div`
   position: absolute;

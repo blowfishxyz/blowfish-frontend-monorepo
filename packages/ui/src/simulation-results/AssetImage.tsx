@@ -1,11 +1,11 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { ArrowRightIcon, VerifiedIcon } from "@blowfish/protect-ui/icons";
+import { Icon } from "~/Icon";
 import styled, { css } from "styled-components";
 import { ImageBase, PlaceholderImage } from "./ImageBase";
 import {
   isCurrencyStateChange,
   isNftStateChangeWithMetadata,
-} from "~utils/utils";
+} from "~/simulation-results/utils";
 import { useMemo } from "react";
 
 interface AssetImageProps {
@@ -52,15 +52,13 @@ const SimulationIconWrapper = styled.div<{
   }
 `;
 
-const VerifiedBadge = styled(VerifiedIcon)`
-  width: 14px;
-  height: 14px;
+const VerifiedBadge = styled(Icon)`
   position: absolute;
   right: -2px;
   bottom: -2px;
 `;
 
-export const AssetImageV2 = ({
+export const AssetImage = ({
   stateChange,
   isPositiveEffect,
 }: AssetImageProps) => {
@@ -69,7 +67,9 @@ export const AssetImageV2 = ({
     if (isCurrencyStateChange(rawInfo)) {
       return (
         <>
-          {rawInfo.data.asset.verified && <VerifiedBadge />}
+          {rawInfo.data.asset.verified && (
+            <VerifiedBadge variant="verified" size={24} />
+          )}
           <ImageBase
             src={rawInfo.data.asset.imageUrl}
             alt={rawInfo.data.asset.name}
@@ -101,7 +101,7 @@ export const AssetImageV2 = ({
       {content}
 
       <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
-        <ArrowRightIcon />
+        <Icon variant="arrow-right" size={12} />
       </SimulationIconWrapper>
     </SimulationResultImageWrapper>
   );

@@ -3,7 +3,7 @@
   "license": "MIT",
   "version": "0.0.1",
   "description": "Package containing reusable UI components",
-  "main": "./build/index.ts",
+  "main": "./build/index.js",
   "module": "./build/index.mjs",
   "types": "./build/index.d.ts",
   "private": true,
@@ -17,8 +17,10 @@
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.2.0",
-    "polished": "^4.2.2",
-    "styled-components": "6.0.0-beta.14"
+    "@floating-ui/react": "^0.23.1",
+    "@blowfish/api-client": "workspace:*",
+    "styled-components": "6.0.2",
+    "decimal.js": "^10.4.3"
   },
   "peerDependencies": {
     "react": "^18.2.0",

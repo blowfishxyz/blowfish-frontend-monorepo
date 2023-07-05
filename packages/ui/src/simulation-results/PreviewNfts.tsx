@@ -1,9 +1,11 @@
-import { Column, Row, Text } from "@blowfish/ui";
+import { Column } from "~/Column";
+import { Row } from "~/Row";
+import { Text } from "~/Text";
 import React from "react";
-import { Divider } from "./common";
 import { DataRowComponent } from "./PreviewTokens";
-import { ImageBase } from "~components/common/ImageBase";
-import { AssetPriceV2 } from "~components/common/AssetPriceV2";
+import { ImageBase } from "~/simulation-results/ImageBase";
+import { AssetPrice } from "~/simulation-results/AssetPrice";
+import { Divider } from "~/simulation-results/Divider";
 
 interface PreviewNftProps {
   imageUrl: string | undefined;
@@ -48,7 +50,7 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
         {price ? (
           <DataRowComponent
             label="Floor Price"
-            value={<AssetPriceV2 totalValue={price} />}
+            value={<AssetPrice totalValue={price} />}
           />
         ) : null}
       </div>

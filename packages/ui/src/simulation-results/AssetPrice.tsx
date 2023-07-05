@@ -1,4 +1,4 @@
-import { Text } from "@blowfish/ui";
+import { Text } from "~/Text";
 import styled from "styled-components";
 
 const AssetPriceWrapper = styled(Text)`
@@ -9,7 +9,7 @@ interface AssetPriceProps {
   totalValue: number | null;
 }
 
-export const AssetPriceV2 = ({ totalValue }: AssetPriceProps) => {
+export const AssetPrice = ({ totalValue }: AssetPriceProps) => {
   return totalValue ? (
     <AssetPriceWrapper size="sm">
       $

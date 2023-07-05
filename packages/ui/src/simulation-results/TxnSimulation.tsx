@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { Column, Row, Text, device } from "@blowfish/ui";
-import { PreviewTokens } from "~components/cards/PreviewTokens";
-import { PreviewNfts } from "~components/cards/PreviewNfts";
-import { AssetImageV2 } from "~components/common/AssetImageV2";
+import { Column, Row, Text, device } from "~/index";
+import { PreviewTokens } from "~/simulation-results/PreviewTokens";
+import { PreviewNfts } from "~/simulation-results/PreviewNfts";
+import { AssetImage } from "~/simulation-results/AssetImage";
 import {
   getAssetPriceInUsd,
   getAssetPricePerToken,
@@ -13,16 +13,15 @@ import {
   isNftStateChangeWithMetadata,
   isPositiveStateChange,
   isApprovalForAllStateChange,
-} from "~utils/utils";
+  chainToBlockExplorerUrl,
+} from "~/simulation-results/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/Tooltip";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~components/common/Tooltip";
-import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { AssetPriceV2 } from "~components/common/AssetPriceV2";
-import { chainToBlockExplorerUrl } from "@blowfish/utils/chains";
-import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+  ChainFamily,
+  ChainNetwork,
+  EvmExpectedStateChange,
+} from "@blowfish/api-client";
+import { AssetPrice } from "~/simulation-results/AssetPrice";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -67,11 +66,20 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
 
 interface TxnSimulationProps {
   txnData: EvmExpectedStateChange;
+  chainFamily: ChainFamily | undefined;
+  chainNetwork: ChainNetwork | undefined;
 }
 
-export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
+export const TxnSimulation: React.FC<TxnSimulationProps> = ({
+  txnData,
+  chainFamily,
+  chainNetwork,
+}) => {
   const { rawInfo } = txnData;
-  const assetLink = useAssetLinkFromRawInfo(rawInfo);
+  const assetLink = useAssetLinkFromRawInfo(rawInfo, {
+    chainFamily,
+    chainNetwork,
+  });
 
   const isPositiveEffect = isPositiveStateChange(rawInfo);
   const tooltipContent = <TokenTooltipContent rawInfo={rawInfo} />;
@@ -87,7 +95,7 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             <Tooltip placement="bottom-start">
               <TooltipTrigger>
                 <TxnSimulationImage>
-                  <AssetImageV2
+                  <AssetImage
                     stateChange={txnData}
                     isPositiveEffect={isPositiveEffect}
                   />
@@ -99,7 +107,7 @@ export const TxnSimulation: React.FC<TxnSimulationProps> = ({ txnData }) => {
             </Tooltip>
           ) : (
             <TxnSimulationImage>
-              <AssetImageV2
+              <AssetImage
                 stateChange={txnData}
                 isPositiveEffect={isPositiveEffect}
               />
@@ -199,7 +207,7 @@ const TokenFooter: React.FC<{
         ) : null}
         {price ? (
           <Text size="sm" design="secondary">
-            Floor price: <AssetPriceV2 totalValue={price} />
+            Floor price: <AssetPrice totalValue={price} />
           </Text>
         ) : null}
       </Row>
@@ -208,12 +216,19 @@ const TokenFooter: React.FC<{
   return null;
 };
 
-function useAssetLinkFromRawInfo(rawInfo: EvmExpectedStateChange["rawInfo"]) {
-  const chain = useChainMetadata();
-  if (!chain?.chainInfo) {
+function useAssetLinkFromRawInfo(
+  rawInfo: EvmExpectedStateChange["rawInfo"],
+  {
+    chainFamily,
+    chainNetwork,
+  }: {
+    chainFamily: ChainFamily | undefined;
+    chainNetwork: ChainNetwork | undefined;
+  }
+) {
+  if (!chainFamily || !chainNetwork) {
     return undefined;
   }
-  const { chainFamily, chainNetwork } = chain.chainInfo;
   if (isCurrencyStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,

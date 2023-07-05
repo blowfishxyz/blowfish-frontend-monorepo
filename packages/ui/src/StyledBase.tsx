@@ -16,12 +16,6 @@ const StyledBaseTextComponent = styled.span.withConfig({
   ${spacing}
   ${size}
 `;
-const StyledBaseSvgComponent = styled.svg.withConfig({
-  shouldForwardProp,
-})<Spacing & Size>`
-  ${spacing}
-  ${size}
-`;
 
 export type StyledBaseProps<T> = T &
   Spacing &
@@ -41,9 +35,4 @@ const StyledBaseText = React.memo(
   >((props, ref) => <StyledBaseTextComponent ref={ref} {...props} />)
 );
 
-const StyledBaseSvg = React.forwardRef<
-  SVGSVGElement,
-  StyledBaseProps<React.SVGAttributes<SVGSVGElement>>
->((props, ref) => <StyledBaseSvgComponent ref={ref} {...props} />);
-
-export { StyledBaseDiv, StyledBaseText, StyledBaseSvg };
+export { StyledBaseDiv, StyledBaseText };

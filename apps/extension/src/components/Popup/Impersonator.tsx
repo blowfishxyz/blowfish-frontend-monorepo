@@ -125,7 +125,7 @@ const Impersonator: React.FC = () => {
       </Row>
       {isEnabled && (
         <WalletInformationContainer
-          onSubmit={(e) => {
+          onSubmit={(e: any) => {
             e.preventDefault();
             updateImpersonationWallet(impersonationWalletAddress);
           }}
@@ -134,7 +134,7 @@ const Impersonator: React.FC = () => {
             error={!isAddressValid && impersonationWalletAddress.length > 0}
             type="text"
             value={impersonationWalletAddress || ""}
-            onChange={(e) => setImpersonationWalletAddress(e.target.value)}
+            onChange={(e: any) => setImpersonationWalletAddress(e.target.value)}
             ref={walletImpersonatorInputRef}
             placeholder="Enter address or ENS"
           />
