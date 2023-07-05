@@ -1,6 +1,6 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { Icon } from "~/Icon";
-import styled, { css } from "styled-components";
+import { styled, css } from "styled-components";
 import { ImageBase, PlaceholderImage } from "./ImageBase";
 import {
   isCurrencyStateChange,

@@ -1,5 +1,5 @@
 import { Text } from "~/Text";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 const AssetPriceWrapper = styled(Text)`
   word-break: break-word;

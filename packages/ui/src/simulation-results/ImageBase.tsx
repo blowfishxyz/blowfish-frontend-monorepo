@@ -1,7 +1,7 @@
 import { Column } from "~/Column";
 import { Icon } from "~/Icon";
 import React, { CSSProperties, memo, useCallback, useState } from "react";
-import styled from "styled-components";
+import { styled } from "styled-components";
 
 export const ImageBase: React.FC<{
   src?: string | null | undefined;

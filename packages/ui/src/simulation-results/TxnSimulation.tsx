@@ -1,6 +1,5 @@
 import React from "react";
-import styled from "styled-components";
-import { Column, Row, Text, device } from "~/index";
+import { styled } from "styled-components";
 import { PreviewTokens } from "~/simulation-results/PreviewTokens";
 import { PreviewNfts } from "~/simulation-results/PreviewNfts";
 import { AssetImage } from "~/simulation-results/AssetImage";
@@ -22,6 +21,10 @@ import {
   EvmExpectedStateChange,
 } from "@blowfish/api-client";
 import { AssetPrice } from "~/simulation-results/AssetPrice";
+import { device } from "~/utils/breakpoints";
+import { Row } from "~/Row";
+import { Text } from "~/Text";
+import { Column } from "~/Column";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
