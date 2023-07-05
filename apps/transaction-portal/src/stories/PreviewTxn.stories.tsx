@@ -3,7 +3,7 @@ import { Story, Meta } from "@storybook/react";
 import { PreviewTxn, PreviewTxnProps } from "~components/cards/PreviewTxn";
 import { sendErc721 } from "~components/fixtures/state-changes";
 import { CardContent } from "~components/cards/common";
-import { Text, Row } from "@blowfish/ui";
+import { Text, Row } from "@blowfishxyz/ui";
 import { ArrowDownIcon } from "@blowfish/protect-ui/icons";
 import { styled } from "styled-components";
 

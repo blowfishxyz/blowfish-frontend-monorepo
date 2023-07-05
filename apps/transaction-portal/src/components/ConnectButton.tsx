@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { Text } from "@blowfish/ui";
+import { Text } from "@blowfishxyz/ui";
 import { TextButton } from "@blowfish/protect-ui/core";
 import { WalletIcon, FaLink, FaUnlink } from "@blowfish/protect-ui/icons";
 import { shortenHex } from "@blowfish/utils/hex";

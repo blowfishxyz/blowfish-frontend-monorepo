@@ -3,10 +3,10 @@ import {
   PolygonIcon,
   WalletIcon,
 } from "@blowfish/protect-ui/icons";
-import { Text } from "@blowfish/ui";
 import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import type { Severity } from "@blowfish/utils/types";
+import { Text } from "@blowfishxyz/ui";
 import React from "react";
 import styled, { css } from "styled-components";
 

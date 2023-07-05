@@ -1,12 +1,11 @@
 {
-  "name": "@blowfish/ui",
+  "name": "@blowfishxyz/ui",
   "license": "MIT",
-  "version": "0.0.1",
-  "description": "Package containing reusable UI components",
+  "version": "0.0.2",
+  "description": "Package containing Blowfish reusable UI components",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
   "types": "./build/index.d.ts",
-  "private": true,
   "scripts": {
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
@@ -18,7 +17,6 @@
   "dependencies": {
     "@emotion/is-prop-valid": "^1.2.0",
     "@floating-ui/react": "^0.23.1",
-    "@blowfish/api-client": "workspace:*",
     "styled-components": "6.0.2",
     "decimal.js": "^10.4.3"
   },
@@ -27,6 +25,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@blowfish/api-client": "workspace:*",
     "@blowfish/tsconfig": "workspace:*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "6.5.16",

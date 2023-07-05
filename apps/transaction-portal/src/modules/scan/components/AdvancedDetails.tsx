@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import { CardContent, Divider } from "~components/cards/common";
 import RequestJsonViewer from "./RequestJsonViewer";
-import { Column, Row, Text } from "@blowfish/ui";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ArrowDownIcon } from "@blowfish/protect-ui/icons";
 import styled, { keyframes } from "styled-components";
 import { DappRequest } from "@blowfish/utils/types";

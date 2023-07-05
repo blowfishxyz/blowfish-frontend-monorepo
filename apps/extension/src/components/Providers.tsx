@@ -1,4 +1,4 @@
-import { themes } from "@blowfish/ui";
+import { themes } from "@blowfishxyz/ui";
 import React from "react";
 import { ThemeProvider } from "styled-components";
 import { SWRConfig } from "swr";

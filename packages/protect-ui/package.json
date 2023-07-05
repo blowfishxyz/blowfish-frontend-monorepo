@@ -16,7 +16,7 @@
     "@emotion/is-prop-valid": "^1.2.0",
     "polished": "^4.2.2",
     "styled-components": "6.0.2",
-    "@blowfish/ui": "workspace:*",
+    "@blowfishxyz/ui": "workspace:*",
     "@blowfish/hooks": "workspace:*",
     "@blowfish/utils": "workspace:*"
   },

@@ -1,4 +1,4 @@
-import { Text, UnstyledA } from "@blowfish/ui";
+import { Text, UnstyledA } from "@blowfishxyz/ui";
 import React from "react";
 import styled from "styled-components";
 

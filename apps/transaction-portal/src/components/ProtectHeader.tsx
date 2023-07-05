@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Row } from "@blowfish/ui";
+import { Row } from "@blowfishxyz/ui";
 import { BlowfishIconFull } from "@blowfish/protect-ui/icons";
 import { Menu } from "./menu/Menu";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";

@@ -1,3 +1,6 @@
+import { memo } from "react";
+import { ThemeProvider as StyledThemeProvider } from "styled-components";
+
 type Severity = "CRITICAL" | "WARNING" | "INFO";
 
 // Based on webflow's breakpoints
@@ -105,4 +108,10 @@ const themes = {
   light: lightTheme,
 };
 
-export { themes };
+const ThemeProvider: React.FC<
+  React.ComponentProps<typeof StyledThemeProvider>
+> = memo(function ThemeProvider(props) {
+  return <StyledThemeProvider {...props} theme={themes.light} />;
+});
+
+export { themes, ThemeProvider };

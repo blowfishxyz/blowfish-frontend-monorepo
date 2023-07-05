@@ -1,5 +1,5 @@
 import { WarningInnerKindEnum } from "@blowfish/api-client";
-import { Row, Button, Column, Text } from "@blowfish/ui";
+import { Row, Button, Column, Text } from "@blowfishxyz/ui";
 import {
   ReportIcon,
   ContinueIcon,

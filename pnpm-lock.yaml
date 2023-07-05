@@ -20,15 +20,15 @@ importers:
       '@blowfish/protect-ui':
         specifier: workspace:*
         version: link:../../packages/protect-ui
-      '@blowfish/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@blowfish/utils':
         specifier: workspace:*
         version: link:../../packages/utils
       '@blowfishxyz/blocklist':
         specifier: ^0.0.5
         version: 0.0.5
+      '@blowfishxyz/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@ethersproject/address':
         specifier: ^5.7.0
         version: 5.7.0
@@ -253,12 +253,12 @@ importers:
       '@blowfish/protect-ui':
         specifier: workspace:*
         version: link:../../packages/protect-ui
-      '@blowfish/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@blowfish/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@blowfishxyz/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@next/font':
         specifier: 13.1.5
         version: 13.1.5
@@ -335,12 +335,12 @@ importers:
       '@blowfish/protect-ui':
         specifier: workspace:*
         version: link:../../packages/protect-ui
-      '@blowfish/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@blowfish/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@blowfishxyz/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@ethersproject/address':
         specifier: ^5.7.0
         version: 5.7.0
@@ -571,12 +571,12 @@ importers:
       '@blowfish/hooks':
         specifier: workspace:*
         version: link:../hooks
-      '@blowfish/ui':
-        specifier: workspace:*
-        version: link:../ui
       '@blowfish/utils':
         specifier: workspace:*
         version: link:../utils
+      '@blowfishxyz/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@emotion/is-prop-valid':
         specifier: ^1.2.0
         version: 1.2.0
@@ -656,9 +656,6 @@ importers:
 
   packages/ui:
     dependencies:
-      '@blowfish/api-client':
-        specifier: workspace:*
-        version: link:../api-client
       '@emotion/is-prop-valid':
         specifier: ^1.2.0
         version: 1.2.0
@@ -678,6 +675,9 @@ importers:
         specifier: 6.0.2
         version: 6.0.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
+      '@blowfish/api-client':
+        specifier: workspace:*
+        version: link:../api-client
       '@blowfish/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig

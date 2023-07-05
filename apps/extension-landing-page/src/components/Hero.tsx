@@ -2,7 +2,7 @@ import React, { Fragment, ReactElement } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 import { PrimaryButton, supportedChains } from "@blowfish/protect-ui/core";
-import { device, Text } from "@blowfish/ui";
+import { device, Text } from "@blowfishxyz/ui";
 import { OptimismIcon } from "@blowfish/protect-ui/icons";
 import { CHROME_EXTENSION_STORE_URL } from "../config";
 

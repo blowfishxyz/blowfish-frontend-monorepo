@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Button, Column, Row, Text } from "@blowfish/ui";
+import { Button, Column, Row, Text } from "@blowfishxyz/ui";
 import { ConfirmIcon } from "@blowfish/protect-ui/icons";
 
 const CardConfirmIcon = styled(ConfirmIcon)`

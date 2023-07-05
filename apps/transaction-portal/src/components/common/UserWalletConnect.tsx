@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { ChainIcon } from "connectkit";
 import { Chain } from "wagmi";
-import { Column, Row, Text } from "@blowfish/ui";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import { PlusIcon } from "@blowfish/protect-ui/icons";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { copyToClipboard, shortenEnsName } from "~utils/utils";

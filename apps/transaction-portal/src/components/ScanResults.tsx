@@ -7,7 +7,7 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import { Column, Row, Text } from "@blowfish/ui";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import {
   BaseButton,
   BlockExplorerLink,

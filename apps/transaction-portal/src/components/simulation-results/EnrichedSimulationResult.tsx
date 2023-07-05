@@ -1,5 +1,5 @@
 import type { EvmExpectedStateChange } from "@blowfish/api-client";
-import { Column, Row, Text } from "@blowfish/ui";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { NftStateChangeWithTokenId } from "@blowfish/utils/types";

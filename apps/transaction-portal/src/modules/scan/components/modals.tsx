@@ -1,7 +1,7 @@
 import { Modal } from "~components/common/Modal";
 import useSWR from "swr";
 import { capitalize, getExtensionInstallationUrl, sleep } from "~utils/utils";
-import { Column, Text } from "@blowfish/ui";
+import { Column, Text } from "@blowfishxyz/ui";
 import { useCallback, useMemo } from "react";
 import { shortenHex } from "~utils/hex";
 import { useAccount, useConnect, useDisconnect } from "wagmi";

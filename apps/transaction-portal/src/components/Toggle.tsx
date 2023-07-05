@@ -1,4 +1,4 @@
-import { StyledBaseText } from "@blowfish/ui";
+import { StyledBaseText } from "@blowfishxyz/ui";
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 

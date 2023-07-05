@@ -10,12 +10,12 @@ import {
 } from "@blowfish/hooks";
 import { PrimaryButton } from "@blowfish/protect-ui/core";
 import { CloseIcon, PauseIcon, PlayIcon } from "@blowfish/protect-ui/icons";
-import { Column, Row, Text } from "@blowfish/ui";
 import { transformDate } from "@blowfish/utils/helpers";
 import {
   BlowfishOption,
   BlowfishPausedOptionType,
 } from "@blowfish/utils/types";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 
 import { useStorage } from "@plasmohq/storage/hook";
 

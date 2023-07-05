@@ -8,7 +8,7 @@ import type { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import type { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";
-import { Text } from "@blowfish/ui";
+import { Text } from "@blowfishxyz/ui";
 import { shortenHex } from "~utils/hex";
 
 import {

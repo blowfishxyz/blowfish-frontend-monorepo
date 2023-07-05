@@ -1,5 +1,5 @@
 import { SmallButtonPrimary } from "@blowfish/protect-ui/core";
-import { Row, Text } from "@blowfish/ui";
+import { Row, Text } from "@blowfishxyz/ui";
 import React, { useState } from "react";
 import styled from "styled-components";
 import useSWR from "swr";

@@ -1,4 +1,4 @@
-import { Column, Row, Text } from "@blowfish/ui";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import { PrimaryButton, TertiaryButton } from "@blowfish/protect-ui/core";
 import {
   ArrowRightIcon,

@@ -1,4 +1,4 @@
-import { Text } from "@blowfish/ui";
+import { Text } from "@blowfishxyz/ui";
 import { BlowfishWarningIcon } from "@blowfish/protect-ui/icons";
 import type { WarningSeverity } from "@blowfish/utils/types";
 import React from "react";

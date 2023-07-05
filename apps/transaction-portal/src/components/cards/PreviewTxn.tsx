@@ -6,7 +6,14 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Button, Column, Row, Text, device, TxnSimulation } from "@blowfish/ui";
+import {
+  Button,
+  Column,
+  Row,
+  Text,
+  device,
+  TxnSimulation,
+} from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";

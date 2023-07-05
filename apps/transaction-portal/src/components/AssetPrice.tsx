@@ -1,5 +1,5 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { Row, Text } from "@blowfish/ui";
+import { Row, Text } from "@blowfishxyz/ui";
 import { InfoIcon } from "@blowfish/protect-ui/icons";
 import Decimal from "decimal.js";
 import styled from "styled-components";

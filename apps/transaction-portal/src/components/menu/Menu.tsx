@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { styled } from "styled-components";
-import { Text } from "@blowfish/ui";
+import { Text } from "@blowfishxyz/ui";
 import { MenuIcon } from "@blowfish/protect-ui/icons";
 import Link from "next/link";
 import { BLOWFISH_FEEDBACK_URL } from "~constants";

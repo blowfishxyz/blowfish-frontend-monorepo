@@ -1,7 +1,7 @@
 import { Layout } from "~components/layout/Layout";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Button, Column, Row, Spinner, Text, device } from "@blowfish/ui";
+import { Button, Column, Row, Spinner, Text, device } from "@blowfishxyz/ui";
 import styled from "styled-components";
 import { useConnect, useAccount, Connector } from "wagmi";
 import { getConnectorMetadata, useConnectors } from "~utils/wagmi";

@@ -3,7 +3,7 @@ import {
   EvmExpectedStateChange,
   EvmNativeAsset,
 } from "@blowfish/api-client";
-import { Text } from "@blowfish/ui";
+import { Text } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { VerifiedIcon } from "@blowfish/protect-ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";

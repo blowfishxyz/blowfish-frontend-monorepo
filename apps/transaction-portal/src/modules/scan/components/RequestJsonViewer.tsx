@@ -1,4 +1,4 @@
-import { Spinner } from "@blowfish/ui";
+import { Spinner } from "@blowfishxyz/ui";
 import { logger } from "@blowfish/utils/logger";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import {

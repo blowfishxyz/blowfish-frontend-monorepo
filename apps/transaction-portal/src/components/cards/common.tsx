@@ -1,5 +1,5 @@
 import { styled } from "styled-components";
-import { Text, device } from "@blowfish/ui";
+import { Text, device } from "@blowfishxyz/ui";
 
 const CardWrapper = styled.div<{ $removePaddingBottom?: boolean }>`
   width: 100%;

@@ -1,7 +1,7 @@
 import "./index.ts";
 import { ITheme } from "./index";
 
-declare module "@blowfish/ui" {
+declare module "@blowfishxyz/ui" {
   export * from "./index.ts";
 }
 

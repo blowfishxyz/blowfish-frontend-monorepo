@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
-import { Row, Text, Column, Button } from "@blowfish/ui";
+import { Row, Text, Column, Button } from "@blowfishxyz/ui";
 import {
   useBlockExplorerUrl,
   useChainMetadata,

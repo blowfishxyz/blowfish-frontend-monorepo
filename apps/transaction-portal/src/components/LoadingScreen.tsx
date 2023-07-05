@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useInterval } from "react-use";
 import styled from "styled-components";
 
-import { Text, UnstyledA } from "@blowfish/ui";
+import { Text, UnstyledA } from "@blowfishxyz/ui";
 import { LoadingAnimation } from "./LoadingAnimation";
 import { BlowfishIconFull } from "@blowfish/protect-ui/icons";
 

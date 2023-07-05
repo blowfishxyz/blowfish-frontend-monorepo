@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-import { Text } from "@blowfish/ui";
+import { Text } from "@blowfishxyz/ui";
 import { BaseButton } from "@blowfish/protect-ui/core";
 import { ExpandIcon } from "@blowfish/protect-ui/icons";
 

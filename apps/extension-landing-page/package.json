@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@blowfish/ui": "workspace:*",
+    "@blowfishxyz/ui": "workspace:*",
     "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@blowfish/hooks": "workspace:*",

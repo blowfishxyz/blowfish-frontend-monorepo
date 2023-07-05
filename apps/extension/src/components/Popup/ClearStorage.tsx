@@ -1,5 +1,5 @@
 import { SmallButtonPrimary } from "@blowfish/protect-ui/core";
-import { Row } from "@blowfish/ui";
+import { Row } from "@blowfishxyz/ui";
 import { sleep } from "@blowfish/utils/helpers";
 import React from "react";
 import { useAsyncFn } from "react-use";

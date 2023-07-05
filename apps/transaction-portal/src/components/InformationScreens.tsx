@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 
-import { Text, Row } from "@blowfish/ui";
+import { Text, Row } from "@blowfishxyz/ui";
 import { TextButton, PrimaryButton } from "@blowfish/protect-ui/core";
 import { ContentToggle } from "./ContentToggle";
 import { chainIdToName } from "@blowfish/utils/chains";

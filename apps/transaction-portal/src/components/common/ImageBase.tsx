@@ -1,4 +1,4 @@
-import { Column } from "@blowfish/ui";
+import { Column } from "@blowfishxyz/ui";
 import { BlowfishIcon } from "@blowfish/protect-ui/icons";
 import Image from "next/image";
 import React, { CSSProperties, memo, useCallback, useState } from "react";
