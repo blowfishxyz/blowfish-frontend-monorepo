@@ -33,22 +33,29 @@ To install the required dependencies for this project, follow these steps:
 -  Open a terminal or command prompt.
 -  Run the following command: `pnpm install` This command will install all the necessary dependencies for the project.
 
-### Run the App in Dev Mode
+### Run the Transaction Portal in Dev Mode
+To run the application in the development server:
+```
+pnpm dev:portal
+```
+This command will start the app in development mode on port `localhost:3001`, allowing you to test and make changes to the transaction portal.
 
-To run the application in development mode, use the following command:
+### Run the Browser Extension in Dev Mode
+
+To run the browser extension in development mode, use the following command:
 ```
-pnpm dev --filter @blowfish/frontend-extension
+pnpm dev:extension
 ```
-This command will start the app in development mode, allowing you to test and make changes to the frontend extension.
+This command will start the extension in development mode, allowing you to test and make changes to it.
 
 ### How to Add a Dependency
 If you need to add a new dependency to the project, follow these steps:
 1.  Open a terminal or command prompt.
 2.  Run the following command:
 ```
-pnpm add --filter @blowfish/frontend-extension react
+pnpm add --filter @blowfish/extension react
 ```
-This command will add the `react` dependency to the `@blowfish/frontend-extension` module.
+This command will add the `react` dependency to the `extension` module.
 
 ### How to Build a Module
 
