@@ -1,5 +1,5 @@
 import { Meta, Story } from "@storybook/react";
-import { Text, TextProps } from "../Text";
+import { Text, TextProps } from "../common/text";
 
 const meta: Meta<TextProps> = {
   title: "Text",

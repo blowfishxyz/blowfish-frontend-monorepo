@@ -1,7 +1,7 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
 import { styled } from "styled-components";
-import { PreviewNfts } from "@blowfishxyz/ui";
+import { PreviewNfts } from "~/simulation-result/components/PreviewNfts";
 
 const PreviewNftContainer = styled.div`
   position: absolute;

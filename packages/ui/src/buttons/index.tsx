@@ -1,7 +1,7 @@
 import React from "react";
 import { css, styled } from "styled-components";
-import { Spinner } from "~/Spinner";
-import { Column } from "~/Column";
+import { Spinner } from "~/common/spinner";
+import { Column } from "~/common/layout";
 
 const resetStyles = css`
   border: none;

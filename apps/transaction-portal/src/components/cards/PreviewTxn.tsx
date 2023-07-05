@@ -12,7 +12,7 @@ import {
   Row,
   Text,
   device,
-  TxnSimulation,
+  SimulationResult,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -287,7 +287,7 @@ const StateChangePreview: React.FC<{
         <TxnDataWrapper>
           {data.map((data, index) => {
             return (
-              <TxnSimulation
+              <SimulationResult
                 key={index}
                 txnData={data}
                 chainFamily={chain?.chainInfo?.chainFamily}

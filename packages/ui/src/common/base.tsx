@@ -1,8 +1,9 @@
 import shouldForwardProp from "@emotion/is-prop-valid";
+import { size } from "@floating-ui/react";
 import React from "react";
 import { styled } from "styled-components";
-import { Spacing, spacing } from "./utils/spacing";
-import { size, Size } from "./utils/size";
+import { Size } from "~/utils/size";
+import { Spacing, spacing } from "~/utils/spacing";
 
 const StyledBaseDivComponent = styled.div.withConfig({
   shouldForwardProp,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Row } from "../Row";
+import { Row } from "~/common/layout";
 import { Meta, Story } from "@storybook/react";
 
 export default {

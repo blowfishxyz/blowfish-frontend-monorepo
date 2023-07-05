@@ -1,5 +1,5 @@
-import { Column } from "~/Column";
-import { Icon } from "~/Icon";
+import { Column } from "~/common/layout";
+import { Icon } from "~/common/icon";
 import React, { CSSProperties, memo, useCallback, useState } from "react";
 import { styled } from "styled-components";
 

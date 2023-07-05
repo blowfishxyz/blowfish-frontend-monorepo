@@ -1,8 +1,8 @@
 import React from "react";
 import { css, styled } from "styled-components";
-import { StyledBaseText } from "./StyledBase";
+import { StyledBaseText } from "~/common/base";
 import type { Properties } from "csstype";
-import { Colors, colors } from "./utils/colors";
+import { Colors, colors } from "../utils/colors";
 
 export type TextProps = {
   className?: string;

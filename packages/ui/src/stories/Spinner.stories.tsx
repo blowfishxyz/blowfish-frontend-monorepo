@@ -1,7 +1,7 @@
 import type { Story, Meta } from "@storybook/react";
 
-import { Spinner, SpinnerProps } from "../Spinner";
-import { Column } from "../Column";
+import { Spinner, SpinnerProps } from "~/common/spinner";
+import { Column } from "~/common/layout";
 
 export default {
   title: "Spinner",

@@ -1,11 +1,10 @@
-import { Column } from "~/Column";
-import { Row } from "~/Row";
-import { Text } from "~/Text";
+import { Column, Row } from "~/common/layout";
+import { Text } from "~/common/text";
 import React from "react";
-import { DataRowComponent } from "./PreviewTokens";
-import { ImageBase } from "~/simulation-results/ImageBase";
-import { AssetPrice } from "~/simulation-results/AssetPrice";
-import { Divider } from "~/simulation-results/Divider";
+import { DataRowComponent } from "~/simulation-result/components/PreviewTokens";
+import { ImageBase } from "~/simulation-result/components/ImageBase";
+import { AssetPrice } from "~/simulation-result/components/AssetPrice";
+import { Divider } from "~/simulation-result/components/Divider";
 
 interface PreviewNftProps {
   imageUrl: string | undefined;

@@ -1,4 +1,4 @@
-import { Text } from "~/Text";
+import { Text } from "~/common/text";
 import { styled } from "styled-components";
 
 const AssetPriceWrapper = styled(Text)`

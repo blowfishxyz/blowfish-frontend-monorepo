@@ -1,7 +1,7 @@
 {
   "name": "@blowfishxyz/ui",
   "license": "MIT",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Package containing Blowfish reusable UI components",
   "main": "./build/index.js",
   "module": "./build/index.mjs",

@@ -1,8 +1,8 @@
 import React from "react";
 import { styled } from "styled-components";
-import { PreviewTokens } from "~/simulation-results/PreviewTokens";
-import { PreviewNfts } from "~/simulation-results/PreviewNfts";
-import { AssetImage } from "~/simulation-results/AssetImage";
+import { PreviewTokens } from "~/simulation-result/components/PreviewTokens";
+import { PreviewNfts } from "~/simulation-result/components/PreviewNfts";
+import { AssetImage } from "~/simulation-result/components/AssetImage";
 import {
   getAssetPriceInUsd,
   getAssetPricePerToken,
@@ -13,18 +13,17 @@ import {
   isPositiveStateChange,
   isApprovalForAllStateChange,
   chainToBlockExplorerUrl,
-} from "~/simulation-results/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "~/Tooltip";
+} from "~/simulation-result/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
 import {
   ChainFamily,
   ChainNetwork,
   EvmExpectedStateChange,
 } from "@blowfish/api-client";
-import { AssetPrice } from "~/simulation-results/AssetPrice";
+import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
-import { Row } from "~/Row";
-import { Text } from "~/Text";
-import { Column } from "~/Column";
+import { Text } from "~/common/text";
+import { Column, Row } from "~/common/layout";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -73,7 +72,7 @@ interface TxnSimulationProps {
   chainNetwork: ChainNetwork | undefined;
 }
 
-export const TxnSimulation: React.FC<TxnSimulationProps> = ({
+export const SimulationResult: React.FC<TxnSimulationProps> = ({
   txnData,
   chainFamily,
   chainNetwork,

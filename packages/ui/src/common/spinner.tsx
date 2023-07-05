@@ -1,6 +1,6 @@
 import React from "react";
 import { css, keyframes, styled } from "styled-components";
-import { StyledBaseDiv } from "./StyledBase";
+import { StyledBaseDiv } from "~/common/base";
 
 const rotate = keyframes`
     0% {

@@ -1,12 +1,11 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Row } from "~/Row";
-import { Text } from "~/Text";
-import { Column } from "~/Column";
-import { AssetPrice } from "~/simulation-results/AssetPrice";
-import { Divider } from "~/simulation-results/Divider";
-import { ImageBase } from "~/simulation-results/ImageBase";
-import { Icon } from "~/Icon";
+import { Row, Column } from "~/common/layout";
+import { Text } from "~/common/text";
+import { AssetPrice } from "~/simulation-result/components/AssetPrice";
+import { Divider } from "~/simulation-result/components/Divider";
+import { ImageBase } from "~/simulation-result/components/ImageBase";
+import { Icon } from "~/common/icon";
 
 const PreviewTokenContainer = styled.div``;
 

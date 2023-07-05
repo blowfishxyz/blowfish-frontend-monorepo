@@ -1,12 +1,16 @@
 import { EvmExpectedStateChange } from "@blowfish/api-client";
-import { Icon } from "~/Icon";
-import { styled, css } from "styled-components";
-import { ImageBase, PlaceholderImage } from "./ImageBase";
+import { Icon } from "~/common/icon";
+import { styled, css, useTheme } from "styled-components";
+import {
+  ImageBase,
+  PlaceholderImage,
+} from "~/simulation-result/components/ImageBase";
 import {
   isCurrencyStateChange,
   isNftStateChangeWithMetadata,
-} from "~/simulation-results/utils";
+} from "~/simulation-result/utils";
 import { useMemo } from "react";
+import { Row } from "~/common/layout";
 
 interface AssetImageProps {
   stateChange: EvmExpectedStateChange;
@@ -22,13 +26,13 @@ const SimulationIconWrapper = styled.div<{
 }>`
   display: flex;
   justify-content: center;
+  align-items: center;
   position: absolute;
   height: 16px;
   width: 16px;
   border-radius: 50%;
   top: -4px;
   right: -4px;
-  box-sizing: initial;
   background: ${({ $isPositiveEffect }) =>
     $isPositiveEffect ? "#BEEDD2" : "#FFCCCC"};
 
@@ -52,7 +56,10 @@ const SimulationIconWrapper = styled.div<{
   }
 `;
 
-const VerifiedBadge = styled(Icon)`
+const VerifiedBadgeWrapper = styled(Row).attrs({
+  alignItems: "center",
+  justifyContent: "center",
+})`
   position: absolute;
   right: -2px;
   bottom: -2px;
@@ -62,13 +69,16 @@ export const AssetImage = ({
   stateChange,
   isPositiveEffect,
 }: AssetImageProps) => {
+  const theme = useTheme();
   const rawInfo = stateChange.rawInfo;
   const content = useMemo(() => {
     if (isCurrencyStateChange(rawInfo)) {
       return (
         <>
           {rawInfo.data.asset.verified && (
-            <VerifiedBadge variant="verified" size={24} />
+            <VerifiedBadgeWrapper>
+              <Icon variant="verified" size={14} />
+            </VerifiedBadgeWrapper>
           )}
           <ImageBase
             src={rawInfo.data.asset.imageUrl}
@@ -101,7 +111,7 @@ export const AssetImage = ({
       {content}
 
       <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
-        <Icon variant="arrow-right" size={12} />
+        <Icon variant="arrow-right" size={10} color={theme.colors.danger} />
       </SimulationIconWrapper>
     </SimulationResultImageWrapper>
   );

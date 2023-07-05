@@ -14,7 +14,7 @@ export const UnstyledA = styled(UnstyledAComponent)`
   text-decoration: none;
 `;
 
-const AComponent = React.forwardRef<
+const AnchorComponent = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement>
 >(({ children, ...props }, ref) => (
@@ -23,16 +23,6 @@ const AComponent = React.forwardRef<
   </UnstyledA>
 ));
 
-export const A = styled(AComponent)`
+export const Anchor = styled(AnchorComponent)`
   color: ${(props) => props.theme.colors.foregroundPrimary};
 `;
-
-export interface LinkWithArrowProps
-  extends React.PropsWithChildren<
-    React.AnchorHTMLAttributes<HTMLAnchorElement>
-  > {
-  className?: string;
-  style?: React.CSSProperties;
-  href: string;
-  hideArrow?: boolean;
-}
