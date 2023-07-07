@@ -8,7 +8,7 @@
     "dev:extension": "pnpm --filter @blowfish/extension dev",
     "dev:portal": "pnpm --filter @blowfish/transaction-portal dev"
   },
-  "packageManager": "pnpm@8.1.0",
+  "packageManager": "pnpm@8.6.1",
   "devDependencies": {
     "turbo": "^1.8.8"
   }

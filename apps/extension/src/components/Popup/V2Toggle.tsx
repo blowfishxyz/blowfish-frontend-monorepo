@@ -1,4 +1,4 @@
-import { Row, Text } from "@blowfish/ui/core";
+import { Row, Text } from "@blowfishxyz/ui";
 import React from "react";
 import useSWR from "swr";
 

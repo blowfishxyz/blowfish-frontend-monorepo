@@ -2,7 +2,7 @@ import { shortenEnsName } from "~utils/utils";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { Chain } from "wagmi";
 import styled from "styled-components";
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";

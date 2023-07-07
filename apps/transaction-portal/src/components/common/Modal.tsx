@@ -10,7 +10,7 @@ import {
   FloatingOverlay,
   useId,
 } from "@floating-ui/react";
-import { Column, Text, Button } from "@blowfish/ui/core";
+import { Column, Text, Button } from "@blowfishxyz/ui";
 import { styled } from "styled-components";
 import { useMemo, useState } from "react";
 import { logger } from "~utils/logger";

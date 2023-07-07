@@ -8,7 +8,7 @@ import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
 import { useChainMetadataContext } from "../src/hooks/useChainMetadata";
-import { themes } from "@blowfish/ui/core";
+import { themes } from "@blowfishxyz/ui";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
 

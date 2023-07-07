@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
-import { Row, Text, Column, Button } from "@blowfish/ui/core";
-import { useBlockExplorerUrl, useChainMetadata } from "~hooks/useChainMetadata";
+import { Row, Text, Column, Button } from "@blowfishxyz/ui";
+import {
+  useBlockExplorerUrl,
+  useChainMetadata,
+} from "~hooks/useChainMetadata";
 import { capitalize } from "~utils/utils";
-import { VerifiedCheckIcon } from "@blowfish/ui/icons";
+import { VerifiedCheckIcon } from "@blowfish/protect-ui/icons";
 import { chainToBlockExplorerTitle } from "@blowfish/utils/chains";
 
 const SuccessIcon = styled(VerifiedCheckIcon)`

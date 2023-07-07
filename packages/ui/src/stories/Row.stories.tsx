@@ -1,28 +1,35 @@
-import React from 'react';
-import { Row } from '../core';
-import { Meta, Story } from '@storybook/react';
+import React from "react";
+import { Row } from "~/common/layout";
+import { Meta, Story } from "@storybook/react";
 
 export default {
-  title: 'Row',
+  title: "Row",
   component: Row,
   argTypes: {
-    width: { control: 'text' },
+    width: { control: "text" },
     align: {
       control: {
-        type: 'select',
-        options: ['stretch', 'flex-start', 'flex-end', 'center', 'baseline'],
+        type: "select",
+        options: ["stretch", "flex-start", "flex-end", "center", "baseline"],
       },
     },
     justify: {
       control: {
-        type: 'select',
-        options: ['flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly'],
+        type: "select",
+        options: [
+          "flex-start",
+          "flex-end",
+          "center",
+          "space-between",
+          "space-around",
+          "space-evenly",
+        ],
       },
     },
-    padding: { control: 'text' },
+    padding: { control: "text" },
     gap: {
       control: {
-        type: 'select',
+        type: "select",
         options: ["xs", "sm", "md", "lg", "xl"],
       },
     },
@@ -31,10 +38,8 @@ export default {
 
 const Template: Story<React.ComponentProps<typeof Row>> = (args) => (
   <Row {...args}>
-    <div style={{ backgroundColor: 'lightblue', padding: '1rem' }}>
-      Child 1
-    </div>
-    <div style={{ backgroundColor: 'lightgreen', padding: '1rem' }}>
+    <div style={{ backgroundColor: "lightblue", padding: "1rem" }}>Child 1</div>
+    <div style={{ backgroundColor: "lightgreen", padding: "1rem" }}>
       Child 2
     </div>
   </Row>
@@ -42,5 +47,5 @@ const Template: Story<React.ComponentProps<typeof Row>> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  gap: 'md',
+  gap: "md",
 };

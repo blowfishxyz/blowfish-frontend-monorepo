@@ -2,14 +2,12 @@
   "extends": "@blowfish/tsconfig/react-library",
   "compilerOptions": {
     "outDir": "./build",
+    "isolatedModules": false,
+    "paths": {
+      "~/*": ["./src/*"]
+    }
   },
   "baseUrl": ".",
-  "include": [
-    ".",
-  ],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["."],
+  "exclude": ["dist", "node_modules", "**/*.spec.ts"]
 }

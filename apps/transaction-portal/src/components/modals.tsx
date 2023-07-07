@@ -1,7 +1,7 @@
 import { Modal } from "~components/common/Modal";
 import useSWR from "swr";
 import { capitalize, getExtensionInstallationUrl, sleep } from "~utils/utils";
-import { Column, Text } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfishxyz/ui";
 import { useCallback, useMemo } from "react";
 import { shortenHex } from "~utils/hex";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
@@ -21,7 +21,7 @@ import { useRouter } from "next/router";
 import {
   BlowfishInvertedWarningIcon,
   BlowfishWarningIcon,
-} from "@blowfish/ui/icons";
+} from "@blowfish/protect-ui/icons";
 import styled from "styled-components";
 import { getConnectorMetadata } from "~utils/wagmi";
 import { ContentToggle } from "~components/ContentToggle";

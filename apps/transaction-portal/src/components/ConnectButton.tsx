@@ -1,7 +1,8 @@
 import styled from "styled-components";
 
-import { TextButton, Text } from "@blowfish/ui/core";
-import { WalletIcon, FaLink, FaUnlink } from "@blowfish/ui/icons";
+import { Text } from "@blowfishxyz/ui";
+import { TextButton } from "@blowfish/protect-ui/core";
+import { WalletIcon, FaLink, FaUnlink } from "@blowfish/protect-ui/icons";
 import { shortenHex } from "@blowfish/utils/hex";
 
 const StyledWalletIcon = styled(WalletIcon)`

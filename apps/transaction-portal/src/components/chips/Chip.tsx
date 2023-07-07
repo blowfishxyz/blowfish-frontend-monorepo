@@ -1,4 +1,4 @@
-import { Text, device } from "@blowfish/ui/core";
+import { Text, device } from "@blowfishxyz/ui";
 import { Severity } from "@blowfish/utils/types";
 import React from "react";
 import styled, { css } from "styled-components";

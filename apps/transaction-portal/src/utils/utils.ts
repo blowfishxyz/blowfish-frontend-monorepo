@@ -1,22 +1,10 @@
-import {
-  CurrencyStateChange,
-  EvmExpectedStateChange,
-  EvmStateChangeErc1155ApprovalForAll,
-  EvmStateChangeErc1155Transfer,
-  EvmStateChangeErc20Approval,
-  EvmStateChangeErc721Approval,
-  EvmStateChangeErc721ApprovalForAll,
-  EvmStateChangeErc721Transfer,
-  NftStateChange,
-} from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfish/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
-import Decimal from "decimal.js";
 
 import {
   CHROMIMUM_INSTALL_EXTENSION_URL,
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
-import { U256_MAX_VALUE } from "../constants";
 import { logger } from "~utils/logger";
 
 // NOTE: the require statement below is to ensure we are using the punycode userland modules and not the deprecated core modules.
@@ -174,131 +162,6 @@ export const copyToClipboard = (address: string | undefined) => {
     .catch((error) => {
       console.error("Failed to copy address:", error);
     });
-};
-
-export const isNftStateChange = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is NftStateChange => {
-  return rawInfo.kind.includes("ERC721") || rawInfo.kind.includes("ERC1155");
-};
-
-export const isCurrencyStateChange = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is CurrencyStateChange => {
-  return (
-    rawInfo.kind.includes("ERC20") || rawInfo.kind.includes("NATIVE_ASSET")
-  );
-};
-
-const isApprovalStateChange = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is
-  | EvmStateChangeErc20Approval
-  | EvmStateChangeErc1155ApprovalForAll
-  | EvmStateChangeErc721Approval
-  | EvmStateChangeErc721ApprovalForAll => {
-  return rawInfo.kind.includes("APPROVAL");
-};
-
-export const isApprovalForAllStateChange = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is
-  | EvmStateChangeErc1155ApprovalForAll
-  | EvmStateChangeErc721ApprovalForAll => {
-  return rawInfo.kind.includes("APPROVAL_FOR_ALL");
-};
-
-const getSimulationDiff = (rawInfo: EvmExpectedStateChange["rawInfo"]) => {
-  const { amount } = rawInfo.data;
-
-  if (!amount) {
-    return new Decimal(0);
-  }
-
-  if (typeof amount === "string") {
-    return new Decimal(amount);
-  }
-
-  return new Decimal(amount.before).sub(amount.after);
-};
-
-export const isPositiveStateChange = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-) => {
-  const isApproval = isApprovalStateChange(rawInfo);
-  const diff = getSimulationDiff(rawInfo);
-
-  return (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
-};
-
-export const getAssetPriceInUsd = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): number | null => {
-  const pricePerToken = getAssetPricePerToken(rawInfo);
-
-  if (isNftStateChange(rawInfo)) {
-    return getAssetPricePerToken(rawInfo);
-  }
-
-  if (rawInfo.kind === "ERC20_PERMIT") {
-    return null;
-  }
-
-  if (isCurrencyStateChange(rawInfo) && pricePerToken !== null) {
-    const difference = getSimulationDiff(rawInfo).abs();
-
-    if (
-      rawInfo.kind === "ERC20_APPROVAL" &&
-      // U256_MAX_VALUE - unlimited approval
-      difference.eq(U256_MAX_VALUE)
-    ) {
-      return null;
-    }
-
-    return new Decimal(pricePerToken)
-      .times(difference)
-      .dividedBy(new Decimal(10).pow(rawInfo.data.asset.decimals))
-      .toNumber();
-  }
-
-  return null;
-};
-
-export const getAssetPricePerToken = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): number | null => {
-  if ("asset" in rawInfo.data) {
-    return rawInfo.data.asset.price?.dollarValuePerToken || null;
-  }
-
-  if ("assetPrice" in rawInfo.data) {
-    return rawInfo.data.assetPrice?.dollarValuePerToken || null;
-  }
-
-  return null;
-};
-
-export const isNftStateChangeWithMetadata = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is
-  | EvmStateChangeErc1155Transfer
-  | EvmStateChangeErc721Approval
-  | EvmStateChangeErc721Transfer => {
-  switch (rawInfo.kind) {
-    case "ERC1155_TRANSFER":
-    case "ERC721_APPROVAL":
-    case "ERC721_TRANSFER":
-      return true;
-  }
-  return false;
-};
-
-export const hasStateChangeImage = (
-  rawInfo: EvmExpectedStateChange["rawInfo"]
-) => {
-  return (
-    isCurrencyStateChange(rawInfo) || isNftStateChangeWithMetadata(rawInfo)
-  );
 };
 
 export const createValidURL = (url: string): URL | undefined => {

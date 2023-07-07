@@ -1,11 +1,10 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
+  entry: {
+    index: "./src/index.ts",
+  },
   format: ["esm", "cjs"],
   outDir: "build",
   dts: true,
-  entry: {
-    icons: "./src/icons/index.ts",
-    core: "./src/core/index.ts",
-  },
 });

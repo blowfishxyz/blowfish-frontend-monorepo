@@ -1,8 +1,8 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Column, Row, Text } from "@blowfish/ui/core";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import { PlaceholderSimulationImage } from "~components/cards/common";
-import { BlowfishIcon } from "@blowfish/ui/icons";
+import { BlowfishIcon } from "@blowfish/protect-ui/icons";
 import { ImageBase } from "~components/common/ImageBase";
 
 const SignatureSimulationMsgWrapper = styled(Column)`
