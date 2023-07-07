@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { styled } from "styled-components";
-import { Row, Text, Column, Button } from "@blowfish/ui/core";
+import { Row, Text, Column, Button } from "@blowfishxyz/ui";
 import { LoadingAnimation } from "~components/LoadingAnimation";
 import {
   useBlockExplorerUrl,

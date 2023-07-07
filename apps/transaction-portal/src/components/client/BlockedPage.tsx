@@ -1,11 +1,9 @@
+import { Column, Row, Text } from "@blowfishxyz/ui";
+import { PrimaryButton, TertiaryButton } from "@blowfish/protect-ui/core";
 import {
-  Column,
-  PrimaryButton,
-  Row,
-  TertiaryButton,
-  Text,
-} from "@blowfish/ui/core";
-import { ArrowRightIcon, BlowfishWarningIcon } from "@blowfish/ui/icons";
+  ArrowRightIcon,
+  BlowfishWarningIcon,
+} from "@blowfish/protect-ui/icons";
 import { useRouter } from "next/router";
 import React from "react";
 import styled from "styled-components";

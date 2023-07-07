@@ -3,7 +3,7 @@ import { OnboardingStep } from "~components/OnboardingWizard";
 import { breakpoint } from "~utils/breakpoints";
 import SimpleConnectButton from "~components/SimpleConnectButton";
 import { useAccount } from "wagmi";
-import { PrimaryButton, SecondaryButton } from "@blowfish/ui/core";
+import { PrimaryButton, SecondaryButton } from "@blowfish/protect-ui/core";
 import { AnimatePresence, motion } from "framer-motion";
 
 const ButtonRow = styled.div`

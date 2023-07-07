@@ -1,7 +1,7 @@
 import React from "react";
 import { CardText } from "./cards/common";
 import { styled } from "styled-components";
-import { Column, Text } from "@blowfish/ui/core";
+import { Column, Text } from "@blowfishxyz/ui";
 import { LoadingAnimation } from "./LoadingAnimation";
 
 const Wrapper = styled.div`

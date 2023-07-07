@@ -7,15 +7,13 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
+import { Column, Row, Text } from "@blowfishxyz/ui";
 import {
   BaseButton,
   BlockExplorerLink,
-  Column,
   LinkWithArrow,
-  Row,
-  Text,
-} from "@blowfish/ui/core";
-import { ExpandIcon } from "@blowfish/ui/icons";
+} from "@blowfish/protect-ui/core";
+import { ExpandIcon } from "@blowfish/protect-ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { shortenHex } from "@blowfish/utils/hex";
 import { logger } from "@blowfish/utils/logger";

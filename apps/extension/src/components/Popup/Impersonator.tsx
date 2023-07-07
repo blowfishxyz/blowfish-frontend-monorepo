@@ -1,7 +1,8 @@
-import { SmallButtonPrimary, Text } from "@blowfish/ui/core";
+import { SmallButtonPrimary } from "@blowfish/protect-ui/core";
 import { isENS } from "@blowfish/utils/helpers";
 import { shortenHex } from "@blowfish/utils/hex";
 import { logger } from "@blowfish/utils/logger";
+import { Text } from "@blowfishxyz/ui";
 import { ethers } from "ethers";
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
@@ -124,7 +125,8 @@ const Impersonator: React.FC = () => {
       </Row>
       {isEnabled && (
         <WalletInformationContainer
-          onSubmit={(e) => {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSubmit={(e: any) => {
             e.preventDefault();
             updateImpersonationWallet(impersonationWalletAddress);
           }}
@@ -133,7 +135,8 @@ const Impersonator: React.FC = () => {
             error={!isAddressValid && impersonationWalletAddress.length > 0}
             type="text"
             value={impersonationWalletAddress || ""}
-            onChange={(e) => setImpersonationWalletAddress(e.target.value)}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange={(e: any) => setImpersonationWalletAddress(e.target.value)}
             ref={walletImpersonatorInputRef}
             placeholder="Enter address or ENS"
           />

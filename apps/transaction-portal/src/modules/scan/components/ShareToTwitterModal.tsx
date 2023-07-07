@@ -1,9 +1,9 @@
 import React from "react";
 import { styled } from "styled-components";
-import { Row, Column, Text } from "@blowfish/ui/core";
+import { Row, Column, Text } from "@blowfishxyz/ui";
 import Image from "next/image";
 import { Modal } from "~components/common/Modal";
-import { ArrowDownIcon } from "@blowfish/ui/icons";
+import { ArrowDownIcon } from "@blowfish/protect-ui/icons";
 import { shortenHex } from "~utils/hex";
 import { useLocalStorage } from "react-use";
 

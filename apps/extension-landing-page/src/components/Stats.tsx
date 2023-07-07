@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { device } from "@blowfish/ui/core";
+import { device } from "@blowfishxyz/ui";
 
 const StatsSection = styled.div`
   margin-top: 50px;

@@ -15,7 +15,7 @@ import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { configureChains, createClient, useConnect, useNetwork } from "wagmi";
 
 import { ALCHEMY_API_KEY } from "../config";
-import { EthereumIcon } from "@blowfish/ui/icons";
+import { EthereumIcon } from "@blowfish/protect-ui/icons";
 
 export const useConnectedChainId = () => {
   const network = useNetwork();

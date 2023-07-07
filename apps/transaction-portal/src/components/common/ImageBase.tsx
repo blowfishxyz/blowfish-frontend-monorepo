@@ -1,5 +1,5 @@
-import { Column } from "@blowfish/ui/core";
-import { BlowfishIcon } from "@blowfish/ui/icons";
+import { Column } from "@blowfishxyz/ui";
+import { BlowfishIcon } from "@blowfish/protect-ui/icons";
 import Image from "next/image";
 import React, { CSSProperties, memo, useCallback, useState } from "react";
 import styled from "styled-components";

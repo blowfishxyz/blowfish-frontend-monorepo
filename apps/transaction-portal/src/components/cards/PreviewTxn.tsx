@@ -9,11 +9,12 @@ import React, {
 import {
   Button,
   Column,
-  LinkWithArrow,
   Row,
   Text,
   device,
-} from "@blowfish/ui/core";
+  SimulationResult,
+} from "@blowfishxyz/ui";
+import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";
@@ -26,8 +27,8 @@ import {
   EvmMessageExpectedStateChange,
 } from "@blowfish/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
-import { TxnSimulation } from "~components/simulation-results/TxnSimulation";
 import { SendTransactionResult } from "@wagmi/core";
+import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
@@ -207,10 +208,12 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   );
 };
 
+type MsgTextProps = { $expanded?: boolean };
+
 const SignatureSimulatioMsgText = styled(Text).attrs({
   size: "sm",
   design: "primary",
-})<{ $expanded?: boolean }>`
+})<MsgTextProps>`
   display: -webkit-box;
   -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
   -webkit-box-orient: vertical;
@@ -274,6 +277,7 @@ const StateChangePreview: React.FC<{
   data: TxnSimulationDataType["data"];
   simulationError: string | undefined;
 }> = ({ data, simulationError }) => {
+  const chain = useChainMetadata();
   if (data && data.length > 0) {
     return (
       <Column gap="lg">
@@ -282,7 +286,14 @@ const StateChangePreview: React.FC<{
         </Row>
         <TxnDataWrapper>
           {data.map((data, index) => {
-            return <TxnSimulation key={index} txnData={data} />;
+            return (
+              <SimulationResult
+                key={index}
+                txnData={data}
+                chainFamily={chain?.chainInfo?.chainFamily}
+                chainNetwork={chain?.chainInfo?.chainNetwork}
+              />
+            );
           })}
         </TxnDataWrapper>
       </Column>
