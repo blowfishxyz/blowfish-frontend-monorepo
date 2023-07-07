@@ -1,10 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { styled } from "styled-components";
 import { Row, Text, Column, Button } from "@blowfishxyz/ui";
-import {
-  useBlockExplorerUrl,
-  useChainMetadata,
-} from "~hooks/useChainMetadata";
+import { useBlockExplorerUrl, useChainMetadata } from "~hooks/useChainMetadata";
 import { capitalize } from "~utils/utils";
 import { VerifiedCheckIcon } from "@blowfish/protect-ui/icons";
 import { chainToBlockExplorerTitle } from "@blowfish/utils/chains";

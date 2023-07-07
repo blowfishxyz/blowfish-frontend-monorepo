@@ -28,7 +28,7 @@ import {
 } from "@blowfish/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
-import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+import { useChainMetadata } from "~hooks/useChainMetadata";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
