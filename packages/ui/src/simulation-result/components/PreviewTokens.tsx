@@ -27,10 +27,9 @@ interface PreviewTokensProps {
   imageUrl: string | null;
   name: string | undefined;
   symbol?: string | undefined;
-  price?: number | null;
-  tokenList?: number | null;
+  price: number | null;
+  tokenList: number | null;
   verified: boolean;
-  description?: string;
 }
 
 export const PreviewTokens: React.FC<PreviewTokensProps> = ({
@@ -40,7 +39,6 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
   price,
   tokenList,
   verified,
-  description,
 }) => {
   return (
     <PreviewTokenContainer>
@@ -74,7 +72,6 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <DataRowComponent label="Token Lists" value={tokenList} />
         ) : null}
       </div>
-      <Text>{description}</Text>
     </PreviewTokenContainer>
   );
 };

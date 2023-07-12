@@ -14,7 +14,10 @@ import {
   device,
   SimulationResult,
   Icon,
-  PreviewTokens,
+  PreviewProtocol,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -33,11 +36,6 @@ import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
 import { ImageBase } from "~components/common/ImageBase";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~components/common/Tooltip";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
@@ -182,7 +180,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
                     />
                   </TxnSimulationImage>
                   <PreviewTokenTooltipContent showArrow={false}>
-                    <PreviewTokens
+                    <PreviewProtocol
                       imageUrl={txnData.protocol.imageUrl}
                       name={txnData.protocol.name}
                       verified={
