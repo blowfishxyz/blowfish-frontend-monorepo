@@ -13,6 +13,8 @@ import {
   Text,
   device,
   SimulationResult,
+  Icon,
+  PreviewTokens,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -25,10 +27,17 @@ import {
   ChainNetwork,
   EvmExpectedStateChangesInner,
   EvmMessageExpectedStateChange,
+  EvmProtocol,
 } from "@blowfish/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+import { ImageBase } from "~components/common/ImageBase";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~components/common/Tooltip";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
@@ -38,6 +47,7 @@ export type TxnSimulationDataType = {
     | EvmMessageExpectedStateChange[]
     | EvmExpectedStateChangesInner[]
     | undefined;
+  protocol?: EvmProtocol | null;
 };
 
 const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
@@ -86,7 +96,34 @@ const TxnDataWrapper = styled.div`
   }
 `;
 
+const TxnSimulationImage = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+`;
+
+const VerifiedBadgeWrapper = styled(Row).attrs({
+  alignItems: "center",
+  justifyContent: "center",
+})`
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+`;
+
+const PreviewTokenTooltipContent = styled(TooltipContent)`
+  background-color: white;
+  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  z-index: 4;
+  width: 200px;
+  border-radius: 12px;
+`;
+
 interface PreviewCardProps {
+  txnData: TxnSimulationDataType;
   title: string;
   origin?: string;
   website?: string;
@@ -100,6 +137,7 @@ interface PreviewCardProps {
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
+  txnData,
   title,
   warnings,
   severity,
@@ -108,7 +146,6 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onReport,
   onCancel,
   advancedDetails,
-  website,
 }) => (
   <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
     <CardWrapper>
@@ -124,11 +161,46 @@ const PreviewCard: FC<PreviewCardProps> = ({
       <StyledCardContent>
         <StyledColumn gap="sm">
           <SectionHeading>Website</SectionHeading>
-          <Row gap="xs" alignItems="center">
-            <CardText>
-              <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
-            </CardText>
-          </Row>
+          {txnData.protocol && (
+            <Row gap="xs" alignItems="center">
+              <Tooltip>
+                <TooltipTrigger>
+                  <TxnSimulationImage>
+                    {(txnData.protocol.trustLevel === "TRUSTED" ||
+                      txnData.protocol.trustLevel === "NATIVE") && (
+                      <VerifiedBadgeWrapper>
+                        <Icon variant="verified" size={14} />
+                      </VerifiedBadgeWrapper>
+                    )}
+
+                    <ImageBase
+                      src={txnData.protocol.imageUrl}
+                      alt={txnData.protocol.name}
+                      width={38}
+                      height={38}
+                      borderRadius="100%"
+                    />
+                  </TxnSimulationImage>
+                  <PreviewTokenTooltipContent showArrow={false}>
+                    <PreviewTokens
+                      imageUrl={txnData.protocol.imageUrl}
+                      name={txnData.protocol.name}
+                      verified={
+                        txnData.protocol.trustLevel === "TRUSTED" ||
+                        txnData.protocol.trustLevel === "NATIVE"
+                      }
+                      description={txnData.protocol.description}
+                    />
+                  </PreviewTokenTooltipContent>
+                </TooltipTrigger>
+                <CardText size="xs">
+                  <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
+                    {txnData.protocol.name}
+                  </LinkWithArrow>
+                </CardText>
+              </Tooltip>
+            </Row>
+          )}
         </StyledColumn>
         {/* <Divider orientation="vertical" margin="0 36px" />
       <StyledColumn gap="sm">
@@ -192,6 +264,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
 
   return (
     <PreviewCard
+      txnData={txnData}
       title="Preview changes"
       origin={origin}
       website={host}

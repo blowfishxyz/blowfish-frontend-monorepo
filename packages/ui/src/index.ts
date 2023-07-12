@@ -12,6 +12,7 @@ export { StyledBaseDiv, StyledBaseText } from "./common/base";
 // External
 export * from "./simulation-result";
 export * from "./simulation-warning";
+export { PreviewTokens } from "./simulation-result/components/PreviewTokens";
 export { themes, ThemeProvider } from "./theme";
 export type {
   ITheme,
