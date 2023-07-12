@@ -18,7 +18,7 @@ import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider, CardText } from "./common";
-import { UIWarning } from "~modules/scan/components/ScanResultsV2";
+import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
   ChainFamily,
@@ -28,7 +28,7 @@ import {
 } from "@blowfish/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
-import { useChainMetadata } from "~modules/common/hooks/useChainMetadata";
+import { useChainMetadata } from "~hooks/useChainMetadata";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
