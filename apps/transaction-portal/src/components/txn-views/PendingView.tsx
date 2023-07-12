@@ -2,10 +2,7 @@ import React, { useMemo } from "react";
 import { styled } from "styled-components";
 import { Row, Text, Column, Button } from "@blowfishxyz/ui";
 import { LoadingAnimation } from "~components/LoadingAnimation";
-import {
-  useBlockExplorerUrl,
-  useChainMetadata,
-} from "~modules/common/hooks/useChainMetadata";
+import { useBlockExplorerUrl, useChainMetadata } from "~hooks/useChainMetadata";
 import { capitalize } from "~utils/utils";
 
 const LoadingIcon = styled(LoadingAnimation)`
