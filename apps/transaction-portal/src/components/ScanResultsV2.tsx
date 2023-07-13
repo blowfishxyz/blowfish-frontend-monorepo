@@ -225,6 +225,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         advancedDetails={<AdvancedDetails request={request} />}
         onContinue={confirm}
         onCancel={() => {
+          if (severity === "INFO") {
+            reject();
+            return;
+          }
           setCancelledTxn(true);
           if (isSignMessageRequest(request) || shouldNotShowModal) {
             reject();
