@@ -144,6 +144,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onReport,
   onCancel,
   advancedDetails,
+  website,
 }) => (
   <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
     <CardWrapper>
@@ -156,49 +157,62 @@ const PreviewCard: FC<PreviewCardProps> = ({
       <Divider margin="16px 0" />
       <CardContent>{children}</CardContent>
       <Divider margin="24px 0 0" />
+      {txnData.protocol && (
+        <>
+          <CardContent>
+            <StyledColumn gap="md">
+              <SectionHeading>Protocol</SectionHeading>
+              <Row gap="sm" alignItems="center">
+                <Tooltip>
+                  <TooltipTrigger>
+                    <TxnSimulationImage>
+                      {(txnData.protocol.trustLevel === "TRUSTED" ||
+                        txnData.protocol.trustLevel === "NATIVE") && (
+                        <VerifiedBadgeWrapper>
+                          <Icon variant="verified" size={14} />
+                        </VerifiedBadgeWrapper>
+                      )}
+
+                      <ImageBase
+                        src={txnData.protocol.imageUrl}
+                        alt={txnData.protocol.name}
+                        width={38}
+                        height={38}
+                        borderRadius="6px"
+                      />
+                    </TxnSimulationImage>
+                    <PreviewTokenTooltipContent showArrow={false}>
+                      <PreviewProtocol
+                        imageUrl={txnData.protocol.imageUrl}
+                        name={txnData.protocol.name}
+                        verified={
+                          txnData.protocol.trustLevel === "TRUSTED" ||
+                          txnData.protocol.trustLevel === "NATIVE"
+                        }
+                        description={txnData.protocol.description}
+                      />
+                    </PreviewTokenTooltipContent>
+                  </TooltipTrigger>
+                  <CardText size="xs" marginLeft={8}>
+                    <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
+                      {txnData.protocol.name}
+                    </LinkWithArrow>
+                  </CardText>
+                </Tooltip>
+              </Row>
+            </StyledColumn>
+          </CardContent>
+          <Divider />
+        </>
+      )}
       <StyledCardContent>
         <StyledColumn gap="sm">
           <SectionHeading>Website</SectionHeading>
-          {txnData.protocol && (
-            <Row gap="xs" alignItems="center">
-              <Tooltip>
-                <TooltipTrigger>
-                  <TxnSimulationImage>
-                    {(txnData.protocol.trustLevel === "TRUSTED" ||
-                      txnData.protocol.trustLevel === "NATIVE") && (
-                      <VerifiedBadgeWrapper>
-                        <Icon variant="verified" size={14} />
-                      </VerifiedBadgeWrapper>
-                    )}
-
-                    <ImageBase
-                      src={txnData.protocol.imageUrl}
-                      alt={txnData.protocol.name}
-                      width={38}
-                      height={38}
-                      borderRadius="100%"
-                    />
-                  </TxnSimulationImage>
-                  <PreviewTokenTooltipContent showArrow={false}>
-                    <PreviewProtocol
-                      imageUrl={txnData.protocol.imageUrl}
-                      name={txnData.protocol.name}
-                      verified={
-                        txnData.protocol.trustLevel === "TRUSTED" ||
-                        txnData.protocol.trustLevel === "NATIVE"
-                      }
-                      description={txnData.protocol.description}
-                    />
-                  </PreviewTokenTooltipContent>
-                </TooltipTrigger>
-                <CardText size="xs">
-                  <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
-                    {txnData.protocol.name}
-                  </LinkWithArrow>
-                </CardText>
-              </Tooltip>
-            </Row>
-          )}
+          <Row gap="xs" alignItems="center">
+            <CardText>
+              <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
+            </CardText>
+          </Row>
         </StyledColumn>
         {/* <Divider orientation="vertical" margin="0 36px" />
       <StyledColumn gap="sm">
