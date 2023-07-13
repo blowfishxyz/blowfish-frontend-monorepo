@@ -4,9 +4,9 @@ import type {
   HTTPHeaders,
   RequestMetadata,
   EvmTxData,
-} from "./client";
-import { ScanMessageApi, ScanTransactionApi } from "./client/apis";
-import { Configuration } from "./client/runtime";
+} from "./clients/v20230517";
+import { ScanMessageApi, ScanTransactionsApi } from "./clients/v20230517/apis";
+import { Configuration } from "./clients/v20230517/runtime";
 import { ChainFamily, ChainNetwork } from "./types";
 
 export class BlowfishApiClient {
@@ -28,7 +28,7 @@ export class BlowfishApiClient {
 
   readonly apis = {
     messages: new ScanMessageApi(this.config),
-    transactions: new ScanTransactionApi(this.config),
+    transactions: new ScanTransactionsApi(this.config),
   };
 
   constructor(
@@ -54,7 +54,6 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      xApiKey: "",
       xApiVersion: this.apiVersion,
     });
   };
@@ -75,7 +74,6 @@ export class BlowfishApiClient {
         userAccount,
         metadata,
       },
-      xApiKey: "",
       xApiVersion: this.apiVersion,
     });
   };
@@ -85,15 +83,15 @@ export class BlowfishApiClient {
     userAccount: string,
     metadata: RequestMetadata
   ) => {
-    return this.apis.transactions.scanTransactionEvm({
+    return this.apis.transactions.scanTransactionsEvm({
       chainFamily: this.chainFamily,
       chainNetwork: this.chainNetwork,
-      scanTransactionEvmRequest: {
-        txObject,
+      scanTransactionsEvmRequest: {
+        txObjects: [txObject],
         userAccount,
         metadata,
       },
-      xApiKey: "",
+      // xApiKey: "",
       xApiVersion: this.apiVersion,
     });
   };

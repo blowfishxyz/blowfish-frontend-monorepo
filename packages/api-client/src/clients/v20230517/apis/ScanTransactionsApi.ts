@@ -22,18 +22,18 @@ import type {
   ScanTransactionsSolana200Response,
   ScanTransactionsSolanaRequest,
   Unauthorized,
-} from "../models";
+} from "../models/index";
 
 export interface ScanTransactionsEvmOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
+  chainFamily: ScanTransactionsEvmOperationChainFamilyEnum;
+  chainNetwork: ScanTransactionsEvmOperationChainNetworkEnum;
+  scanTransactionsEvmRequest: ScanTransactionsEvmRequest;
   language?: Languages;
   contentType?: string;
-  scanTransactionsEvmRequest?: ScanTransactionsEvmRequest;
 }
 
 export interface ScanTransactionsSolanaOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
   scanTransactionsSolanaRequest: ScanTransactionsSolanaRequest;
   language?: Languages;
@@ -47,7 +47,7 @@ export interface ScanTransactionsSolanaOperationRequest {
  */
 export class ScanTransactionsApi extends runtime.BaseAPI {
   /**
-   * Scan a list of EVM transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transactions will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions | Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+   * Scan a list of EVM transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transactions will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions | | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transactions | Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
    * EVM
    */
   async scanTransactionsEvmRaw(
@@ -55,22 +55,42 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionsEvm200Response>> {
     if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsEvm."
-      );
-    }
-
-    if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
     ) {
       throw new runtime.RequiredError(
         "xApiVersion",
         "Required parameter requestParameters.xApiVersion was null or undefined when calling scanTransactionsEvm."
+      );
+    }
+
+    if (
+      requestParameters.chainFamily === null ||
+      requestParameters.chainFamily === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "chainFamily",
+        "Required parameter requestParameters.chainFamily was null or undefined when calling scanTransactionsEvm."
+      );
+    }
+
+    if (
+      requestParameters.chainNetwork === null ||
+      requestParameters.chainNetwork === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "chainNetwork",
+        "Required parameter requestParameters.chainNetwork was null or undefined when calling scanTransactionsEvm."
+      );
+    }
+
+    if (
+      requestParameters.scanTransactionsEvmRequest === null ||
+      requestParameters.scanTransactionsEvmRequest === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "scanTransactionsEvmRequest",
+        "Required parameter requestParameters.scanTransactionsEvmRequest was null or undefined when calling scanTransactionsEvm."
       );
     }
 
@@ -83,13 +103,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
 
     if (
       requestParameters.xApiVersion !== undefined &&
@@ -111,7 +124,15 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/ethereum/v0/mainnet/scan/transactions`,
+        path: `/{chain-family}/v0/{chain-network}/scan/transactions`
+          .replace(
+            `{${"chain-family"}}`,
+            encodeURIComponent(String(requestParameters.chainFamily))
+          )
+          .replace(
+            `{${"chain-network"}}`,
+            encodeURIComponent(String(requestParameters.chainNetwork))
+          ),
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
@@ -124,7 +145,7 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
   }
 
   /**
-   * Scan a list of EVM transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transactions will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions | Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+   * Scan a list of EVM transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transactions will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions | | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transactions | Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
    * EVM
    */
   async scanTransactionsEvm(
@@ -146,16 +167,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     requestParameters: ScanTransactionsSolanaOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionsSolana200Response>> {
-    if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsSolana."
-      );
-    }
-
     if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
@@ -194,13 +205,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
 
     if (
       requestParameters.xApiVersion !== undefined &&
@@ -250,6 +254,28 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
   }
 }
 
+/**
+ * @export
+ */
+export const ScanTransactionsEvmOperationChainFamilyEnum = {
+  Ethereum: "ethereum",
+  Polygon: "polygon",
+  Bnb: "bnb",
+  Arbitrum: "arbitrum",
+  Optimism: "optimism",
+} as const;
+export type ScanTransactionsEvmOperationChainFamilyEnum =
+  typeof ScanTransactionsEvmOperationChainFamilyEnum[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];
+/**
+ * @export
+ */
+export const ScanTransactionsEvmOperationChainNetworkEnum = {
+  Mainnet: "mainnet",
+  One: "one",
+  Goerli: "goerli",
+} as const;
+export type ScanTransactionsEvmOperationChainNetworkEnum =
+  typeof ScanTransactionsEvmOperationChainNetworkEnum[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
 /**
  * @export
  */

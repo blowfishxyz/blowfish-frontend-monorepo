@@ -12,7 +12,7 @@ import type {
   EvmStateChangeErc20Approval,
   EvmStateChangeErc20Transfer,
   EvmStateChangeErc20Permit,
-} from "./client/models";
+} from "./clients/v20230517/models";
 
 export type ChainFamily =
   | "ethereum"
@@ -74,4 +74,4 @@ export interface TypedDataV1Field {
   value: unknown;
 }
 
-export * from "./client/models";
+export * from "./clients/v20230517/models";
