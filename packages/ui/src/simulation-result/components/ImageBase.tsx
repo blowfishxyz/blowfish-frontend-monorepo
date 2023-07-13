@@ -70,7 +70,7 @@ export const PlaceholderImage: React.FC<{
       height={height}
       borderRadius={borderRadius}
     >
-      <Icon variant="blowfish-logo" size={48} />
+      <Icon variant="blowfish-logo" size={Math.floor(width / 1.5)} />
     </PlaceholderSimulationImage>
   );
 };
