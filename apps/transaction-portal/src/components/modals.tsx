@@ -192,7 +192,7 @@ export const WrongNetworkModal: React.FC<{
 };
 
 export const UnsupportedTransactionModal: React.FC<{
-  closeWindow: () => void;
+  closeWindow: (() => void) | undefined;
   type: "eth_sign" | "batch_requests";
 }> = ({ closeWindow, type }) => {
   const [scanPaused, setScanPaused] = useLocalStorage<BlowfishPausedOptionType>(
@@ -210,7 +210,7 @@ export const UnsupportedTransactionModal: React.FC<{
       isPaused: true,
       until: Date.now() + PAUSE_DURATIONS[PauseDuration.OneHour],
     });
-    closeWindow();
+    closeWindow?.();
   };
 
   const description = useMemo(() => {
@@ -249,13 +249,15 @@ export const UnsupportedTransactionModal: React.FC<{
           : "Dangerous unsupported action"
       }
       content={<WarningIcon />}
+      onCancel={() => closeWindow?.()}
       description={description}
       options={{ blocking: true }}
       action={{
-        closeOnComplete: false,
-        title: "Pause for 1 hour",
+        closeOnComplete: true,
+        title: "Ignore warning",
         design: "danger",
-        cb: pauseScannerAndCloseWindow,
+        cb: () => Promise.resolve(),
+        priority: "primary",
       }}
     />
   );
