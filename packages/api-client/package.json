@@ -1,11 +1,10 @@
 {
-  "name": "@blowfish/api-client",
+  "name": "@blowfishxyz/api",
   "version": "0.0.1",
   "license": "MIT",
   "main": "./build/index.ts",
   "module": "./build/index.mjs",
   "types": "./build/index.d.ts",
-  "private": true,
   "scripts": {
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",

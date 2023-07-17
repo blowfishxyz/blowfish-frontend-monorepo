@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfishxyz/api";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
 import {

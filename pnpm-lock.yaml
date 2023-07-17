@@ -326,9 +326,6 @@ importers:
 
   apps/transaction-portal:
     dependencies:
-      '@blowfish/api-client':
-        specifier: workspace:*
-        version: link:../../packages/api-client
       '@blowfish/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -338,6 +335,9 @@ importers:
       '@blowfish/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@blowfishxyz/api':
+        specifier: workspace:*
+        version: link:../../packages/api-client
       '@blowfishxyz/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -681,12 +681,12 @@ importers:
         specifier: 6.0.2
         version: 6.0.2(react-dom@18.2.0)(react@18.2.0)
     devDependencies:
-      '@blowfish/api-client':
-        specifier: workspace:*
-        version: link:../api-client
       '@blowfish/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@blowfishxyz/api':
+        specifier: workspace:*
+        version: link:../api-client
       '@storybook/addon-actions':
         specifier: ^6.5.16
         version: 6.5.16(react-dom@18.2.0)(react@18.2.0)
@@ -745,12 +745,12 @@ importers:
         specifier: ^5.7.0
         version: 5.7.0
     devDependencies:
-      '@blowfish/api-client':
-        specifier: workspace:*
-        version: link:../api-client
       '@blowfish/tsconfig':
         specifier: '*'
         version: link:../tsconfig
+      '@blowfishxyz/api':
+        specifier: workspace:*
+        version: link:../api-client
       '@types/jest':
         specifier: ^29.5.0
         version: 29.5.0

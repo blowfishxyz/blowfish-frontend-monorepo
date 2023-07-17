@@ -25,7 +25,7 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@blowfish/api-client": "workspace:*",
+    "@blowfishxyz/api": "workspace:*",
     "@blowfish/tsconfig": "workspace:*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "6.5.16",

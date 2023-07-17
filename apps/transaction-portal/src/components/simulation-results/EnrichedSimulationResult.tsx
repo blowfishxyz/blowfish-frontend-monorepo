@@ -1,4 +1,4 @@
-import type { EvmExpectedStateChange } from "@blowfish/api-client";
+import type { EvmExpectedStateChange } from "@blowfishxyz/api";
 import { Column, Row, Text } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
@@ -15,7 +15,7 @@ export const EnrichedSimulationResult: React.FC<{
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }> = ({ stateChange, chainFamily, chainNetwork }) => {
-  const address = stateChange.rawInfo.data.contract.address;
+  const address = stateChange.rawInfo.data.asset.address;
   const { kind } = stateChange.rawInfo;
   const isApproval = kind.includes("APPROVAL");
   const isNft = kind.includes("ERC721") || kind.includes("ERC1155");

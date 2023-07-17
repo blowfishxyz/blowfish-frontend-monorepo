@@ -1,8 +1,8 @@
 import {
-  EvmAsset,
+  EvmErc20Asset,
   EvmExpectedStateChange,
   EvmNativeAsset,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api";
 import { Text } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { VerifiedIcon } from "@blowfish/protect-ui/icons";
@@ -50,7 +50,7 @@ export const VerifiedTokenTooltip: React.FC<
   );
 };
 
-const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
+const TooltipText: React.FC<{ asset: EvmErc20Asset | EvmNativeAsset }> = memo(
   function TooltipTextInner({ asset }) {
     const { symbol, verified } = asset;
 
@@ -96,7 +96,7 @@ const TooltipText: React.FC<{ asset: EvmAsset | EvmNativeAsset }> = memo(
 
 function getErc20Asset(
   stateChange: EvmExpectedStateChange
-): EvmAsset | EvmNativeAsset | undefined {
+): EvmErc20Asset | EvmNativeAsset | undefined {
   const rawInfo = stateChange.rawInfo;
   if (
     rawInfo.kind === "ERC20_APPROVAL" ||

@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfishxyz/api";
 import { Row, Text } from "@blowfishxyz/ui";
 import { InfoIcon } from "@blowfish/protect-ui/icons";
 import Decimal from "decimal.js";
@@ -40,8 +40,6 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
   const pricePerToken =
     "asset" in rawInfo.data
       ? rawInfo.data.asset.price?.dollarValuePerToken
-      : "assetPrice" in rawInfo.data
-      ? rawInfo.data.assetPrice?.dollarValuePerToken
       : null;
 
   if (!pricePerToken) return null;

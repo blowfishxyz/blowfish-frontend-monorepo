@@ -10,7 +10,7 @@ import {
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
   NftStateChange,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api";
 import Decimal from "decimal.js";
 
 export const U256_MAX_VALUE = new Decimal(2).pow(256).sub(1);

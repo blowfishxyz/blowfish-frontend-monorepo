@@ -1,7 +1,7 @@
 # Blowfish API Client
 
 ```ts
-import { BlowfishApiClient } from "@blowfishxyz/api-client";
+import { BlowfishApiClient } from "@blowfishxyz/api";
 ```
 
 ## Generate clients

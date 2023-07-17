@@ -6,7 +6,7 @@ import {
   EvmStateChangeErc721Transfer,
   EvmStateChangeNativeAssetTransfer,
   EvmTransactionExpectedStateChange,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api";
 
 export const sendErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Send BoredApeYachtClub #1726",
@@ -16,21 +16,20 @@ export const sendErc721: EvmTransactionExpectedStateChange = {
         after: "0",
         before: "1",
       },
-      contract: {
-        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-        kind: "ACCOUNT",
-      },
       metadata: {
         rawImageUrl:
           "https://ipfs.io/ipfs/QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
       },
-      name: "BoredApeYachtClub",
-      symbol: "BAYC",
       tokenId: "1726",
-      assetPrice: {
-        source: "Coingecko",
-        updatedAt: 1681958792,
-        dollarValuePerToken: 1945.92,
+      asset: {
+        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+        name: "BoredApeYachtClub",
+        symbol: "BAYC",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
       },
     },
     kind: "ERC721_TRANSFER",
@@ -45,21 +44,20 @@ export const receiveErc721: EvmTransactionExpectedStateChange = {
         after: "1",
         before: "0",
       },
-      contract: {
-        address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8",
-        kind: "ACCOUNT",
-      },
       metadata: {
         rawImageUrl:
           "https://ipfs.io/ipfs/QmNf1UsmdGaMbpatQ6toXSkzDpizaGmC9zfunCyoz1enD5/penguin/7238.png",
       },
-      name: "PudgyPenguins",
-      symbol: "PPG",
-      tokenId: "7238",
-      assetPrice: {
-        source: "Coingecko",
-        updatedAt: 1681958792,
-        dollarValuePerToken: 1945.92,
+      tokenId: "1726",
+      asset: {
+        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+        name: "BoredApeYachtClub",
+        symbol: "BAYC",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
       },
     },
     kind: "ERC721_TRANSFER",
@@ -137,11 +135,6 @@ export const approveAllErc721: EvmTransactionExpectedStateChange = {
           "115792089237316195423570985008687907853269984665640564039457584007913129639935",
         before: "0",
       },
-      contract: {
-        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
-        kind: "ACCOUNT",
-      },
-      name: "BoredApeYachtClub",
       owner: {
         address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
         kind: "ACCOUNT",
@@ -150,8 +143,17 @@ export const approveAllErc721: EvmTransactionExpectedStateChange = {
         address: "0x00000000006c3852cbef3e08e8df289169ede581",
         kind: "ACCOUNT",
       },
-      symbol: "BAYC",
-      assetPrice: null,
+      tokenId: "1726",
+      asset: {
+        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+        name: "BoredApeYachtClub",
+        symbol: "BAYC",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
     },
     kind: "ERC721_APPROVAL_FOR_ALL",
   } as EvmStateChangeErc721ApprovalForAll,

@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfishxyz/api";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/protect-ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import Image from "next/image";
@@ -100,7 +100,7 @@ const AssetImage = ({
     showPlaceholderImage = !imageSrc;
     altText =
       rawInfo.kind !== "ERC1155_TRANSFER"
-        ? rawInfo.data.name
+        ? rawInfo.data.asset.name
         : `${altText} ${rawInfo.data.tokenId}`;
   } else if (
     rawInfo.kind === "ERC20_TRANSFER" ||

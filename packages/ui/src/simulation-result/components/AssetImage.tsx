@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfishxyz/api";
 import { Icon } from "~/common/icon";
 import { styled, css, useTheme } from "styled-components";
 import {

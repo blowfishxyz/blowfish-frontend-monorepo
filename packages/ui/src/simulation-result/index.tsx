@@ -19,7 +19,7 @@ import {
   ChainFamily,
   ChainNetwork,
   EvmExpectedStateChange,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
@@ -162,7 +162,7 @@ const TokenTooltipContent: React.FC<{
 
     return (
       <PreviewNfts
-        name={rawInfo.data.tokenId}
+        name={rawInfo.data.asset.name}
         type="ERC-721"
         imageUrl={rawInfo.data.metadata?.rawImageUrl}
         tokenId={rawInfo.data.tokenId}
