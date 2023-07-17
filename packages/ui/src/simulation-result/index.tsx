@@ -162,7 +162,7 @@ const TokenTooltipContent: React.FC<{
 
     return (
       <PreviewNfts
-        name={rawInfo.data.name}
+        name={rawInfo.data.tokenId}
         type="ERC-721"
         imageUrl={rawInfo.data.metadata?.rawImageUrl}
         tokenId={rawInfo.data.tokenId}
@@ -235,21 +235,21 @@ function useAssetLinkFromRawInfo(
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
-      address: rawInfo.data.contract.address,
+      address: rawInfo.data.asset.address,
     });
   } else if (isApprovalForAllStateChange(rawInfo)) {
     console.log({ rawInfo });
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
-      address: rawInfo.data.contract.address,
-      isApprovalForAllStateChange: rawInfo.data.contract.address,
+      address: rawInfo.data.asset.address,
+      isApprovalForAllStateChange: rawInfo.data.asset.address,
     });
   } else if (isNftStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
-      address: rawInfo.data.contract.address,
+      address: rawInfo.data.asset.address,
       nftTokenId: rawInfo.data.tokenId,
     });
   }

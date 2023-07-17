@@ -9,5 +9,6 @@ export default defineConfig((options) => ({
   minify: !options.watch,
   entry: {
     index: "./src/index.ts",
+    v20230517: "./src/clients/v20230517/index.ts",
   },
 }));

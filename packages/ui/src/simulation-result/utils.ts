@@ -147,10 +147,6 @@ export const getAssetPricePerToken = (
     return rawInfo.data.asset.price?.dollarValuePerToken || null;
   }
 
-  if ("assetPrice" in rawInfo.data) {
-    return rawInfo.data.assetPrice?.dollarValuePerToken || null;
-  }
-
   return null;
 };
 

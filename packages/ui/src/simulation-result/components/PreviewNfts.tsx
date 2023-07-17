@@ -8,7 +8,7 @@ import { Divider } from "~/simulation-result/components/Divider";
 
 interface PreviewNftProps {
   imageUrl: string | undefined;
-  name: string | undefined;
+  name: string | undefined | null;
   symbol?: string | undefined;
   tokenId: string | null;
   type: string;
