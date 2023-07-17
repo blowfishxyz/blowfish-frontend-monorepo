@@ -6,7 +6,7 @@
     "generators": {
       "v20230605": {
         "generatorName": "typescript-fetch",
-        "output": "./src/clients/v20230605",
+        "output": "./src/generated/v20230605",
         "glob": "./src/schemas/v20230605.yaml",
         "additionalProperties": {
           "nullSafeAdditionalProps": true,
@@ -15,7 +15,7 @@
       },
       "v20230517": {
         "generatorName": "typescript-fetch",
-        "output": "./src/clients/v20230517",
+        "output": "./src/generated/v20230517",
         "glob": "./src/schemas/v20230517.yaml",
         "additionalProperties": {
           "nullSafeAdditionalProps": true,
@@ -24,17 +24,8 @@
       },
       "v20230308": {
         "generatorName": "typescript-fetch",
-        "output": "./src/clients/v20230308",
+        "output": "./src/generated/v20230308",
         "glob": "./src/schemas/v20230308.yaml",
-        "additionalProperties": {
-          "nullSafeAdditionalProps": true,
-          "withoutRuntimeChecks": true
-        }
-      },
-      "v20220601": {
-        "generatorName": "typescript-fetch",
-        "output": "./src/clients/v20220601",
-        "glob": "./src/schemas/v20220601.yaml",
         "additionalProperties": {
           "nullSafeAdditionalProps": true,
           "withoutRuntimeChecks": true

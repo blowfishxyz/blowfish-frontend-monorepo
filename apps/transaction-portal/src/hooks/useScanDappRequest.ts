@@ -42,6 +42,8 @@ const fetcher = async (
 ): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
   const client = new BlowfishApiClient(
     BLOWFISH_API_BASE_URL,
+    // NOTE: The api key is rewritten on the proxy
+    "",
     chainFamily,
     chainNetwork
   );

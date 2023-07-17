@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "ts-node ./ts-api/client.ts",
     "prepare": "pnpm run build",
-    "schema": "openapi-generator-cli generate",
+    "generate": "openapi-generator-cli generate",
     "schema:convert": "ts-node ./src/scripts/convert-schema.ts ./src/original-schemas ./src/schemas"
   },
   "devDependencies": {

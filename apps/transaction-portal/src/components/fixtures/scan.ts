@@ -241,6 +241,7 @@ export const messageNoActionScanResult: EvmMessageScanResult = {
   action: "NONE",
   simulationResults: {
     error: null,
+    protocol: null,
     expectedStateChanges: [],
   },
   warnings: [],
@@ -257,6 +258,7 @@ export const messageWarnResultScanResult: EvmMessageScanResult = {
     },
   ],
   simulationResults: {
+    protocol: null,
     expectedStateChanges: [permitErc20NoExpiration],
     error: null,
   },
