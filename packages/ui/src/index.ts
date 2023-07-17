@@ -4,6 +4,7 @@ export * from "./common/links";
 export * from "./common/text";
 export * from "./common/layout";
 export * from "./common/icon";
+export * from "./common/tooltip";
 export { Spinner } from "./common/spinner";
 export { device, size } from "./utils/breakpoints";
 export * from "./utils/animations";

@@ -2,15 +2,16 @@ import styled, { css } from "styled-components";
 import Image from "next/image";
 import { Fragment, ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
+import { useTimeout } from "react-use";
+import dynamic from "next/dynamic";
 import {
+  Column,
+  Row,
+  Text,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~components/common/Tooltip";
-import { useTimeout } from "react-use";
-import dynamic from "next/dynamic";
-import { Column, Row, Text } from "@blowfishxyz/ui";
+} from "@blowfishxyz/ui";
 import { PrimaryButton, supportedChains } from "@blowfish/protect-ui/core";
 import { breakpoint } from "~utils/breakpoints";
 import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
