@@ -1,9 +1,7 @@
 import React from "react";
-import { Row, Column } from "~/common/layout";
-import { Text } from "~/common/text";
-import { Divider } from "~/simulation-result/components/Divider";
-import { ImageBase } from "~/simulation-result/components/ImageBase";
-import { Icon } from "~/common/icon";
+import { Row, Column, Text, Icon } from "@blowfishxyz/ui";
+import { Divider } from "./common";
+import { ImageBase } from "~components/common/ImageBase";
 
 interface PreviewProtocolProps {
   imageUrl: string | null;
@@ -23,8 +21,8 @@ export const PreviewProtocol: React.FC<PreviewProtocolProps> = ({
       <ImageBase
         src={imageUrl || undefined}
         alt={name || "Protocol"}
-        width={48}
-        height={48}
+        width={120}
+        height={120}
         borderRadius="100%"
       />
       <Column marginTop={10}>

@@ -13,7 +13,6 @@ export { StyledBaseDiv, StyledBaseText } from "./common/base";
 // External
 export * from "./simulation-result";
 export * from "./simulation-warning";
-export { PreviewProtocol } from "./simulation-result/components/PreviewProtocol";
 export { themes, ThemeProvider } from "./theme";
 export type {
   ITheme,

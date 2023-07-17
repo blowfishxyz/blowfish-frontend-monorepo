@@ -14,7 +14,6 @@ import {
   device,
   SimulationResult,
   Icon,
-  PreviewProtocol,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
@@ -36,6 +35,7 @@ import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
 import { ImageBase } from "~components/common/ImageBase";
+import { PreviewProtocol } from "./PreviewProtocol";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
