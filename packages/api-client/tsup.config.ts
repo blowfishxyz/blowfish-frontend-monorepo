@@ -5,10 +5,10 @@ export default defineConfig((options) => ({
   outDir: "build",
   dts: true,
   sourcemap: true,
+  treeshake: true,
   skipNodeModulesBundle: true,
   minify: !options.watch,
   entry: {
     index: "./src/index.ts",
-    v20230517: "./src/clients/v20230517/index.ts",
   },
 }));

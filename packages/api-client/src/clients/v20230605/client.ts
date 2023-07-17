@@ -98,6 +98,7 @@ export class BlowfishApiClient {
     });
   };
 
+  // @deprecated use scanTransactionsEvm instead
   scanTransactionEvm = (
     txObject: EvmTxData,
     userAccount: string,
