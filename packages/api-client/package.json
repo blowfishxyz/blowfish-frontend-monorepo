@@ -10,7 +10,6 @@
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "ts-node ./ts-api/client.ts",
     "prepare": "pnpm run build",
     "generate": "openapi-generator-cli generate",
     "schema:convert": "ts-node ./src/scripts/convert-schema.ts ./src/original-schemas ./src/schemas"

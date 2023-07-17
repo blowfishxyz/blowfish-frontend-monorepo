@@ -12,24 +12,6 @@
           "nullSafeAdditionalProps": true,
           "withoutRuntimeChecks": true
         }
-      },
-      "v20230517": {
-        "generatorName": "typescript-fetch",
-        "output": "./src/generated/v20230517",
-        "glob": "./src/schemas/v20230517.yaml",
-        "additionalProperties": {
-          "nullSafeAdditionalProps": true,
-          "withoutRuntimeChecks": true
-        }
-      },
-      "v20230308": {
-        "generatorName": "typescript-fetch",
-        "output": "./src/generated/v20230308",
-        "glob": "./src/schemas/v20230308.yaml",
-        "additionalProperties": {
-          "nullSafeAdditionalProps": true,
-          "withoutRuntimeChecks": true
-        }
       }
     }
   }

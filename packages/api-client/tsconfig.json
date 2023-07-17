@@ -1,8 +1,7 @@
 {
   "extends": "@blowfish/tsconfig/base",
   "compilerOptions": {
-    "outDir": "./build",
-    "target": "es6"
+    "outDir": "./build"
   },
   "include": ["."],
   "exclude": ["build", "node_modules", "**/*.spec.ts"]
