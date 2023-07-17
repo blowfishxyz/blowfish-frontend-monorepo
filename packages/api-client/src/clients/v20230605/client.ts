@@ -98,7 +98,9 @@ export class BlowfishApiClient {
     });
   };
 
-  // @deprecated use scanTransactionsEvm instead
+  /**
+   * @deprecated use scanTransactionsEvm instead
+   */
   scanTransactionEvm = (
     txObject: EvmTxData,
     userAccount: string,
@@ -117,6 +119,24 @@ export class BlowfishApiClient {
         xApiVersion: this.apiVersion,
       })
       .then(mapTransactionsToLegacy);
+  };
+
+  scanTransactionsEvm = (
+    txObjects: EvmTxData[],
+    userAccount: string,
+    metadata: RequestMetadata
+  ) => {
+    return this.apis.transactions.scanTransactionsEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
+      scanTransactionsEvmRequest: {
+        txObjects,
+        userAccount,
+        metadata,
+      },
+      xApiKey: this.apiKey,
+      xApiVersion: this.apiVersion,
+    });
   };
 
   scanDomains = (domains: string[]) => {
