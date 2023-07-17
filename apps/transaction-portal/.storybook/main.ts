@@ -25,7 +25,6 @@ module.exports = {
     config.resolve.alias = {
       ...config.resolve?.alias,
       "~hooks": path.resolve(__dirname, "../src/hooks"),
-      "~modules": path.resolve(__dirname, "../src/modules"),
       "~components": path.resolve(__dirname, "../src/components"),
       "~utils": path.resolve(__dirname, "../src/utils"),
       "~config": path.resolve(__dirname, "../src/config"),

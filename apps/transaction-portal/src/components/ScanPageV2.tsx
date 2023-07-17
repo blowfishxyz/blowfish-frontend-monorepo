@@ -8,10 +8,7 @@ import {
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import {
-  ScanParamsSuccess,
-  useScanParams,
-} from "~modules/scan/hooks/useScanParams";
+import { ScanParamsSuccess, useScanParams } from "~hooks/useScanParams";
 import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
@@ -60,15 +57,6 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
     message,
     request,
   });
-
-  const isUnsupportedDangerousRequest =
-    message && isSignMessageRequest(message.data)
-      ? message?.data.payload.method === "eth_sign"
-      : false;
-
-  if (isUnsupportedDangerousRequest) {
-    return <UnsupportedTransactionModal type="eth_sign" closeWindow={reject} />;
-  }
 
   if (message && isBatchRequests(message.data)) {
     return (
@@ -123,12 +111,23 @@ const ResultsView: React.FC<{
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
   const simulationError = scanResults?.simulationResults?.error;
+  const isUnsupportedDangerousRequest =
+    message && isSignMessageRequest(message.data)
+      ? message?.data.payload.method === "eth_sign"
+      : false;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
     if (scanResults?.action === "BLOCK") {
       return <BlockedTransactionModal closeWindow={reject} />;
     }
+
+    if (isUnsupportedDangerousRequest) {
+      return (
+        <UnsupportedTransactionModal type="eth_sign" closeWindow={reject} />
+      );
+    }
+
     if (simulationError) {
       if (simulationError.kind === "SIMULATION_FAILED") {
         return (
@@ -153,7 +152,13 @@ const ResultsView: React.FC<{
     }
 
     return null;
-  }, [scanResults?.action, simulationError, reject, mutate]);
+  }, [
+    scanResults?.action,
+    simulationError,
+    reject,
+    mutate,
+    isUnsupportedDangerousRequest,
+  ]);
 
   if (!isConnected || !connectedChainId) {
     return <AccountNotConnectedModal />;

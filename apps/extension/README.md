@@ -6,18 +6,6 @@ Blowfish Protect is a browser extension that wraps your Browser wallet's injecte
 
 ## 📚 Getting Started
 
-You can either develop UI components separately with [Storybook](https://storybook.js.org), or run the extenion in hot-reload development mode. Generally it's good to first develop the UI with mocked data with `Storybook component development`, and then hook up the UI to business logic in `Browser Extension development`
-
-### 📖 Storybook component development
-
-1. Copy `default.env` to `.env.development` and `.env.production`
-1. Install dependencies with `pnpm install`
-1. Run `pnpm storybook`
-1. Open `http://localhost:6006`
-   - If you run into-issues you may need to use a different browser profile than the one you have Blowfish Protect install on
-1. Start making changes to components and the storybook should automatically update with your changes
-1. For more information refer to the [Storybook docs](https://storybook.js.org/docs/react/get-started/introduction)
-
 ### 🌐 Browser Extension development
 
 1. Copy `default.env` to `.env.development` and `.env.production`

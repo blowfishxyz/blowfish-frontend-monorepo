@@ -111,7 +111,11 @@ export const AssetImage = ({
       {content}
 
       <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
-        <Icon variant="arrow-right" size={10} color={theme.colors.danger} />
+        <Icon
+          variant="arrow-right"
+          size={10}
+          color={isPositiveEffect ? theme.colors.success : theme.colors.danger}
+        />
       </SimulationIconWrapper>
     </SimulationResultImageWrapper>
   );
