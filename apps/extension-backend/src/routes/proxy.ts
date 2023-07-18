@@ -20,7 +20,7 @@ export const blowfishProxyHandler = async (req: Request, res: Response) => {
   const queryString = qs.stringify(query);
   const fullQueryString = queryString ? `?${queryString}` : "";
   const url = `${BLOWFISH_API_BASE_URL}/${requestedPath}${fullQueryString}`;
-  const apiVersion = (headers["X-Api-Version"] || "2023-03-08") as string;
+  const apiVersion = (headers["x-api-version"] || "2023-03-08") as string;
 
   req.log.info({ url }, "Proxying request to Blowfish API");
 
@@ -29,7 +29,7 @@ export const blowfishProxyHandler = async (req: Request, res: Response) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": BLOWFISH_API_KEY,
+        "X-Api-Key": "abce6ac8-afb4-4be6-aa1b-ea654ed357c4",
         "X-Api-Version": apiVersion,
       },
       body: JSON.stringify(body),

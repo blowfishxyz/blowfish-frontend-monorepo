@@ -1,4 +1,8 @@
 import type {
+  ScanMessageEvm200Response as ScanMessageEvm200ResponseLegacy,
+  ScanTransactionsEvm200Response as ScanTransactionsEvm200ResponseLegacy,
+} from "../../generated/v20230517/models";
+import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
   HTTPHeaders,
@@ -6,14 +10,18 @@ import type {
   EvmTxData,
 } from "../../generated/v20230605";
 import {
-  ScanMessageApi,
   ScanTransactionsApi,
   ScanDomainApi,
   DownloadBlocklistApi,
+  ScanMessageApi,
 } from "../../generated/v20230605/apis";
 import { Configuration } from "../../generated/v20230605/runtime";
 import { ChainFamily, ChainNetwork, DownloadBlocklistRequest } from "./types";
-import { mapTransactionsToLegacy } from "./utils";
+import {
+  mapMessageResponse,
+  mapTransactionsFromV20230517,
+  mapTransactionsToLegacy,
+} from "./utils";
 
 export class BlowfishApiClient {
   private apiVersion = "2023-06-05";
@@ -61,20 +69,22 @@ export class BlowfishApiClient {
     userAccount: string,
     metadata: RequestMetadata
   ) => {
-    return this.apis.message.scanMessageEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
-      scanMessageEvmRequest: {
-        message: {
-          kind: "SIGN_MESSAGE",
-          rawMessage,
+    return this.apis.message
+      .scanMessageEvm({
+        chainFamily: this.chainFamily,
+        chainNetwork: this.chainNetwork,
+        scanMessageEvmRequest: {
+          message: {
+            kind: "SIGN_MESSAGE",
+            rawMessage,
+          },
+          userAccount,
+          metadata,
         },
-        userAccount,
-        metadata,
-      },
-      xApiKey: this.apiKey,
-      xApiVersion: this.apiVersion,
-    });
+        xApiKey: this.apiKey,
+        xApiVersion: this.apiVersion,
+      })
+      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
   };
 
   scanSignTypedData = (
@@ -82,20 +92,22 @@ export class BlowfishApiClient {
     userAccount: string,
     metadata: RequestMetadata
   ) => {
-    return this.apis.message.scanMessageEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
-      scanMessageEvmRequest: {
-        message: {
-          kind: "SIGN_TYPED_DATA",
-          data: typedData,
+    return this.apis.message
+      .scanMessageEvm({
+        chainFamily: this.chainFamily,
+        chainNetwork: this.chainNetwork,
+        scanMessageEvmRequest: {
+          message: {
+            kind: "SIGN_TYPED_DATA",
+            data: typedData,
+          },
+          userAccount,
+          metadata,
         },
-        userAccount,
-        metadata,
-      },
-      xApiKey: this.apiKey,
-      xApiVersion: this.apiVersion,
-    });
+        xApiKey: this.apiKey,
+        xApiVersion: this.apiVersion,
+      })
+      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
   };
 
   /**
@@ -106,19 +118,31 @@ export class BlowfishApiClient {
     userAccount: string,
     metadata: RequestMetadata
   ) => {
-    return this.apis.transactions
-      .scanTransactionsEvm({
-        chainFamily: this.chainFamily,
-        chainNetwork: this.chainNetwork,
-        scanTransactionsEvmRequest: {
-          txObjects: [txObject],
-          userAccount,
-          metadata,
-        },
-        xApiKey: this.apiKey,
-        xApiVersion: this.apiVersion,
-      })
-      .then(mapTransactionsToLegacy);
+    return (
+      this.apis.transactions
+        .scanTransactionsEvm({
+          chainFamily: this.chainFamily,
+          chainNetwork: this.chainNetwork,
+          scanTransactionsEvmRequest: {
+            txObjects: [txObject],
+            userAccount,
+            metadata,
+          },
+          xApiKey: this.apiKey,
+          xApiVersion: this.apiVersion,
+        })
+        // HACK: Remove mapTransactionsFromV20230517  when proxy is deployed
+        .then((x) => {
+          if (
+            Array.isArray(x.simulationResults.aggregated.expectedStateChanges)
+          ) {
+            return mapTransactionsFromV20230517(
+              x as unknown as ScanTransactionsEvm200ResponseLegacy
+            );
+          }
+          return mapTransactionsToLegacy(x);
+        })
+    );
   };
 
   scanTransactionsEvm = (

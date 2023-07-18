@@ -55,14 +55,24 @@ export const copyToClipboard = (address: string | undefined) => {
 export const isNftStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is NftStateChange => {
-  return rawInfo.kind.includes("ERC721") || rawInfo.kind.includes("ERC1155");
+  return (
+    rawInfo.kind === "ERC721_TRANSFER" ||
+    rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC721_APPROVAL_FOR_ALL" ||
+    rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER" ||
+    rawInfo.kind === "ERC1155_APPROVAL_FOR_ALL"
+  );
 };
 
 export const isCurrencyStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is CurrencyStateChange => {
   return (
-    rawInfo.kind.includes("ERC20") || rawInfo.kind.includes("NATIVE_ASSET")
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER" ||
+    rawInfo.kind === "ERC20_PERMIT"
   );
 };
 

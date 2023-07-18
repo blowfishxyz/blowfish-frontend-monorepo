@@ -238,7 +238,6 @@ function useAssetLinkFromRawInfo(
       address: rawInfo.data.asset.address,
     });
   } else if (isApprovalForAllStateChange(rawInfo)) {
-    console.log({ rawInfo });
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,

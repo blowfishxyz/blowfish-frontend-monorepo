@@ -12,6 +12,15 @@
           "nullSafeAdditionalProps": true,
           "withoutRuntimeChecks": true
         }
+      },
+      "v20230517": {
+        "generatorName": "typescript-fetch",
+        "output": "./src/generated/v20230517",
+        "glob": "./src/schemas/v20230517.yaml",
+        "additionalProperties": {
+          "nullSafeAdditionalProps": true,
+          "withoutRuntimeChecks": true
+        }
       }
     }
   }
