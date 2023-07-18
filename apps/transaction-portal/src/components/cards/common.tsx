@@ -47,7 +47,7 @@ const Divider = styled.div<DividerProps>`
   opacity: 0.05;
   margin: ${({ $margin }) => $margin};
 
-  ${({ orientation = "horizontal", margin }) =>
+  ${({ orientation = "horizontal", $margin }) =>
     orientation === "horizontal"
       ? `
           width: 100%;
@@ -56,7 +56,7 @@ const Divider = styled.div<DividerProps>`
       : `
           align-self: stretch;
           width: 1px;
-          margin: ${margin || "0 15px"};
+          margin: ${$margin || "0 15px"};
         `}
 `;
 

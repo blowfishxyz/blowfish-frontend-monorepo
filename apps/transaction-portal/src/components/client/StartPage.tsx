@@ -104,7 +104,7 @@ export const ConnectorButton: React.FC<{
   return (
     <StyledButton key={connector.id} onClick={handleClick}>
       {status === "loading" ? (
-        <Spinner $design="contrast" />
+        <Spinner design="contrast" />
       ) : typeof logoPath === "string" ? (
         <Image src={logoPath} alt={`${label} logo`} width={22} height={22} />
       ) : (

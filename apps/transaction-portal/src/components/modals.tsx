@@ -99,8 +99,8 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
     return (
       <>
         You are connected to the account{" "}
-        <Text $design="primary">{shortenHex(address || "").toLowerCase()}</Text>,
-        but the transaction was initiated by{" "}
+        <Text $design="primary">{shortenHex(address || "").toLowerCase()}</Text>
+        , but the transaction was initiated by{" "}
         <Text $design="primary">
           {shortenHex(correctAddress.toLowerCase()).toLowerCase()}
         </Text>
@@ -144,7 +144,9 @@ export const WrongNetworkModal: React.FC<{
       return (
         <>
           You are connected to{" "}
-          <Text $design="primary">{capitalize(connectedChain.chainFamily)}</Text>{" "}
+          <Text $design="primary">
+            {capitalize(connectedChain.chainFamily)}
+          </Text>{" "}
           but attempting to perform an action on{" "}
           <Text $design="primary">{capitalize(targetChain.chainFamily)}</Text>
         </>
