@@ -27,7 +27,7 @@ export const DefaultView: React.FC<{
       return (
         <Text size="xxl" weight="semi-bold" textAlign="center">
           This seems{" "}
-          <Text design="warning" size="xxl" weight="semi-bold">
+          <Text $design="warning" size="xxl" weight="semi-bold">
             fishy...
           </Text>
         </Text>
@@ -77,13 +77,13 @@ export const DefaultView: React.FC<{
             </Button>
           </Row>
           <Row gap="md">
-            <Button size="sm" stretch design="secondary" onClick={onCancel}>
+            <Button size="sm" stretch $design="secondary" onClick={onCancel}>
               Cancel
             </Button>
             <Button
               size="sm"
               stretch
-              design="danger"
+              $design="danger"
               onClick={onContinue}
               disabled={!onContinue}
               title="Disabled while impersonating"
@@ -110,10 +110,10 @@ export const DefaultView: React.FC<{
           </Button>
         </Row>
         <Row gap="md">
-          <Button size="sm" stretch design="danger" onClick={onCancel}>
+          <Button size="sm" stretch $design="danger" onClick={onCancel}>
             Cancel
           </Button>
-          <Button size="sm" stretch design="secondary" onClick={onReport}>
+          <Button size="sm" stretch $design="secondary" onClick={onReport}>
             Report
           </Button>
         </Row>

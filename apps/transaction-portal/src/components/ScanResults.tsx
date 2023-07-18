@@ -450,7 +450,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             <Section $borderBottom>
               <Text
                 size="sm"
-                design="secondary"
+                $design="secondary"
                 style={{ marginBottom: "8px" }}
               >
                 To Address
@@ -473,7 +473,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
                   expectedStateChanges[0]?.rawInfo.kind
                 )}
               >
-                <Text size="sm" design="secondary">
+                <Text size="sm" $design="secondary">
                   Simulation Results
                 </Text>
               </SimulationResultsHeader>
@@ -492,7 +492,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             <Section $borderBottom>
               <Text
                 size="sm"
-                design="secondary"
+                $design="secondary"
                 style={{ marginBottom: "8px" }}
               >
                 Simulation Results
@@ -513,14 +513,14 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             <Section $borderBottom>
               <Text
                 size="sm"
-                design="secondary"
+                $design="secondary"
                 style={{ marginBottom: "8px" }}
               >
                 Message contents
               </Text>
               <Text
                 size="sm"
-                design="secondary"
+                $design="secondary"
                 style={{ whiteSpace: "pre-line", wordBreak: "break-word" }}
               >
                 {parsedMessageContent}
@@ -528,7 +528,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
             </Section>
           )}
           <Section>
-            <Text size="sm" design="secondary" style={{ marginBottom: "8px" }}>
+            <Text size="sm" $design="secondary" style={{ marginBottom: "8px" }}>
               Request by
             </Text>
             <LinkWithArrow href={dappUrl.origin}>

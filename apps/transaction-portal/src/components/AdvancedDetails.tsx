@@ -17,7 +17,7 @@ export const AdvancedDetails = memo<{ request: DappRequest }>(
             {showAdvancedDetails && <RequestJsonViewer request={request} />}
           </CardContent>
         </DynamicJsonViewerWrapper>
-        {showAdvancedDetails && <Divider margin="16px 0" />}
+        {showAdvancedDetails && <Divider $margin="16px 0" />}
         <CardContent>
           <ViewDetailsWrapper
             justifyContent="space-between"
@@ -27,7 +27,7 @@ export const AdvancedDetails = memo<{ request: DappRequest }>(
               setShowAdvancedDetails((prev) => !prev);
             }}
           >
-            <Text design="secondary" size="sm">
+            <Text $design="secondary" size="sm">
               {showAdvancedDetails ? "View less details" : "View more details"}
             </Text>
             <StyledArrowDownIcon expanded={showAdvancedDetails} />

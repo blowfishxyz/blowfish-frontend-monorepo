@@ -89,7 +89,7 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
       return (
         <>
           You are disconnected, but the transaction was initiated by{" "}
-          <Text design="primary">
+          <Text $design="primary">
             {shortenHex(correctAddress.toLowerCase()).toLowerCase()}
           </Text>
           . Change account to continue
@@ -99,9 +99,9 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
     return (
       <>
         You are connected to the account{" "}
-        <Text design="primary">{shortenHex(address || "").toLowerCase()}</Text>,
+        <Text $design="primary">{shortenHex(address || "").toLowerCase()}</Text>,
         but the transaction was initiated by{" "}
-        <Text design="primary">
+        <Text $design="primary">
           {shortenHex(correctAddress.toLowerCase()).toLowerCase()}
         </Text>
         . Change account to continue
@@ -132,7 +132,7 @@ export const WrongNetworkModal: React.FC<{
       return (
         <>
           You are connected to an unsupported network. Connect to{" "}
-          <Text design="primary">
+          <Text $design="primary">
             {capitalize(targetChain.chainFamily)}{" "}
             {capitalize(targetChain.chainNetwork)}
           </Text>{" "}
@@ -144,9 +144,9 @@ export const WrongNetworkModal: React.FC<{
       return (
         <>
           You are connected to{" "}
-          <Text design="primary">{capitalize(connectedChain.chainFamily)}</Text>{" "}
+          <Text $design="primary">{capitalize(connectedChain.chainFamily)}</Text>{" "}
           but attempting to perform an action on{" "}
-          <Text design="primary">{capitalize(targetChain.chainFamily)}</Text>
+          <Text $design="primary">{capitalize(targetChain.chainFamily)}</Text>
         </>
       );
     }
@@ -154,11 +154,11 @@ export const WrongNetworkModal: React.FC<{
     return (
       <>
         You are connected to
-        <Text design="primary">
+        <Text $design="primary">
           {capitalize(connectedChain.chainNetwork)}
         </Text>{" "}
         but attempting to perform an action on{" "}
-        <Text design="primary">{capitalize(targetChain.chainNetwork)}</Text> to
+        <Text $design="primary">{capitalize(targetChain.chainNetwork)}</Text> to
         continue
       </>
     );
@@ -377,7 +377,7 @@ export const TransactionRevertedModal: React.FC<{
           {error ? (
             <ContentToggle message="View error message">
               <WarningMessageWrapper>
-                <Text design="danger">{error}</Text>
+                <Text $design="danger">{error}</Text>
               </WarningMessageWrapper>
             </ContentToggle>
           ) : null}

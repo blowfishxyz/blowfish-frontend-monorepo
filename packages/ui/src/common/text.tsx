@@ -7,7 +7,7 @@ import { Colors, colors } from "../utils/colors";
 export type TextProps = {
   className?: string;
   style?: React.CSSProperties;
-  design?:
+  $design?:
     | "primary"
     | "secondary"
     | "danger"
@@ -117,33 +117,33 @@ function getWeightStyles({ weight }: TextProps) {
   `;
 }
 
-function getDesignStyles({ design }: TextProps) {
-  if (design === "danger") {
+function getDesignStyles({ $design }: TextProps) {
+  if ($design === "danger") {
     return css`
       color: ${(p) => p.theme.colors.danger};
     `;
   }
-  if (design === "success") {
+  if ($design === "success") {
     return css`
       color: ${(p) => p.theme.colors.success};
     `;
   }
-  if (design === "warning") {
+  if ($design === "warning") {
     return css`
       color: ${(p) => p.theme.severityColors.WARNING.backgroundV2};
     `;
   }
-  if (design === "secondary") {
+  if ($design === "secondary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundSecondary};
     `;
   }
-  if (design === "primary") {
+  if ($design === "primary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundPrimary};
     `;
   }
-  if (design === "tertiary") {
+  if ($design === "tertiary") {
     return css`
       color: ${(p) => p.theme.colors.backgroundPrimary};
     `;

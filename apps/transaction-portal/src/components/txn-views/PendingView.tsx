@@ -60,10 +60,10 @@ export const PendingView: React.FC<{
         </Text>
       </Column>
       <Column gap="md" flex={1} minWidth={140}>
-        <Button design="primary" stretch onClick={handleEtherscanClick}>
+        <Button $design="primary" stretch onClick={handleEtherscanClick}>
           {explorerText}
         </Button>
-        <Button design="secondary" stretch onClick={onReport}>
+        <Button $design="secondary" stretch onClick={onReport}>
           Report
         </Button>
       </Column>

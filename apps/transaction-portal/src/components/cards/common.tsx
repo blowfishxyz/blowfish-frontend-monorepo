@@ -38,14 +38,14 @@ const CardContent = styled.div`
 `;
 
 interface DividerProps {
-  margin?: string;
+  $margin?: string;
   orientation?: "horizontal" | "vertical";
 }
 
 const Divider = styled.div<DividerProps>`
   background-color: ${({ theme }) => theme.colors.foregroundPrimary};
   opacity: 0.05;
-  margin: ${({ margin }) => margin};
+  margin: ${({ $margin }) => $margin};
 
   ${({ orientation = "horizontal", margin }) =>
     orientation === "horizontal"
@@ -60,7 +60,7 @@ const Divider = styled.div<DividerProps>`
         `}
 `;
 
-const CardText = styled(Text).attrs({ size: "md", design: "primary" })`
+const CardText = styled(Text).attrs({ size: "md", $design: "primary" })`
   @media (${device.lg}) {
     font-size: 16px;
     line-height: 25.76px;

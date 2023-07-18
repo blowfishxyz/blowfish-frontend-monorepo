@@ -133,7 +133,7 @@ export function Modal({
               id={modal.descriptionId}
               textAlign="center"
               size="md"
-              design="secondary"
+              $design="secondary"
               maxWidth="90%"
             >
               {description}
@@ -142,18 +142,19 @@ export function Modal({
           <Column gap="sm" marginTop={action ? 20 : 36}>
             {action && <ModalActionButton action={action} close={modal.hide} />}
             {(!options?.blocking || onCancel) && (
-              <StyledModalButton
-                stretch
-                design={action && !priority ? "tertiary" : "primary"}
-                size={action && !priority ? "sm" : "md"}
-                onClick={() => {
-                  onCancel?.();
-                  modal.hide();
-                }}
-                priority={priority === "primary"}
-              >
-                {cancelText ? cancelText : "Cancel"}
-              </StyledModalButton>
+              <StyledModalButtonWrapper $priority={priority === "primary"}>
+                <Button
+                  stretch
+                  $design={action && !priority ? "tertiary" : "primary"}
+                  size={action && !priority ? "sm" : "md"}
+                  onClick={() => {
+                    onCancel?.();
+                    modal.hide();
+                  }}
+                >
+                  {cancelText ? cancelText : "Cancel"}
+                </Button>
+              </StyledModalButtonWrapper>
             )}
           </Column>
         </Column>
@@ -162,8 +163,8 @@ export function Modal({
   );
 }
 
-const StyledModalButton = styled(Button)<{ priority?: boolean }>`
-  order: ${({ priority }) => (priority ? -1 : 0)};
+const StyledModalButtonWrapper = styled(Column)<{ $priority?: boolean }>`
+  order: ${({ $priority }) => ($priority ? -1 : 0)};
 `;
 
 const ModalActionButton: React.FC<{
@@ -187,7 +188,7 @@ const ModalActionButton: React.FC<{
     <Button
       stretch
       loading={loading}
-      design={typeof action !== "function" ? action.design : undefined}
+      $design={typeof action !== "function" ? action.design : undefined}
       onClick={async () => {
         setLoading(true);
         try {

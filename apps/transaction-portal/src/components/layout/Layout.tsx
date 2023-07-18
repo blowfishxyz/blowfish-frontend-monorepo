@@ -22,11 +22,11 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
       paddingBottom={24}
       paddingTop={100}
       paddingInline={24}
-      severity={severity}
+      $severity={severity}
       alignItems="center"
     >
       <WrapperInner>
-        <HeaderWrapper severity={severity} alignItems="center">
+        <HeaderWrapper $severity={severity} alignItems="center">
           <Column maxWidth={1072} width="100%" padding={24} paddingBottom={12}>
             <ProtectHeader impersonatingAddress={impersonatingAddress} />
           </Column>
@@ -37,10 +37,10 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   );
 };
 
-const Wrapper = styled(Column)<{ severity: Severity }>`
+const Wrapper = styled(Column)<{ $severity: Severity }>`
   overflow-y: auto;
-  background-color: ${({ theme, severity }) =>
-    theme.severityColors[severity].backgroundV2};
+  background-color: ${({ theme, $severity }) =>
+    theme.severityColors[$severity].backgroundV2};
 `;
 
 const WrapperInner = styled(Column)`
@@ -49,12 +49,12 @@ const WrapperInner = styled(Column)`
   max-width: 1200px;
 `;
 
-const HeaderWrapper = styled(Column)<{ severity: Severity }>`
+const HeaderWrapper = styled(Column)<{ $severity: Severity }>`
   position: fixed;
   z-index: 2;
   top: 0;
   left: 0;
   right: 0;
-  background-color: ${({ theme, severity }) =>
-    theme.severityColors[severity].backgroundV2};
+  background-color: ${({ theme, $severity }) =>
+    theme.severityColors[$severity].backgroundV2};
 `;

@@ -249,7 +249,7 @@ export const SimulationErrorScreen: React.FC<SimulationErrorScreenProps> = ({
       {errorMessage && (
         <ContentToggle message="View error message">
           <WarningMessageWrapper>
-            <Text design="danger">{errorMessage}</Text>
+            <Text $design="danger">{errorMessage}</Text>
           </WarningMessageWrapper>
         </ContentToggle>
       )}

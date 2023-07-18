@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 
 interface DividerProps {
-  margin?: string;
+  $margin?: string;
   orientation?: "horizontal" | "vertical";
 }
 
@@ -10,7 +10,7 @@ export const Divider: React.FC<
 > = styled.div<DividerProps>`
   background-color: ${({ theme }) => theme.colors.foregroundPrimary};
   opacity: 0.05;
-  margin: ${({ margin }) => margin};
+  margin: ${({ $margin }) => $margin};
 
   ${({ orientation = "horizontal", margin }) =>
     orientation === "horizontal"

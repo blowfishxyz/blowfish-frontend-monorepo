@@ -6,7 +6,7 @@ import styled, { css } from "styled-components";
 export interface ChipProps {
   variant?: "primary";
   text?: React.ReactNode | string;
-  severity: Severity | undefined;
+  $severity: Severity | undefined;
   clickable?: boolean;
 }
 
@@ -27,12 +27,12 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
     cursor: pointer;
   }
 
-  ${({ theme, severity }) =>
-    severity &&
+  ${({ theme, $severity }) =>
+    $severity &&
     css`
-      background-color: ${severity === "INFO"
+      background-color: ${$severity === "INFO"
         ? theme.colors.success
-        : theme.severityColors[severity].backgroundV2};
+        : theme.severityColors[$severity].backgroundV2};
     `}
 `;
 
@@ -44,9 +44,9 @@ const SeverityText = styled(Text).attrs({ size: "md" })`
   color: ${({ theme }) => theme.colors.backgroundPrimary};
 `;
 
-export const Chip = ({ severity, ...rest }: ChipProps) => {
+export const Chip = ({ $severity, ...rest }: ChipProps) => {
   const getSeverityText = () => {
-    switch (severity) {
+    switch ($severity) {
       case "WARNING":
         return (
           <Text size="md">
@@ -69,7 +69,7 @@ export const Chip = ({ severity, ...rest }: ChipProps) => {
   };
 
   return (
-    <ChipContainer severity={severity} {...rest}>
+    <ChipContainer $severity={$severity} {...rest}>
       {getSeverityText()}
     </ChipContainer>
   );

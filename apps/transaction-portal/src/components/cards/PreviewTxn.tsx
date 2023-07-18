@@ -151,12 +151,12 @@ const PreviewCard: FC<PreviewCardProps> = ({
       <CardContent>
         <Row justifyContent="space-between" alignItems="center">
           <Text size="lg">{title}</Text>
-          <Chip severity={severity} />
+          <Chip $severity={severity} />
         </Row>
       </CardContent>
-      <Divider margin="16px 0" />
+      <Divider $margin="16px 0" />
       <CardContent>{children}</CardContent>
-      <Divider margin="24px 0 0" />
+      <Divider $margin="24px 0 0" />
       {txnData.protocol && (
         <>
           <CardContent>
@@ -214,7 +214,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
             </CardText>
           </Row>
         </StyledColumn>
-        {/* <Divider orientation="vertical" margin="0 36px" />
+        {/* <Divider orientation="vertical" $margin="0 36px" />
       <StyledColumn gap="sm">
         <SectionHeading>Contract</SectionHeading>
         <CardText>
@@ -228,7 +228,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
         </CardText>
       </StyledColumn> */}
       </StyledCardContent>
-      <Divider margin="0 0 16px" />
+      <Divider $margin="0 0 16px" />
       {advancedDetails}
     </CardWrapper>
     <ConfirmTxn
@@ -297,7 +297,7 @@ type MsgTextProps = { $expanded?: boolean };
 
 const SignatureSimulatioMsgText = styled(Text).attrs({
   size: "sm",
-  design: "primary",
+  $design: "primary",
 })<MsgTextProps>`
   display: -webkit-box;
   -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
@@ -312,7 +312,7 @@ const ShowMoreButtonWrapper = styled.div`
 `;
 
 const ShowMoreButton = styled(Button).attrs({
-  design: "tertiary",
+  $design: "tertiary",
   size: "sm",
 })`
   height: 15px;
@@ -348,8 +348,8 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
       </SignatureSimulatioMsgText>
 
       <ShowMoreButtonWrapper>
-        <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
-          <Text size="xs" design="secondary">
+        <ShowMoreButton stretch $design="tertiary" onClick={handleShowMore}>
+          <Text size="xs" $design="secondary">
             {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
           </Text>
         </ShowMoreButton>

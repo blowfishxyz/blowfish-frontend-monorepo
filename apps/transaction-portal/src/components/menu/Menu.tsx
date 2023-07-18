@@ -38,7 +38,7 @@ const MenuTitle = styled(Text).attrs({ weight: "semi-bold" })`
 
 const MenuDescription = styled(Text).attrs({
   size: "sm",
-  design: "secondary",
+  $design: "secondary",
 })``;
 
 const DropdownItemWrapper = styled(Link)`
