@@ -29,7 +29,7 @@ export const blowfishProxyHandler = async (req: Request, res: Response) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": "abce6ac8-afb4-4be6-aa1b-ea654ed357c4",
+        "X-Api-Key": BLOWFISH_API_KEY,
         "X-Api-Version": apiVersion,
       },
       body: JSON.stringify(body),

@@ -2,12 +2,18 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import { ChainIcon } from "connectkit";
 import { Chain } from "wagmi";
-import { Column, Row, Text } from "@blowfishxyz/ui";
+import {
+  Column,
+  Row,
+  Text,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@blowfishxyz/ui";
 import { PlusIcon } from "@blowfish/protect-ui/icons";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { copyToClipboard, shortenEnsName } from "~utils/utils";
 import { shortenHex } from "@blowfish/utils/hex";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./Tooltip";
 
 const UserWalletConnectContainer = styled(Row)`
   background: ${({ theme }) => theme.colors.backgroundPrimary};

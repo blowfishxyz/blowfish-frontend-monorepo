@@ -17,7 +17,7 @@ import {
   isSignTypedDataRequest,
   isTransactionRequest,
 } from "@blowfish/utils/types";
-import { containsPunycode, createValidURL } from "~utils/utils";
+import { containsPunycode, createValidURL, getProtocol } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~hooks/useChainMetadata";
@@ -202,6 +202,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     data: scanResults?.simulationResults?.expectedStateChanges,
     dappUrl,
     account: request.userAccount,
+    protocol: getProtocol(scanResults?.simulationResults),
   };
 
   return (

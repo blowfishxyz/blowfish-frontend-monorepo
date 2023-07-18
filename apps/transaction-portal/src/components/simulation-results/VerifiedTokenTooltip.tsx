@@ -3,18 +3,12 @@ import {
   EvmExpectedStateChange,
   EvmNativeAsset,
 } from "@blowfishxyz/api";
-import { Text } from "@blowfishxyz/ui";
+import { Text, Tooltip, TooltipContent, TooltipTrigger } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { VerifiedIcon } from "@blowfish/protect-ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import React, { memo } from "react";
 import styled from "styled-components";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "~components/common/Tooltip";
 
 export const VerifiedTokenTooltip: React.FC<
   React.PropsWithChildren<{

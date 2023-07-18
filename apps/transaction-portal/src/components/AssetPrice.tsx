@@ -1,14 +1,14 @@
 import { EvmExpectedStateChange } from "@blowfishxyz/api";
-import { Row, Text } from "@blowfishxyz/ui";
-import { InfoIcon } from "@blowfish/protect-ui/icons";
-import Decimal from "decimal.js";
-import styled from "styled-components";
-
 import {
+  Row,
+  Text,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "~components/common/Tooltip";
+} from "@blowfishxyz/ui";
+import { InfoIcon } from "@blowfish/protect-ui/icons";
+import Decimal from "decimal.js";
+import styled from "styled-components";
 import { U256_MAX_VALUE } from "~constants";
 
 const AssetPriceWrapper = styled(Row)`
