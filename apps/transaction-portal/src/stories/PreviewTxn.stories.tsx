@@ -38,7 +38,7 @@ TransactionPreview.args = {
             console.log("clicked");
           }}
         >
-          <Text $design="secondary" size="sm">
+          <Text design="secondary" size="sm">
             View more details
           </Text>
           <StyledArrowDownIcon />
@@ -85,7 +85,7 @@ SignaturePreview.args = {
             console.log("clicked");
           }}
         >
-          <Text $design="secondary" size="sm">
+          <Text design="secondary" size="sm">
             View more details
           </Text>
           <StyledArrowDownIcon />

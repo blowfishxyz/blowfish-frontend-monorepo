@@ -103,7 +103,7 @@ const Impersonator: React.FC = () => {
     <ImpersonatorWrapper>
       <Row>
         {currentImpersonationWallet ? (
-          <Text weight="semi-bold" $design="success">
+          <Text weight="semi-bold" design="success">
             Impersonating:{" "}
             {isENS(currentImpersonationWallet)
               ? currentImpersonationWallet

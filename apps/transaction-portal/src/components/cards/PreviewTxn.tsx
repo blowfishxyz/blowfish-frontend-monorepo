@@ -297,7 +297,7 @@ type MsgTextProps = { $expanded?: boolean };
 
 const SignatureSimulatioMsgText = styled(Text).attrs({
   size: "sm",
-  $design: "primary",
+  design: "primary",
 })<MsgTextProps>`
   display: -webkit-box;
   -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
@@ -312,7 +312,7 @@ const ShowMoreButtonWrapper = styled.div`
 `;
 
 const ShowMoreButton = styled(Button).attrs({
-  $design: "tertiary",
+  design: "tertiary",
   size: "sm",
 })`
   height: 15px;
@@ -348,8 +348,8 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
       </SignatureSimulatioMsgText>
 
       <ShowMoreButtonWrapper>
-        <ShowMoreButton stretch $design="tertiary" onClick={handleShowMore}>
-          <Text size="xs" $design="secondary">
+        <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
+          <Text size="xs" design="secondary">
             {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
           </Text>
         </ShowMoreButton>

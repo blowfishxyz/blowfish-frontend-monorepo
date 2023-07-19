@@ -111,7 +111,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
       {userAccount && (
         <HeaderLeft>
           <StyledWalletIcon />
-          <Text style={{ marginLeft: "9px" }} $design="secondary" size="sm">
+          <Text style={{ marginLeft: "9px" }} design="secondary" size="sm">
             {shortenHex(userAccount)}
           </Text>
         </HeaderLeft>

@@ -5,7 +5,7 @@ const meta: Meta<TextProps> = {
   title: "Text",
   component: Text,
   argTypes: {
-    $design: {
+    design: {
       control: {
         type: "select",
         options: ["primary", "secondary", "danger", "success"],

@@ -207,7 +207,7 @@ const InfoContainer = styled.div``;
 
 const ExtensionVersion = styled(Text).attrs({
   size: "xs",
-  $design: "secondary",
+  design: "secondary",
 })``;
 
 const StatusIndicator = ({
@@ -275,7 +275,7 @@ const Popup: React.FC = () => {
           <Text size="xxl" weight="semi-bold">
             You’re protected!
           </Text>
-          <Text size="md" $design="secondary">
+          <Text size="md" design="secondary">
             Blowfish is actively scanning. To invoke it...
           </Text>
         </Column>
@@ -314,12 +314,12 @@ const Popup: React.FC = () => {
                 {!showDurationSelector && (
                   <InfoContainer>
                     {isScanPaused && (
-                      <Text $design="tertiary" size="lg">
+                      <Text design="tertiary" size="lg">
                         Click to start scanning
                       </Text>
                     )}
                     {!isScanPaused && (
-                      <Text $design="tertiary" size="lg">
+                      <Text design="tertiary" size="lg">
                         Click to pause scanning
                       </Text>
                     )}

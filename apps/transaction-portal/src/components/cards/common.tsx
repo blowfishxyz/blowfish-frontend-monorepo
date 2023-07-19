@@ -60,7 +60,7 @@ const Divider = styled.div<DividerProps>`
         `}
 `;
 
-const CardText = styled(Text).attrs({ size: "md", $design: "primary" })`
+const CardText = styled(Text).attrs({ size: "md", design: "primary" })`
   @media (${device.lg}) {
     font-size: 16px;
     line-height: 25.76px;

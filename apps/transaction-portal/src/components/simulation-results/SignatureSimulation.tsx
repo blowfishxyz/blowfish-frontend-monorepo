@@ -11,7 +11,7 @@ const SignatureSimulationMsgWrapper = styled(Column)`
 
 const SignatureSimulationAction = styled(Text).attrs({
   size: "md",
-  $design: "primary",
+  design: "primary",
 })``;
 
 const SignatureSimulationMsg = styled(Row)`
@@ -20,7 +20,7 @@ const SignatureSimulationMsg = styled(Row)`
 
 const SignatureSimulatioMsgText = styled(Text).attrs({
   size: "sm",
-  $design: "primary",
+  design: "primary",
 })`
   display: -webkit-box;
   -webkit-line-clamp: 2;

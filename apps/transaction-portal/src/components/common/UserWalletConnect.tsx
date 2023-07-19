@@ -87,7 +87,7 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
     if (!isConnected && isConnecting) {
       return (
         <UserWalletAddress>
-          <Text size="sm" $design="primary">
+          <Text size="sm" design="primary">
             Connecting...
           </Text>
         </UserWalletAddress>
@@ -97,10 +97,10 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
     if (!isConnected && !isConnecting) {
       return (
         <UserWalletAddress>
-          <Text size="sm" $design="primary">
+          <Text size="sm" design="primary">
             Connect
           </Text>
-          <Text size="xxs" $design="secondary">
+          <Text size="xxs" design="secondary">
             No wallet linked
           </Text>
         </UserWalletAddress>
@@ -109,14 +109,14 @@ export const UserWalletConnect: React.FC<UserWalletProps> = ({
 
     return (
       <UserWalletAddress>
-        <Text size="sm" $design="primary">
+        <Text size="sm" design="primary">
           {ensName
             ? shortenEnsName(ensName, false)
             : address && shortenHex(address)}
         </Text>
         <Tooltip open={open}>
           <TooltipTrigger onClick={handleTooltipTriggerClick}>
-            <Text size="xxs" $design="secondary">
+            <Text size="xxs" design="secondary">
               {address && shortenHex(address)}
             </Text>
           </TooltipTrigger>

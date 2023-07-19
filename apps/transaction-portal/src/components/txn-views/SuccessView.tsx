@@ -81,7 +81,7 @@ export const SuccessView: React.FC<{
       </Column>
       <Column gap="md" flex={1} minWidth={200}>
         <Row gap="md">
-          <Button $design="primary" stretch onClick={handleEtherscanClick}>
+          <Button design="primary" stretch onClick={handleEtherscanClick}>
             {explorerText}
           </Button>
         </Row>
@@ -89,14 +89,14 @@ export const SuccessView: React.FC<{
           <Button
             size="sm"
             stretch
-            $design="secondary"
+            design="secondary"
             onClick={() => {
               window.close();
             }}
           >
             Close
           </Button>
-          <Button size="sm" $design="secondary" stretch onClick={onReport}>
+          <Button size="sm" design="secondary" stretch onClick={onReport}>
             Report
           </Button>
         </Row>

@@ -75,7 +75,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({
     <Wrapper style={style} className={className}>
       <StyledLoadingAnimation animate={animate} />
       <Text>Simulating {type}...</Text>
-      <Text size="sm" $design="secondary">
+      <Text size="sm" design="secondary">
         {LOADING_STATES[type][stateTextIndex]}
       </Text>
       <FixedBottomLink

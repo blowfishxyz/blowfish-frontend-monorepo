@@ -50,7 +50,7 @@ const ConnectWalletView: React.FC = () => {
       <Text size="xxl" weight="semi-bold" marginBottom={10}>
         Secure your assets
       </Text>
-      <Text size="lg" $design="secondary" marginBottom={28}>
+      <Text size="lg" design="secondary" marginBottom={28}>
         Start using Blowfish to prevent hacks & scams.
       </Text>
       <Column gap="lg" marginBottom={28}>
@@ -71,7 +71,7 @@ const ConnectWalletView: React.FC = () => {
         </Column>
       ) : (
         <>
-          <Text size="md" $design="secondary" marginBottom={28}>
+          <Text size="md" design="secondary" marginBottom={28}>
             Connect a wallet to continue...
           </Text>
           <ButtonsGrid>

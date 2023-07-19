@@ -16,7 +16,7 @@ interface DataRowProps {
 
 export const DataRowComponent: React.FC<DataRowProps> = ({ label, value }) => (
   <Row justifyContent="space-between" marginBottom={8}>
-    <Text $design="secondary" size="xs">
+    <Text design="secondary" size="xs">
       {label}
     </Text>
     <Text size="xs">{value}</Text>
@@ -56,7 +56,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           </Text>
           {verified && <Icon variant="verified" size={19} />}
         </Row>
-        <Text $design="secondary" size="xs">
+        <Text design="secondary" size="xs">
           {symbol}
         </Text>
       </Column>

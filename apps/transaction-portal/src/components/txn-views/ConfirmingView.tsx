@@ -34,10 +34,10 @@ export const ConfirmingView: React.FC<{
         </Text>
       </Column>
       <Column gap="md" flex={1} minWidth={120}>
-        <Button $design="secondary" stretch loading>
+        <Button design="secondary" stretch loading>
           Try again
         </Button>
-        <Button $design="danger" stretch onClick={onCancel}>
+        <Button design="danger" stretch onClick={onCancel}>
           Cancel
         </Button>
       </Column>

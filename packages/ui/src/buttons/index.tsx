@@ -2,6 +2,7 @@ import React from "react";
 import { css, styled } from "styled-components";
 import { Spinner } from "~/common/spinner";
 import { Column } from "~/common/layout";
+import { StyledBaseButton } from "~/common/base";
 
 const resetStyles = css`
   border: none;
@@ -106,17 +107,17 @@ const dangerDesign = css`
   }
 `;
 
-function getDesignStyles({ $design }: ButtonProps) {
-  if ($design === "secondary") {
+function getDesignStyles({ design }: ButtonProps) {
+  if (design === "secondary") {
     return secondaryDesign;
   }
-  if ($design === "primary") {
+  if (design === "primary") {
     return primaryDesign;
   }
-  if ($design === "tertiary") {
+  if (design === "tertiary") {
     return tertiaryDesign;
   }
-  if ($design === "danger") {
+  if (design === "danger") {
     return dangerDesign;
   }
 
@@ -169,13 +170,13 @@ function getPositioningStyles({ $stretch }: { $stretch?: boolean }) {
 }
 
 type ButtonProps = {
-  $design?: "primary" | "secondary" | "tertiary" | "danger";
+  design?: "primary" | "secondary" | "tertiary" | "danger";
   size?: "sm" | "md";
   stretch?: boolean;
   loading?: boolean;
 };
 
-const ButtonComponent = styled.button<
+const ButtonComponent = styled(StyledBaseButton)<
   Omit<ButtonProps, "loading" | "stretch"> & {
     $loading?: boolean;
     $stretch?: boolean;
@@ -200,9 +201,9 @@ export const Button = React.forwardRef<
         <Column position="absolute" absoluteCentered="both">
           <Spinner
             design={
-              props.$design === "primary" || props.$design === undefined
+              props.design === "primary" || props.design === undefined
                 ? "contrast"
-                : props.$design === "danger"
+                : props.design === "danger"
                 ? "danger"
                 : undefined
             }

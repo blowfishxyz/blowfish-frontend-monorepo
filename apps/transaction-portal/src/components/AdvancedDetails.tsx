@@ -27,7 +27,7 @@ export const AdvancedDetails = memo<{ request: DappRequest }>(
               setShowAdvancedDetails((prev) => !prev);
             }}
           >
-            <Text $design="secondary" size="sm">
+            <Text design="secondary" size="sm">
               {showAdvancedDetails ? "View less details" : "View more details"}
             </Text>
             <StyledArrowDownIcon expanded={showAdvancedDetails} />

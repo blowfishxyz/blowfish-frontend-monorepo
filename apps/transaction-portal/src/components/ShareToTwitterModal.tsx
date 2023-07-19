@@ -85,7 +85,7 @@ const ShareToTwitterModal: React.FC<ShareToTwitterModalProps> = ({
             }}
           >
             <input type="checkbox" checked={shouldNotShowModal} />
-            <Text size="sm" $design="secondary">
+            <Text size="sm" design="secondary">
               Don&apos;t show this again
             </Text>
           </CheckboxWrapper>
@@ -103,7 +103,7 @@ const ShareToTwitterModal: React.FC<ShareToTwitterModalProps> = ({
             <Text size="lg" weight="semi-bold">
               Danger avoided!
             </Text>
-            <Text size="sm" $design="secondary">
+            <Text size="sm" design="secondary">
               {shareMessage}
             </Text>
           </Column>

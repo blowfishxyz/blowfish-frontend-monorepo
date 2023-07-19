@@ -41,7 +41,7 @@ export const ContentToggle: React.FC<ContentToggleProps> = ({
         style={style}
         className={className}
       >
-        <Text $design="secondary">{message}</Text>
+        <Text design="secondary">{message}</Text>
         <ExpandIcon expanded={showAdvancedDetails} />
       </ToggleButton>
       {showAdvancedDetails && children}

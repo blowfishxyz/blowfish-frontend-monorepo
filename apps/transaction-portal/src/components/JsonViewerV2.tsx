@@ -87,7 +87,7 @@ const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
 
         return (
           <DetailsRow key={`details-${key}`}>
-            <StyledTextSmall capitalize $design="secondary">
+            <StyledTextSmall capitalize design="secondary">
               {key}
             </StyledTextSmall>
             <StyledTextSmall isValue>{displayValue}</StyledTextSmall>

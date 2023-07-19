@@ -179,9 +179,9 @@ const TokenFooter: React.FC<{
   if (isCurrencyStateChange(rawInfo)) {
     return (
       <Row gap="md">
-        <Text size="sm" $design="secondary">
+        <Text size="sm" design="secondary">
           Asset:{" "}
-          <Text size="sm" $design="primary">
+          <Text size="sm" design="primary">
             {rawInfo.data.asset.name}
           </Text>
         </Text>
@@ -200,15 +200,15 @@ const TokenFooter: React.FC<{
     return (
       <Row gap="md">
         {typeStr ? (
-          <Text size="sm" $design="secondary">
+          <Text size="sm" design="secondary">
             Type:{" "}
-            <Text size="sm" $design="primary">
+            <Text size="sm" design="primary">
               {typeStr}
             </Text>
           </Text>
         ) : null}
         {price ? (
-          <Text size="sm" $design="secondary">
+          <Text size="sm" design="secondary">
             Floor price: <AssetPrice totalValue={price} />
           </Text>
         ) : null}
