@@ -25,6 +25,8 @@ import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import { AdvancedDetails } from "./AdvancedDetails";
 import ShareToTwitterModal from "./ShareToTwitterModal";
 import { useLocalStorage } from "react-use";
+import { Modal } from "./common/Modal";
+import { BlowfishInvertedWarningIcon } from "@blowfish/protect-ui/icons";
 
 export type UIWarning = {
   message: string;
@@ -211,6 +213,13 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         <ShareToTwitterModal
           scammerAddress={scammerAddress}
           rejectTxn={() => reject()}
+        />
+      )}
+      {impersonatingAddress === request.userAccount && (
+        <Modal
+          title="Impersonation Failed"
+          content={<BlowfishInvertedWarningIcon />}
+          description="The impersonation address matches the actual address. Be sure to refresh the Dapp page after impersonating."
         />
       )}
       <PreviewTxn
