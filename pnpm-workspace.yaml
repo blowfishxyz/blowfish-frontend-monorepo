@@ -6,3 +6,5 @@ packages:
   # exclude packages that are inside test directories
   - '!**/e2e/**'
   - '!**/__tests__/**'
+  # exclude the backend since it is using yarn
+  - '!apps/extension-backend'
