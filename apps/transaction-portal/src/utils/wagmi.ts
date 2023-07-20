@@ -7,14 +7,19 @@ import {
   optimismGoerli,
   optimism,
 } from "@wagmi/core/chains";
-import { alchemyProvider } from "@wagmi/core/providers/alchemy";
 import { publicProvider } from "@wagmi/core/providers/public";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { InjectedConnector } from "wagmi/connectors/injected";
 import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
 import { configureChains, createClient, useConnect, useNetwork } from "wagmi";
 
-import { ALCHEMY_API_KEY } from "../config";
+import {
+  ALCHEMY_API_KEY,
+  ALCHEMY_API_KEY_ARBITRUM,
+  ALCHEMY_API_KEY_OPTIMISM,
+  ALCHEMY_API_KEY_POLYGON,
+} from "../config";
 import { EthereumIcon } from "@blowfish/protect-ui/icons";
 
 export const useConnectedChainId = () => {
@@ -79,13 +84,38 @@ export const getConnectorMetadata = ({
   return { id: "unknown", label: "Unknown", logoPath: undefined };
 };
 
+const getRpcUrl = (chainId: number, protocol: "https" | "wss") => {
+  switch (chainId) {
+    case 1:
+      return `${protocol}://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_API_KEY}`;
+    case 137:
+      return `${protocol}://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_POLYGON}`;
+    case 10:
+      return `${protocol}://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_OPTIMISM}`;
+    case 42161:
+      return `${protocol}://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY_ARBITRUM}`;
+    default:
+      return undefined;
+  }
+};
+
 export const createWagmiClient = (v2Enabled: boolean) => {
   const { chains, provider } = configureChains(
     [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism],
     [
-      alchemyProvider({
-        apiKey: ALCHEMY_API_KEY,
+      jsonRpcProvider({
         priority: 0,
+        rpc: (chain) => {
+          const http = getRpcUrl(chain.id, "https");
+          const webSocket = getRpcUrl(chain.id, "wss");
+          if (http && webSocket) {
+            return {
+              http,
+              webSocket,
+            };
+          }
+          return null;
+        },
       }),
       publicProvider({ priority: 1 }),
     ]

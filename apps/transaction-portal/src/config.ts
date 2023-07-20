@@ -4,6 +4,12 @@ export const CHROMIMUM_INSTALL_EXTENSION_URL = process.env
   .NEXT_PUBLIC_CHROMIMUM_INSTALL_EXTENSION_URL as string;
 export const ALCHEMY_API_KEY = process.env
   .NEXT_PUBLIC_ALCHEMY_API_KEY as string;
+export const ALCHEMY_API_KEY_OPTIMISM = process.env
+  .NEXT_PUBLIC_ALCHEMY_API_KEY_OPTIMISM as string;
+export const ALCHEMY_API_KEY_POLYGON = process.env
+  .NEXT_PUBLIC_ALCHEMY_API_KEY_POLYGON as string;
+export const ALCHEMY_API_KEY_ARBITRUM = process.env
+  .NEXT_PUBLIC_ALCHEMY_API_KEY_ARBITRUM as string;
 export const BLOWFISH_V2_ENABLED =
   process.env.NEXT_PUBLIC_BLOWFISH_V2_ENABLED === "true";
 export const BLOWFISH_PORTAL_API_BASE_URL = process.env
