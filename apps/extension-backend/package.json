@@ -7,13 +7,13 @@
   "private": true,
   "scripts": {
     "dev": "nodemon --inspect src/app.ts",
-    "build": "pnpm tsc",
+    "build": "yarn tsc",
     "lint:prettier": "prettier --write \"src/**/*.{ts,tsx}\"",
     "lint:prettier:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "lint:eslint": "eslint \"src/**/*.{ts,tsx}\"",
-    "lint": "pnpm lint:eslint && pnpm lint:prettier:check",
+    "lint": "yarn lint:eslint && yarn lint:prettier:check",
     "typecheck": "tsc --noEmit",
-    "test": "pnpm jest --passWithNoTests"
+    "test": "yarn jest --passWithNoTests"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
@@ -32,7 +32,7 @@
     "ts-jest": "^29.0.5",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.4",
-    "@blowfish/tsconfig": "workspace:*"
+    "@tsconfig/node16": "^1.0.3"
   },
   "dependencies": {
     "body-parser": "^1.20.1",
