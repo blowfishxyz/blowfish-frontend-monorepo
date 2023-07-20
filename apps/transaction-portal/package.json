@@ -17,7 +17,7 @@
     "build-storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json build-storybook"
   },
   "dependencies": {
-    "@blowfish/api-client": "workspace:*",
+    "@blowfishxyz/api-client": "workspace:*",
     "@blowfish/hooks": "workspace:*",
     "@blowfishxyz/ui": "workspace:*",
     "@blowfish/protect-ui": "workspace:*",

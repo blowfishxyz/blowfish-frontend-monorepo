@@ -10,7 +10,7 @@ import {
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
   NftStateChange,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api-client";
 import Decimal from "decimal.js";
 
 export const U256_MAX_VALUE = new Decimal(2).pow(256).sub(1);
@@ -55,14 +55,24 @@ export const copyToClipboard = (address: string | undefined) => {
 export const isNftStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is NftStateChange => {
-  return rawInfo.kind.includes("ERC721") || rawInfo.kind.includes("ERC1155");
+  return (
+    rawInfo.kind === "ERC721_TRANSFER" ||
+    rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC721_APPROVAL_FOR_ALL" ||
+    rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER" ||
+    rawInfo.kind === "ERC1155_APPROVAL_FOR_ALL"
+  );
 };
 
 export const isCurrencyStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is CurrencyStateChange => {
   return (
-    rawInfo.kind.includes("ERC20") || rawInfo.kind.includes("NATIVE_ASSET")
+    rawInfo.kind === "ERC20_APPROVAL" ||
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER" ||
+    rawInfo.kind === "ERC20_PERMIT"
   );
 };
 
@@ -145,10 +155,6 @@ export const getAssetPricePerToken = (
 ): number | null => {
   if ("asset" in rawInfo.data) {
     return rawInfo.data.asset.price?.dollarValuePerToken || null;
-  }
-
-  if ("assetPrice" in rawInfo.data) {
-    return rawInfo.data.assetPrice?.dollarValuePerToken || null;
   }
 
   return null;

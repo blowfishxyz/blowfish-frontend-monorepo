@@ -5,6 +5,7 @@ export default defineConfig((options) => ({
   outDir: "build",
   dts: true,
   sourcemap: true,
+  treeshake: true,
   skipNodeModulesBundle: true,
   minify: !options.watch,
   entry: {

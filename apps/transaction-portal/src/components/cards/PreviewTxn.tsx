@@ -27,10 +27,10 @@ import { Severity } from "@blowfish/utils/types";
 import {
   ChainFamily,
   ChainNetwork,
-  EvmExpectedStateChangesInner,
+  EvmTransactionExpectedStateChange,
   EvmMessageExpectedStateChange,
   EvmProtocol,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
@@ -43,7 +43,7 @@ export type TxnSimulationDataType = {
   message: string | undefined;
   data:
     | EvmMessageExpectedStateChange[]
-    | EvmExpectedStateChangesInner[]
+    | EvmTransactionExpectedStateChange[]
     | undefined;
   protocol?: EvmProtocol | null;
 };

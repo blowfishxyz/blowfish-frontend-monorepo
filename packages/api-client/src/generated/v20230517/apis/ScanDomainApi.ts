@@ -20,10 +20,9 @@ import type {
   ObjectWithDomainsPropertyOfTypeArray,
   ScanDomain200ResponseInner,
   Unauthorized,
-} from '../models';
+} from '../models/index';
 
 export interface ScanDomainRequest {
-    xApiKey: string;
     xApiVersion: string;
     contentType?: string;
     objectWithDomainsPropertyOfTypeArray?: ObjectWithDomainsPropertyOfTypeArray;
@@ -39,10 +38,6 @@ export class ScanDomainApi extends runtime.BaseAPI {
      * Domain
      */
     async scanDomainRaw(requestParameters: ScanDomainRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ScanDomain200ResponseInner>>> {
-        if (requestParameters.xApiKey === null || requestParameters.xApiKey === undefined) {
-            throw new runtime.RequiredError('xApiKey','Required parameter requestParameters.xApiKey was null or undefined when calling scanDomain.');
-        }
-
         if (requestParameters.xApiVersion === null || requestParameters.xApiVersion === undefined) {
             throw new runtime.RequiredError('xApiVersion','Required parameter requestParameters.xApiVersion was null or undefined when calling scanDomain.');
         }
@@ -52,10 +47,6 @@ export class ScanDomainApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters.xApiKey !== undefined && requestParameters.xApiKey !== null) {
-            headerParameters['X-Api-Key'] = String(requestParameters.xApiKey);
-        }
 
         if (requestParameters.xApiVersion !== undefined && requestParameters.xApiVersion !== null) {
             headerParameters['X-Api-Version'] = String(requestParameters.xApiVersion);

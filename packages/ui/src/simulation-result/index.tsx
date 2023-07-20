@@ -19,7 +19,7 @@ import {
   ChainFamily,
   ChainNetwork,
   EvmExpectedStateChange,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api-client";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
@@ -162,7 +162,7 @@ const TokenTooltipContent: React.FC<{
 
     return (
       <PreviewNfts
-        name={rawInfo.data.name}
+        name={rawInfo.data.asset.name}
         type="ERC-721"
         imageUrl={rawInfo.data.metadata?.rawImageUrl}
         tokenId={rawInfo.data.tokenId}
@@ -235,21 +235,20 @@ function useAssetLinkFromRawInfo(
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
-      address: rawInfo.data.contract.address,
+      address: rawInfo.data.asset.address,
     });
   } else if (isApprovalForAllStateChange(rawInfo)) {
-    console.log({ rawInfo });
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
-      address: rawInfo.data.contract.address,
-      isApprovalForAllStateChange: rawInfo.data.contract.address,
+      address: rawInfo.data.asset.address,
+      isApprovalForAllStateChange: rawInfo.data.asset.address,
     });
   } else if (isNftStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,
       chainNetwork,
-      address: rawInfo.data.contract.address,
+      address: rawInfo.data.asset.address,
       nftTokenId: rawInfo.data.tokenId,
     });
   }

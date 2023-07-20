@@ -7,7 +7,7 @@ import {
   EvmMessageScanResult,
   EvmTransactionScanResult,
   WarningInnerKindEnum,
-} from "@blowfish/api-client";
+} from "@blowfishxyz/api-client";
 import {
   DappRequest,
   Message,

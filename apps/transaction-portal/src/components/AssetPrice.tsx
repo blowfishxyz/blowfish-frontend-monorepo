@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfish/api-client";
+import { EvmExpectedStateChange } from "@blowfishxyz/api-client";
 import {
   Row,
   Text,
@@ -40,8 +40,6 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
   const pricePerToken =
     "asset" in rawInfo.data
       ? rawInfo.data.asset.price?.dollarValuePerToken
-      : "assetPrice" in rawInfo.data
-      ? rawInfo.data.assetPrice?.dollarValuePerToken
       : null;
 
   if (!pricePerToken) return null;

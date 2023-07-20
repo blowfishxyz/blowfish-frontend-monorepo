@@ -1,20 +1,26 @@
 {
-  "name": "@blowfish/api-client",
+  "name": "@blowfishxyz/api-client",
   "version": "0.0.1",
   "license": "MIT",
   "main": "./build/index.ts",
   "module": "./build/index.mjs",
   "types": "./build/index.d.ts",
-  "private": true,
+  "files": [
+    "build",
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
+    "typecheck": "tsc --noEmit",
     "prepare": "pnpm run build",
-    "schema": "openapi-generator-cli generate --generator-key v1.0"
+    "generate": "openapi-generator-cli generate",
+    "schema:convert": "ts-node ./src/scripts/convert-schema.ts ./src/original-schemas ./src/schemas"
   },
   "devDependencies": {
-    "@openapitools/openapi-generator-cli": "^2.6.0",
     "@blowfish/tsconfig": "*",
+    "@openapitools/openapi-generator-cli": "^2.6.0",
     "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
@@ -22,8 +28,10 @@
     "eslint": "8.35.0",
     "jest": "^29.5.0",
     "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
     "tsup": "^6.6.3",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "yaml": "^2.3.1"
   },
   "exports": {
     ".": {

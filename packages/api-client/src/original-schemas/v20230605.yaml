@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: API reference
-  version: "2023-05-17"
+  version: "2023-06-05"
   description: "The Blowfish API reference specification"
   contact:
     name: Blowfish API Support
@@ -89,6 +89,58 @@ paths:
                 - txObjects
                 - userAccount
                 - metadata
+            examples:
+              native_transfer:
+                summary: Native Transfer
+                value:
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  metadata:
+                    origin: https://uniswap.org
+                  txObjects:
+                    - from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                      to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                      value: "0x10000000000000"
+              erc20_approval:
+                summary: ERC20 Approval
+                value:
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  metadata:
+                    origin: https://uniswap.org
+                  txObjects:
+                    - from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                      to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                      data: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+              specific_block_number:
+                summary: With block number
+                value:
+                  simulatorConfig:
+                    blockNumber: "17427982"
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  metadata:
+                    origin: https://uniswap.org
+                  txObjects:
+                    - from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                      to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                      data: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+              state_overrides:
+                summary: With state overrides
+                value:
+                  simulatorConfig:
+                    stateOverrides:
+                      nativeBalances:
+                        - address: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                          value: "0x10000000000000000000"
+                      storage:
+                        - address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                          slot: "1"
+                          value: "4"
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  metadata:
+                    origin: https://uniswap.org
+                  txObjects:
+                    - from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                      to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                      value: "0x100000000000000000"
       responses:
         "200":
           description: Successful response
@@ -116,15 +168,18 @@ paths:
                         required:
                           - error
                           - expectedStateChanges
+                          - userAccount
                         properties:
+                          userAccount:
+                            $ref: "#/components/schemas/EvmUserAccount"
                           expectedStateChanges:
-                            $ref: "#/components/schemas/EvmExpectedStateChanges"
+                            $ref: "#/components/schemas/EvmByAccountExpectedStateChanges"
                           error:
                             description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
                             oneOf:
                               - $ref: "#/components/schemas/EvmSimulationFailedError"
                               - $ref: "#/components/schemas/EvmUnknownError"
-                            nullable: true
+                              - type: "null"
                             discriminator:
                               propertyName: kind
                               mapping:
@@ -138,6 +193,9 @@ paths:
                             - error
                             - gas
                             - protocol
+                            - logs
+                            - decodedLogs
+                            - decodedCalldata
                           properties:
                             error:
                               description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
@@ -146,7 +204,7 @@ paths:
                                 - $ref: "#/components/schemas/EvmTransactionError"
                                 - $ref: "#/components/schemas/EvmSimulationFailedError"
                                 - $ref: "#/components/schemas/EvmUnknownError"
-                              nullable: true
+                                - type: "null"
                               discriminator:
                                 propertyName: kind
                                 mapping:
@@ -167,138 +225,12 @@ paths:
                                   nullable: true
                             protocol:
                               $ref: "#/components/schemas/EvmProtocol"
-
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
-  /ethereum/v0/mainnet/scan/transaction:
-    post:
-      tags:
-        - Scan transaction
-      summary: EVM
-      operationId: scan-transaction-evm
-      description: |
-        Scan an EVM transaction in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txObject:
-                  $ref: "#/components/schemas/EvmTxData"
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-              required:
-                - txObject
-                - userAccount
-                - metadata
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - action
-                  - warnings
-                  - simulationResults
-                properties:
-                  action:
-                    $ref: "#/components/schemas/ActionEnum"
-                  warnings:
-                    $ref: "#/components/schemas/Warning"
-                  simulationResults:
-                    type: object
-                    required:
-                      - expectedStateChanges
-                      - error
-                      - gas
-                      - protocol
-                    properties:
-                      expectedStateChanges:
-                        $ref: "#/components/schemas/EvmExpectedStateChanges"
-                      error:
-                        description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
-                        oneOf:
-                          - $ref: "#/components/schemas/EvmTransactionRevertedError"
-                          - $ref: "#/components/schemas/EvmTransactionError"
-                          - $ref: "#/components/schemas/EvmSimulationFailedError"
-                          - $ref: "#/components/schemas/EvmUnknownError"
-                        nullable: true
-                        discriminator:
-                          propertyName: kind
-                          mapping:
-                            TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
-                            TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-                            SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                            UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                      gas:
-                        type: object
-                        description: An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
-                        required:
-                          - gasLimit
-                        properties:
-                          gasLimit:
-                            type: string
-                            example: "46220"
-                            description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
-                            nullable: true
-                      protocol:
-                        $ref: "#/components/schemas/EvmProtocol"
+                            logs:
+                              $ref: "#/components/schemas/EvmLogs"
+                            decodedLogs:
+                              $ref: "#/components/schemas/EvmDecodedLogs"
+                            decodedCalldata:
+                              $ref: "#/components/schemas/EvmDecodedCalldata"
               examples:
                 erc20_swap:
                   summary: ERC20 Swap ETH for DAI
@@ -475,7 +407,7 @@ paths:
                     action: WARN
                     warnings:
                       - kind: UNLIMITED_ALLOWANCE_TO_NFTS
-                        message: You are allowing this website to withdraw funds from your account in the future
+                        message: You are allowing this website to withdraw funds from your account in the future.
                         severity: WARNING
                     simulationResults:
                       error: null
@@ -593,7 +525,7 @@ paths:
                     action: WARN
                     warnings:
                       - kind: UNLIMITED_ALLOWANCE_TO_NFTS
-                        message: "You are allowing this website to withdraw funds from your account in the future"
+                        message: "You are allowing this website to withdraw funds from your account in the future."
                         severity: WARNING
                     simulationResults:
                       error: null
@@ -619,6 +551,459 @@ paths:
                                 source: Simplehash
                                 updatedAt: 1679331222
                                 dollarValuePerToken: 232.43
+                      protocol: null
+
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /ethereum/v0/mainnet/scan/transaction:
+    post:
+      tags:
+        - Scan transaction
+      summary: EVM
+      operationId: scan-transaction-evm
+      description: |
+        [DEPRECATED] Use Scan transactions endpoint instead.
+        https://docs.blowfish.xyz/reference/scan-transactions-evm
+        [Sunset] 31.12.2023
+        Scan an EVM transaction in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
+        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
+        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
+        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
+        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
+        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
+        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
+        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+      deprecated: true
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: X-Api-Key
+          in: header
+          description: API Key
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiKeyHeader"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                txObject:
+                  $ref: "#/components/schemas/EvmTxData"
+                metadata:
+                  $ref: "#/components/schemas/RequestMetadata"
+                userAccount:
+                  $ref: "#/components/schemas/EvmUserAccount"
+              required:
+                - txObject
+                - userAccount
+                - metadata
+            examples:
+              native_transfer:
+                summary: Native Transfer
+                value:
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  metadata:
+                    origin: https://uniswap.org
+                  txObject:
+                    from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                    to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                    value: "0x10000000000000"
+              erc20_approval:
+                summary: ERC20 Approval
+                value:
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  metadata:
+                    origin: https://uniswap.org
+                  txObject:
+                    from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                    to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                    data: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - action
+                  - warnings
+                  - simulationResults
+                properties:
+                  action:
+                    $ref: "#/components/schemas/ActionEnum"
+                  warnings:
+                    $ref: "#/components/schemas/Warning"
+                  simulationResults:
+                    type: object
+                    required:
+                      - expectedStateChanges
+                      - error
+                      - gas
+                      - protocol
+                    properties:
+                      expectedStateChanges:
+                        $ref: "#/components/schemas/EvmExpectedStateChanges"
+                      error:
+                        description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+                        oneOf:
+                          - $ref: "#/components/schemas/EvmTransactionRevertedError"
+                          - $ref: "#/components/schemas/EvmTransactionError"
+                          - $ref: "#/components/schemas/EvmSimulationFailedError"
+                          - $ref: "#/components/schemas/EvmUnknownError"
+                          - type: "null"
+                        discriminator:
+                          propertyName: kind
+                          mapping:
+                            TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
+                            TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
+                            SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
+                            UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
+                      gas:
+                        type: object
+                        description: An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
+                        required:
+                          - gasLimit
+                        properties:
+                          gasLimit:
+                            type: string
+                            example: "46220"
+                            description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+                            nullable: true
+                      protocol:
+                        $ref: "#/components/schemas/EvmProtocol"
+              examples:
+                erc20_swap:
+                  summary: ERC20 Swap ETH for DAI
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: Receive 1530.81307 DAI
+                          rawInfo:
+                            kind: ERC20_TRANSFER
+                            data:
+                              amount:
+                                after: "557039306766411381864245"
+                                before: "555508493698012633714742"
+                              asset:
+                                address: "0x6b175474e89094c44da98b954eedeac495271d0f"
+                                symbol: DAI
+                                name: Dai Stablecoin
+                                decimals: 18
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - ZERION
+                                  - ONE_INCH
+                                  - UNISWAP
+                                  - MY_CRYPTO_API
+                                  - KLEROS_TOKENS
+                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f.png"
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 0.99
+                        - humanReadableDiff: Send 1 ETH
+                          rawInfo:
+                            kind: NATIVE_ASSET_TRANSFER
+                            data:
+                              amount:
+                                after: "1182957389356504134754"
+                                before: "1183957389356504134754"
+                              asset:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                symbol: ETH
+                                name: Ether
+                                decimals: 18
+                                verified: true
+                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1681958792
+                                  dollarValuePerToken: 1945.92
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: Uniswap
+                        description: A decentralized token exchange
+                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attEQcQmNq7dbhjwB.png"
+                        websiteUrl: "https://uniswap.org/"
+                erc20_approval:
+                  summary: ERC20 Approval
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: Approve to transfer up to 1000 USDT
+                          rawInfo:
+                            kind: ERC20_APPROVAL
+                            data:
+                              amount:
+                                after: "1000000000"
+                                before: "0"
+                              asset:
+                                address: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+                                name: Tether USD
+                                decimals: 6
+                                lists:
+                                  - COINGECKO
+                                  - ZERION
+                                  - ONE_INCH
+                                  - UNISWAP
+                                  - MY_CRYPTO_API
+                                  - KLEROS_TOKENS
+                                symbol: USDT
+                                verified: true
+                                imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 0.99
+                              owner:
+                                address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                                kind: ACCOUNT
+                              spender:
+                                address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
+                                kind: ACCOUNT
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: Tether USD
+                        description: An ERC-20 token contract
+                        imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png"
+                        websiteUrl: "https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/"
+                erc721_buy:
+                  summary: Buy an ERC721 NFT with ETH
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: "Receive PudgyPenguins #7238"
+                          rawInfo:
+                            kind: ERC721_TRANSFER
+                            data:
+                              amount:
+                                after: "1"
+                                before: "0"
+                              metadata:
+                                rawImageUrl: https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png
+                              tokenId: "7238"
+                              asset:
+                                address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8"
+                                name: PudgyPenguins
+                                symbol: PPG
+                                price:
+                                  source: Simplehash
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 594.99
+                        - humanReadableDiff: Send 3.181 ETH
+                          rawInfo:
+                            kind: NATIVE_ASSET_TRANSFER
+                            data:
+                              amount:
+                                after: "998426264937289938488"
+                                before: "1001607264937289938488"
+                              asset:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                symbol: ETH
+                                name: Ether
+                                decimals: 18
+                                verified: true
+                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1681958792
+                                  dollarValuePerToken: 1945.92
+                      protocol: null
+                erc721_approve_for_all:
+                  summary: ERC721 Approve For All
+                  value:
+                    action: WARN
+                    warnings:
+                      - kind: UNLIMITED_ALLOWANCE_TO_NFTS
+                        message: You are allowing this website to withdraw funds from your account in the future.
+                        severity: WARNING
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: Approve to transfer all your BoredApeYachtClub
+                          rawInfo:
+                            kind: ERC721_APPROVAL_FOR_ALL
+                            data:
+                              amount:
+                                after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+                                before: "0"
+                              owner:
+                                address: "0x38191ca1307ebf67ca1a7caf5346dbd91d882ca6"
+                                kind: ACCOUNT
+                              spender:
+                                address: "0x1e0049783f008a0085193e00003d00cd54003c71"
+                                kind: ACCOUNT
+                              asset:
+                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
+                                symbol: BAYC
+                                name: BoredApeYachtClub
+                                price:
+                                  source: Simplehash
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 7865.43
+                      protocol: null
+                erc721_approve:
+                  summary: ERC721 Approve
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: Approve to transfer BoredApeYachtClub #6603
+                          rawInfo:
+                            kind: ERC721_APPROVAL
+                            data:
+                              amount:
+                                after: "1"
+                                before: "0"
+                              metadata:
+                                rawImageUrl: https://cdn.simplehash.com/assets/beca5f0f88c267276318edd8a6019b6b47327f42efd0ba22a3835e77f27732e5.png
+                              owner:
+                                address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
+                                kind: ACCOUNT
+                              spender:
+                                address: "0x1e0049783f008a0085193e00003d00cd54003c71"
+                                kind: ACCOUNT
+                              tokenId: "6603"
+                              asset:
+                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
+                                name: BoredApeYachtClub
+                                symbol: BAYC
+                                price:
+                                  source: Simplehash
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 7865.43
+                      protocol: null
+                erc1155_buy:
+                  summary: Buy an ERC1155 token with ETH
+                  value:
+                    action: NONE
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: Send 0.033 ETH
+                          rawInfo:
+                            kind: NATIVE_ASSET_TRANSFER
+                            data:
+                              amount:
+                                after: "71057321770366572"
+                                before: "104057321770366572"
+                              asset:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                symbol: ETH
+                                name: Ether
+                                decimals: 18
+                                verified: true
+                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1681958792
+                                  dollarValuePerToken: 1945.92
+                        - humanReadableDiff: Receive Corgi #6734
+                          rawInfo:
+                            kind: ERC1155_TRANSFER
+                            data:
+                              amount:
+                                after: "1"
+                                before: "0"
+                              metadata:
+                                rawImageUrl: "https://cdn.simplehash.com/assets/4bedd702e7ea8c4a9d04d83302138fa5b63d0cca0f06df9b87bdb09cff253b88.png"
+                              tokenId: "13014975"
+                              asset:
+                                address: "0x51e613727fdd2e0b91b51c3e5427e9440a7957e4"
+                                price:
+                                  source: Simplehash
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 232.43
+                      protocol: null
+                    warnings: []
+                erc1155_approve_for_all:
+                  summary: ERC1155 approve for all
+                  value:
+                    action: WARN
+                    warnings:
+                      - kind: UNLIMITED_ALLOWANCE_TO_NFTS
+                        message: "You are allowing this website to withdraw funds from your account in the future."
+                        severity: WARNING
+                    simulationResults:
+                      error: null
+                      gas: { gasLimit: null }
+                      expectedStateChanges:
+                        - humanReadableDiff: "Approve to transfer all your Sandbox's ASSETs"
+                          rawInfo:
+                            kind: ERC1155_APPROVAL_FOR_ALL
+                            data:
+                              amount:
+                                after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+                                before: "0"
+                              owner:
+                                address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
+                                kind: ACCOUNT
+                              spender:
+                                address: "0x00000000006c3852cbef3e08e8df289169ede581"
+                                kind: ACCOUNT
+                              asset:
+                                address: "0xa342f5d851e866e18ff98f351f2c6637f4478db5"
+                                price:
+                                  source: Simplehash
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 232.43
                       protocol: null
 
         "400":
@@ -924,6 +1309,7 @@ paths:
                     required:
                       - expectedStateChanges
                       - error
+                      - protocol
                     nullable: true
                     properties:
                       expectedStateChanges:
@@ -954,6 +1340,7 @@ paths:
                                   NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
                                   ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
                                   ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
                       error:
                         description: A nullable error object which includes the parsed simulation error encountered (if any)
                         nullable: true
@@ -981,6 +1368,8 @@ paths:
                             type: string
                             description: Human readable & translated string that can be directly exposed to end-users
                             example: Unsupported order type, unable to simulate message
+                      protocol:
+                        $ref: "#/components/schemas/EvmProtocol"
               examples:
                 erc20_permit:
                   summary: ERC20 Permit
@@ -993,12 +1382,6 @@ paths:
                           rawInfo:
                             kind: ERC20_PERMIT
                             data:
-                              contract:
-                                kind: ACCOUNT
-                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-                              name: USD Coin
-                              symbol: USDC
-                              decimals: 6
                               owner:
                                 kind: ACCOUNT
                                 address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
@@ -1028,6 +1411,12 @@ paths:
                                 imageUrl: >-
                                   https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png
                       error: null
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: USDCoin
+                        description: "An ERC-20 token contract"
+                        imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                        websiteUrl: "https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                 seaport_order:
                   summary: Opensea Seaport Order Selling NFT for ETH
                   value:
@@ -1041,9 +1430,6 @@ paths:
                               amount:
                                 after: "157873734139299463313"
                                 before: "63823734139299463313"
-                              contract:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                kind: ACCOUNT
                               asset:
                                 address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                                 symbol: ETH
@@ -1062,19 +1448,24 @@ paths:
                               amount:
                                 after: "52"
                                 before: "53"
-                              contract:
-                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                kind: ACCOUNT
                               metadata:
                                 rawImageUrl: ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP
-                              name: BoredApeYachtClub
-                              symbol: BAYC
                               tokenId: "1726"
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1679331222
-                                dollarValuePerToken: 3434.34
+                              asset:
+                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
+                                name: BoredApeYachtClub
+                                symbol: BAYC
+                                price:
+                                  source: Simplehash
+                                  updatedAt: 1679331222
+                                  dollarValuePerToken: 3434.34
                             kind: ERC721_TRANSFER
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: Seaport
+                        description: "A marketplace protocol for buying and selling NFTs developed by Opensea"
+                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attefMtpxsPIa5Emm.png"
+                        websiteUrl: "https://github.com/ProjectOpenSea/seaport"
                     warnings: []
                 unlimited_permit:
                   summary: Unlimited amount permit message
@@ -1106,12 +1497,7 @@ paths:
                                   source: Coingecko
                                   updatedAt: 1679331222
                                   dollarValuePerToken: 34.32
-                              contract:
-                                address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
-                                kind: ACCOUNT
                               deadline: 1667556263
-                              decimals: 18
-                              name: Uniswap
                               nonce: "0"
                               owner:
                                 address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
@@ -1119,11 +1505,16 @@ paths:
                               spender:
                                 address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
                                 kind: ACCOUNT
-                              symbol: UNI
                             kind: ERC20_PERMIT
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: Uniswap
+                        description: "An ERC-20 token contract"
+                        imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png"
+                        websiteUrl: "https://etherscan.io/token/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
                     warnings:
                       - kind: PERMIT_UNLIMITED_ALLOWANCE
-                        message: You are allowing this dApp to withdraw funds from your account in the future
+                        message: You are allowing this dApp to withdraw funds from your account in the future.
                         severity: WARNING
         "400":
           description: Bad request
@@ -1177,6 +1568,7 @@ paths:
           description: Simulate the transactions even if they are already expired. Do not use in production. This can be helpful in understanding historical transactions.
           schema:
             type: string
+            example: "true"
             enum:
               - "true"
               - "false"
@@ -1345,6 +1737,7 @@ paths:
         1. Regularly update the blocklist metadata from the `/v0/domains/blocklist` endpoint.
           - In browser extensions, set up a timer to update the blocklist every 2-5 minutes.
           - In mobile apps, update the blocklist each time the user opens the app and every 2-5 minutes while the user is using the app.
+          - New values of `recentlyAdded` and `recentlyRemoved` should be stored after each update, regardless of whether the bloom filter has changed.
         2. During each update, check if the app has previously downloaded a bloom filter with the hash `bloomFilter.hash`. If not, download it from `bloomFilter.url`.
           - Since the bloom filter can be up to 1MB in size, make sure you never re-download the same bloom filter. Identical bloom filters always have the same URL and the same hash.
           - Store the blocklist metadata (`recentlyAdded`, `recentlyRemoved`), bloom filter hash, and downloaded bloom filter.
@@ -1356,12 +1749,13 @@ paths:
 
         ```js
         // Regular updates
-        import { fetchBloomFilter, fetchDomainBlocklist } from '@blowfishxyz/blocklist';
+        import { fetchDomainBlocklist, fetchDomainBlocklistBloomFilter } from '@blowfishxyz/blocklist';
 
         const blocklist = await fetchDomainBlocklist(apiConfig);
+        [...] // save blocklist.recentlyAdded and blocklist.recentlyRemoved to a local database
         const storedHash = [...]; // fetch it from your storage
         if (storedHash != blocklist.bloomFilter.hash) {
-            const bloomFilter = await fetchBloomFilter(blocklist.bloomFilter.url);
+            const bloomFilter = await fetchDomainBlocklistBloomFilter(blocklist.bloomFilter.url);
             [...] // save bloomFilter to a local database
             [...] // save bloomFilter.hash or blocklist.bloomFilter.hash to a local database
         }
@@ -1376,7 +1770,7 @@ paths:
         const action = scanDomain(
             bloomFilter,
             recentlyAdded,
-            recentlyRemoved, 
+            recentlyRemoved,
             "https://example.com/"
         );
 
@@ -1472,7 +1866,7 @@ paths:
           description: |
             A successful API response will include a link to download the bloom filter, which contains all blocked domains and any domains that were recently added to or removed from the filter.
 
-            It's important to note that the recentlyAdded and recentlyRemoved fields take precedence over the bloom filter result. 
+            It's important to note that the recentlyAdded and recentlyRemoved fields take precedence over the bloom filter result.
             The bloom filter is updated every 24 hours. If new domains are added or removed, they will be listed in the recentlyAdded and recentlyRemoved fields until the bloom filter is updated.
             The bloom filter file, located at bloomFilter.url, is guaranteed to be less than 1 MB
           content:
@@ -1596,7 +1990,7 @@ paths:
                     status:
                       type: string
                       description: |
-                        The status of our domain analysis. Since our analysis can take some time, rather than block the API request until we've finished, we schedule the evaluation and return a response immediately. 
+                        The status of our domain analysis. Since our analysis can take some time, rather than block the API request until we've finished, we schedule the evaluation and return a response immediately.
 
                         PROCESSING -> The analysis is under way
                         UNPROCESSABLE -> We were unable to analyze the domain. This usually means that the website was unreachable or did not include valid HTML
@@ -1929,6 +2323,222 @@ components:
           type: number
           format: float
           example: 0.2784
+    EvmDecodedLogs:
+      type: array
+      description: Decoded events emmited by this transaction
+      items:
+        $ref: "#/components/schemas/EvmDecodedLog"
+    EvmDecodedLog:
+      type: object
+      description: Decoded event. Null if not decoded
+      nullable: true
+      required:
+        - name
+        - signature
+        - params
+      properties:
+        name:
+          type: string
+          description: Event name
+          example: Approval
+        signature:
+          type: string
+          description: Hash of event signature. First topic
+          example: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+        params:
+          type: array
+          items:
+            $ref: "#/components/schemas/EvmDecodedLogParam"
+    EvmDecodedLogParam:
+      type: object
+      required:
+        - name
+        - paramType
+        - value
+      properties:
+        name:
+          type: string
+          description: Parameter name
+          examples:
+            - from
+            - to
+            - spender
+            - value
+        paramType:
+          type: string
+          description: Parameter type
+          examples:
+            - address
+            - uint256
+            - bool
+        value:
+          $ref: "#/components/schemas/EvmAbiSerializedToken"
+    EvmDecodedCalldata:
+      description: |
+        Parsed `data` field of the transaction using the contract's ABI. We don't recommend displaying this field to users when contract isn't trusted
+        (for example, using `protocol` field), as scammers can verify ABI with arbitrary and misleading function names (e.g. `withdraw`, when it's actually a transfer).
+        Can be `null` if ABI is not available for contract or we failed to parse it.
+      oneOf:
+        - $ref: "#/components/schemas/EvmDecodedCalldataFunction"
+        - $ref: "#/components/schemas/EvmDecodedCalldataProxiedFunction"
+        - type: "null"
+      discriminator:
+        propertyName: kind
+        mapping:
+          FUNCTION: "#/components/schemas/EvmDecodedCalldataFunction"
+          PROXIED_FUNCTION: "#/components/schemas/EvmDecodedCalldataProxiedFunction"
+    EvmDecodedCalldataFunction:
+      type: object
+      description: |
+        Direct function call in a contract.
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          enum:
+            - FUNCTION
+          example: FUNCTION
+        data:
+          type: object
+          required:
+            - contract
+            - functionName
+            - arguments
+          properties:
+            contract:
+              type: string
+              description: Contract address from `to` field that was called
+              example: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            functionName:
+              type: string
+              description: Name of the called function in the contract
+              example: "transfer"
+            arguments:
+              type: array
+              items:
+                $ref: "#/components/schemas/EvmDecodedCalldataArgument"
+    EvmDecodedCalldataProxiedFunction:
+      type: object
+      description: |
+        Function call in a contract that went through a fallback on a proxy contract.
+        We include function name and arguments for the final implementation contract.
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          enum:
+            - PROXIED_FUNCTION
+          example: PROXIED_FUNCTION
+        data:
+          type: object
+          required:
+            - contract
+            - proxiedImplementation
+            - functionName
+            - arguments
+          properties:
+            contract:
+              type: string
+              description: Original proxy contract address from `to` field
+              example: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            proxiedImplementation:
+              type: string
+              description: Implementation contract address that was called after going through the proxy and contains the parsed function
+              example: "0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf"
+            functionName:
+              type: string
+              description: Name of the called function in the contract
+              example: "transfer"
+            arguments:
+              type: array
+              items:
+                $ref: "#/components/schemas/EvmDecodedCalldataArgument"
+    EvmDecodedCalldataArgument:
+      type: object
+      description: |
+        Argument of a function call.
+      required:
+        - name
+        - value
+        - paramType
+      properties:
+        name:
+          type: string
+          description: Name of the argument
+          example: "to"
+        value:
+          $ref: "#/components/schemas/EvmAbiSerializedToken"
+        paramType:
+          type: string
+          description: Type of the argument
+          example: "address"
+    EvmAbiSerializedToken:
+      description: |
+        Solidity token value. Addresses are serialized with `0x` prefix. Bytes and numbers are serialized as hex with `0x` prefix.
+        Serialized as a list of tokens if parameter is an array.
+      examples:
+        - "256"
+        - "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+        - [
+            "0x0f2d719407fdbeff09d87557abb7232601fd9f29",
+            "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          ]
+        - [
+            ["0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"],
+            ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"],
+          ]
+        - "false"
+      oneOf:
+        - type: array
+          examples:
+            - [
+                "0x0f2d719407fdbeff09d87557abb7232601fd9f29",
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              ]
+            - [
+                ["0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"],
+                ["0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"],
+              ]
+          items:
+            oneOf:
+              - type: string
+              - type: array
+                items:
+                  type: string
+        - type: string
+          examples:
+            - "256"
+            - "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+            - "false"
+    EvmLogs:
+      type: array
+      description: Events emmited by this transaction
+      items:
+        $ref: "#/components/schemas/EvmLog"
+    EvmLog:
+      type: object
+      properties:
+        address:
+          type: string
+          example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+        topics:
+          type: array
+          items:
+            type: string
+            example: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+        data:
+          type: string
+          example: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+      required:
+        - address
+        - topics
+        - data
     EvmProtocol:
       type: object
       description: Human-readable protocol information. Note that a single protocol can consist of multiple contracts.
@@ -2025,40 +2635,49 @@ components:
           type: string
           description: String representation of Ether/Matic (in Wei) to send with the transaction
           example: "0"
+    EvmExpectedStateChange:
+      type: object
+      required:
+        - humanReadableDiff
+        - rawInfo
+      properties:
+        humanReadableDiff:
+          type: string
+          example: Send 10000 USDT
+          description: Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI if they encounter a `rawInfo.kind` they don't recognize.
+        rawInfo:
+          description: A machine-parsable state change object describing the state change.
+          oneOf:
+            - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
+            - $ref: "#/components/schemas/EvmStateChangeErc20Approval"
+            - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+            - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
+            - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
+            - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+            - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
+            - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+            - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
+          discriminator:
+            propertyName: kind
+            mapping:
+              ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
+              ERC20_APPROVAL: "#/components/schemas/EvmStateChangeErc20Approval"
+              NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+              ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
+              ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
+              ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+              ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
+              ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+              ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
     EvmExpectedStateChanges:
       type: array
       items:
-        type: object
-        required:
-          - humanReadableDiff
-          - rawInfo
-        properties:
-          humanReadableDiff:
-            type: string
-            example: Send 10000 USDT
-            description: Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI if they encounter a `rawInfo.kind` they don't recognize.
-          rawInfo:
-            description: A machine-parsable state change object describing the state change.
-            oneOf:
-              - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
-              - $ref: "#/components/schemas/EvmStateChangeErc20Approval"
-              - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-              - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
-              - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
-              - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
-              - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
-              - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-            discriminator:
-              propertyName: kind
-              mapping:
-                ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
-                ERC20_APPROVAL: "#/components/schemas/EvmStateChangeErc20Approval"
-                NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
-                ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
-                ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
-                ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
-                ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+        $ref: "#/components/schemas/EvmExpectedStateChange"
+    EvmByAccountExpectedStateChanges:
+      type: object
+      description: A mapping of account to the state changes to expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the account's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
+      additionalProperties:
+        $ref: "#/components/schemas/EvmExpectedStateChanges"
     EvmUserAccount:
       type: string
       description: A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
@@ -2118,7 +2737,45 @@ components:
           type: string
           example: "15000000000"
           description: The value of the amount before the state change occurs
-    EvmAsset:
+    EvmErc1155Asset:
+      type: object
+      required:
+        - address
+        - name
+        - price
+      properties:
+        address:
+          $ref: "#/components/schemas/EvmContractAddress"
+        name:
+          $ref: "#/components/schemas/EvmName"
+          nullable: true
+        price:
+          description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
+          $ref: "#/components/schemas/AssetPrice"
+          nullable: true
+    EvmErc721Asset:
+      type: object
+      required:
+        - address
+        - symbol
+        - name
+        - price
+      properties:
+        address:
+          $ref: "#/components/schemas/EvmContractAddress"
+        symbol:
+          description: Some NFTs don't have a symbol/name as it's not required in a standard
+          $ref: "#/components/schemas/EvmSymbol"
+          nullable: true
+        name:
+          description: Some NFTs don't have a symbol/name as it's not required in a standard
+          $ref: "#/components/schemas/EvmName"
+          nullable: true
+        price:
+          description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
+          $ref: "#/components/schemas/AssetPrice"
+          nullable: true
+    EvmErc20Asset:
       type: object
       required:
         - address
@@ -2131,9 +2788,7 @@ components:
         - price
       properties:
         address:
-          type: string
-          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-          description: The contract address of the asset
+          $ref: "#/components/schemas/EvmContractAddress"
         symbol:
           type: string
           example: USDT
@@ -2163,6 +2818,7 @@ components:
               - KLEROS_TOKENS
               - POLYGON_POPULAR_TOKENS
               - EVM_NATIVE
+              - BLOWFISH
             example: COINGECKO
           description: The trusted token lists on which this asset is listed
         imageUrl:
@@ -2186,9 +2842,7 @@ components:
         - price
       properties:
         address:
-          type: string
-          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-          description: The contract address of the asset
+          $ref: "#/components/schemas/EvmContractAddress"
         symbol:
           type: string
           example: USDT
@@ -2216,6 +2870,10 @@ components:
           description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
           $ref: "#/components/schemas/AssetPrice"
           nullable: true
+    EvmContractAddress:
+      type: string
+      example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      description: The contract address of the asset
     EvmSignTypedData:
       type: object
       properties:
@@ -2362,7 +3020,6 @@ components:
         data:
           type: object
           required:
-            - contract
             - owner
             - spender
             - amount
@@ -2370,8 +3027,6 @@ components:
             - deadline
             - asset
           properties:
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             owner:
               description: The owner of the ERC20 tokens
               $ref: "#/components/schemas/EvmAddressInfo"
@@ -2392,7 +3047,7 @@ components:
               example: 1667556263
               nullable: true
             asset:
-              $ref: "#/components/schemas/EvmAsset"
+              $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
     EvmStateChangeErc20Transfer:
       type: object
@@ -2409,16 +3064,13 @@ components:
         data:
           type: object
           required:
-            - contract
             - amount
             - asset
           properties:
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             amount:
               $ref: "#/components/schemas/EvmAmount"
             asset:
-              $ref: "#/components/schemas/EvmAsset"
+              $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
     EvmStateChangeErc20Approval:
       type: object
@@ -2435,14 +3087,11 @@ components:
         data:
           type: object
           required:
-            - contract
             - owner
             - spender
             - amount
             - asset
           properties:
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             owner:
               description: The owner of the ERC20 tokens
               $ref: "#/components/schemas/EvmAddressInfo"
@@ -2452,7 +3101,7 @@ components:
             amount:
               $ref: "#/components/schemas/EvmAmount"
             asset:
-              $ref: "#/components/schemas/EvmAsset"
+              $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
     EvmStateChangeNativeAssetTransfer:
       type: object
@@ -2469,12 +3118,9 @@ components:
         data:
           type: object
           required:
-            - contract
             - amount
             - asset
           properties:
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             amount:
               $ref: "#/components/schemas/EvmAmount"
             asset:
@@ -2496,28 +3142,20 @@ components:
           type: object
           required:
             - amount
-            - contract
             - metadata
-            - name
-            - symbol
             - tokenId
-            - assetPrice
+            - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            contract:
+            counterparty:
               $ref: "#/components/schemas/EvmAddressInfo"
             metadata:
               $ref: "#/components/schemas/EvmNftMetadata"
-            name:
-              $ref: "#/components/schemas/EvmName"
-            symbol:
-              $ref: "#/components/schemas/EvmSymbol"
             tokenId:
               $ref: "#/components/schemas/EvmErc721TokenId"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
+            asset:
+              $ref: "#/components/schemas/EvmErc721Asset"
           description: Data associated with the state change
     EvmStateChangeErc721Approval:
       type: object
@@ -2535,34 +3173,24 @@ components:
           type: object
           required:
             - amount
-            - contract
             - metadata
-            - name
             - owner
             - spender
-            - symbol
             - tokenId
-            - assetPrice
+            - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             metadata:
               $ref: "#/components/schemas/EvmNftMetadata"
-            name:
-              $ref: "#/components/schemas/EvmName"
             owner:
               $ref: "#/components/schemas/EvmAddressInfo"
             spender:
               $ref: "#/components/schemas/EvmAddressInfo"
-            symbol:
-              $ref: "#/components/schemas/EvmSymbol"
             tokenId:
               $ref: "#/components/schemas/EvmErc721TokenId"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
+            asset:
+              $ref: "#/components/schemas/EvmErc721Asset"
           description: Data associated with the state change
     EvmStateChangeErc721ApprovalForAll:
       type: object
@@ -2580,28 +3208,18 @@ components:
           type: object
           required:
             - amount
-            - contract
-            - name
             - owner
             - spender
-            - symbol
-            - assetPrice
+            - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            name:
-              $ref: "#/components/schemas/EvmName"
             owner:
               $ref: "#/components/schemas/EvmAddressInfo"
             spender:
               $ref: "#/components/schemas/EvmAddressInfo"
-            symbol:
-              $ref: "#/components/schemas/EvmSymbol"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
+            asset:
+              $ref: "#/components/schemas/EvmErc721Asset"
           description: Data associated with the state change
     EvmStateChangeErc1155Transfer:
       type: object
@@ -2619,22 +3237,18 @@ components:
           type: object
           required:
             - amount
-            - contract
             - metadata
             - tokenId
-            - assetPrice
+            - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             metadata:
               $ref: "#/components/schemas/EvmNftMetadata"
             tokenId:
               $ref: "#/components/schemas/EvmErc1155TokenId"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
+            asset:
+              $ref: "#/components/schemas/EvmErc1155Asset"
           description: Data associated with the state change
     EvmStateChangeErc1155ApprovalForAll:
       type: object
@@ -2652,24 +3266,74 @@ components:
           type: object
           required:
             - amount
-            - contract
             - owner
             - spender
-            - assetPrice
+            - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
             owner:
               description: The owner of the ERC1155 tokens
               $ref: "#/components/schemas/EvmAddressInfo"
             spender:
               description: The entity that will be allowed to transfer all the owner's tokens of the given ERC1155 contract if the approval is granted
               $ref: "#/components/schemas/EvmAddressInfo"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
+            asset:
+              $ref: "#/components/schemas/EvmErc1155Asset"
+          description: Data associated with the state change
+    EvmStateChangeAnyNftFromCollectionTransfer:
+      type: object
+      description: A "wildcard" NFT transfer representing the transfer of any NFT from a given collection (eg. Opensea collection offers)
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ANY_NFT_FROM_COLLECTION_TRANSFER]
+          example: ANY_NFT_FROM_COLLECTION_TRANSFER
+        data:
+          type: object
+          required:
+            - amount
+            - asset
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              description: Represents NFT collection as a whole, including collection-level image, etc.
+              type: object
+              required:
+                - address
+                - symbol
+                - name
+                - type
+              properties:
+                address:
+                  $ref: "#/components/schemas/EvmContractAddress"
+                symbol:
+                  description: Some NFTs don't have a symbol/name as it's not required in a standard
+                  $ref: "#/components/schemas/EvmSymbol"
+                  nullable: true
+                name:
+                  description: Some NFTs don't have a symbol/name as it's not required in a standard
+                  $ref: "#/components/schemas/EvmName"
+                  nullable: true
+                price:
+                  description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
+                  $ref: "#/components/schemas/AssetPrice"
+                  nullable: true
+                imageUrl:
+                  type: string
+                  description: The URL of the collection's cover image
+                  nullable: true
+                  example: "https://lh3.googleusercontent.com/C_fjl1iM5iRwuk74N9DBrOmU-1-_lc_8x66BsWU8votTb3iwXiVJwmqJ2qd8BUI1DSDo_9KxcNcNJrdpnnxebLwpeJB7eiYSeI8"
+                type:
+                  enum: [ERC721, ERC1155]
+                  type: string
+                  description: The type of specified NFT
+                  example: ERC721
           description: Data associated with the state change
     SolanaStateChangeSolTransfer:
       type: object
@@ -2834,8 +3498,8 @@ components:
           required:
             - account
             - lamports
-            - current_owner
-            - future_owner
+            - currentOwner
+            - futureOwner
           properties:
             account:
               type: string
@@ -2845,11 +3509,11 @@ components:
               type: number
               description: Amount of lamports in this account
               example: 123354533212
-            current_owner:
+            currentOwner:
               type: string
               description: Current program that is the owner for this account
               example: "11111111111111111111111111111111"
-            future_owner:
+            futureOwner:
               type: string
               description: Future program that will be the new owner for this account
               example: EpochxXNkmM2akxBTuCEizW1oWyzgrPZ1CVZ3GpD7Egm
@@ -2869,7 +3533,7 @@ components:
           type: object
           required:
             - stakeAccount
-            - currAuthorities
+            - currentAuthorities
             - futureAuthorities
             - asset
             - solStaked
@@ -2878,7 +3542,7 @@ components:
               type: string
               description: The stake account address
               example: 2AG3beWwvyvEMLfwJcQS9DKMV62C3UWTTf8d7gp2vFQS
-            currAuthorities:
+            currentAuthorities:
               type: object
               description: Current authorities with control over the staking account
               required:
@@ -2919,7 +3583,7 @@ components:
       oneOf:
         - $ref: "#/components/schemas/SolanaSimulationTransactionError"
         - $ref: "#/components/schemas/SolanaSimulationProgramError"
-      nullable: true
+        - type: "null"
       discriminator:
         propertyName: kind
         mapping:
@@ -2942,6 +3606,7 @@ components:
           example: Lamport balance below rent-exempt threshold
         solanaProgramAddress:
           type: string
+          example: ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
           description: The address of the Solana program where this revert error occurred
     SolanaSimulationTransactionError:
       type: object

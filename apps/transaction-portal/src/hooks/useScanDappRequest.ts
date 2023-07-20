@@ -1,9 +1,11 @@
-import { BlowfishApiClient } from "@blowfish/api-client";
+import { BlowfishApiClient } from "@blowfishxyz/api-client";
 import type {
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
   EvmTransactionScanResult,
-} from "@blowfish/api-client";
+  ScanTransactionEvm200Response,
+  ScanTransactionsEvm200Response,
+} from "@blowfishxyz/api-client";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import {
@@ -42,6 +44,8 @@ const fetcher = async (
 ): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
   const client = new BlowfishApiClient(
     BLOWFISH_API_BASE_URL,
+    // NOTE: The api key is rewritten on the proxy
+    "",
     chainFamily,
     chainNetwork
   );
@@ -53,9 +57,11 @@ const fetcher = async (
     const userAccount = isSmartContractWallet(origin)
       ? request.payload.to
       : request.userAccount;
-    return client.scanTransactionEvm(request.payload, userAccount, {
-      origin,
-    });
+    return client
+      .scanTransactionsEvm([request.payload], userAccount, {
+        origin,
+      })
+      .then(mapTransactionsToSingle);
   } else if (isSignTypedDataRequest(request)) {
     const payload =
       request.signTypedDataVersion === SignTypedDataVersion.V1
@@ -102,3 +108,38 @@ export const useScanDappRequest = (
     }
   );
 };
+
+function mapTransactionsToSingle(
+  response: ScanTransactionsEvm200Response
+): ScanTransactionEvm200Response {
+  const { simulationResults, ...rest } = response;
+  const tx = simulationResults.perTransaction[0];
+  if (!tx) {
+    return {
+      ...rest,
+      simulationResults: {
+        gas: {
+          gasLimit: null,
+        },
+        protocol: null,
+        error: simulationResults.aggregated.error,
+        expectedStateChanges:
+          simulationResults.aggregated.expectedStateChanges[
+            simulationResults.aggregated.userAccount
+          ] || [],
+      },
+    };
+  }
+  const expectedStateChanges =
+    simulationResults.aggregated.expectedStateChanges[
+      simulationResults.aggregated.userAccount
+    ] || [];
+  const item = {
+    gas: tx.gas,
+    error: tx.error,
+    protocol: tx.protocol,
+    expectedStateChanges,
+  };
+
+  return { ...rest, simulationResults: item };
+}
