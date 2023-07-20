@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfishxyz/api";
+import { EvmExpectedStateChange } from "@blowfishxyz/api-client";
 import { ArrowRightIcon, BlowfishIcon } from "@blowfish/protect-ui/icons";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import Image from "next/image";

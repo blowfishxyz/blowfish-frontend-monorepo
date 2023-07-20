@@ -1,4 +1,4 @@
-import { WarningInnerKindEnum } from "@blowfishxyz/api";
+import { WarningInnerKindEnum } from "@blowfishxyz/api-client";
 import { useMemo } from "react";
 import { styled } from "styled-components";
 import { Row, Column } from "~/common/layout";

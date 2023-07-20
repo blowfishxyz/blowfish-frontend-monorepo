@@ -1,7 +1,7 @@
 import type {
   EvmMessageScanResult,
   EvmTransactionScanResult,
-} from "@blowfishxyz/api";
+} from "@blowfishxyz/api-client";
 import {
   PAUSE_DURATIONS,
   PauseDuration,

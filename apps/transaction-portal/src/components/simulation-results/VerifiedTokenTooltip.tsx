@@ -2,7 +2,7 @@ import {
   EvmErc20Asset,
   EvmExpectedStateChange,
   EvmNativeAsset,
-} from "@blowfishxyz/api";
+} from "@blowfishxyz/api-client";
 import { Text, Tooltip, TooltipContent, TooltipTrigger } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { VerifiedIcon } from "@blowfish/protect-ui/icons";

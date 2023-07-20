@@ -30,7 +30,7 @@ import {
   EvmTransactionExpectedStateChange,
   EvmMessageExpectedStateChange,
   EvmProtocol,
-} from "@blowfishxyz/api";
+} from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";

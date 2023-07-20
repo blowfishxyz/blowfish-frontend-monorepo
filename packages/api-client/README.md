@@ -1,7 +1,7 @@
 # Blowfish API Client
 
 ```ts
-import { BlowfishApiClient } from "@blowfishxyz/api";
+import { BlowfishApiClient } from "@blowfishxyz/api-client";
 
 const client = const client = new BlowfishApiClient(
     baseUrl,

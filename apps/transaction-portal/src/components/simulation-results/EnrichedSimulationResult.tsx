@@ -1,4 +1,4 @@
-import type { EvmExpectedStateChange } from "@blowfishxyz/api";
+import type { EvmExpectedStateChange } from "@blowfishxyz/api-client";
 import { Column, Row, Text } from "@blowfishxyz/ui";
 import { BlockExplorerLink } from "@blowfish/protect-ui/core";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";

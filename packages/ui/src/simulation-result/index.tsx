@@ -19,7 +19,7 @@ import {
   ChainFamily,
   ChainNetwork,
   EvmExpectedStateChange,
-} from "@blowfishxyz/api";
+} from "@blowfishxyz/api-client";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";

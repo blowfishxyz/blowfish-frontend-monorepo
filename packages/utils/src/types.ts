@@ -3,8 +3,8 @@ import type {
   EvmStateChangeErc721TransferData,
   EvmStateChangeErc1155TransferData,
   SignTypedDataPayload,
-} from "@blowfishxyz/api";
-import { ActionEnum } from "@blowfishxyz/api";
+} from "@blowfishxyz/api-client";
+import { ActionEnum } from "@blowfishxyz/api-client";
 
 export { SignTypedDataPayload };
 

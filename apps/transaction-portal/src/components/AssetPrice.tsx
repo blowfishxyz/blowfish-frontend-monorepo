@@ -1,4 +1,4 @@
-import { EvmExpectedStateChange } from "@blowfishxyz/api";
+import { EvmExpectedStateChange } from "@blowfishxyz/api-client";
 import {
   Row,
   Text,

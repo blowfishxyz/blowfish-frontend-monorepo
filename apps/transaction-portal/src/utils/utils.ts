@@ -3,7 +3,7 @@ import {
   EvmProtocol,
   ScanMessageEvm200ResponseSimulationResults,
   ScanTransactionEvm200ResponseSimulationResults,
-} from "@blowfishxyz/api";
+} from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
 import {
