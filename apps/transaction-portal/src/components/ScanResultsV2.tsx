@@ -25,8 +25,8 @@ import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
 import { AdvancedDetails } from "./AdvancedDetails";
 import ShareToTwitterModal from "./ShareToTwitterModal";
 import { useLocalStorage } from "react-use";
-import { Modal } from "./common/Modal";
-import { BlowfishInvertedWarningIcon } from "@blowfish/protect-ui/icons";
+import { useAccount } from "wagmi";
+import { ImpersonationErrorModal } from "./modals";
 
 export type UIWarning = {
   message: string;
@@ -77,6 +77,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   });
 
   const reportUrl = useReportTransactionUrl(request);
+
+  const { address } = useAccount();
 
   const onReport = useCallback(() => {
     window.open(reportUrl, "_blank", "noopener,noreferrer");
@@ -215,12 +217,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           rejectTxn={() => reject()}
         />
       )}
-      {impersonatingAddress === request.userAccount && (
-        <Modal
-          title="Impersonation Failed"
-          content={<BlowfishInvertedWarningIcon />}
-          description="The impersonation address matches the actual address. Be sure to refresh the Dapp page after impersonating."
-        />
+      {impersonatingAddress === address && (
+        <ImpersonationErrorModal closeWindow={reject} />
       )}
       <PreviewTxn
         txnData={txnData}
