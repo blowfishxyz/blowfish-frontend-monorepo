@@ -5,6 +5,11 @@
   "main": "./build/index.ts",
   "module": "./build/index.mjs",
   "types": "./build/index.d.ts",
+  "files": [
+    "build",
+    "src",
+    "README.md"
+  ],
   "scripts": {
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
