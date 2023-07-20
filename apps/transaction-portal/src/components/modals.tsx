@@ -407,3 +407,16 @@ export const SimulationErrorModal: React.FC<{
     />
   );
 };
+
+export const ImpersonationErrorModal: React.FC<{
+  closeWindow: undefined | (() => Promise<void>);
+}> = ({ closeWindow }) => {
+  return (
+    <Modal
+      title="Impersonation Failed"
+      content={<BlowfishInvertedWarningIcon />}
+      description="The impersonation address matches the actual address. Be sure to refresh the Dapp page after impersonating."
+      onCancel={() => closeWindow?.()}
+    />
+  );
+};
