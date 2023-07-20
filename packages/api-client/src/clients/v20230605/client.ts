@@ -1,7 +1,4 @@
-import type {
-  ScanMessageEvm200Response as ScanMessageEvm200ResponseLegacy,
-  ScanTransactionsEvm200Response as ScanTransactionsEvm200ResponseLegacy,
-} from "../../generated/v20230517/models";
+import type { ScanMessageEvm200Response as ScanMessageEvm200ResponseLegacy } from "../../generated/v20230517/models";
 import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
@@ -17,11 +14,7 @@ import {
 } from "../../generated/v20230605/apis";
 import { Configuration } from "../../generated/v20230605/runtime";
 import { ChainFamily, ChainNetwork, DownloadBlocklistRequest } from "./types";
-import {
-  mapMessageResponse,
-  mapTransactionsFromV20230517,
-  mapTransactionsToLegacy,
-} from "./utils";
+import { mapMessageResponse } from "./utils";
 
 export class BlowfishApiClient {
   private apiVersion = "2023-06-05";
@@ -108,41 +101,6 @@ export class BlowfishApiClient {
         xApiVersion: this.apiVersion,
       })
       .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
-  };
-
-  /**
-   * @deprecated use scanTransactionsEvm instead
-   */
-  scanTransactionEvm = (
-    txObject: EvmTxData,
-    userAccount: string,
-    metadata: RequestMetadata
-  ) => {
-    return (
-      this.apis.transactions
-        .scanTransactionsEvm({
-          chainFamily: this.chainFamily,
-          chainNetwork: this.chainNetwork,
-          scanTransactionsEvmRequest: {
-            txObjects: [txObject],
-            userAccount,
-            metadata,
-          },
-          xApiKey: this.apiKey,
-          xApiVersion: this.apiVersion,
-        })
-        // HACK: Remove mapTransactionsFromV20230517  when proxy is deployed
-        .then((x) => {
-          if (
-            Array.isArray(x.simulationResults.aggregated.expectedStateChanges)
-          ) {
-            return mapTransactionsFromV20230517(
-              x as unknown as ScanTransactionsEvm200ResponseLegacy
-            );
-          }
-          return mapTransactionsToLegacy(x);
-        })
-    );
   };
 
   scanTransactionsEvm = (
