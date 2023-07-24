@@ -53,6 +53,7 @@ export function useScanParams(): ScanParams {
     Message<DappRequest["type"], DappRequest> | undefined
   >(undefined);
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
+  const successfulResponseRef = useRef<Message<DappRequest["type"], DappRequest> | undefined>(undefined);
   if (fetchError) {
     return { error: MessageError.PARAMS_NOT_OK, id };
   }
@@ -69,11 +70,18 @@ export function useScanParams(): ScanParams {
     if (data.error === MessageError.MESSAGE_MISSING) {
       message = prevMessageRef.current;
     } else {
-      return { error: data.error, id };
+      const successfulResponse = successfulResponseRef.current;
+      if (successfulResponse) {
+        message = successfulResponse;
+      } else {
+        return { error: data.error, id };
+      }
     }
   } else {
     prevMessageRef.current = data.message;
     message = data.message;
+
+    successfulResponseRef.current = data.message;
   }
 
   if (!message) {
