@@ -53,7 +53,9 @@ export function useScanParams(): ScanParams {
     Message<DappRequest["type"], DappRequest> | undefined
   >(undefined);
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
-  const successfulResponseRef = useRef<Message<DappRequest["type"], DappRequest> | undefined>(undefined);
+  const successfulResponseRef = useRef<
+    Message<DappRequest["type"], DappRequest> | undefined
+  >(undefined);
   if (fetchError) {
     return { error: MessageError.PARAMS_NOT_OK, id };
   }
