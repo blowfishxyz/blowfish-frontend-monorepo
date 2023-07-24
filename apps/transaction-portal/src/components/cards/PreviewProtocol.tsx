@@ -33,7 +33,7 @@ export const PreviewProtocol: React.FC<PreviewProtocolProps> = ({
           {verified && <Icon variant="verified" size={19} />}
         </Row>
       </Column>
-      <Divider margin="13px 0" />
+      <Divider $margin="13px 0" />
       <Text>{description}</Text>
     </div>
   );

@@ -13,12 +13,12 @@
     "build-storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json build-storybook"
   },
   "dependencies": {
+    "@blowfish/hooks": "workspace:*",
+    "@blowfish/utils": "workspace:*",
+    "@blowfishxyz/ui": "workspace:*",
     "@emotion/is-prop-valid": "^1.2.0",
     "polished": "^4.2.2",
-    "styled-components": "6.0.2",
-    "@blowfishxyz/ui": "workspace:*",
-    "@blowfish/hooks": "workspace:*",
-    "@blowfish/utils": "workspace:*"
+    "styled-components": "6.0.4"
   },
   "peerDependencies": {
     "react": "^18.2.0",

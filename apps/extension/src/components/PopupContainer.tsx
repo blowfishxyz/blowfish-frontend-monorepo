@@ -71,11 +71,11 @@ export interface PopupContainerProps extends React.PropsWithChildren {
   bottomMenuType?: MenuType;
 }
 type MenuType = "NONE" | "SLIM" | "FULL";
-const Wrapper = styled.div<{ severity?: Severity; bottomMenuType?: MenuType }>`
+const Wrapper = styled.div<{ $severity?: Severity; bottomMenuType?: MenuType }>`
   display: flex;
   position: relative;
-  background-color: ${({ severity, theme }) =>
-    theme.severityColors[severity ?? "INFO"].background};
+  background-color: ${({ $severity, theme }) =>
+    theme.severityColors[$severity ?? "INFO"].background};
   min-height: 100vh;
   height: 100%;
   width: 100%;
@@ -105,7 +105,7 @@ export const PopupContainer: React.FC<PopupContainerProps> = ({
     <Wrapper
       style={style}
       className={className}
-      severity={severity}
+      $severity={severity}
       bottomMenuType={bottomMenuType}
     >
       {userAccount && (

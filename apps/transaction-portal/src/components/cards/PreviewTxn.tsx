@@ -151,12 +151,12 @@ const PreviewCard: FC<PreviewCardProps> = ({
       <CardContent>
         <Row justifyContent="space-between" alignItems="center">
           <Text size="lg">{title}</Text>
-          <Chip severity={severity} />
+          <Chip $severity={severity} />
         </Row>
       </CardContent>
-      <Divider margin="16px 0" />
+      <Divider $margin="16px 0" />
       <CardContent>{children}</CardContent>
-      <Divider margin="24px 0 0" />
+      <Divider $margin="24px 0 0" />
       {txnData.protocol && (
         <>
           <CardContent>
@@ -214,7 +214,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
             </CardText>
           </Row>
         </StyledColumn>
-        {/* <Divider orientation="vertical" margin="0 36px" />
+        {/* <Divider orientation="vertical" $margin="0 36px" />
       <StyledColumn gap="sm">
         <SectionHeading>Contract</SectionHeading>
         <CardText>
@@ -228,7 +228,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
         </CardText>
       </StyledColumn> */}
       </StyledCardContent>
-      <Divider margin="0 0 16px" />
+      <Divider $margin="0 0 16px" />
       {advancedDetails}
     </CardWrapper>
     <ConfirmTxn

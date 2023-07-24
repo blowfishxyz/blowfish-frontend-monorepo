@@ -42,7 +42,7 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
           #{tokenId}
         </Text>
       </Column>
-      <Divider margin="13px 0" />
+      <Divider $margin="13px 0" />
       <div>
         <DataRowComponent label="Type" value={type} />
         {symbol ? <DataRowComponent label="Symbol" value={symbol} /> : null}

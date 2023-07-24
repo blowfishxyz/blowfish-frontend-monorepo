@@ -2,6 +2,7 @@ import React from "react";
 import { css, styled } from "styled-components";
 import { Spinner } from "~/common/spinner";
 import { Column } from "~/common/layout";
+import { StyledBaseButton } from "~/common/base";
 
 const resetStyles = css`
   border: none;
@@ -175,7 +176,7 @@ type ButtonProps = {
   loading?: boolean;
 };
 
-const ButtonComponent = styled.button<
+const ButtonComponent = styled(StyledBaseButton)<
   Omit<ButtonProps, "loading" | "stretch"> & {
     $loading?: boolean;
     $stretch?: boolean;

@@ -60,7 +60,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           {symbol}
         </Text>
       </Column>
-      <Divider margin="13px 0" />
+      <Divider $margin="13px 0" />
       <div>
         {price ? (
           <DataRowComponent

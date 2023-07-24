@@ -17,6 +17,12 @@ const StyledBaseTextComponent = styled.span.withConfig({
   ${spacing}
   ${size}
 `;
+const StyledBaseButtonComponent = styled.button.withConfig({
+  shouldForwardProp,
+})<Spacing & Size>`
+  ${spacing}
+  ${size}
+`;
 
 export type StyledBaseProps<T> = T &
   Spacing &
@@ -36,4 +42,11 @@ const StyledBaseText = React.memo(
   >((props, ref) => <StyledBaseTextComponent ref={ref} {...props} />)
 );
 
-export { StyledBaseDiv, StyledBaseText };
+const StyledBaseButton = React.memo(
+  React.forwardRef<
+    HTMLButtonElement,
+    StyledBaseProps<React.ButtonHTMLAttributes<HTMLButtonElement>>
+  >((props, ref) => <StyledBaseButtonComponent ref={ref} {...props} />)
+);
+
+export { StyledBaseDiv, StyledBaseText, StyledBaseButton };

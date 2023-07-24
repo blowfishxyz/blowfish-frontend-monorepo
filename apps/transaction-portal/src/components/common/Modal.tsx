@@ -142,7 +142,7 @@ export function Modal({
           <Column gap="sm" marginTop={action ? 20 : 36}>
             {action && <ModalActionButton action={action} close={modal.hide} />}
             {(!options?.blocking || onCancel) && (
-              <StyledModalButton
+              <StyledModalButtonWrapper
                 stretch
                 design={action && !priority ? "tertiary" : "primary"}
                 size={action && !priority ? "sm" : "md"}
@@ -150,10 +150,10 @@ export function Modal({
                   onCancel?.();
                   modal.hide();
                 }}
-                priority={priority === "primary"}
+                $priority={priority === "primary"}
               >
                 {cancelText ? cancelText : "Cancel"}
-              </StyledModalButton>
+              </StyledModalButtonWrapper>
             )}
           </Column>
         </Column>
@@ -162,8 +162,8 @@ export function Modal({
   );
 }
 
-const StyledModalButton = styled(Button)<{ priority?: boolean }>`
-  order: ${({ priority }) => (priority ? -1 : 0)};
+const StyledModalButtonWrapper = styled(Button)<{ $priority?: boolean }>`
+  order: ${({ $priority }) => ($priority ? -1 : 0)};
 `;
 
 const ModalActionButton: React.FC<{
