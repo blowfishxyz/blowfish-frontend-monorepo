@@ -1,7 +1,5 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-import React from "react";
+import { ComponentMeta, StoryObj } from "@storybook/react";
 import { styled } from "styled-components";
-import * as stateChangesMap from "@blowfishxyz/api-client/fixtures";
 
 import { SimulationWarning } from "~/simulation-warning";
 import { WarningInnerKindEnum } from "@blowfishxyz/api-client";
@@ -10,14 +8,17 @@ export default {
   title: "SimulationWarning",
   component: SimulationWarning,
   args: {},
-} as ComponentMeta<typeof SimulationWarning>;
+} as ComponentMeta<typeof SimulationWarningStory>;
 
-const SimulationWarningComponent: ComponentStory<typeof SimulationWarning> = (
-  props
-) => {
+const SimulationWarningStory = ({ kind }: { kind: WarningInnerKindEnum }) => {
+  const warning = {
+    kind,
+    message: "Human-readable warning that comes from Blowfish API",
+    severity: "WARNING" as const,
+  };
   return (
     <Wrapper>
-      <SimulationWarning {...props} />
+      <SimulationWarning warning={warning} />
     </Wrapper>
   );
 };
@@ -28,7 +29,7 @@ const Wrapper = styled.div`
 
 export const AllWarnings = () => <>{warnings}</>;
 
-const warnings = [
+const supportedWarnings = [
   WarningInnerKindEnum.ApprovalToEOA,
   WarningInnerKindEnum.BlocklistedDomainCrossOrigin,
   WarningInnerKindEnum.BulkApprovalsRequest,
@@ -52,12 +53,32 @@ const warnings = [
   WarningInnerKindEnum.TrustedBlocklistDomain,
   WarningInnerKindEnum.UnlimitedAllowanceToNfts,
   WarningInnerKindEnum.WhitelistedDomainCrossOrigin,
-].map((kind) => {
-  const warning = {
-    kind,
-    message: "Human-readable warning that comes from Blowfish API",
-    severity: "WARNING" as const,
-  };
+];
 
-  return <SimulationWarningComponent warning={warning} />;
+const warnings = supportedWarnings.map((kind) => {
+  return <SimulationWarningStory kind={kind} />;
 });
+
+export const SingleWarning: StoryObj<{ kind: WarningInnerKindEnum }> = {
+  render: ({ kind }) => {
+    const warning = {
+      kind,
+      message: "Human-readable warning that comes from Blowfish API",
+      severity: "WARNING" as const,
+    };
+    return (
+      <Wrapper>
+        <SimulationWarning warning={warning} />
+      </Wrapper>
+    );
+  },
+  argTypes: {
+    kind: {
+      control: {
+        type: "select",
+        options: supportedWarnings,
+      },
+      defaultValue: WarningInnerKindEnum.ApprovalToEOA,
+    },
+  },
+};
