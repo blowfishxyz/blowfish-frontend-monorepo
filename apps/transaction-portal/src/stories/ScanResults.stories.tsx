@@ -1,6 +1,14 @@
 import { Severity, actionToSeverity } from "@blowfish/utils/types";
 import type { ComponentMeta, ComponentStory } from "@storybook/react";
 import React, { useState } from "react";
+import {
+  exampleEthSignScanResult,
+  messageNoActionScanResult,
+  messageWarnResultScanResult,
+  transactionBlockScanResult,
+  transactionNoActionScanResult,
+  transactionWarningScanResult,
+} from "@blowfishxyz/api-client/build/fixtures";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {
@@ -15,15 +23,9 @@ import { ScanResults, ScanResultsProps } from "../components/ScanResults";
 import {
   exampleDappUrl,
   exampleEthSignRequest,
-  exampleEthSignScanResult,
   exampleNftSignTypedDataRequest,
   examplePermitSignTypeDataRequest,
   exampleTransactionRequest,
-  messageNoActionScanResult,
-  messageWarnResultScanResult,
-  transactionBlockScanResult,
-  transactionNoActionScanResult,
-  transactionWarningScanResult,
 } from "../components/fixtures/scan";
 
 export default {

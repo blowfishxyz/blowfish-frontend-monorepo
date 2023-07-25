@@ -1,5 +1,4 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import React from "react";
 import { styled } from "styled-components";
 import * as stateChangesMap from "@blowfishxyz/api-client/fixtures";
 
@@ -9,7 +8,7 @@ export default {
   title: "SimulationResult",
   component: SimulationResult,
   args: {
-    txnData: stateChangesMap.receiveErc20,
+    txnData: stateChangesMap.receiveNativeToken,
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
   },
@@ -44,9 +43,9 @@ ReceiveErc721.args = {
   txnData: stateChangesMap.receiveErc721,
 };
 
-export const SendErc20 = SimulationResultComponent.bind({});
-SendErc20.args = {
-  txnData: stateChangesMap.sendErc20,
+export const SendNativeToken = SimulationResultComponent.bind({});
+SendNativeToken.args = {
+  txnData: stateChangesMap.sendNativeToken,
 };
 
 export const SendErc721 = SimulationResultComponent.bind({});

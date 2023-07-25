@@ -1,15 +1,4 @@
 import {
-  EvmMessageScanResult,
-  EvmTransactionScanResult,
-} from "@blowfishxyz/api-client";
-import {
-  approveAllErc721,
-  permitErc20NoExpiration,
-  receiveErc721,
-  sendErc20,
-} from "@blowfishxyz/api-client/build/fixtures";
-
-import {
   RequestType,
   SignMessageRequest,
   SignTypedDataRequest,
@@ -183,99 +172,6 @@ export const exampleEthSignRequest: SignMessageRequest = {
   userAccount: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
   isImpersonatingWallet: true,
   extensionVersion: "10.0.0",
-};
-
-export const transactionNoActionScanResult: EvmTransactionScanResult = {
-  action: "NONE",
-  simulationResults: {
-    error: null,
-    protocol: null,
-    gas: {
-      gasLimit: null,
-    },
-    expectedStateChanges: [receiveErc721, sendErc20],
-  },
-  warnings: [],
-};
-
-export const transactionWarningScanResult: EvmTransactionScanResult = {
-  action: "WARN",
-  simulationResults: {
-    error: null,
-    protocol: null,
-    gas: {
-      gasLimit: null,
-    },
-    expectedStateChanges: [approveAllErc721],
-  },
-  warnings: [
-    {
-      kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
-      message:
-        "You are allowing this dApp to withdraw funds from your account in the future",
-      severity: "WARNING",
-    },
-  ],
-};
-export const transactionBlockScanResult: EvmTransactionScanResult = {
-  action: "BLOCK",
-  simulationResults: {
-    error: null,
-    protocol: null,
-    gas: {
-      gasLimit: null,
-    },
-    expectedStateChanges: [approveAllErc721],
-  },
-  warnings: [
-    {
-      kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
-      message:
-        "You are allowing this dApp to withdraw funds from your account in the future",
-      severity: "WARNING",
-    },
-  ],
-};
-
-export const messageNoActionScanResult: EvmMessageScanResult = {
-  action: "NONE",
-  simulationResults: {
-    error: null,
-    protocol: null,
-    expectedStateChanges: [],
-  },
-  warnings: [],
-};
-
-export const messageWarnResultScanResult: EvmMessageScanResult = {
-  action: "WARN",
-  warnings: [
-    {
-      kind: "PERMIT_NO_EXPIRATION",
-      message:
-        "You are allowing this dApp to withdraw funds from your account in the future",
-      severity: "WARNING",
-    },
-  ],
-  simulationResults: {
-    protocol: null,
-    expectedStateChanges: [permitErc20NoExpiration],
-    error: null,
-  },
-};
-
-export const exampleEthSignScanResult: EvmMessageScanResult = {
-  action: "WARN",
-  warnings: [
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      kind: "ETH_SIGN_TX_HASH" as any,
-      message:
-        "You are signing what could be a transaction hash, which is a valid Ethereum transaction. Approving may lead to loss of funds.",
-      severity: "WARNING",
-    },
-  ],
-  simulationResults: null,
 };
 
 export const exampleDappUrl = "https://app.uniswap.org/#/swap";

@@ -203,7 +203,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   const txnData = {
     message: parsedMessageContent,
-    data: scanResults?.simulationResults?.expectedStateChanges,
+    scanResult: scanResults,
     dappUrl,
     account: request.userAccount,
     protocol: getProtocol(scanResults?.simulationResults),
