@@ -66,13 +66,13 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
   border-radius: 12px;
 `;
 
-interface TxnSimulationProps {
+export interface SimulationResultProps {
   txnData: EvmExpectedStateChange;
   chainFamily: ChainFamily | undefined;
   chainNetwork: ChainNetwork | undefined;
 }
 
-export const SimulationResult: React.FC<TxnSimulationProps> = ({
+export const SimulationResult: React.FC<SimulationResultProps> = ({
   txnData,
   chainFamily,
   chainNetwork,

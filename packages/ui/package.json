@@ -50,6 +50,11 @@
       "types": "./build/index.d.ts",
       "import": "./build/index.mjs",
       "require": "./build/index.js"
+    },
+    "./fixtures": {
+      "types": "./build/fixtures.d.ts",
+      "import": "./build/fixtures.mjs",
+      "require": "./build/fixtures.js"
     }
   }
 }

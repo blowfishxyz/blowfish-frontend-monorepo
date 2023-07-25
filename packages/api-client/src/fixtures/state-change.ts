@@ -6,7 +6,7 @@ import {
   EvmStateChangeErc721Transfer,
   EvmStateChangeNativeAssetTransfer,
   EvmTransactionExpectedStateChange,
-} from "@blowfishxyz/api-client";
+} from "../clients/v20230605";
 
 export const sendErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Send BoredApeYachtClub #1726",

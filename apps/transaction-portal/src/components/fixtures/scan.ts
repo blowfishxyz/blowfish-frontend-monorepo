@@ -3,19 +3,19 @@ import {
   EvmTransactionScanResult,
 } from "@blowfishxyz/api-client";
 import {
+  approveAllErc721,
+  permitErc20NoExpiration,
+  receiveErc721,
+  sendErc20,
+} from "@blowfishxyz/api-client/build/fixtures";
+
+import {
   RequestType,
   SignMessageRequest,
   SignTypedDataRequest,
   SignTypedDataVersion,
   TransactionRequest,
 } from "@blowfish/utils/types";
-
-import {
-  approveAllErc721,
-  permitErc20NoExpiration,
-  receiveErc721,
-  sendErc20,
-} from "./state-changes";
 
 export const exampleTransactionRequest: TransactionRequest = {
   type: RequestType.Transaction,

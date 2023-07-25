@@ -2,9 +2,8 @@
   "name": "@blowfishxyz/api-client",
   "version": "0.0.1",
   "license": "MIT",
-  "main": "./build/index.ts",
+  "main": "./build/index.js",
   "module": "./build/index.mjs",
-  "types": "./build/index.d.ts",
   "files": [
     "build",
     "src",
@@ -38,6 +37,11 @@
       "types": "./build/index.d.ts",
       "import": "./build/index.mjs",
       "require": "./build/index.js"
+    },
+    "./fixtures": {
+      "types": "./build/fixtures.d.ts",
+      "import": "./build/fixtures.mjs",
+      "require": "./build/fixtures.js"
     }
   }
 }
