@@ -53,6 +53,7 @@ export function useScanParams(): ScanParams {
     Message<DappRequest["type"], DappRequest> | undefined
   >(undefined);
   const { data, error: fetchError } = useSWR([id, "request-message"], fetcher);
+  const consecutiveErrorCountRef = useRef<number>(0);
   const successfulResponseRef = useRef<
     Message<DappRequest["type"], DappRequest> | undefined
   >(undefined);
@@ -69,21 +70,22 @@ export function useScanParams(): ScanParams {
   if ("error" in data) {
     // NOTE: We don't want to keep the message in the extension,
     // we keep it in the ref to show a success message after the tx is completed.
-    if (data.error === MessageError.MESSAGE_MISSING) {
-      message = prevMessageRef.current;
-    } else {
-      const successfulResponse = successfulResponseRef.current;
-      if (successfulResponse) {
-        message = successfulResponse;
-      } else {
-        return { error: data.error, id };
-      }
+    consecutiveErrorCountRef.current += 1;
+
+    if (consecutiveErrorCountRef.current >= 2) {
+      prevMessageRef.current = successfulResponseRef.current;
+
+      return { error: data.error, id };
     }
+
+    return undefined;
   } else {
-    prevMessageRef.current = data.message;
-    message = data.message;
+    consecutiveErrorCountRef.current = 0;
 
     successfulResponseRef.current = data.message;
+
+    prevMessageRef.current = successfulResponseRef.current;
+    message = data.message;
   }
 
   if (!message) {
