@@ -1,7 +1,7 @@
 {
   "name": "@blowfishxyz/ui",
   "license": "MIT",
-  "version": "0.0.3",
+  "version": "0.0.1-alpha.1",
   "description": "Package containing Blowfish reusable UI components",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
@@ -50,11 +50,13 @@
       "types": "./build/index.d.ts",
       "import": "./build/index.mjs",
       "require": "./build/index.js"
-    },
-    "./fixtures": {
-      "types": "./build/fixtures.d.ts",
-      "import": "./build/fixtures.mjs",
-      "require": "./build/fixtures.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "build/*"
+      ]
     }
   }
 }
