@@ -5,7 +5,7 @@ import {
   ChainFamily,
   ChainNetwork,
   EvmMessageScanResult,
-  EvmTransactionScanResult,
+  EvmTransactionsScanResult,
   WarningInnerKindEnum,
 } from "@blowfishxyz/api-client";
 import {
@@ -17,7 +17,13 @@ import {
   isSignTypedDataRequest,
   isTransactionRequest,
 } from "@blowfish/utils/types";
-import { containsPunycode, createValidURL, getProtocol } from "~utils/utils";
+import {
+  containsPunycode,
+  createValidURL,
+  getErrorFromScanResponse,
+  getProtocol,
+  getResultsFromScanResponse,
+} from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~hooks/useChainMetadata";
@@ -36,7 +42,7 @@ export type UIWarning = {
 
 interface ScanResultsV2Props {
   request: DappRequest;
-  scanResults: EvmMessageScanResult | EvmTransactionScanResult;
+  scanResults: EvmMessageScanResult | EvmTransactionsScanResult;
   chainNetwork: ChainNetwork;
   chainFamily: ChainFamily;
   dappUrl: string;
@@ -56,6 +62,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   const [, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
+  const error = getErrorFromScanResponse(scanResults.simulationResults);
+  const results = getResultsFromScanResponse(scanResults.simulationResults);
 
   const hasPunycode = containsPunycode(dappUrl?.hostname);
 
@@ -109,8 +117,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     function getInferedWarning(): UIWarning | undefined {
       // TODO(kimpers): Should simulation errors be warnings from the API?
       const simulationResults = scanResults.simulationResults || undefined;
-      if (simulationResults?.error) {
-        switch (simulationResults.error.kind) {
+      if (error) {
+        switch (error.kind) {
           case "SIMULATION_FAILED":
             return {
               severity: "WARNING",
@@ -158,7 +166,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     }
 
     return warnings;
-  }, [scanResults, requestTypeStr, request, hasPunycode]);
+  }, [scanResults, requestTypeStr, request, hasPunycode, error]);
 
   const severity = useMemo(() => {
     if (
@@ -186,7 +194,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   }, [request]);
 
   useEffect(() => {
-    if (scanResults.simulationResults?.error) {
+    if (error) {
       setLayoutConfig({ severity: "WARNING", impersonatingAddress });
     } else {
       setLayoutConfig((prev) => ({ ...prev, severity, impersonatingAddress }));
@@ -194,19 +202,17 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     return () => {
       setLayoutConfig({ severity: "INFO", impersonatingAddress });
     };
-  }, [
-    severity,
-    impersonatingAddress,
-    setLayoutConfig,
-    scanResults.simulationResults?.error,
-  ]);
+  }, [severity, impersonatingAddress, setLayoutConfig, error]);
+
+  console.log(scanResults);
 
   const txnData = {
     message: parsedMessageContent,
-    data: scanResults?.simulationResults?.expectedStateChanges,
+    data: results?.expectedStateChanges,
     dappUrl,
     account: request.userAccount,
     protocol: getProtocol(scanResults?.simulationResults),
+    decodedCalldata: results?.decodedCalldata,
   };
 
   return (
@@ -222,9 +228,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       )}
       <PreviewTxn
         txnData={txnData}
-        simulationError={
-          scanResults?.simulationResults?.error?.humanReadableError
-        }
+        simulationError={error?.humanReadableError}
         warnings={warnings}
         severity={severity}
         chainNetwork={props.chainNetwork}

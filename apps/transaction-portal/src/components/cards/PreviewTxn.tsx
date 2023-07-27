@@ -30,6 +30,7 @@ import {
   EvmTransactionExpectedStateChange,
   EvmMessageExpectedStateChange,
   EvmProtocol,
+  EvmDecodedCalldata,
 } from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
@@ -46,6 +47,7 @@ export type TxnSimulationDataType = {
     | EvmTransactionExpectedStateChange[]
     | undefined;
   protocol?: EvmProtocol | null;
+  decodedCalldata?: EvmDecodedCalldata | null;
 };
 
 const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
@@ -145,76 +147,75 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onCancel,
   advancedDetails,
   website,
-}) => (
-  <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
-    <CardWrapper>
-      <CardContent>
-        <Row justifyContent="space-between" alignItems="center">
-          <Text size="lg">{title}</Text>
-          <Chip $severity={severity} />
-        </Row>
-      </CardContent>
-      <Divider $margin="16px 0" />
-      <CardContent>{children}</CardContent>
-      <Divider $margin="24px 0 0" />
-      {txnData.protocol && (
-        <>
-          <CardContent>
-            <StyledColumn gap="md">
-              <SectionHeading>Protocol</SectionHeading>
-              <Row gap="sm" alignItems="center">
-                <Tooltip>
-                  <TooltipTrigger>
-                    <TxnSimulationImage>
-                      {(txnData.protocol.trustLevel === "TRUSTED" ||
-                        txnData.protocol.trustLevel === "NATIVE") && (
-                        <VerifiedBadgeWrapper>
-                          <Icon variant="verified" size={14} />
-                        </VerifiedBadgeWrapper>
-                      )}
-
-                      <ImageBase
-                        src={txnData.protocol.imageUrl}
-                        alt={txnData.protocol.name}
-                        width={38}
-                        height={38}
-                        borderRadius="6px"
-                      />
-                    </TxnSimulationImage>
-                    <PreviewTokenTooltipContent showArrow={false}>
-                      <PreviewProtocol
-                        imageUrl={txnData.protocol.imageUrl}
-                        name={txnData.protocol.name}
-                        verified={
-                          txnData.protocol.trustLevel === "TRUSTED" ||
-                          txnData.protocol.trustLevel === "NATIVE"
-                        }
-                        description={txnData.protocol.description}
-                      />
-                    </PreviewTokenTooltipContent>
-                  </TooltipTrigger>
-                  <CardText size="xs" marginLeft={8}>
-                    <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
-                      {txnData.protocol.name}
-                    </LinkWithArrow>
-                  </CardText>
-                </Tooltip>
-              </Row>
-            </StyledColumn>
-          </CardContent>
-          <Divider />
-        </>
-      )}
-      <StyledCardContent>
-        <StyledColumn gap="sm">
-          <SectionHeading>Website</SectionHeading>
-          <Row gap="xs" alignItems="center">
-            <CardText>
-              <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
-            </CardText>
+}) => {
+  return (
+    <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
+      <CardWrapper>
+        <CardContent>
+          <Row justifyContent="space-between" alignItems="center">
+            <Text size="lg">{title}</Text>
+            <Chip $severity={severity} />
           </Row>
-        </StyledColumn>
-        {/* <Divider orientation="vertical" $margin="0 36px" />
+        </CardContent>
+        <Divider $margin="16px 0" />
+        <CardContent>{children}</CardContent>
+        <Divider $margin="24px 0 0" />
+        <StyledCardContent>
+          <StyledColumn gap="sm" flex={1}>
+            <SectionHeading>Website</SectionHeading>
+            <Row gap="xs" alignItems="center">
+              <CardText>
+                <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
+              </CardText>
+            </Row>
+          </StyledColumn>
+          <Divider orientation="vertical" $margin="0 30px" />
+          {txnData.protocol && (
+            <>
+              <StyledColumn gap="md" flex={1}>
+                <SectionHeading>Protocol</SectionHeading>
+                <Row gap="sm" alignItems="center">
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <TxnSimulationImage>
+                        {(txnData.protocol.trustLevel === "TRUSTED" ||
+                          txnData.protocol.trustLevel === "NATIVE") && (
+                          <VerifiedBadgeWrapper>
+                            <Icon variant="verified" size={14} />
+                          </VerifiedBadgeWrapper>
+                        )}
+
+                        <ImageBase
+                          src={txnData.protocol.imageUrl}
+                          alt={txnData.protocol.name}
+                          width={38}
+                          height={38}
+                          borderRadius="6px"
+                        />
+                      </TxnSimulationImage>
+                      <PreviewTokenTooltipContent showArrow={false}>
+                        <PreviewProtocol
+                          imageUrl={txnData.protocol.imageUrl}
+                          name={txnData.protocol.name}
+                          verified={
+                            txnData.protocol.trustLevel === "TRUSTED" ||
+                            txnData.protocol.trustLevel === "NATIVE"
+                          }
+                          description={txnData.protocol.description}
+                        />
+                      </PreviewTokenTooltipContent>
+                    </TooltipTrigger>
+                    <CardText size="xs" marginLeft={8}>
+                      <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
+                        {txnData.protocol.name}
+                      </LinkWithArrow>
+                    </CardText>
+                  </Tooltip>
+                </Row>
+              </StyledColumn>
+            </>
+          )}
+          {/* <Divider orientation="vertical" $margin="0 36px" />
       <StyledColumn gap="sm">
         <SectionHeading>Contract</SectionHeading>
         <CardText>
@@ -227,19 +228,36 @@ const PreviewCard: FC<PreviewCardProps> = ({
           </BlockExplorerLink>
         </CardText>
       </StyledColumn> */}
-      </StyledCardContent>
-      <Divider $margin="0 0 16px" />
-      {advancedDetails}
-    </CardWrapper>
-    <ConfirmTxn
-      onContinue={onContinue}
-      onReport={onReport}
-      onCancel={onCancel}
-      warnings={warnings}
-      severity={severity}
-    />
-  </PreviewWrapper>
-);
+        </StyledCardContent>
+        {txnData.protocol && (
+          <>
+            <Divider />
+            <CardContent>
+              <StyledColumn gap="md">
+                <SectionHeading>Decoded calldata</SectionHeading>
+                <Row gap="sm" alignItems="center">
+                  <CardText size="xs" >
+                    function transfer(address dst, uint256 wad)
+                  </CardText>
+                </Row>
+              </StyledColumn>
+            </CardContent>
+            <Divider />
+          </>
+        )}
+        <Divider $margin="0 0 16px" />
+        {advancedDetails}
+      </CardWrapper>
+      <ConfirmTxn
+        onContinue={onContinue}
+        onReport={onReport}
+        onCancel={onCancel}
+        warnings={warnings}
+        severity={severity}
+      />
+    </PreviewWrapper>
+  );
+};
 
 const PreviewWrapper = styled(Row)`
   @media (max-width: 1100px) {

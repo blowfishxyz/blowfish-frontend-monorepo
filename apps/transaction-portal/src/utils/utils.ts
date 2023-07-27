@@ -2,7 +2,9 @@ import {
   EvmExpectedStateChange,
   EvmProtocol,
   ScanMessageEvm200ResponseSimulationResults,
-  ScanTransactionEvm200ResponseSimulationResults,
+  ScanMessageEvm200ResponseSimulationResultsError,
+  ScanTransactionsEvm200ResponseSimulationResults,
+  ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError,
 } from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -179,12 +181,59 @@ export const createValidURL = (url: string): URL | undefined => {
 
 export const getProtocol = (
   simulationResults:
-    | ScanTransactionEvm200ResponseSimulationResults
+    | ScanTransactionsEvm200ResponseSimulationResults
     | ScanMessageEvm200ResponseSimulationResults
     | null
 ): EvmProtocol | null => {
-  if (simulationResults && "protocol" in simulationResults) {
+  if (simulationResults && "aggregated" in simulationResults) {
+    return simulationResults.perTransaction[0].protocol;
+  } else if (simulationResults && "protocol" in simulationResults) {
     return simulationResults.protocol;
   }
   return null;
+};
+
+export const getErrorFromScanResponse = (
+  simulationResults:
+    | ScanTransactionsEvm200ResponseSimulationResults
+    | ScanMessageEvm200ResponseSimulationResults
+    | null
+):
+  | ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError
+  | ScanMessageEvm200ResponseSimulationResultsError
+  | null => {
+  if (!simulationResults) return null;
+
+  if ("aggregated" in simulationResults) {
+    return simulationResults.aggregated?.error;
+  } else {
+    return simulationResults.error;
+  }
+};
+
+export const getResultsFromScanResponse = (
+  simulationResults:
+    | ScanTransactionsEvm200ResponseSimulationResults
+    | ScanMessageEvm200ResponseSimulationResults
+    | null
+) => {
+  if (!simulationResults) return null;
+
+  let result;
+  let expectedStateChanges;
+  let decodedCalldata;
+
+  if ("aggregated" in simulationResults) {
+    result = simulationResults.aggregated;
+    expectedStateChanges =
+      simulationResults.aggregated.expectedStateChanges[
+        simulationResults.aggregated.userAccount
+      ];
+      decodedCalldata = simulationResults.perTransaction[0].decodedCalldata;
+  } else {
+    result = simulationResults;
+    expectedStateChanges = simulationResults.expectedStateChanges;
+  }
+
+  return { result, expectedStateChanges, decodedCalldata };
 };
