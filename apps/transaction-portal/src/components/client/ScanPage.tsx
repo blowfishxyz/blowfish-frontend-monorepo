@@ -36,6 +36,7 @@ import {
 import { LoadingScreen } from "../LoadingScreen";
 import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
+import { getErrorFromScanResponse } from "~utils/utils";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;
@@ -237,7 +238,8 @@ const ScanPage: React.FC = () => {
     const isLoading = !scanResults && !scanError;
     const isError = !isLoading && scanError;
     const shouldShowBlockScreen = scanResults?.action === "BLOCK";
-    const simulationError = scanResults && scanResults.simulationResults?.error;
+    const simulationError =
+      scanResults && getErrorFromScanResponse(scanResults.simulationResults);
     const isUnsupportedChain = !chainFamily || !chainNetwork;
     const isWrongChainId =
       !!(chainId && connectedChainId) &&

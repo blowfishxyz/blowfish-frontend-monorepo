@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { ScanParamsSuccess, useScanParams } from "~hooks/useScanParams";
-import { MessageError } from "~utils/utils";
+import { MessageError, getErrorFromScanResponse } from "~utils/utils";
 import {
   AccountNotConnectedModal,
   BlockedTransactionModal,
@@ -110,7 +110,8 @@ const ResultsView: React.FC<{
     error: scanError,
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
-  const simulationError = scanResults?.simulationResults?.error;
+  const error = getErrorFromScanResponse(scanResults?.simulationResults);
+
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
       ? message?.data.payload.method === "eth_sign"
@@ -128,15 +129,15 @@ const ResultsView: React.FC<{
       );
     }
 
-    if (simulationError) {
-      if (simulationError.kind === "SIMULATION_FAILED") {
+    if (error) {
+      if (error.kind === "SIMULATION_FAILED") {
         return (
           <TransactionRevertedModal
             // HACK(Alex): Remove after API version update
             error={
-              simulationError.humanReadableError ||
+              error.humanReadableError ||
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (simulationError as any).parsedErrorMessage
+              (error as any).parsedErrorMessage
             }
           />
         );
@@ -154,7 +155,7 @@ const ResultsView: React.FC<{
     return null;
   }, [
     scanResults?.action,
-    simulationError,
+    error,
     reject,
     mutate,
     isUnsupportedDangerousRequest,

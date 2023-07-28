@@ -233,7 +233,12 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         severity={severity}
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
-        advancedDetails={<AdvancedDetails request={request} />}
+        advancedDetails={
+          <AdvancedDetails
+            request={request}
+            decodedLogs={results?.decodedLogs}
+          />
+        }
         onContinue={confirm}
         onCancel={() => {
           if (severity === "INFO") {

@@ -21,9 +21,9 @@ import {
   exampleTransactionRequest,
   messageNoActionScanResult,
   messageWarnResultScanResult,
-  transactionBlockScanResult,
   transactionNoActionScanResult,
-  transactionWarningScanResult,
+  transactionsBlockScanResult,
+  transactionsWarningScanResult,
 } from "../components/fixtures/scan";
 
 export default {
@@ -127,12 +127,12 @@ export const TransactionNoAction: ComponentStory<
 
 export const TransactionWarn = TransactionNoAction.bind({});
 TransactionWarn.args = {
-  scanResults: transactionWarningScanResult,
+  scanResults: transactionsWarningScanResult,
 };
 
 export const TransactionBlock = TransactionWarn.bind({});
 TransactionBlock.args = {
-  scanResults: transactionBlockScanResult,
+  scanResults: transactionsBlockScanResult,
 };
 
 export const TransactionUnsupported = TransactionNoAction.bind({});

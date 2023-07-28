@@ -1,6 +1,7 @@
 import {
   EvmMessageScanResult,
   EvmTransactionScanResult,
+  EvmTransactionsScanResult,
 } from "@blowfishxyz/api-client";
 import {
   RequestType,
@@ -217,6 +218,29 @@ export const transactionWarningScanResult: EvmTransactionScanResult = {
     },
   ],
 };
+
+export const transactionsWarningScanResult: EvmTransactionsScanResult = {
+  action: "WARN",
+  simulationResults: {
+    aggregated: {
+      error: null,
+      expectedStateChanges: {
+        "0xd8da6bf26964af9d7eed9e03e53415d37aa96045": [approveAllErc721],
+      },
+      userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+    },
+    perTransaction: [],
+  },
+  warnings: [
+    {
+      kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
+      message:
+        "You are allowing this dApp to withdraw funds from your account in the future",
+      severity: "WARNING",
+    },
+  ],
+};
+
 export const transactionBlockScanResult: EvmTransactionScanResult = {
   action: "BLOCK",
   simulationResults: {
@@ -226,6 +250,28 @@ export const transactionBlockScanResult: EvmTransactionScanResult = {
       gasLimit: null,
     },
     expectedStateChanges: [approveAllErc721],
+  },
+  warnings: [
+    {
+      kind: "UNLIMITED_ALLOWANCE_TO_NFTS",
+      message:
+        "You are allowing this dApp to withdraw funds from your account in the future",
+      severity: "WARNING",
+    },
+  ],
+};
+
+export const transactionsBlockScanResult: EvmTransactionsScanResult = {
+  action: "BLOCK",
+  simulationResults: {
+    aggregated: {
+      error: null,
+      expectedStateChanges: {
+        "0xd8da6bf26964af9d7eed9e03e53415d37aa96045": [approveAllErc721],
+      },
+      userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+    },
+    perTransaction: [],
   },
   warnings: [
     {

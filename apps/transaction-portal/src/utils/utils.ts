@@ -198,6 +198,7 @@ export const getErrorFromScanResponse = (
     | ScanTransactionsEvm200ResponseSimulationResults
     | ScanMessageEvm200ResponseSimulationResults
     | null
+    | undefined
 ):
   | ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError
   | ScanMessageEvm200ResponseSimulationResultsError
@@ -222,6 +223,7 @@ export const getResultsFromScanResponse = (
   let result;
   let expectedStateChanges;
   let decodedCalldata;
+  let decodedLogs;
 
   if ("aggregated" in simulationResults) {
     result = simulationResults.aggregated;
@@ -229,11 +231,12 @@ export const getResultsFromScanResponse = (
       simulationResults.aggregated.expectedStateChanges[
         simulationResults.aggregated.userAccount
       ];
-      decodedCalldata = simulationResults.perTransaction[0].decodedCalldata;
+    decodedCalldata = simulationResults.perTransaction[0].decodedCalldata;
+    decodedLogs = simulationResults.perTransaction[0].decodedLogs;
   } else {
     result = simulationResults;
     expectedStateChanges = simulationResults.expectedStateChanges;
   }
 
-  return { result, expectedStateChanges, decodedCalldata };
+  return { result, expectedStateChanges, decodedCalldata, decodedLogs };
 };

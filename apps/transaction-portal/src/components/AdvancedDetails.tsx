@@ -5,38 +5,80 @@ import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ArrowDownIcon } from "@blowfish/protect-ui/icons";
 import styled, { keyframes } from "styled-components";
 import { DappRequest } from "@blowfish/utils/types";
+import { EvmDecodedLog } from "@blowfishxyz/api-client";
 
-export const AdvancedDetails = memo<{ request: DappRequest }>(
-  function AdvancedDetails({ request }) {
-    const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+export const AdvancedDetails = memo<{
+  request: DappRequest;
+  decodedLogs: EvmDecodedLog[] | undefined;
+}>(function AdvancedDetails({ request, decodedLogs }) {
+  const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
 
-    return (
-      <Column width="100%">
-        <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
-          <CardContent>
-            {showAdvancedDetails && <RequestJsonViewer request={request} />}
-          </CardContent>
-        </DynamicJsonViewerWrapper>
-        {showAdvancedDetails && <Divider $margin="16px 0" />}
+  return (
+    <Column width="100%">
+      <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
         <CardContent>
-          <ViewDetailsWrapper
-            justifyContent="space-between"
-            alignItems="center"
-            marginBottom={16}
-            onClick={() => {
-              setShowAdvancedDetails((prev) => !prev);
-            }}
-          >
-            <Text design="secondary" size="sm">
-              {showAdvancedDetails ? "View less details" : "View more details"}
-            </Text>
-            <StyledArrowDownIcon expanded={showAdvancedDetails} />
-          </ViewDetailsWrapper>
+          {showAdvancedDetails && <RequestJsonViewer request={request} />}
+          {decodedLogs && (
+            <Column marginTop={16} gap="sm">
+              <Text size="sm" design="secondary">
+                Decoded Logs
+              </Text>
+              <Column gap="lg">
+                {decodedLogs.map(
+                  (decodedLog, i) =>
+                    decodedLog && (
+                      <Column gap="sm" key={`${decodedLog.name}-${i}`}>
+                        <Text size="xs" design="secondary">
+                          Name:{" "}
+                          <Text size="xs">
+                            {decodedLog.name} (
+                            {decodedLog.params.map((param, i) => (
+                              <DecodedLogsParams
+                                size="xs"
+                                key={`${param.name}-${i}`}
+                              >
+                                {param.paramType} {param.name}
+                              </DecodedLogsParams>
+                            ))}
+                            )
+                          </Text>
+                        </Text>
+                        <Text size="xs" design="secondary">
+                          Address: <Text size="xs">{decodedLog.signature}</Text>
+                        </Text>
+                      </Column>
+                    )
+                )}
+              </Column>
+            </Column>
+          )}
         </CardContent>
-      </Column>
-    );
+      </DynamicJsonViewerWrapper>
+      {showAdvancedDetails && <Divider $margin="16px 0" />}
+      <CardContent>
+        <ViewDetailsWrapper
+          justifyContent="space-between"
+          alignItems="center"
+          marginBottom={16}
+          onClick={() => {
+            setShowAdvancedDetails((prev) => !prev);
+          }}
+        >
+          <Text design="secondary" size="sm">
+            {showAdvancedDetails ? "View less details" : "View more details"}
+          </Text>
+          <StyledArrowDownIcon expanded={showAdvancedDetails} />
+        </ViewDetailsWrapper>
+      </CardContent>
+    </Column>
+  );
+});
+
+const DecodedLogsParams = styled(Text)`
+  &:not(:last-child)::after {
+    content: ", ";
   }
-);
+`;
 
 const ViewDetailsWrapper = styled(Row)`
   cursor: pointer;

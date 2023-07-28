@@ -37,6 +37,7 @@ import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
 import { ImageBase } from "~components/common/ImageBase";
 import { PreviewProtocol } from "./PreviewProtocol";
+import { InfoIcon } from "@blowfish/protect-ui/icons";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
@@ -122,6 +123,20 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
   border-radius: 12px;
 `;
 
+const StyledInfoIcon = styled(InfoIcon)`
+  fill: rgba(0, 0, 0, 0.4);
+  width: 14px;
+  height: auto;
+  margin-left: 8px;
+  cursor: pointer;
+`;
+
+const DecodedCallDataArgs = styled(Text)`
+  &:not(:last-child)::after {
+    content: ", ";
+  }
+`;
+
 interface PreviewCardProps {
   txnData: TxnSimulationDataType;
   title: string;
@@ -169,9 +184,9 @@ const PreviewCard: FC<PreviewCardProps> = ({
               </CardText>
             </Row>
           </StyledColumn>
-          <Divider orientation="vertical" $margin="0 30px" />
           {txnData.protocol && (
             <>
+              <Divider orientation="vertical" $margin="0 30px" />
               <StyledColumn gap="md" flex={1}>
                 <SectionHeading>Protocol</SectionHeading>
                 <Row gap="sm" alignItems="center">
@@ -229,17 +244,37 @@ const PreviewCard: FC<PreviewCardProps> = ({
         </CardText>
       </StyledColumn> */}
         </StyledCardContent>
-        {txnData.protocol && (
+        {txnData.decodedCalldata && (
           <>
             <Divider />
             <CardContent>
               <StyledColumn gap="md">
-                <SectionHeading>Decoded calldata</SectionHeading>
-                <Row gap="sm" alignItems="center">
-                  <CardText size="xs" >
-                    function transfer(address dst, uint256 wad)
-                  </CardText>
+                <Row>
+                  <SectionHeading>Decoded calldata</SectionHeading>
+                  {!txnData.protocol && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <StyledInfoIcon />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        We could not verify that this is a trusted protocol.
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
                 </Row>
+
+                <Column gap="xs">
+                  <Text size="sm">
+                    function {txnData.decodedCalldata?.data.functionName}(
+                    {txnData.decodedCalldata &&
+                      txnData.decodedCalldata.data.arguments.map((arg, i) => (
+                        <DecodedCallDataArgs key={`${arg}-${i}`}>
+                          {arg.paramType} {arg.name}
+                        </DecodedCallDataArgs>
+                      ))}
+                    )
+                  </Text>
+                </Column>
               </StyledColumn>
             </CardContent>
             <Divider />

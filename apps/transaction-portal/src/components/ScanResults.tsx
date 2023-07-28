@@ -1,6 +1,6 @@
 import type {
   EvmMessageScanResult,
-  EvmTransactionScanResult,
+  EvmTransactionsScanResult,
 } from "@blowfishxyz/api-client";
 import {
   PAUSE_DURATIONS,
@@ -44,7 +44,12 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
-import { containsPunycode, evmStateChangeHasImage } from "~utils/utils";
+import {
+  containsPunycode,
+  evmStateChangeHasImage,
+  getErrorFromScanResponse,
+  getResultsFromScanResponse,
+} from "~utils/utils";
 
 import { WarningNotice } from "./WarningNotice";
 
@@ -231,7 +236,7 @@ type UIWarning = { message: string; severity: "WARNING" | "CRITICAL" };
 
 export interface ScanResultsProps {
   request: DappRequest;
-  scanResults: EvmMessageScanResult | EvmTransactionScanResult;
+  scanResults: EvmMessageScanResult | EvmTransactionsScanResult;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
   dappUrl: string;
@@ -256,6 +261,9 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   const { pauseScan, resumeScan, isScanPaused } =
     useTransactionScannerPauseResume(scanPaused, setScanPaused);
   const [showDurationSelector, setShowDurationSelector] = useState(false);
+  const results = getResultsFromScanResponse(scanResults.simulationResults);
+  const error = getErrorFromScanResponse(scanResults.simulationResults);
+  const expectedStateChanges = results?.expectedStateChanges;
 
   const getPauseResumeSelectionStatus = useCallback(async () => {
     const data =
@@ -270,9 +278,6 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
   useInterval(async () => {
     getPauseResumeSelectionStatus();
   }, 3000);
-
-  const expectedStateChanges =
-    scanResults?.simulationResults?.expectedStateChanges;
 
   useEffect(() => {
     if (scanResults.simulationResults == null) {
@@ -335,8 +340,8 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     function getInferedWarning(): UIWarning | undefined {
       // TODO(kimpers): Should simulation errors be warnings from the API?
       const simulationResults = scanResults.simulationResults || undefined;
-      if (simulationResults?.error) {
-        switch (simulationResults.error.kind) {
+      if (error) {
+        switch (error.kind) {
           case "SIMULATION_FAILED":
             return {
               severity: "CRITICAL",
@@ -381,14 +386,11 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
     }
     const warning = getInferedWarning();
     return warning ? [warning] : [];
-  }, [scanResults, requestTypeStr, request, hasPunycode]);
+  }, [scanResults, requestTypeStr, request, hasPunycode, error]);
 
   const simulationFailedMessage = useMemo(() => {
-    return (
-      scanResults?.simulationResults?.error?.humanReadableError ||
-      "Simulation failed"
-    );
-  }, [scanResults]);
+    return error?.humanReadableError || "Simulation failed";
+  }, [error]);
 
   const onActionClick = () => {
     if (showDurationSelector) {
@@ -497,7 +499,7 @@ export const ScanResults: React.FC<ScanResultsProps> = ({
               >
                 Simulation Results
               </Text>
-              {scanResults?.simulationResults?.error ? (
+              {error ? (
                 <StateChangeText isPositiveEffect={false}>
                   {simulationFailedMessage}
                 </StateChangeText>
