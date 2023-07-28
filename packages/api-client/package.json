@@ -46,8 +46,11 @@
   },
   "typesVersions": {
     "*": {
-      "*": [
-        "build/*"
+      ".": [
+        "build/index.d.ts"
+      ],
+      "fixtures": [
+        "build/fixtures.d.ts"
       ]
     }
   }
