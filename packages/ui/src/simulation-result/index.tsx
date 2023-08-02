@@ -56,10 +56,10 @@ const TxnSimulationImage = styled.div`
 const TxnSimulationText = styled(Text).attrs({ size: "md" })``;
 
 const PreviewTokenTooltipContent = styled(TooltipContent)`
-  background-color: white;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+  box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   z-index: 4;
   width: 200px;
@@ -67,17 +67,17 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
 `;
 
 export interface SimulationResultProps {
-  txnData: EvmExpectedStateChange;
+  stateChange: EvmExpectedStateChange;
   chainFamily: ChainFamily | undefined;
   chainNetwork: ChainNetwork | undefined;
 }
 
 export const SimulationResult: React.FC<SimulationResultProps> = ({
-  txnData,
+  stateChange,
   chainFamily,
   chainNetwork,
 }) => {
-  const { rawInfo } = txnData;
+  const { rawInfo } = stateChange;
   const assetLink = useAssetLinkFromRawInfo(rawInfo, {
     chainFamily,
     chainNetwork,
@@ -98,7 +98,7 @@ export const SimulationResult: React.FC<SimulationResultProps> = ({
               <TooltipTrigger>
                 <TxnSimulationImage>
                   <AssetImage
-                    stateChange={txnData}
+                    stateChange={stateChange}
                     isPositiveEffect={isPositiveEffect}
                   />
                 </TxnSimulationImage>
@@ -110,7 +110,7 @@ export const SimulationResult: React.FC<SimulationResultProps> = ({
           ) : (
             <TxnSimulationImage>
               <AssetImage
-                stateChange={txnData}
+                stateChange={stateChange}
                 isPositiveEffect={isPositiveEffect}
               />
             </TxnSimulationImage>
@@ -118,9 +118,9 @@ export const SimulationResult: React.FC<SimulationResultProps> = ({
 
           <Column gap="xs">
             <TxnSimulationText weight="normal">
-              {txnData.humanReadableDiff}
+              {stateChange.humanReadableDiff}
             </TxnSimulationText>
-            <TokenFooter rawInfo={txnData.rawInfo} />
+            <TokenFooter rawInfo={stateChange.rawInfo} />
           </Column>
         </TxnSimulationImageMsgWrapper>
       </LinkWrapper>

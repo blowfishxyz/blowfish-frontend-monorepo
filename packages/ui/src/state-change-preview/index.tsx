@@ -14,12 +14,14 @@ export type StateChangePreviewProps = {
   scanResult: ScanResult;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
+  sectionLabel?: string;
 };
 
 export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
   scanResult,
   chainFamily,
   chainNetwork,
+  sectionLabel = "State change",
 }) => {
   const simulationResults =
     scanResult.simulationResults?.expectedStateChanges || [];
@@ -30,14 +32,14 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
     return (
       <Column gap="lg">
         <Row justifyContent="space-between">
-          <SectionHeading>State change</SectionHeading>
+          <SectionHeading>{sectionLabel}</SectionHeading>
         </Row>
         <TxnDataWrapper>
           {simulationResults.map((data, index) => {
             return (
               <SimulationResult
                 key={index}
-                txnData={data}
+                stateChange={data}
                 chainFamily={chainFamily}
                 chainNetwork={chainNetwork}
               />
@@ -52,7 +54,7 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
     return (
       <Column gap="sm">
         <Row justifyContent="space-between">
-          <SectionHeading>State change</SectionHeading>
+          <SectionHeading>{sectionLabel}</SectionHeading>
         </Row>
         <Text size="md" color="danger">
           {simulationError}
@@ -64,7 +66,7 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
   return (
     <Column gap="sm">
       <Row justifyContent="space-between">
-        <SectionHeading>State change</SectionHeading>
+        <SectionHeading>{sectionLabel}</SectionHeading>
       </Row>
       <Text size="md" color="base30">
         No state changes found. Proceed with caution
@@ -73,7 +75,10 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
   );
 };
 
-const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
+const SectionHeading = styled(Text).attrs({
+  size: "sm",
+  color: "foregroundSecondary",
+})``;
 
 const TxnDataWrapper = styled.div`
   padding: 5px 0 0;

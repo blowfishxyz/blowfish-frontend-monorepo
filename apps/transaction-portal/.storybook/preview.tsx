@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import type { Story as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
-import { ThemeProvider } from "styled-components";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
 import { useChainMetadataContext } from "../src/hooks/useChainMetadata";
-import { themes } from "@blowfishxyz/ui";
+import { ThemeProvider } from "@blowfishxyz/ui";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
 
@@ -73,7 +72,7 @@ export const decorators = [
     }, []);
 
     return (
-      <ThemeProvider theme={themes.light}>
+      <ThemeProvider mode="light">
         <WagmiConfig client={mockWagmiClient}>
           <ConnectKitProvider
             options={{

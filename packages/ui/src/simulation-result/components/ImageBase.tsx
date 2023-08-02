@@ -54,7 +54,7 @@ const PlaceholderSimulationImage = styled(Column)<{
     width: ${(p) => p.width / 2}px;
 
     path {
-      fill: ${({ theme }) => theme.colors.border};
+      fill: ${({ theme }) => theme.colors.base30};
     }
   }
 `;

@@ -37,7 +37,7 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
 `;
 
 const WarningText = styled(Text).attrs({ size: "md" })`
-  color: ${({ theme }) => theme.colors.foregroundSecondaryLight};
+  color: ${({ theme }) => theme.colors.base50};
 `;
 
 const SeverityText = styled(Text).attrs({ size: "md" })`

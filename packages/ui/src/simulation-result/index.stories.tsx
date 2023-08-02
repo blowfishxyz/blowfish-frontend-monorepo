@@ -8,7 +8,7 @@ export default {
   title: "SimulationResult",
   component: SimulationResult,
   args: {
-    txnData: stateChangesMap.receiveNativeToken,
+    stateChange: stateChangesMap.receiveNativeToken,
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
   },
@@ -30,30 +30,30 @@ const Wrapper = styled.div`
 
 export const ApproveAllErc721 = SimulationResultComponent.bind({});
 ApproveAllErc721.args = {
-  txnData: stateChangesMap.approveAllErc721,
+  stateChange: stateChangesMap.approveAllErc721,
 };
 
 export const PermitErc20NoExpiration = SimulationResultComponent.bind({});
 PermitErc20NoExpiration.args = {
-  txnData: stateChangesMap.permitErc20NoExpiration,
+  stateChange: stateChangesMap.permitErc20NoExpiration,
 };
 
 export const ReceiveErc721 = SimulationResultComponent.bind({});
 ReceiveErc721.args = {
-  txnData: stateChangesMap.receiveErc721,
+  stateChange: stateChangesMap.receiveErc721,
 };
 
 export const SendNativeToken = SimulationResultComponent.bind({});
 SendNativeToken.args = {
-  txnData: stateChangesMap.sendNativeToken,
+  stateChange: stateChangesMap.sendNativeToken,
 };
 
 export const SendErc721 = SimulationResultComponent.bind({});
 SendErc721.args = {
-  txnData: stateChangesMap.sendErc721,
+  stateChange: stateChangesMap.sendErc721,
 };
 
 export const Erc20UnverifedTransfer = SimulationResultComponent.bind({});
 Erc20UnverifedTransfer.args = {
-  txnData: stateChangesMap.erc20UnverifedTransfer,
+  stateChange: stateChangesMap.erc20UnverifedTransfer,
 };

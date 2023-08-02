@@ -1,10 +1,9 @@
 import React, { memo, useMemo } from "react";
-import { ThemeProvider } from "styled-components";
 import { WagmiConfig } from "wagmi";
 import { createWagmiClient } from "~utils/wagmi";
 import { ConnectKitProvider } from "connectkit";
 
-import { themes } from "@blowfishxyz/ui";
+import { ThemeProvider } from "@blowfishxyz/ui";
 import { useRequestChainId } from "~hooks/useRequestChainId";
 import { useChainMetadataProvider } from "~hooks/useChainMetadata";
 import { useV2Enabled } from "~hooks/useV2Enabled";
@@ -20,7 +19,7 @@ export const GlobalProviders = memo(function GlobalProviders({
   useChainMetadataProvider();
 
   return (
-    <ThemeProvider theme={themes.light}>
+    <ThemeProvider mode="light">
       <WagmiConfig client={wagmiClient}>
         <ConnectKitProvider
           options={{

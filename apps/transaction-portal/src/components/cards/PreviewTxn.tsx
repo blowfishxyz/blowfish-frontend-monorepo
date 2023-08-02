@@ -45,7 +45,7 @@ export type TxnSimulationDataType = {
   protocol?: EvmProtocol | null;
 };
 
-const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
+const SectionHeading = styled(Text).attrs({ size: "sm", color: "base40" })``;
 
 const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
@@ -76,10 +76,10 @@ const VerifiedBadgeWrapper = styled(Row).attrs({
 `;
 
 const PreviewTokenTooltipContent = styled(TooltipContent)`
-  background-color: white;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+  box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   z-index: 4;
   width: 200px;

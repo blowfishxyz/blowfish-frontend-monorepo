@@ -1,9 +1,8 @@
 import React from "react";
 import type { StoryFn as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
-import { ThemeProvider } from "styled-components";
 
-import { themes } from "../src/theme";
+import { ThemeProvider } from "../src/theme";
 
 import { createGlobalStyle } from "styled-components";
 
@@ -17,6 +16,7 @@ const GlobalStyle: React.NamedExoticComponent<GlobalStyleProps> = createGlobalSt
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeSpeed;
+    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   }
 
   @font-face {
@@ -125,7 +125,7 @@ export const decorators = [
     GlobalStyles: GlobalStyle,
   }),
   (Story: StoryType) => (
-    <ThemeProvider theme={themes.light}>
+    <ThemeProvider mode="light">
       <Story />
     </ThemeProvider>
   ),
