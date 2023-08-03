@@ -101,8 +101,9 @@ export const useScanDappRequest = (
   request: DappRequest | undefined,
   origin: string | undefined
 ): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
-  const prevResponseRef =
-    useRef<SWRResponse<EvmTransactionScanResult | EvmMessageScanResult> | null>(null);
+  const prevResponseRef = useRef<SWRResponse<
+    EvmTransactionScanResult | EvmMessageScanResult
+  > | null>(null);
   const consecutiveErrorCountRef = useRef<number>(0);
 
   const response = useSWR(
