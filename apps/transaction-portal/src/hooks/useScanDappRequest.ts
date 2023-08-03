@@ -22,7 +22,7 @@ import { useRef } from "react";
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
 
-const SCAN_REFRESH_INTERVAL_MS = 15_000;
+const SCAN_REFRESH_INTERVAL_MS = 5000;
 
 export const getCacheKey = (
   chainFamily: ChainFamily | undefined,
@@ -37,6 +37,9 @@ export const getCacheKey = (
   return [chainFamily, chainNetwork, request, origin];
 };
 
+let errorCount = 0;
+// let pollCounter = 0;
+
 const fetcher = async (
   chainFamily: ChainFamily,
   chainNetwork: ChainNetwork,
@@ -50,6 +53,14 @@ const fetcher = async (
     chainFamily,
     chainNetwork
   );
+
+  errorCount++;
+  console.log("@@ count ", errorCount);
+  // If the error count is greater than or equals to 3, keep throwing the error until the error count is more than six
+  if (errorCount >= 3 && errorCount < 4) {
+    console.log("@@ throw error");
+    throw new Error("Error thrown");
+  }
 
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to
@@ -114,42 +125,72 @@ export const useScanDappRequest = (
     }
   );
 
-  const { data, error, isValidating, isLoading } = response;
+  const { data, error } = response;
 
   if (error) {
-    consecutiveErrorCountRef.current += 1;
+    console.log("error count:", consecutiveErrorCountRef.current);
 
     if (consecutiveErrorCountRef.current >= 2) {
-      if (prevResponseRef.current) {
-        return {
-          data: prevResponseRef.current,
-          error: undefined,
-          isValidating,
-          isLoading,
-          mutate: () => response.mutate(),
-        };
-      }
-
       return response;
     }
 
-    return {
-      data: undefined,
-      error: undefined,
-      isValidating,
-      isLoading,
-      mutate: () => response.mutate(),
-    };
+    consecutiveErrorCountRef.current += 1;
+    if (prevResponseRef.current) {
+      return { ...response, data: prevResponseRef.current, error: undefined };
+    }
+
+    return response;
   }
 
   if (data) {
     consecutiveErrorCountRef.current = 0;
-
     prevResponseRef.current = data;
   }
 
-  return { ...response, mutate: () => response.mutate() };
+  return response;
 };
+
+// export const useScanDappRequest = (
+//   chainFamily: ChainFamily | undefined,
+//   chainNetwork: ChainNetwork | undefined,
+//   request: DappRequest | undefined,
+//   origin: string | undefined
+// ): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
+//   const prevResponseRef = useRef<
+//     EvmTransactionScanResult | EvmMessageScanResult | null
+//   >(null);
+//   const consecutiveErrorCountRef = useRef<number>(0);
+
+//   const response = useSWR(
+//     getCacheKey(chainFamily, chainNetwork, request, origin),
+//     (params) => fetcher(...params),
+//     {
+//       refreshInterval: SCAN_REFRESH_INTERVAL_MS,
+//     }
+//   );
+
+//   const { data, error } = response;
+
+//   if (error) {
+//     if (consecutiveErrorCountRef.current >= 2) {
+//       return response;
+//     }
+
+//     consecutiveErrorCountRef.current += 1;
+//     if (prevResponseRef.current) {
+//       return { ...response, data: prevResponseRef.current, error: undefined };
+//     }
+
+//     return response;
+//   }
+
+//   if (data) {
+//     consecutiveErrorCountRef.current = 0;
+//     prevResponseRef.current = data;
+//   }
+
+//   return response;
+// };
 
 function mapTransactionsToSingle(
   response: ScanTransactionsEvm200Response

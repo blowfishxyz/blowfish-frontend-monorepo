@@ -116,6 +116,8 @@ const ResultsView: React.FC<{
       ? message?.data.payload.method === "eth_sign"
       : false;
 
+  console.log(scanResults, scanError);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
     if (scanResults?.action === "BLOCK") {
