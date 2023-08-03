@@ -1,10 +1,10 @@
 import type { AppProps } from "next/app";
 import { usePathname } from "next/navigation";
-import { ThemeProvider } from "styled-components";
 import { useMatomoAnalytics } from "@blowfish/hooks";
+import { ThemeProvider } from "styled-components";
+import { BlowfishUIProvider, light } from "@blowfishxyz/ui";
 
 import { GlobalStyle } from "../styles/global";
-import { theme } from "../styles/theme";
 import { Header } from "../components/Header";
 import Head from "next/head";
 
@@ -50,10 +50,12 @@ export default function App({ Component, pageProps }: AppProps) {
         />
         <meta name="twitter:image" content="/images/wallet-banner.webp" />
       </Head>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <Header />
-        <Component {...pageProps} />
+      <ThemeProvider theme={light}>
+        <BlowfishUIProvider mode="light">
+          <GlobalStyle />
+          <Header />
+          <Component {...pageProps} />
+        </BlowfishUIProvider>
       </ThemeProvider>
     </>
   );

@@ -11,11 +11,11 @@ const StyledContainer = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: white;
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
   border-radius: 58px;
   padding: 6px 9px;
   gap: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   cursor: pointer;
   height: 45px;
   max-width: 216px;
@@ -29,7 +29,7 @@ const Connected = styled.div`
   background: #00b94a;
   height: 8px;
   width: 8px;
-  outline: 2px solid white;
+  outline: 2px solid ${({ theme }) => theme.colors.backgroundPrimary};
 `;
 
 const ChainContainer = styled.div`
@@ -59,7 +59,7 @@ const SwitchIconContainer = styled.div`
   width: 30px;
   height: 30px;
   min-width: 30px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 50%;
   display: flex;
   justify-content: center;

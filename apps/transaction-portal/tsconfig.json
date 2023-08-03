@@ -1,21 +1,11 @@
 {
   "extends": "@blowfish/tsconfig/nextjs.json",
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    ".now"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", ".next", ".now"],
   "compilerOptions": {
     "paths": {
-      "~*": [
-        "./src/*"
-      ]
+      "~*": ["./src/*"]
     },
-    "baseUrl": ".",
+    "baseUrl": "."
   }
 }

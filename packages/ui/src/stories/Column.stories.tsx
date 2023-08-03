@@ -3,7 +3,7 @@ import { Column } from "~/common/layout";
 import { Meta, Story } from "@storybook/react";
 
 export default {
-  title: "Column",
+  title: "Internal/Column",
   component: Column,
   argTypes: {
     gap: {

@@ -2,7 +2,7 @@ import { Meta, Story } from "@storybook/react";
 import { Text, TextProps } from "../common/text";
 
 const meta: Meta<TextProps> = {
-  title: "Text",
+  title: "Internal/Text",
   component: Text,
   argTypes: {
     design: {

@@ -13,7 +13,8 @@ export { StyledBaseDiv, StyledBaseText } from "./common/base";
 // External
 export * from "./simulation-result";
 export * from "./simulation-warning";
-export { themes, ThemeProvider } from "./theme";
+export * from "./state-change-preview";
+export { light, dark, BlowfishUIProvider, useTheme } from "./theme";
 export type {
   ITheme,
   ThemeBackgroundColor,

@@ -4,13 +4,13 @@ import { styled } from "styled-components";
 
 import { EnrichedSimulationResult } from "~components/simulation-results/EnrichedSimulationResult";
 
-import * as stateChangesMap from "../components/fixtures/state-changes";
+import * as stateChangesMap from "@blowfishxyz/api-client/fixtures";
 
 export default {
   title: "EnrichedSimulationResult",
   component: EnrichedSimulationResult,
   args: {
-    stateChange: stateChangesMap.receiveErc20,
+    stateChange: stateChangesMap.receiveNativeToken,
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
   },
@@ -32,7 +32,7 @@ const Wrapper = styled.div`
 
 export const ReceiveErc20 = EnrichedSimulationResultComponent.bind({});
 ReceiveErc20.args = {
-  stateChange: stateChangesMap.receiveErc20,
+  stateChange: stateChangesMap.receiveNativeToken,
 };
 
 export const ApproveAllErc721 = EnrichedSimulationResultComponent.bind({});
@@ -54,7 +54,7 @@ ReceiveErc721.args = {
 
 export const SendErc20 = EnrichedSimulationResultComponent.bind({});
 SendErc20.args = {
-  stateChange: stateChangesMap.sendErc20,
+  stateChange: stateChangesMap.sendNativeToken,
 };
 
 export const SendErc721 = EnrichedSimulationResultComponent.bind({});

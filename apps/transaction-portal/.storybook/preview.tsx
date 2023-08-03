@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 import type { Story as StoryType } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
-import { ThemeProvider } from "styled-components";
 import { configureChains, createClient, WagmiConfig } from "wagmi";
 import { jsonRpcProvider } from "@wagmi/core/providers/jsonRpc";
 import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
 import { useChainMetadataContext } from "../src/hooks/useChainMetadata";
-import { themes } from "@blowfishxyz/ui";
+import { BlowfishUIProvider, light } from "@blowfishxyz/ui";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
+import { ThemeProvider } from "styled-components";
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -73,17 +73,19 @@ export const decorators = [
     }, []);
 
     return (
-      <ThemeProvider theme={themes.light}>
-        <WagmiConfig client={mockWagmiClient}>
-          <ConnectKitProvider
-            options={{
-              initialChainId: 1,
-            }}
-            mode="light"
-          >
-            <Story />
-          </ConnectKitProvider>
-        </WagmiConfig>
+      <ThemeProvider theme={light}>
+        <BlowfishUIProvider mode="light">
+          <WagmiConfig client={mockWagmiClient}>
+            <ConnectKitProvider
+              options={{
+                initialChainId: 1,
+              }}
+              mode="light"
+            >
+              <Story />
+            </ConnectKitProvider>
+          </WagmiConfig>
+        </BlowfishUIProvider>
       </ThemeProvider>
     );
   },

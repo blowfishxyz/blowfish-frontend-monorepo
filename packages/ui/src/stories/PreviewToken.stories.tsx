@@ -29,6 +29,6 @@ const PreviewTokensStory = () => (
   </PreviewTokenContainer>
 );
 
-storiesOf("Components/PreviewTokens", module).add("Default", () => (
+storiesOf("Internal/PreviewTokens", module).add("Default", () => (
   <PreviewTokensStory />
 ));
