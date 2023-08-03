@@ -39,8 +39,10 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
 
 const Wrapper = styled(Column)<{ severity: Severity }>`
   overflow-y: auto;
-  background-color: ${({ theme, severity }) =>
-    theme.severityColors[severity].backgroundV2};
+  background-color: ${({ theme, severity }) => {
+    console.log("@@ HERE", severity, theme);
+    return theme.severityColors[severity].backgroundV2;
+  }};
 `;
 
 const WrapperInner = styled(Column)`

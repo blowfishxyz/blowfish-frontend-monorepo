@@ -53,8 +53,9 @@ const baseStyles = css`
   border-radius: 10px;
   white-space: nowrap;
 
-  font-family: "GT-Planar", -apple-system, system-ui, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: ${({ theme }) => theme.typography.fontFamily}, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   font-style: normal;
   font-weight: 500;
   font-size: 18px;

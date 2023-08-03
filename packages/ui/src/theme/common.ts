@@ -54,6 +54,12 @@ export const grids = {
 
 type Grids = typeof grids;
 
+export const typography = {
+  fontFamily: "GT-Planar",
+};
+
+type Typography = typeof typography;
+
 type BaseColors = {
   base10: string;
   base30: string;
@@ -103,6 +109,7 @@ type ThemeColors = BaseColors &
   ActionColors;
 
 export type ITheme = {
+  typography: Typography;
   colors: ThemeColors;
   severityColors: SeverityColors;
   grids: Grids;

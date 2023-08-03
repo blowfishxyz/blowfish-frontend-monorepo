@@ -4,6 +4,7 @@ import {
   generateMediaQueries,
   grids,
   severityColors,
+  typography,
 } from "~/theme/common";
 
 const base = {
@@ -42,6 +43,7 @@ export const dark: ITheme = {
     ...foregroundColors,
     ...actionColors,
   },
+  typography,
   severityColors,
   grids,
   mediaQueries: generateMediaQueries(breakpoints),
