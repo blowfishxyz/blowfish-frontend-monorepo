@@ -41,7 +41,7 @@ const WarningText = styled(Text).attrs({ size: "md" })`
 `;
 
 const SeverityText = styled(Text).attrs({ size: "md" })`
-  color: ${({ theme }) => theme.colors.backgroundPrimary};
+  color: ${({ theme }) => theme.colors.foregroundContrast};
 `;
 
 export const Chip = ({ $severity, ...rest }: ChipProps) => {

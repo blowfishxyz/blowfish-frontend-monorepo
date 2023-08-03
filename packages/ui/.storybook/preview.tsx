@@ -3,7 +3,7 @@ import { createGlobalStyle } from "styled-components";
 import type { StoryFn as StoryType, StoryContext } from "@storybook/react";
 import { withThemeFromJSXProvider } from "@storybook/addon-styling";
 
-import { ThemeProvider, light, dark } from "../src/theme";
+import { BlowfishUIProvider, light, dark } from "../src/theme";
 
 type GlobalStyleProps = {};
 
@@ -125,8 +125,8 @@ function withTheme(Story: StoryType, context: StoryContext) {
   const { theme } = context.globals;
 
   return (
-    <ThemeProvider mode={theme}>
+    <BlowfishUIProvider mode={theme}>
       <Story {...context} />
-    </ThemeProvider>
+    </BlowfishUIProvider>
   );
 }

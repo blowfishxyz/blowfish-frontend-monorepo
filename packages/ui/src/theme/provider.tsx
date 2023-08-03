@@ -20,23 +20,40 @@ type ThemeProviderProps = Omit<StyledProviderProps, "theme"> & {
 };
 
 export const BlowfishUIProvider: React.FC<ThemeProviderProps> = memo(
-  function ThemeProvider({
-    mode = "light",
-    fontFamily,
-    themeOverride,
-    children,
-  }) {
-    const defaultTheme = mode === "dark" ? dark : light;
-    const theme: ITheme = useMemo(
-      () =>
-        mergeAll<ITheme>([
-          defaultTheme,
-          fontFamily ? { typography: { fontFamily } } : {},
-          (themeOverride || {}) as ITheme,
-        ]),
-      [fontFamily, themeOverride]
-    );
+  function ThemeProvider({ children, ...rest }) {
+    const theme = useTheme(rest);
 
     return <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>;
   }
 );
+
+export function useTheme({
+  mode,
+  fontFamily,
+  themeOverride,
+}: {
+  themeOverride?: DeepPartial<ITheme>;
+  mode?: "light" | "dark";
+  fontFamily?: string;
+}): ITheme {
+  const defaultTheme = useMemo(() => {
+    let selectedMode = mode;
+    if (!selectedMode && typeof window !== "undefined" && window.matchMedia) {
+      selectedMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+
+    return selectedMode === "dark" ? dark : light;
+  }, [mode]);
+
+  return useMemo(
+    () =>
+      mergeAll<ITheme>([
+        defaultTheme,
+        fontFamily ? { typography: { fontFamily } } : {},
+        (themeOverride || {}) as ITheme,
+      ]),
+    [fontFamily, themeOverride, defaultTheme]
+  );
+}
