@@ -229,7 +229,28 @@ export const transactionsWarningScanResult: EvmTransactionsScanResult = {
       },
       userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     },
-    perTransaction: [],
+    perTransaction: [
+      {
+        decodedCalldata: null,
+        decodedLogs: [
+          {
+            name: "Transfer",
+            params: [
+              {
+                name: "from",
+                paramType: "address",
+                value: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+              },
+            ],
+            signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f5",
+          },
+        ],
+        gas: { gasLimit: "119816" },
+        logs: [],
+        protocol: null,
+        error: null,
+      },
+    ],
   },
   warnings: [
     {
