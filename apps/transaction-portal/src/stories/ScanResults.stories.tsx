@@ -8,7 +8,7 @@ import {
   transactionBlockScanResult,
   transactionNoActionScanResult,
   transactionWarningScanResult,
-} from "@blowfishxyz/api-client/build/fixtures";
+} from "@blowfishxyz/api-client/fixtures";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
 import {

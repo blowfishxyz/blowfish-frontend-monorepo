@@ -1,7 +1,7 @@
 import React from "react";
 import { Story, Meta } from "@storybook/react";
 import { PreviewTxn, PreviewTxnProps } from "~components/cards/PreviewTxn";
-import { transactionNoActionScanResult } from "@blowfishxyz/api-client/build/fixtures";
+import { transactionNoActionScanResult } from "@blowfishxyz/api-client/fixtures";
 import { CardContent } from "~components/cards/common";
 import { Text, Row } from "@blowfishxyz/ui";
 import { ArrowDownIcon } from "@blowfish/protect-ui/icons";

@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 
 import { EnrichedSimulationResult } from "~components/simulation-results/EnrichedSimulationResult";
 
-import * as stateChangesMap from "@blowfishxyz/api-client/build/fixtures";
+import * as stateChangesMap from "@blowfishxyz/api-client/fixtures";
 
 export default {
   title: "EnrichedSimulationResult",
