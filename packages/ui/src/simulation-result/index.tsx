@@ -16,8 +16,8 @@ import {
 } from "~/simulation-result/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
 import {
-  ChainFamily,
-  ChainNetwork,
+  EvmChainFamily,
+  EvmChainNetwork,
   EvmExpectedStateChange,
 } from "@blowfishxyz/api-client";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
@@ -68,8 +68,8 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
 
 export interface SimulationResultProps {
   stateChange: EvmExpectedStateChange;
-  chainFamily: ChainFamily | undefined;
-  chainNetwork: ChainNetwork | undefined;
+  chainFamily: EvmChainFamily | undefined;
+  chainNetwork: EvmChainNetwork | undefined;
 }
 
 export const SimulationResult: React.FC<SimulationResultProps> = ({
@@ -224,8 +224,8 @@ function useAssetLinkFromRawInfo(
     chainFamily,
     chainNetwork,
   }: {
-    chainFamily: ChainFamily | undefined;
-    chainNetwork: ChainNetwork | undefined;
+    chainFamily: EvmChainFamily | undefined;
+    chainNetwork: EvmChainNetwork | undefined;
   }
 ) {
   if (!chainFamily || !chainNetwork) {

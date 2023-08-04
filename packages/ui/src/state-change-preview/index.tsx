@@ -1,6 +1,6 @@
 import {
-  ChainFamily,
-  ChainNetwork,
+  EvmChainFamily,
+  EvmChainNetwork,
   EvmMessageScanResult,
   EvmTransactionScanResult,
 } from "@blowfishxyz/api-client";
@@ -12,8 +12,8 @@ import { SimulationResult } from "~/simulation-result";
 type ScanResult = EvmTransactionScanResult | EvmMessageScanResult;
 export type StateChangePreviewProps = {
   scanResult: ScanResult;
-  chainFamily: ChainFamily;
-  chainNetwork: ChainNetwork;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
   sectionLabel?: string;
 };
 

@@ -584,7 +584,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
 
-  /solana/v0/mainnet/scan/transactions:
+  "/solana/v0/{chain-network}/scan/transactions":
     post:
       tags:
         - Scan transactions
@@ -636,6 +636,16 @@ paths:
           description: The expected return content type
           schema:
             $ref: "#/components/schemas/ContentType"
+        - name: chain-network
+          in: path
+          description: The chain network to use
+          schema:
+            type: string
+            enum:
+              - mainnet
+              - testnet
+              - devnet
+          required: true
       requestBody:
         required: true
         content:

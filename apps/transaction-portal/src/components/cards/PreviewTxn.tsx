@@ -25,12 +25,11 @@ import { CardWrapper, CardContent, Divider, CardText } from "./common";
 import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
-  ChainFamily,
-  ChainNetwork,
   EvmProtocol,
   EvmTransactionScanResult,
   EvmMessageScanResult,
 } from "@blowfishxyz/api-client";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";

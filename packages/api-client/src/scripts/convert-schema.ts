@@ -70,8 +70,23 @@ async function parseFile(
           if (Yaml.isSeq(node.value)) {
             pathParent.key.value =
               "/{chain-family}/v0/{chain-network}/scan/transactions";
-            node.value.add(createChainFamily());
-            node.value.add(createChainNetwork());
+            node.value.add(createEvmChainFamily());
+            node.value.add(createEvmChainNetwork());
+          }
+        }
+      }
+
+      if (key.value === "parameters") {
+        const pathParent = path.at(-4);
+        if (
+          Yaml.isPair(pathParent) &&
+          Yaml.isScalar(pathParent.key) &&
+          pathParent.key.value === "/solana/v0/mainnet/scan/transactions"
+        ) {
+          if (Yaml.isSeq(node.value)) {
+            pathParent.key.value =
+              "/solana/v0/{chain-network}/scan/transactions";
+            node.value.add(createSolanaChainNetwork());
           }
         }
       }
@@ -86,8 +101,8 @@ async function parseFile(
           if (Yaml.isSeq(node.value)) {
             pathParent.key.value =
               "/{chain-family}/v0/{chain-network}/scan/transaction";
-            node.value.add(createChainFamily());
-            node.value.add(createChainNetwork());
+            node.value.add(createEvmChainFamily());
+            node.value.add(createEvmChainNetwork());
           }
         }
       }
@@ -102,8 +117,8 @@ async function parseFile(
           if (Yaml.isSeq(node.value)) {
             pathParent.key.value =
               "/{chain-family}/v0/{chain-network}/scan/message";
-            node.value.add(createChainFamily());
-            node.value.add(createChainNetwork());
+            node.value.add(createEvmChainFamily());
+            node.value.add(createEvmChainNetwork());
           }
         }
       }
@@ -147,7 +162,7 @@ async function parseFile(
   await writeFile(convertedPath, data);
 }
 
-function createChainFamily() {
+function createEvmChainFamily() {
   const parsed = Yaml.parse(`
     name: chain-family
     in: path
@@ -166,7 +181,7 @@ function createChainFamily() {
   return parsed;
 }
 
-function createChainNetwork() {
+function createEvmChainNetwork() {
   const parsed = Yaml.parse(`
     name: chain-network
     in: path
@@ -177,6 +192,23 @@ function createChainNetwork() {
         - mainnet
         - one
         - goerli
+    required: true
+  `) as YAMLMap;
+
+  return parsed;
+}
+
+function createSolanaChainNetwork() {
+  const parsed = Yaml.parse(`
+    name: chain-network
+    in: path
+    description: The chain network to use
+    schema:
+      type: string
+      enum:
+        - mainnet
+        - testnet
+        - devnet
     required: true
   `) as YAMLMap;
 

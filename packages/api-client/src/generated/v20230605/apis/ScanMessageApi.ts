@@ -168,7 +168,7 @@ export const ScanMessageEvmOperationChainFamilyEnum = {
   Optimism: "optimism",
 } as const;
 export type ScanMessageEvmOperationChainFamilyEnum =
-  (typeof ScanMessageEvmOperationChainFamilyEnum)[keyof typeof ScanMessageEvmOperationChainFamilyEnum];
+  typeof ScanMessageEvmOperationChainFamilyEnum[keyof typeof ScanMessageEvmOperationChainFamilyEnum];
 /**
  * @export
  */
@@ -178,4 +178,4 @@ export const ScanMessageEvmOperationChainNetworkEnum = {
   Goerli: "goerli",
 } as const;
 export type ScanMessageEvmOperationChainNetworkEnum =
-  (typeof ScanMessageEvmOperationChainNetworkEnum)[keyof typeof ScanMessageEvmOperationChainNetworkEnum];
+  typeof ScanMessageEvmOperationChainNetworkEnum[keyof typeof ScanMessageEvmOperationChainNetworkEnum];

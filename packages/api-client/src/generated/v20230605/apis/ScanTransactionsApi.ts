@@ -37,6 +37,7 @@ export interface ScanTransactionsEvmOperationRequest {
 export interface ScanTransactionsSolanaOperationRequest {
   xApiKey: string;
   xApiVersion: string;
+  chainNetwork: ScanTransactionsSolanaOperationChainNetworkEnum;
   scanTransactionsSolanaRequest: ScanTransactionsSolanaRequest;
   language?: Languages;
   simulationTimeoutMs?: number;
@@ -197,6 +198,16 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     }
 
     if (
+      requestParameters.chainNetwork === null ||
+      requestParameters.chainNetwork === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "chainNetwork",
+        "Required parameter requestParameters.chainNetwork was null or undefined when calling scanTransactionsSolana."
+      );
+    }
+
+    if (
       requestParameters.scanTransactionsSolanaRequest === null ||
       requestParameters.scanTransactionsSolanaRequest === undefined
     ) {
@@ -252,7 +263,10 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/solana/v0/mainnet/scan/transactions`,
+        path: `/solana/v0/{chain-network}/scan/transactions`.replace(
+          `{${"chain-network"}}`,
+          encodeURIComponent(String(requestParameters.chainNetwork))
+        ),
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
@@ -291,7 +305,7 @@ export const ScanTransactionsEvmOperationChainFamilyEnum = {
   Optimism: "optimism",
 } as const;
 export type ScanTransactionsEvmOperationChainFamilyEnum =
-  (typeof ScanTransactionsEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];
+  typeof ScanTransactionsEvmOperationChainFamilyEnum[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];
 /**
  * @export
  */
@@ -301,7 +315,17 @@ export const ScanTransactionsEvmOperationChainNetworkEnum = {
   Goerli: "goerli",
 } as const;
 export type ScanTransactionsEvmOperationChainNetworkEnum =
-  (typeof ScanTransactionsEvmOperationChainNetworkEnum)[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
+  typeof ScanTransactionsEvmOperationChainNetworkEnum[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
+/**
+ * @export
+ */
+export const ScanTransactionsSolanaOperationChainNetworkEnum = {
+  Mainnet: "mainnet",
+  Testnet: "testnet",
+  Devnet: "devnet",
+} as const;
+export type ScanTransactionsSolanaOperationChainNetworkEnum =
+  typeof ScanTransactionsSolanaOperationChainNetworkEnum[keyof typeof ScanTransactionsSolanaOperationChainNetworkEnum];
 /**
  * @export
  */
@@ -310,4 +334,4 @@ export const ScanTransactionsSolanaOperationSimulateExpiredEnum = {
   False: "false",
 } as const;
 export type ScanTransactionsSolanaOperationSimulateExpiredEnum =
-  (typeof ScanTransactionsSolanaOperationSimulateExpiredEnum)[keyof typeof ScanTransactionsSolanaOperationSimulateExpiredEnum];
+  typeof ScanTransactionsSolanaOperationSimulateExpiredEnum[keyof typeof ScanTransactionsSolanaOperationSimulateExpiredEnum];

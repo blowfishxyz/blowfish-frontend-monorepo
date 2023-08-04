@@ -1,6 +1,7 @@
 import {
   ScanTransactionsEvmOperationChainFamilyEnum,
   ScanTransactionsEvmOperationChainNetworkEnum,
+  ScanTransactionsSolanaOperationChainNetworkEnum,
 } from "../../generated/v20230605";
 import type {
   ScanMessageEvm200Response,
@@ -20,8 +21,10 @@ import type {
 } from "../../generated/v20230605/models";
 
 // TODO: use a separate ref in the schema to generate a standalone enum
-export type ChainFamily = ScanTransactionsEvmOperationChainFamilyEnum;
-export type ChainNetwork = ScanTransactionsEvmOperationChainNetworkEnum;
+export type EvmChainFamily = ScanTransactionsEvmOperationChainFamilyEnum;
+export type EvmChainNetwork = ScanTransactionsEvmOperationChainNetworkEnum;
+export type SolanaChainNetwork =
+  ScanTransactionsSolanaOperationChainNetworkEnum;
 
 export type EvmMessageExpectedStateChange =
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;

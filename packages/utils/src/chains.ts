@@ -1,4 +1,7 @@
-import { ChainFamily, ChainNetwork } from "@blowfishxyz/api-client";
+import {
+  EvmChainFamily as ChainFamily,
+  EvmChainNetwork as ChainNetwork,
+} from "@blowfishxyz/api-client";
 
 export type { ChainFamily, ChainNetwork };
 

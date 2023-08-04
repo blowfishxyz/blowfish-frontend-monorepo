@@ -1,6 +1,6 @@
 import {
-  ChainFamily,
-  ChainNetwork,
+  EvmChainFamily,
+  EvmChainNetwork,
   CurrencyStateChange,
   EvmExpectedStateChange,
   EvmStateChangeErc1155ApprovalForAll,
@@ -192,8 +192,8 @@ export const createValidURL = (url: string): URL | undefined => {
 };
 
 export interface BlockExplorerUrlOptions {
-  chainFamily: ChainFamily;
-  chainNetwork: ChainNetwork;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
   address: string;
   nftTokenId?: string | null;
   isApprovalForAllStateChange?: string;

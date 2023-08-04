@@ -13,7 +13,12 @@ import {
   ScanMessageApi,
 } from "../../generated/v20230605/apis";
 import { Configuration } from "../../generated/v20230605/runtime";
-import { ChainFamily, ChainNetwork, DownloadBlocklistRequest } from "./types";
+import {
+  EvmChainFamily,
+  EvmChainNetwork,
+  DownloadBlocklistRequest,
+  SolanaChainNetwork,
+} from "./types";
 import { mapMessageResponse } from "./utils";
 
 export class BlowfishApiClient {
@@ -55,7 +60,7 @@ export class BlowfishApiClient {
     };
   }
 
-  solana = (chainNetwork: string) => {
+  solana = (chainNetwork: SolanaChainNetwork) => {
     return {
       scanTransactions: (
         transactions: string[],
@@ -63,7 +68,7 @@ export class BlowfishApiClient {
         metadata: RequestMetadata
       ) => {
         return this.apis.transactions.scanTransactionsSolana({
-          // chainNetwork,
+          chainNetwork,
           scanTransactionsSolanaRequest: {
             transactions,
             userAccount,
@@ -76,7 +81,7 @@ export class BlowfishApiClient {
     };
   };
 
-  evm = (chainFamily: ChainFamily, chainNetwork: ChainNetwork) => {
+  evm = (chainFamily: EvmChainFamily, chainNetwork: EvmChainNetwork) => {
     return {
       scanMessage: (
         rawMessage: string,
