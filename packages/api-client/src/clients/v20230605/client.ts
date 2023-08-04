@@ -44,9 +44,7 @@ export class BlowfishApiClient {
 
   constructor(
     private readonly basePath: string,
-    private readonly apiKey: string,
-    private readonly chainFamily: ChainFamily,
-    private readonly chainNetwork: ChainNetwork
+    private readonly apiKey: string
   ) {
     this.config = new Configuration(this.getConfig(apiKey));
     this.apis = {
@@ -57,68 +55,97 @@ export class BlowfishApiClient {
     };
   }
 
-  scanMessageEvm = (
-    rawMessage: string,
-    userAccount: string,
-    metadata: RequestMetadata
-  ) => {
-    return this.apis.message
-      .scanMessageEvm({
-        chainFamily: this.chainFamily,
-        chainNetwork: this.chainNetwork,
-        scanMessageEvmRequest: {
-          message: {
-            kind: "SIGN_MESSAGE",
-            rawMessage,
+  solana = (chainNetwork: string) => {
+    return {
+      scanTransactions: (
+        transactions: string[],
+        userAccount: string,
+        metadata: RequestMetadata
+      ) => {
+        return this.apis.transactions.scanTransactionsSolana({
+          // chainNetwork,
+          scanTransactionsSolanaRequest: {
+            transactions,
+            userAccount,
+            metadata,
           },
-          userAccount,
-          metadata,
-        },
-        xApiKey: this.apiKey,
-        xApiVersion: this.apiVersion,
-      })
-      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
-  };
-
-  scanSignTypedData = (
-    typedData: EvmSignTypedDataData,
-    userAccount: string,
-    metadata: RequestMetadata
-  ) => {
-    return this.apis.message
-      .scanMessageEvm({
-        chainFamily: this.chainFamily,
-        chainNetwork: this.chainNetwork,
-        scanMessageEvmRequest: {
-          message: {
-            kind: "SIGN_TYPED_DATA",
-            data: typedData,
-          },
-          userAccount,
-          metadata,
-        },
-        xApiKey: this.apiKey,
-        xApiVersion: this.apiVersion,
-      })
-      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
-  };
-
-  scanTransactionsEvm = (
-    txObjects: EvmTxData[],
-    userAccount: string,
-    metadata: RequestMetadata
-  ) => {
-    return this.apis.transactions.scanTransactionsEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
-      scanTransactionsEvmRequest: {
-        txObjects,
-        userAccount,
-        metadata,
+          xApiKey: this.apiKey,
+          xApiVersion: this.apiVersion,
+        });
       },
-      xApiKey: this.apiKey,
-      xApiVersion: this.apiVersion,
-    });
+    };
+  };
+
+  evm = (chainFamily: ChainFamily, chainNetwork: ChainNetwork) => {
+    return {
+      scanMessage: (
+        rawMessage: string,
+        userAccount: string,
+        metadata: RequestMetadata
+      ) => {
+        return this.apis.message
+          .scanMessageEvm({
+            chainFamily,
+            chainNetwork,
+            scanMessageEvmRequest: {
+              message: {
+                kind: "SIGN_MESSAGE",
+                rawMessage,
+              },
+              userAccount,
+              metadata,
+            },
+            xApiKey: this.apiKey,
+            xApiVersion: this.apiVersion,
+          })
+          .then((x) =>
+            mapMessageResponse(x as ScanMessageEvm200ResponseLegacy)
+          );
+      },
+
+      scanSignTypedData: (
+        typedData: EvmSignTypedDataData,
+        userAccount: string,
+        metadata: RequestMetadata
+      ) => {
+        return this.apis.message
+          .scanMessageEvm({
+            chainFamily,
+            chainNetwork,
+            scanMessageEvmRequest: {
+              message: {
+                kind: "SIGN_TYPED_DATA",
+                data: typedData,
+              },
+              userAccount,
+              metadata,
+            },
+            xApiKey: this.apiKey,
+            xApiVersion: this.apiVersion,
+          })
+          .then((x) =>
+            mapMessageResponse(x as ScanMessageEvm200ResponseLegacy)
+          );
+      },
+
+      scanTransactions: (
+        txObjects: EvmTxData[],
+        userAccount: string,
+        metadata: RequestMetadata
+      ) => {
+        return this.apis.transactions.scanTransactionsEvm({
+          chainFamily,
+          chainNetwork,
+          scanTransactionsEvmRequest: {
+            txObjects,
+            userAccount,
+            metadata,
+          },
+          xApiKey: this.apiKey,
+          xApiVersion: this.apiVersion,
+        });
+      },
+    };
   };
 
   scanDomains = (domains: string[]) => {
@@ -138,4 +165,11 @@ export class BlowfishApiClient {
       downloadBlocklistRequest: request,
     });
   };
+}
+
+export function createClient(
+  basePath: string,
+  apiKey: string
+): BlowfishApiClient {
+  return new BlowfishApiClient(basePath, apiKey);
 }
