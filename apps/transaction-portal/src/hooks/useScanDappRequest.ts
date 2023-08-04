@@ -17,6 +17,7 @@ import {
 } from "@blowfish/utils/types";
 import useSWR, { SWRResponse } from "swr";
 import { isSmartContractWallet } from "../utils/wallets";
+import { useRef } from "react";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -100,13 +101,33 @@ export const useScanDappRequest = (
   request: DappRequest | undefined,
   origin: string | undefined
 ): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
-  return useSWR(
+  const prevResponseRef = useRef<SWRResponse<
+    EvmTransactionScanResult | EvmMessageScanResult
+  > | null>(null);
+  const consecutiveErrorCountRef = useRef<number>(0);
+
+  const response = useSWR(
     getCacheKey(chainFamily, chainNetwork, request, origin),
     (params) => fetcher(...params),
     {
       refreshInterval: SCAN_REFRESH_INTERVAL_MS,
     }
   );
+
+  if (response.error) {
+    consecutiveErrorCountRef.current += 1;
+
+    if (consecutiveErrorCountRef.current <= 2 && prevResponseRef.current) {
+      return prevResponseRef.current;
+    }
+
+    return response;
+  }
+
+  consecutiveErrorCountRef.current = 0;
+  prevResponseRef.current = response ?? null;
+
+  return response;
 };
 
 function mapTransactionsToSingle(
