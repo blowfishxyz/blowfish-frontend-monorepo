@@ -1,11 +1,16 @@
 {
   "name": "@blowfishxyz/ui",
   "license": "MIT",
-  "version": "0.0.1-alpha.2",
+  "version": "0.0.1-alpha.3",
   "description": "Package containing Blowfish reusable UI components",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
   "types": "./build/index.d.ts",
+  "files": [
+    "build",
+    "README.md",
+    "src"
+  ],
   "scripts": {
     "build": "rm -rf build && tsup",
     "build:dev": "rm -rf build && tsup --watch",
