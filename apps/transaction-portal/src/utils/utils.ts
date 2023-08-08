@@ -186,7 +186,7 @@ export const getProtocol = (
     | null
 ): EvmProtocol | null => {
   if (simulationResults && "aggregated" in simulationResults) {
-    return simulationResults.perTransaction[0].protocol;
+    return simulationResults.perTransaction[0]?.protocol;
   } else if (simulationResults && "protocol" in simulationResults) {
     return simulationResults.protocol;
   }
@@ -218,25 +218,19 @@ export const getResultsFromScanResponse = (
     | ScanMessageEvm200ResponseSimulationResults
     | null
 ) => {
-  if (!simulationResults) return null;
-
-  let result;
-  let expectedStateChanges;
-  let decodedCalldata;
-  let decodedLogs;
+  if (!simulationResults) return {};
 
   if ("aggregated" in simulationResults) {
-    result = simulationResults.aggregated;
-    expectedStateChanges =
-      simulationResults.aggregated.expectedStateChanges[
-        simulationResults.aggregated.userAccount
-      ];
-    decodedCalldata = simulationResults.perTransaction[0].decodedCalldata;
-    decodedLogs = simulationResults.perTransaction[0].decodedLogs;
+    const aggregated = simulationResults.aggregated;
+    const { userAccount } = aggregated;
+    return {
+      expectedStateChanges: aggregated.expectedStateChanges[userAccount],
+      decodedCalldata: simulationResults.perTransaction[0].decodedCalldata,
+      decodedLogs: simulationResults.perTransaction[0].decodedLogs,
+    };
   } else {
-    result = simulationResults;
-    expectedStateChanges = simulationResults.expectedStateChanges;
+    return {
+      expectedStateChanges: simulationResults.expectedStateChanges,
+    };
   }
-
-  return { result, expectedStateChanges, decodedCalldata, decodedLogs };
 };

@@ -15,45 +15,50 @@ export const AdvancedDetails = memo<{
 
   return (
     <Column width="100%">
-      <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
-        <CardContent>
-          {showAdvancedDetails && <RequestJsonViewer request={request} />}
-          {decodedLogs && (
-            <Column marginTop={16} gap="sm">
-              <Text size="sm" design="secondary">
-                Decoded Logs
-              </Text>
-              <Column gap="lg">
-                {decodedLogs.map(
-                  (decodedLog, i) =>
-                    decodedLog && (
-                      <Column gap="sm" key={`${decodedLog.name}-${i}`}>
-                        <Text size="xs" design="secondary">
-                          Name:{" "}
-                          <Text size="xs">
-                            {decodedLog.name} (
-                            {decodedLog.params.map((param, i) => (
-                              <DecodedLogsParams
-                                size="xs"
-                                key={`${param.name}-${i}`}
-                              >
-                                {param.paramType} {param.name}
-                              </DecodedLogsParams>
-                            ))}
-                            )
-                          </Text>
-                        </Text>
-                        <Text size="xs" design="secondary">
-                          Address: <Text size="xs">{decodedLog.signature}</Text>
-                        </Text>
-                      </Column>
-                    )
-                )}
-              </Column>
-            </Column>
-          )}
-        </CardContent>
-      </DynamicJsonViewerWrapper>
+      {showAdvancedDetails && (
+        <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
+          <CardContent>
+            {showAdvancedDetails && <RequestJsonViewer request={request} />}
+            {decodedLogs &&
+              decodedLogs.filter((decodedLog) => decodedLog !== null).length >
+                0 && (
+                <Column marginTop={16} gap="sm">
+                  <Text size="sm" design="secondary">
+                    Decoded Logs
+                  </Text>
+                  <Column gap="lg">
+                    {decodedLogs.map(
+                      (decodedLog, i) =>
+                        decodedLog && (
+                          <Column gap="sm" key={`${decodedLog.name}-${i}`}>
+                            <Text size="xs" design="secondary">
+                              Name:{" "}
+                              <Text size="xs">
+                                {decodedLog.name} (
+                                {decodedLog.params.map((param, i) => (
+                                  <DecodedLogsParams
+                                    size="xs"
+                                    key={`${param.name}-${i}`}
+                                  >
+                                    {param.paramType} {param.name}
+                                  </DecodedLogsParams>
+                                ))}
+                                )
+                              </Text>
+                            </Text>
+                            <Text size="xs" design="secondary">
+                              Address:{" "}
+                              <Text size="xs">{decodedLog.signature}</Text>
+                            </Text>
+                          </Column>
+                        )
+                    )}
+                  </Column>
+                </Column>
+              )}
+          </CardContent>
+        </DynamicJsonViewerWrapper>
+      )}
       {showAdvancedDetails && <Divider $margin="16px 0" />}
       <CardContent>
         <ViewDetailsWrapper
@@ -88,7 +93,19 @@ const ViewDetailsWrapper = styled(Row)`
 const DynamicJsonViewerWrapper = styled.div<{ $show: boolean }>`
   animation: ${({ $show }) => ($show ? fadeIn : fadeOut)} 1s ease forwards;
   opacity: ${({ $show }) => ($show ? "1" : "0")};
+  max-width: 550px;
+  width: 100%;
   overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    width: 0px;
+  }
 `;
 
 const StyledArrowDownIcon = styled(ArrowDownIcon)`

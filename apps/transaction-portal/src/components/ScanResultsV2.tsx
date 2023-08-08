@@ -63,7 +63,8 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
   const error = getErrorFromScanResponse(scanResults.simulationResults);
-  const results = getResultsFromScanResponse(scanResults.simulationResults);
+  const { expectedStateChanges, decodedCalldata, decodedLogs } =
+    getResultsFromScanResponse(scanResults.simulationResults);
 
   const hasPunycode = containsPunycode(dappUrl?.hostname);
 
@@ -204,15 +205,13 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     };
   }, [severity, impersonatingAddress, setLayoutConfig, error]);
 
-  console.log(scanResults);
-
   const txnData = {
     message: parsedMessageContent,
-    data: results?.expectedStateChanges,
+    data: expectedStateChanges,
     dappUrl,
     account: request.userAccount,
     protocol: getProtocol(scanResults?.simulationResults),
-    decodedCalldata: results?.decodedCalldata,
+    decodedCalldata: decodedCalldata,
   };
 
   return (
@@ -234,10 +233,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
         advancedDetails={
-          <AdvancedDetails
-            request={request}
-            decodedLogs={results?.decodedLogs}
-          />
+          <AdvancedDetails request={request} decodedLogs={decodedLogs} />
         }
         onContinue={confirm}
         onCancel={() => {

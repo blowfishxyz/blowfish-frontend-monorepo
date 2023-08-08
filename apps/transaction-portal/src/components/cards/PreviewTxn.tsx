@@ -137,6 +137,28 @@ const DecodedCallDataArgs = styled(Text)`
   }
 `;
 
+const DecodedCallDataText = styled(Text).attrs({ size: "sm" })`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 500px;
+  display: inline-block;
+`;
+
+const ProtocolName = styled(CardText).attrs({ size: "xs", marginLeft: 8 })`
+  display: flex;
+  align-items: center;
+`;
+
+const ProtocolLink = styled(LinkWithArrow)`
+  display: inline-block;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: capitalize;
+`;
+
 interface PreviewCardProps {
   txnData: TxnSimulationDataType;
   title: string;
@@ -189,7 +211,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
               <Divider orientation="vertical" $margin="0 30px" />
               <StyledColumn gap="md" flex={1}>
                 <SectionHeading>Protocol</SectionHeading>
-                <Row gap="sm" alignItems="center">
+                <Row alignItems="center">
                   <Tooltip>
                     <TooltipTrigger>
                       <TxnSimulationImage>
@@ -220,11 +242,11 @@ const PreviewCard: FC<PreviewCardProps> = ({
                         />
                       </PreviewTokenTooltipContent>
                     </TooltipTrigger>
-                    <CardText size="xs" marginLeft={8}>
-                      <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
+                    <ProtocolName>
+                      <ProtocolLink href={txnData.protocol.websiteUrl || ""}>
                         {txnData.protocol.name}
-                      </LinkWithArrow>
-                    </CardText>
+                      </ProtocolLink>
+                    </ProtocolName>
                   </Tooltip>
                 </Row>
               </StyledColumn>
@@ -264,7 +286,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
                 </Row>
 
                 <Column gap="xs">
-                  <Text size="sm">
+                  <DecodedCallDataText>
                     function {txnData.decodedCalldata?.data.functionName}(
                     {txnData.decodedCalldata &&
                       txnData.decodedCalldata.data.arguments.map((arg, i) => (
@@ -273,11 +295,10 @@ const PreviewCard: FC<PreviewCardProps> = ({
                         </DecodedCallDataArgs>
                       ))}
                     )
-                  </Text>
+                  </DecodedCallDataText>
                 </Column>
               </StyledColumn>
             </CardContent>
-            <Divider />
           </>
         )}
         <Divider $margin="0 0 16px" />
