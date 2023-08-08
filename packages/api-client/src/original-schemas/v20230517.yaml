@@ -1670,6 +1670,7 @@ paths:
                     - status
                     - riskScore
                     - labels
+                    - warnings
                   properties:
                     domain:
                       type: string
@@ -1689,6 +1690,7 @@ paths:
                       type: number
                       description: A risk score from 0.0 to 1.0. The higher the score, the higher our certainty that this domain is hosting a crypto-native scam.
                       format: float
+                      nullable: true
                       example: 1.0
                     labels:
                       type: array
@@ -1733,6 +1735,8 @@ paths:
                           - source=brand_whitelist
                           - copy_cat=brand_name:domain
                         example: blockchain=solana
+                    warnings:
+                      $ref: "#/components/schemas/Warning"
               examples:
                 simple:
                   summary: Response for a query specifying two domains

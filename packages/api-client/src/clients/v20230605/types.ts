@@ -17,10 +17,8 @@ import type {
   EvmStateChangeNativeAssetTransfer,
   EvmStateChangeErc20Approval,
   EvmStateChangeErc20Transfer,
-  EvmStateChangeErc20Permit,
+  EvmMessageStateChangeErc20Permit,
   ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner,
-  SolanaStageChangeSplTransfer,
-  SolanaStateChangeSplApproval,
 } from "../../generated/v20230605/models";
 
 // TODO: use a separate ref in the schema to generate a standalone enum
@@ -44,7 +42,7 @@ export type EvmNftStateChange =
 export type EvmCurrencyStateChange =
   | EvmStateChangeNativeAssetTransfer
   | EvmStateChangeErc20Transfer
-  | EvmStateChangeErc20Permit
+  | EvmMessageStateChangeErc20Permit
   | EvmStateChangeErc20Approval;
 
 export type EvmExpectedStateChange =

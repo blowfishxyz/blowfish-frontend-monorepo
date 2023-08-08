@@ -1,4 +1,3 @@
-import type { ScanMessageEvm200Response as ScanMessageEvm200ResponseLegacy } from "../../generated/v20230517/models";
 import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
@@ -19,7 +18,6 @@ import {
   DownloadBlocklistRequest,
   SolanaChainNetwork,
 } from "./types";
-import { mapMessageResponse } from "./utils";
 
 export class BlowfishApiClient {
   private apiVersion = "2023-06-05";
@@ -74,7 +72,6 @@ export class BlowfishApiClient {
             userAccount,
             metadata,
           },
-          xApiKey: this.apiKey,
           xApiVersion: this.apiVersion,
         });
       },
@@ -88,24 +85,19 @@ export class BlowfishApiClient {
         userAccount: string,
         metadata: RequestMetadata
       ) => {
-        return this.apis.message
-          .scanMessageEvm({
-            chainFamily,
-            chainNetwork,
-            scanMessageEvmRequest: {
-              message: {
-                kind: "SIGN_MESSAGE",
-                rawMessage,
-              },
-              userAccount,
-              metadata,
+        return this.apis.message.scanMessageEvm({
+          chainFamily,
+          chainNetwork,
+          scanMessageEvmRequest: {
+            message: {
+              kind: "SIGN_MESSAGE",
+              rawMessage,
             },
-            xApiKey: this.apiKey,
-            xApiVersion: this.apiVersion,
-          })
-          .then((x) =>
-            mapMessageResponse(x as ScanMessageEvm200ResponseLegacy)
-          );
+            userAccount,
+            metadata,
+          },
+          xApiVersion: this.apiVersion,
+        });
       },
 
       scanSignTypedData: (
@@ -113,24 +105,19 @@ export class BlowfishApiClient {
         userAccount: string,
         metadata: RequestMetadata
       ) => {
-        return this.apis.message
-          .scanMessageEvm({
-            chainFamily,
-            chainNetwork,
-            scanMessageEvmRequest: {
-              message: {
-                kind: "SIGN_TYPED_DATA",
-                data: typedData,
-              },
-              userAccount,
-              metadata,
+        return this.apis.message.scanMessageEvm({
+          chainFamily,
+          chainNetwork,
+          scanMessageEvmRequest: {
+            message: {
+              kind: "SIGN_TYPED_DATA",
+              data: typedData,
             },
-            xApiKey: this.apiKey,
-            xApiVersion: this.apiVersion,
-          })
-          .then((x) =>
-            mapMessageResponse(x as ScanMessageEvm200ResponseLegacy)
-          );
+            userAccount,
+            metadata,
+          },
+          xApiVersion: this.apiVersion,
+        });
       },
 
       scanTransactions: (
@@ -146,7 +133,6 @@ export class BlowfishApiClient {
             userAccount,
             metadata,
           },
-          xApiKey: this.apiKey,
           xApiVersion: this.apiVersion,
         });
       },
@@ -158,7 +144,6 @@ export class BlowfishApiClient {
       objectWithDomainsPropertyOfTypeArray: {
         domains,
       },
-      xApiKey: this.apiKey,
       xApiVersion: this.apiVersion,
     });
   };
@@ -166,7 +151,6 @@ export class BlowfishApiClient {
   downloadBlocklist = (request: DownloadBlocklistRequest) => {
     return this.apis.blocklist.downloadBlocklist({
       xApiVersion: this.apiVersion,
-      xApiKey: this.apiKey,
       downloadBlocklistRequest: request,
     });
   };

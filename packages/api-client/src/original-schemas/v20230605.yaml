@@ -54,12 +54,6 @@ paths:
           description: The language to use in the returned human-readable warnings and simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -232,175 +226,490 @@ paths:
                             decodedCalldata:
                               $ref: "#/components/schemas/EvmDecodedCalldata"
               examples:
-                erc20_swap:
-                  summary: ERC20 Swap ETH for DAI
+                erc20_swap_with_enrichment:
+                  summary: ERC20 Swap WETH for USDC (SushiSwap)
                   value:
-                    action: NONE
+                    action: "NONE"
                     warnings: []
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Receive 1530.81307 DAI
-                          rawInfo:
-                            kind: ERC20_TRANSFER
+                      aggregated:
+                        expectedStateChanges:
+                          "0x397ff1542f962076d0bfe58ea045ffa2d347aca0":
+                            - humanReadableDiff: "Send 7975.46196 USDC"
+                              rawInfo:
+                                kind: ERC20_TRANSFER
+                                data:
+                                  amount:
+                                    before: "24352685875482"
+                                    after: "24344710413524"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                  asset:
+                                    address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                    symbol: USDC
+                                    name: USDCoin
+                                    decimals: 6
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ZERION
+                                      - ONE_INCH
+                                      - UNISWAP
+                                      - MY_CRYPTO_API
+                                      - KLEROS_TOKENS
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251215
+                                      dollarValuePerToken: 0.999694
+                            - humanReadableDiff: "Receive 5.30226 WETH"
+                              rawInfo:
+                                kind: ERC20_TRANSFER
+                                data:
+                                  amount:
+                                    before: "16136345432750736474029"
+                                    after: "16141647695670072810543"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                  asset:
+                                    address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                                    symbol: WETH
+                                    name: "Wrapped Ether"
+                                    decimals: 18
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ZERION
+                                      - ONE_INCH
+                                      - UNISWAP
+                                      - MY_CRYPTO_API
+                                      - KLEROS_TOKENS
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251287
+                                      dollarValuePerToken: 1881.9
+                          "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7":
+                            - humanReadableDiff: "Send 5523.75078 SYN"
+                              rawInfo:
+                                kind: ERC20_TRANSFER
+                                data:
+                                  amount:
+                                    before: "5523750784922050828352"
+                                    after: "0"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                  asset:
+                                    address: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                                    symbol: SYN
+                                    name: Synapse
+                                    decimals: 18
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ONE_INCH
+                                      - UNISWAP
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x0f2d719407fdbeff09d87557abb7232601fd9f29.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251218
+                                      dollarValuePerToken: 0.645586
+                            - humanReadableDiff: "Receive 7975.46196 USDC"
+                              rawInfo:
+                                kind: ERC20_TRANSFER
+                                data:
+                                  amount:
+                                    before: "0"
+                                    after: "7975461958"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                  asset:
+                                    address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                    symbol: USDC
+                                    name: USDCoin
+                                    decimals: 6
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ZERION
+                                      - ONE_INCH
+                                      - UNISWAP
+                                      - MY_CRYPTO_API
+                                      - KLEROS_TOKENS
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251215
+                                      dollarValuePerToken: 0.999694
+                            - humanReadableDiff: "Approve to transfer any amount of your SYN"
+                              rawInfo:
+                                kind: ERC20_APPROVAL
+                                data:
+                                  spender:
+                                    kind: ACCOUNT
+                                    address: "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+                                  amount:
+                                    before: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+                                    after: "115792089237316195423570985008687907853269984665640564033933833222991078811583"
+                                  owner:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                  asset:
+                                    address: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                                    symbol: SYN
+                                    name: Synapse
+                                    decimals: 18
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ONE_INCH
+                                      - UNISWAP
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x0f2d719407fdbeff09d87557abb7232601fd9f29.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251218
+                                      dollarValuePerToken: 0.645586
+                          "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31":
+                            - humanReadableDiff: "Receive 5523.75078 SYN"
+                              rawInfo:
+                                kind: ERC20_TRANSFER
+                                data:
+                                  amount:
+                                    before: "4330137422342958321596879"
+                                    after: "4335661173127880372425231"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                  asset:
+                                    address: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                                    symbol: SYN
+                                    name: Synapse
+                                    decimals: 18
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ONE_INCH
+                                      - UNISWAP
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x0f2d719407fdbeff09d87557abb7232601fd9f29.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251218
+                                      dollarValuePerToken: 0.645586
+                            - humanReadableDiff: "Send 5.30226 WETH"
+                              rawInfo:
+                                kind: ERC20_TRANSFER
+                                data:
+                                  amount:
+                                    before: "4174319625499604161497"
+                                    after: "4169017362580267824983"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                  asset:
+                                    address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                                    symbol: WETH
+                                    name: "Wrapped Ether"
+                                    decimals: 18
+                                    verified: true
+                                    lists:
+                                      - COINGECKO
+                                      - ZERION
+                                      - ONE_INCH
+                                      - UNISWAP
+                                      - MY_CRYPTO_API
+                                      - KLEROS_TOKENS
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1689251287
+                                      dollarValuePerToken: 1881.9
+                        error: null
+                        userAccount: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                      perTransaction:
+                        - error: null
+                          gas:
+                            gasLimit: "190743"
+                          protocol:
+                            trustLevel: TRUSTED
+                            name: SushiSwap
+                            description: A decentralized exchange for tokens
+                            imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attQeriKD4vpwX3sc.png"
+                            websiteUrl: "https://www.sushi.com/"
+                          logs:
+                            - address: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                              topics:
+                                - "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                                - "0x00000000000000000000000006924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                - "0x0000000000000000000000004a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                              data: "0x00000000000000000000000000000000000000000000012b7170f8ccf7fb1840"
+                            - address: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                              topics:
+                                - "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+                                - "0x00000000000000000000000006924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                - "0x000000000000000000000000d9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+                              data: "0xfffffffffffffffffffffffffffffffffffffffffffffed48e8f07330804e7bf"
+                            - address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                              topics:
+                                - "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                                - "0x0000000000000000000000004a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                - "0x000000000000000000000000397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                              data: "0x00000000000000000000000000000000000000000000000049956c0854c49c82"
+                            - address: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                              topics:
+                                - "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1"
+                              data: "0x00000000000000000000000000000000000000000003961ca9c46a67dee4920f0000000000000000000000000000000000000000000000e200bd02ddb8c37757"
+                            - address: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                              topics:
+                                - "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822"
+                                - "0x000000000000000000000000d9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+                                - "0x000000000000000000000000397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                              data: "0x00000000000000000000000000000000000000000000012b7170f8ccf7fb18400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000049956c0854c49c82"
+                            - address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                              topics:
+                                - "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                                - "0x000000000000000000000000397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                - "0x00000000000000000000000006924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                              data: "0x00000000000000000000000000000000000000000000000000000001db5fe446"
+                            - address: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                              topics:
+                                - "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1"
+                              data: "0x0000000000000000000000000000000000000000000000000000162431d0fcd400000000000000000000000000000000000000000000036b0a5c9118dd539c2f"
+                            - address: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                              topics:
+                                - "0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822"
+                                - "0x000000000000000000000000d9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+                                - "0x00000000000000000000000006924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                              data: "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000049956c0854c49c8200000000000000000000000000000000000000000000000000000001db5fe4460000000000000000000000000000000000000000000000000000000000000000"
+                          decodedLogs:
+                            - name: Transfer
+                              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                              params:
+                                - name: from
+                                  paramType: address
+                                  value: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                - name: to
+                                  paramType: address
+                                  value: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0x12b7170f8ccf7fb1840"
+                            - name: Approval
+                              signature: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
+                              params:
+                                - name: owner
+                                  paramType: address
+                                  value: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                - name: spender
+                                  paramType: address
+                                  value: "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0xfffffffffffffffffffffffffffffffffffffffffffffed48e8f07330804e7bf"
+                            - name: Transfer
+                              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                              params:
+                                - name: from
+                                  paramType: address
+                                  value: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                - name: to
+                                  paramType: address
+                                  value: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0x49956c0854c49c82"
+                            - name: Transfer
+                              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                              params:
+                                - name: from
+                                  paramType: address
+                                  value: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                - name: to
+                                  paramType: address
+                                  value: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0x3961ca9c46a67dee4920f"
+                            - name: Approval
+                              signature: "0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1"
+                              params:
+                                - name: owner
+                                  paramType: address
+                                  value: "0x4a86c01d67965f8cb3d0aaa2c655705e64097c31"
+                                - name: spender
+                                  paramType: address
+                                  value: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0x162431d0fcd400000000000000000000000000000000036b0a5c9118dd539c2f"
+                            - name: Transfer
+                              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                              params:
+                                - name: from
+                                  paramType: address
+                                  value: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                - name: to
+                                  paramType: address
+                                  value: "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0x1662431d0fcd4000000000000000000000000000000000000000016b238170ca8"
+                            - name: Transfer
+                              signature: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+                              params:
+                                - name: from
+                                  paramType: address
+                                  value: "0x397ff1542f962076d0bfe58ea045ffa2d347aca0"
+                                - name: to
+                                  paramType: address
+                                  value: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                - name: value
+                                  paramType: uint256
+                                  value: "0x1db5fe446"
+                          decodedCalldata:
+                            kind: "FUNCTION"
                             data:
-                              amount:
-                                after: "557039306766411381864245"
-                                before: "555508493698012633714742"
-                              contract:
-                                address: "0x6b175474e89094c44da98b954eedeac495271d0f"
-                                kind: ACCOUNT
-                              decimals: 18
-                              name: Dai Stablecoin
-                              symbol: DAI
-                              asset:
-                                address: "0x6b175474e89094c44da98b954eedeac495271d0f"
-                                symbol: DAI
-                                name: Dai Stablecoin
-                                decimals: 18
-                                verified: true
-                                lists:
-                                  - COINGECKO
-                                  - ZERION
-                                  - ONE_INCH
-                                  - UNISWAP
-                                  - MY_CRYPTO_API
-                                  - KLEROS_TOKENS
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 0.99
-                        - humanReadableDiff: Send 1 ETH
-                          rawInfo:
-                            kind: NATIVE_ASSET_TRANSFER
-                            data:
-                              amount:
-                                after: "1182957389356504134754"
-                                before: "1183957389356504134754"
-                              contract:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                kind: ACCOUNT
-                              asset:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                symbol: ETH
-                                name: Ether
-                                decimals: 18
-                                verified: true
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1681958792
-                                  dollarValuePerToken: 1945.92
-                      protocol:
-                        trustLevel: TRUSTED
-                        name: Uniswap
-                        description: A decentralized token exchange
-                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attEQcQmNq7dbhjwB.png"
-                        websiteUrl: "https://uniswap.org/"
+                              contract: "0xd9e1ce17f2641f24ae83637ab66a2cca9c378b9f"
+                              functionName: "swapExactTokensForTokens"
+                              arguments:
+                                - name: "amountIn"
+                                  value: "0x12b7170f8ccf7fb1840"
+                                  paramType: "uint256"
+                                - name: "amountOutMin"
+                                  value: "0x1d70c0ba8"
+                                  paramType: "uint256"
+                                - name: "path"
+                                  value:
+                                    - "0x0f2d719407fdbeff09d87557abb7232601fd9f29"
+                                    - "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                                    - "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                  paramType: "address[]"
+                                - name: "to"
+                                  value: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                  paramType: "address"
+                                - name: "deadline"
+                                  value: "0x63eb9d63"
+                                  paramType: "uint256"
                 erc20_approval:
                   summary: ERC20 Approval
                   value:
                     action: NONE
                     warnings: []
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Approve to transfer up to 1000 USDT
-                          rawInfo:
-                            kind: ERC20_APPROVAL
-                            data:
-                              amount:
-                                after: "1000000000"
-                                before: "0"
-                              asset:
-                                address: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-                                name: Tether USD
-                                decimals: 6
-                                lists:
-                                  - COINGECKO
-                                  - ZERION
-                                  - ONE_INCH
-                                  - UNISWAP
-                                  - MY_CRYPTO_API
-                                  - KLEROS_TOKENS
-                                symbol: USDT
-                                verified: true
-                                imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 0.99
-                              contract:
-                                address: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-                                kind: ACCOUNT
-                              decimals: 6
-                              name: Tether USD
-                              owner:
-                                address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
-                                kind: ACCOUNT
-                              symbol: USDT
-                      protocol:
-                        trustLevel: TRUSTED
-                        name: Tether USD
-                        description: An ERC-20 token contract
-                        imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png"
-                        websiteUrl: "https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/"
+                      aggregated:
+                        error: null
+                        expectedStateChanges:
+                          "0xdac17f958d2ee523a2206206994597c13d831ec7":
+                            - humanReadableDiff: Approve to transfer up to 1000 USDT
+                              rawInfo:
+                                kind: ERC20_APPROVAL
+                                data:
+                                  amount:
+                                    after: "1000000000"
+                                    before: "0"
+                                  asset:
+                                    address: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+                                    name: Tether USD
+                                    decimals: 6
+                                    lists:
+                                      - COINGECKO
+                                      - ZERION
+                                      - ONE_INCH
+                                      - UNISWAP
+                                      - MY_CRYPTO_API
+                                      - KLEROS_TOKENS
+                                    symbol: USDT
+                                    verified: true
+                                    imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1679331222
+                                      dollarValuePerToken: 0.99
+                                  owner:
+                                    address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                                    kind: ACCOUNT
+                                  spender:
+                                    address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
+                                    kind: ACCOUNT
+                        userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                      perTransaction:
+                        - protocol:
+                            trustLevel: TRUSTED
+                            name: Tether USD
+                            description: An ERC-20 token contract
+                            imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png"
+                            websiteUrl: "https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/"
+                          error: null
+                          gas: { gasLimit: null }
+                          logs: []
+                          decodedLogs: []
+                          decodedCalldata: null
                 erc721_buy:
                   summary: Buy an ERC721 NFT with ETH
                   value:
                     action: NONE
                     warnings: []
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: "Receive PudgyPenguins #7238"
-                          rawInfo:
-                            kind: ERC721_TRANSFER
-                            data:
-                              amount:
-                                after: "1"
-                                before: "0"
-                              contract:
-                                address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8"
-                                kind: ACCOUNT
-                              metadata:
-                                rawImageUrl: https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png
-                              name: PudgyPenguins
-                              symbol: PPG
-                              tokenId: "7238"
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1679331222
-                                dollarValuePerToken: 594.99
-                        - humanReadableDiff: Send 3.181 ETH
-                          rawInfo:
-                            kind: NATIVE_ASSET_TRANSFER
-                            data:
-                              amount:
-                                after: "998426264937289938488"
-                                before: "1001607264937289938488"
-                              contract:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                kind: ACCOUNT
-                              asset:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                symbol: ETH
-                                name: Ether
-                                decimals: 18
-                                verified: true
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1681958792
-                                  dollarValuePerToken: 1945.92
-                      protocol: null
+                      aggregated:
+                        expectedStateChanges:
+                          "0xd8da6bf26964af9d7eed9e03e53415d37aa96045":
+                            - humanReadableDiff: "Receive PudgyPenguins #7238"
+                              rawInfo:
+                                kind: ERC721_TRANSFER
+                                data:
+                                  amount:
+                                    after: "1"
+                                    before: "0"
+                                  metadata:
+                                    rawImageUrl: https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png
+                                  tokenId: "7238"
+                                  asset:
+                                    address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8"
+                                    name: PudgyPenguins
+                                    symbol: PPG
+                                    price:
+                                      source: Simplehash
+                                      updatedAt: 1679331222
+                                      dollarValuePerToken: 594.99
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                            - humanReadableDiff: Send 3.181 ETH
+                              rawInfo:
+                                kind: NATIVE_ASSET_TRANSFER
+                                data:
+                                  amount:
+                                    after: "998426264937289938488"
+                                    before: "1001607264937289938488"
+                                  contract:
+                                    address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                    kind: ACCOUNT
+                                  asset:
+                                    address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                    symbol: ETH
+                                    name: Ether
+                                    decimals: 18
+                                    verified: true
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1681958792
+                                      dollarValuePerToken: 1945.92
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                        userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                        error: null
+                      perTransaction:
+                        - protocol: null
+                          error: null
+                          gas: { gasLimit: null }
+                          logs: []
+                          decodedLogs: []
+                          decodedCalldata: null
                 erc721_approve_for_all:
                   summary: ERC721 Approve For All
                   value:
@@ -410,114 +719,142 @@ paths:
                         message: You are allowing this website to withdraw funds from your account in the future.
                         severity: WARNING
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Approve to transfer all your BoredApeYachtClub
-                          rawInfo:
-                            kind: ERC721_APPROVAL_FOR_ALL
-                            data:
-                              amount:
-                                after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-                                before: "0"
-                              contract:
-                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                kind: ACCOUNT
-                              name: BoredApeYachtClub
-                              owner:
-                                address: "0x38191ca1307ebf67ca1a7caf5346dbd91d882ca6"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x1e0049783f008a0085193e00003d00cd54003c71"
-                                kind: ACCOUNT
-                              symbol: BAYC
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1679331222
-                                dollarValuePerToken: 7865.43
-                      protocol: null
+                      aggregated:
+                        expectedStateChanges:
+                          "0xd8da6bf26964af9d7eed9e03e53415d37aa96045":
+                            - humanReadableDiff: Approve to transfer all your BoredApeYachtClub
+                              rawInfo:
+                                kind: ERC721_APPROVAL_FOR_ALL
+                                data:
+                                  amount:
+                                    after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+                                    before: "0"
+                                  owner:
+                                    address: "0x38191ca1307ebf67ca1a7caf5346dbd91d882ca6"
+                                    kind: ACCOUNT
+                                  spender:
+                                    address: "0x1e0049783f008a0085193e00003d00cd54003c71"
+                                    kind: ACCOUNT
+                                  asset:
+                                    address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
+                                    name: BoredApeYachtClub
+                                    symbol: BAYC
+                                    price:
+                                      source: Simplehash
+                                      updatedAt: 1679331222
+                                      dollarValuePerToken: 7865.43
+                        userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                        error: null
+                      perTransaction:
+                        - protocol: null
+                          error: null
+                          gas: { gasLimit: null }
+                          logs: []
+                          decodedLogs: []
+                          decodedCalldata: null
                 erc721_approve:
                   summary: ERC721 Approve
                   value:
                     action: NONE
                     warnings: []
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Approve to transfer BoredApeYachtClub #6603
-                          rawInfo:
-                            kind: ERC721_APPROVAL
-                            data:
-                              amount:
-                                after: "1"
-                                before: "0"
-                              contract:
-                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                kind: ACCOUNT
-                              metadata:
-                                rawImageUrl: https://cdn.simplehash.com/assets/beca5f0f88c267276318edd8a6019b6b47327f42efd0ba22a3835e77f27732e5.png
-                              name: BoredApeYachtClub
-                              owner:
-                                address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x1e0049783f008a0085193e00003d00cd54003c71"
-                                kind: ACCOUNT
-                              symbol: BAYC
-                              tokenId: "6603"
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1679331222
-                                dollarValuePerToken: 7865.43
-                      protocol: null
+                      aggregated:
+                        expectedStateChanges:
+                          "0xd8da6bf26964af9d7eed9e03e53415d37aa96045":
+                            - humanReadableDiff: Approve to transfer BoredApeYachtClub #6603
+                              rawInfo:
+                                kind: ERC721_APPROVAL
+                                data:
+                                  amount:
+                                    after: "1"
+                                    before: "0"
+                                  metadata:
+                                    rawImageUrl: https://cdn.simplehash.com/assets/beca5f0f88c267276318edd8a6019b6b47327f42efd0ba22a3835e77f27732e5.png
+                                  owner:
+                                    address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
+                                    kind: ACCOUNT
+                                  spender:
+                                    address: "0x1e0049783f008a0085193e00003d00cd54003c71"
+                                    kind: ACCOUNT
+                                  tokenId: "6603"
+                                  asset:
+                                    address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
+                                    name: BoredApeYachtClub
+                                    symbol: BAYC
+                                    price:
+                                      source: Simplehash
+                                      updatedAt: 1679331222
+                                      dollarValuePerToken: 7865.43
+                        userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                        error: null
+                      perTransaction:
+                        - protocol: null
+                          error: null
+                          gas: { gasLimit: null }
+                          logs: []
+                          decodedLogs: []
+                          decodedCalldata: null
                 erc1155_buy:
                   summary: Buy an ERC1155 token with ETH
                   value:
                     action: NONE
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Send 0.033 ETH
-                          rawInfo:
-                            kind: NATIVE_ASSET_TRANSFER
-                            data:
-                              amount:
-                                after: "71057321770366572"
-                                before: "104057321770366572"
-                              contract:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                kind: ACCOUNT
-                              asset:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                symbol: ETH
-                                name: Ether
-                                decimals: 18
-                                verified: true
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1681958792
-                                  dollarValuePerToken: 1945.92
-                        - humanReadableDiff: Receive Corgi #6734
-                          rawInfo:
-                            kind: ERC1155_TRANSFER
-                            data:
-                              amount:
-                                after: "1"
-                                before: "0"
-                              contract:
-                                address: "0x51e613727fdd2e0b91b51c3e5427e9440a7957e4"
-                                kind: ACCOUNT
-                              metadata:
-                                rawImageUrl: "https://cdn.simplehash.com/assets/4bedd702e7ea8c4a9d04d83302138fa5b63d0cca0f06df9b87bdb09cff253b88.png"
-                              tokenId: "13014975"
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1679331222
-                                dollarValuePerToken: 232.43
-                      protocol: null
+                      aggregated:
+                        error: null
+                        userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                        expectedStateChanges:
+                          "0xd8da6bf26964af9d7eed9e03e53415d37aa96045":
+                            - humanReadableDiff: Send 0.033 ETH
+                              rawInfo:
+                                kind: NATIVE_ASSET_TRANSFER
+                                data:
+                                  amount:
+                                    after: "71057321770366572"
+                                    before: "104057321770366572"
+                                  contract:
+                                    address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                    kind: ACCOUNT
+                                  asset:
+                                    address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                    symbol: ETH
+                                    name: Ether
+                                    decimals: 18
+                                    verified: true
+                                    imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+                                    price:
+                                      source: Coingecko
+                                      updatedAt: 1681958792
+                                      dollarValuePerToken: 1945.92
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                            - humanReadableDiff: Receive Corgi #6734
+                              rawInfo:
+                                kind: ERC1155_TRANSFER
+                                data:
+                                  amount:
+                                    after: "1"
+                                    before: "0"
+                                  metadata:
+                                    rawImageUrl: "https://cdn.simplehash.com/assets/4bedd702e7ea8c4a9d04d83302138fa5b63d0cca0f06df9b87bdb09cff253b88.png"
+                                  tokenId: "13014975"
+                                  counterparty:
+                                    kind: ACCOUNT
+                                    address: "0x06924592cdf28acd3c1d23c37875c6c6a667bdf7"
+                                  asset:
+                                    address: "0x51e613727fdd2e0b91b51c3e5427e9440a7957e4"
+                                    name: Corgi #6734
+                                    price:
+                                      source: Simplehash
+                                      updatedAt: 1679331222
+                                      dollarValuePerToken: 232.43
+                      perTransaction:
+                        - protocol: null
+                          error: null
+                          gas: { gasLimit: null }
+                          logs: []
+                          decodedLogs: []
+                          decodedCalldata: null
                     warnings: []
                 erc1155_approve_for_all:
                   summary: ERC1155 approve for all
@@ -528,30 +865,38 @@ paths:
                         message: "You are allowing this website to withdraw funds from your account in the future."
                         severity: WARNING
                     simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: "Approve to transfer all your Sandbox's ASSETs"
-                          rawInfo:
-                            kind: ERC1155_APPROVAL_FOR_ALL
-                            data:
-                              amount:
-                                after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-                                before: "0"
-                              contract:
-                                address: "0xa342f5d851e866e18ff98f351f2c6637f4478db5"
-                                kind: ACCOUNT
-                              owner:
-                                address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x00000000006c3852cbef3e08e8df289169ede581"
-                                kind: ACCOUNT
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1679331222
-                                dollarValuePerToken: 232.43
-                      protocol: null
+                      aggregated:
+                        error: null
+                        userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                        expectedStateChanges:
+                          "0xd8da6bf26964af9d7eed9e03e53415d37aa96045":
+                            - humanReadableDiff: "Approve to transfer all your Sandbox's ASSETs"
+                              rawInfo:
+                                kind: ERC1155_APPROVAL_FOR_ALL
+                                data:
+                                  amount:
+                                    after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+                                    before: "0"
+                                  owner:
+                                    address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
+                                    kind: ACCOUNT
+                                  spender:
+                                    address: "0x00000000006c3852cbef3e08e8df289169ede581"
+                                    kind: ACCOUNT
+                                  asset:
+                                    address: "0xa342f5d851e866e18ff98f351f2c6637f4478db5"
+                                    name: "Sandbox ASSET"
+                                    price:
+                                      source: Simplehash
+                                      updatedAt: 1679331222
+                                      dollarValuePerToken: 232.43
+                      perTransaction:
+                        - protocol: null
+                          error: null
+                          gas: { gasLimit: null }
+                          logs: []
+                          decodedLogs: []
+                          decodedCalldata: null
 
         "400":
           description: Bad request
@@ -602,12 +947,6 @@ paths:
           description: The language to use in the returned human-readable warnings and simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -710,301 +1049,6 @@ paths:
                             nullable: true
                       protocol:
                         $ref: "#/components/schemas/EvmProtocol"
-              examples:
-                erc20_swap:
-                  summary: ERC20 Swap ETH for DAI
-                  value:
-                    action: NONE
-                    warnings: []
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Receive 1530.81307 DAI
-                          rawInfo:
-                            kind: ERC20_TRANSFER
-                            data:
-                              amount:
-                                after: "557039306766411381864245"
-                                before: "555508493698012633714742"
-                              asset:
-                                address: "0x6b175474e89094c44da98b954eedeac495271d0f"
-                                symbol: DAI
-                                name: Dai Stablecoin
-                                decimals: 18
-                                verified: true
-                                lists:
-                                  - COINGECKO
-                                  - ZERION
-                                  - ONE_INCH
-                                  - UNISWAP
-                                  - MY_CRYPTO_API
-                                  - KLEROS_TOKENS
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 0.99
-                        - humanReadableDiff: Send 1 ETH
-                          rawInfo:
-                            kind: NATIVE_ASSET_TRANSFER
-                            data:
-                              amount:
-                                after: "1182957389356504134754"
-                                before: "1183957389356504134754"
-                              asset:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                symbol: ETH
-                                name: Ether
-                                decimals: 18
-                                verified: true
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1681958792
-                                  dollarValuePerToken: 1945.92
-                      protocol:
-                        trustLevel: TRUSTED
-                        name: Uniswap
-                        description: A decentralized token exchange
-                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attEQcQmNq7dbhjwB.png"
-                        websiteUrl: "https://uniswap.org/"
-                erc20_approval:
-                  summary: ERC20 Approval
-                  value:
-                    action: NONE
-                    warnings: []
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Approve to transfer up to 1000 USDT
-                          rawInfo:
-                            kind: ERC20_APPROVAL
-                            data:
-                              amount:
-                                after: "1000000000"
-                                before: "0"
-                              asset:
-                                address: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-                                name: Tether USD
-                                decimals: 6
-                                lists:
-                                  - COINGECKO
-                                  - ZERION
-                                  - ONE_INCH
-                                  - UNISWAP
-                                  - MY_CRYPTO_API
-                                  - KLEROS_TOKENS
-                                symbol: USDT
-                                verified: true
-                                imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 0.99
-                              owner:
-                                address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45"
-                                kind: ACCOUNT
-                      protocol:
-                        trustLevel: TRUSTED
-                        name: Tether USD
-                        description: An ERC-20 token contract
-                        imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xdac17f958d2ee523a2206206994597c13d831ec7.png"
-                        websiteUrl: "https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/"
-                erc721_buy:
-                  summary: Buy an ERC721 NFT with ETH
-                  value:
-                    action: NONE
-                    warnings: []
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: "Receive PudgyPenguins #7238"
-                          rawInfo:
-                            kind: ERC721_TRANSFER
-                            data:
-                              amount:
-                                after: "1"
-                                before: "0"
-                              metadata:
-                                rawImageUrl: https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png
-                              tokenId: "7238"
-                              asset:
-                                address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8"
-                                name: PudgyPenguins
-                                symbol: PPG
-                                price:
-                                  source: Simplehash
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 594.99
-                        - humanReadableDiff: Send 3.181 ETH
-                          rawInfo:
-                            kind: NATIVE_ASSET_TRANSFER
-                            data:
-                              amount:
-                                after: "998426264937289938488"
-                                before: "1001607264937289938488"
-                              asset:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                symbol: ETH
-                                name: Ether
-                                decimals: 18
-                                verified: true
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1681958792
-                                  dollarValuePerToken: 1945.92
-                      protocol: null
-                erc721_approve_for_all:
-                  summary: ERC721 Approve For All
-                  value:
-                    action: WARN
-                    warnings:
-                      - kind: UNLIMITED_ALLOWANCE_TO_NFTS
-                        message: You are allowing this website to withdraw funds from your account in the future.
-                        severity: WARNING
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Approve to transfer all your BoredApeYachtClub
-                          rawInfo:
-                            kind: ERC721_APPROVAL_FOR_ALL
-                            data:
-                              amount:
-                                after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-                                before: "0"
-                              owner:
-                                address: "0x38191ca1307ebf67ca1a7caf5346dbd91d882ca6"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x1e0049783f008a0085193e00003d00cd54003c71"
-                                kind: ACCOUNT
-                              asset:
-                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                symbol: BAYC
-                                name: BoredApeYachtClub
-                                price:
-                                  source: Simplehash
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 7865.43
-                      protocol: null
-                erc721_approve:
-                  summary: ERC721 Approve
-                  value:
-                    action: NONE
-                    warnings: []
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Approve to transfer BoredApeYachtClub #6603
-                          rawInfo:
-                            kind: ERC721_APPROVAL
-                            data:
-                              amount:
-                                after: "1"
-                                before: "0"
-                              metadata:
-                                rawImageUrl: https://cdn.simplehash.com/assets/beca5f0f88c267276318edd8a6019b6b47327f42efd0ba22a3835e77f27732e5.png
-                              owner:
-                                address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x1e0049783f008a0085193e00003d00cd54003c71"
-                                kind: ACCOUNT
-                              tokenId: "6603"
-                              asset:
-                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                name: BoredApeYachtClub
-                                symbol: BAYC
-                                price:
-                                  source: Simplehash
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 7865.43
-                      protocol: null
-                erc1155_buy:
-                  summary: Buy an ERC1155 token with ETH
-                  value:
-                    action: NONE
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: Send 0.033 ETH
-                          rawInfo:
-                            kind: NATIVE_ASSET_TRANSFER
-                            data:
-                              amount:
-                                after: "71057321770366572"
-                                before: "104057321770366572"
-                              asset:
-                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-                                symbol: ETH
-                                name: Ether
-                                decimals: 18
-                                verified: true
-                                imageUrl: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
-                                price:
-                                  source: Coingecko
-                                  updatedAt: 1681958792
-                                  dollarValuePerToken: 1945.92
-                        - humanReadableDiff: Receive Corgi #6734
-                          rawInfo:
-                            kind: ERC1155_TRANSFER
-                            data:
-                              amount:
-                                after: "1"
-                                before: "0"
-                              metadata:
-                                rawImageUrl: "https://cdn.simplehash.com/assets/4bedd702e7ea8c4a9d04d83302138fa5b63d0cca0f06df9b87bdb09cff253b88.png"
-                              tokenId: "13014975"
-                              asset:
-                                address: "0x51e613727fdd2e0b91b51c3e5427e9440a7957e4"
-                                price:
-                                  source: Simplehash
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 232.43
-                      protocol: null
-                    warnings: []
-                erc1155_approve_for_all:
-                  summary: ERC1155 approve for all
-                  value:
-                    action: WARN
-                    warnings:
-                      - kind: UNLIMITED_ALLOWANCE_TO_NFTS
-                        message: "You are allowing this website to withdraw funds from your account in the future."
-                        severity: WARNING
-                    simulationResults:
-                      error: null
-                      gas: { gasLimit: null }
-                      expectedStateChanges:
-                        - humanReadableDiff: "Approve to transfer all your Sandbox's ASSETs"
-                          rawInfo:
-                            kind: ERC1155_APPROVAL_FOR_ALL
-                            data:
-                              amount:
-                                after: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-                                before: "0"
-                              owner:
-                                address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236"
-                                kind: ACCOUNT
-                              spender:
-                                address: "0x00000000006c3852cbef3e08e8df289169ede581"
-                                kind: ACCOUNT
-                              asset:
-                                address: "0xa342f5d851e866e18ff98f351f2c6637f4478db5"
-                                price:
-                                  source: Simplehash
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 232.43
-                      protocol: null
 
         "400":
           description: Bad request
@@ -1050,12 +1094,6 @@ paths:
           description: The language to use in the returned human-readable warnings and simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1285,6 +1323,466 @@ paths:
                         conduitKey: "0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000"
                         totalOriginalConsiderationItems: "3"
                         counter: "53"
+              seaport_bulk_order:
+                summary: Opensea Seaport Bulk Order Request
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      types:
+                        EIP712Domain:
+                          - name: name
+                            type: string
+                          - name: version
+                            type: string
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                        BulkOrder:
+                          - name: tree
+                            type: "OrderComponents[2]"
+                        OrderComponents:
+                          - name: offerer
+                            type: address
+                          - name: zone
+                            type: address
+                          - name: offer
+                            type: "OfferItem[]"
+                          - name: consideration
+                            type: "ConsiderationItem[]"
+                          - name: orderType
+                            type: uint8
+                          - name: startTime
+                            type: uint256
+                          - name: endTime
+                            type: uint256
+                          - name: zoneHash
+                            type: bytes32
+                          - name: salt
+                            type: uint256
+                          - name: conduitKey
+                            type: bytes32
+                          - name: counter
+                            type: uint256
+                        OfferItem:
+                          - name: itemType
+                            type: uint8
+                          - name: token
+                            type: address
+                          - name: identifierOrCriteria
+                            type: uint256
+                          - name: startAmount
+                            type: uint256
+                          - name: endAmount
+                            type: uint256
+                        ConsiderationItem:
+                          - name: itemType
+                            type: uint8
+                          - name: token
+                            type: address
+                          - name: identifierOrCriteria
+                            type: uint256
+                          - name: startAmount
+                            type: uint256
+                          - name: endAmount
+                            type: uint256
+                          - name: recipient
+                            type: address
+                      primaryType: BulkOrder
+                      domain:
+                        name: Seaport
+                        version: "1.5"
+                        chainId: "1"
+                        verifyingContract: "0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC"
+                      message:
+                        tree:
+                          - offerer: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                            offer:
+                              - itemType: "2"
+                                token: "0xc4a5025c4563Ad0ACC09d92c2506e6744DAd58Eb"
+                                identifierOrCriteria: "30420"
+                                startAmount: "1"
+                                endAmount: "1"
+                            consideration:
+                              - itemType: "0"
+                                token: "0x0000000000000000000000000000000000000000"
+                                identifierOrCriteria: "0"
+                                startAmount: "975000000000000000"
+                                endAmount: "975000000000000000"
+                                recipient: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                              - itemType: "0"
+                                token: "0x0000000000000000000000000000000000000000"
+                                identifierOrCriteria: "0"
+                                startAmount: "25000000000000000"
+                                endAmount: "25000000000000000"
+                                recipient: "0x0000a26b00c1F0DF003000390027140000fAa719"
+                            startTime: "1690326072"
+                            endTime: "1693004472"
+                            orderType: "0"
+                            zone: "0x004C00500000aD104D7DBd00e3ae0A5C00560C00"
+                            zoneHash: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                            salt: >-
+                              24446860302761739304752683030156737591518664810215442929808657262032785244526
+                            conduitKey: "0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000"
+                            totalOriginalConsiderationItems: "2"
+                            counter: "0"
+                          - offerer: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                            offer:
+                              - itemType: "2"
+                                token: "0xc4a5025c4563Ad0ACC09d92c2506e6744DAd58Eb"
+                                identifierOrCriteria: "53046"
+                                startAmount: "1"
+                                endAmount: "1"
+                            consideration:
+                              - itemType: "0"
+                                token: "0x0000000000000000000000000000000000000000"
+                                identifierOrCriteria: "0"
+                                startAmount: "975000000000000000"
+                                endAmount: "975000000000000000"
+                                recipient: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                              - itemType: "0"
+                                token: "0x0000000000000000000000000000000000000000"
+                                identifierOrCriteria: "0"
+                                startAmount: "25000000000000000"
+                                endAmount: "25000000000000000"
+                                recipient: "0x0000a26b00c1F0DF003000390027140000fAa719"
+                            startTime: "1690326072"
+                            endTime: "1693004472"
+                            orderType: "0"
+                            zone: "0x004C00500000aD104D7DBd00e3ae0A5C00560C00"
+                            zoneHash: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                            salt: >-
+                              24446860302761739304752683030156737591518664810215442929809939820390611592045
+                            conduitKey: "0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000"
+                            totalOriginalConsiderationItems: "2"
+                            counter: "0"
+                  userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                  metadata:
+                    origin: "https://opensea.io"
+              opensea_criteria_order:
+                summary: Opensea Criteria Order (Collection-level bid)
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      types:
+                        EIP712Domain:
+                          - name: name
+                            type: string
+                          - name: version
+                            type: string
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                        OrderComponents:
+                          - name: offerer
+                            type: address
+                          - name: zone
+                            type: address
+                          - name: offer
+                            type: "OfferItem[]"
+                          - name: consideration
+                            type: "ConsiderationItem[]"
+                          - name: orderType
+                            type: uint8
+                          - name: startTime
+                            type: uint256
+                          - name: endTime
+                            type: uint256
+                          - name: zoneHash
+                            type: bytes32
+                          - name: salt
+                            type: uint256
+                          - name: conduitKey
+                            type: bytes32
+                          - name: counter
+                            type: uint256
+                        OfferItem:
+                          - name: itemType
+                            type: uint8
+                          - name: token
+                            type: address
+                          - name: identifierOrCriteria
+                            type: uint256
+                          - name: startAmount
+                            type: uint256
+                          - name: endAmount
+                            type: uint256
+                        ConsiderationItem:
+                          - name: itemType
+                            type: uint8
+                          - name: token
+                            type: address
+                          - name: identifierOrCriteria
+                            type: uint256
+                          - name: startAmount
+                            type: uint256
+                          - name: endAmount
+                            type: uint256
+                          - name: recipient
+                            type: address
+                      primaryType: OrderComponents
+                      domain:
+                        name: Seaport
+                        version: "1.5"
+                        chainId: "1"
+                        verifyingContract: "0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC"
+                      message:
+                        offerer: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                        offer:
+                          - itemType: "1"
+                            token: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+                            identifierOrCriteria: "0"
+                            startAmount: "10000000000000000"
+                            endAmount: "10000000000000000"
+                        consideration:
+                          - itemType: "4"
+                            token: "0xc4a5025c4563Ad0ACC09d92c2506e6744DAd58Eb"
+                            identifierOrCriteria: "0"
+                            startAmount: "1"
+                            endAmount: "1"
+                            recipient: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                          - itemType: "1"
+                            token: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+                            identifierOrCriteria: "0"
+                            startAmount: "250000000000000"
+                            endAmount: "250000000000000"
+                            recipient: "0x0000a26b00c1F0DF003000390027140000fAa719"
+                        startTime: "1690416850"
+                        endTime: "1691021646"
+                        orderType: "2"
+                        zone: "0x000000e7Ec00e7B300774b00001314B8610022b8"
+                        zoneHash: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        salt: >-
+                          24446860302761739304752683030156737591518664810215442929802983100888130887038
+                        conduitKey: "0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000"
+                        totalOriginalConsiderationItems: "2"
+                        counter: "0"
+                  userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                  metadata:
+                    origin: "https://opensea.io"
+              zero_ex_limit_order:
+                summary: 0x Limit Order
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      types:
+                        LimitOrder:
+                          - type: address
+                            name: makerToken
+                          - type: address
+                            name: takerToken
+                          - type: uint128
+                            name: makerAmount
+                          - type: uint128
+                            name: takerAmount
+                          - type: uint128
+                            name: takerTokenFeeAmount
+                          - type: address
+                            name: maker
+                          - type: address
+                            name: taker
+                          - type: address
+                            name: sender
+                          - type: address
+                            name: feeRecipient
+                          - type: bytes32
+                            name: pool
+                          - type: uint64
+                            name: expiry
+                          - type: uint256
+                            name: salt
+                        EIP712Domain:
+                          - name: name
+                            type: string
+                          - name: version
+                            type: string
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                      domain:
+                        name: ZeroEx
+                        version: 1.0.0
+                        chainId: "1"
+                        verifyingContract: "0xdef1c0ded9bec7f1a1670819833240f027b25eff"
+                      primaryType: LimitOrder
+                      message:
+                        makerToken: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                        takerToken: "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+                        makerAmount: "5000000"
+                        takerAmount: "3794314970000000000000000"
+                        takerTokenFeeAmount: "9485787425000000000000"
+                        maker: "0xd854343f41b2138b686f2d3ba38402a9f7fb4337"
+                        taker: "0x0000000000000000000000000000000000000000"
+                        sender: "0x0000000000000000000000000000000000000000"
+                        feeRecipient: "0x9b858be6e3047d88820f439b240deac2418a2551"
+                        pool: "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        expiry: "1690420882"
+                        salt: "1690417282"
+                  userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                  metadata:
+                    origin: "https://matcha.xyz"
+              one_inch_limit_order:
+                summary: 1inch limit order
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      primaryType: Order
+                      types:
+                        EIP712Domain:
+                          - name: name
+                            type: string
+                          - name: version
+                            type: string
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                        Order:
+                          - name: salt
+                            type: uint256
+                          - name: makerAsset
+                            type: address
+                          - name: takerAsset
+                            type: address
+                          - name: maker
+                            type: address
+                          - name: receiver
+                            type: address
+                          - name: allowedSender
+                            type: address
+                          - name: makingAmount
+                            type: uint256
+                          - name: takingAmount
+                            type: uint256
+                          - name: offsets
+                            type: uint256
+                          - name: interactions
+                            type: bytes
+                      domain:
+                        name: 1inch Aggregation Router
+                        version: "5"
+                        chainId: "1"
+                        verifyingContract: "0x1111111254eeb25477b68fb85ed929f73a960582"
+                      message:
+                        salt: "1503017118972"
+                        makerAsset: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                        takerAsset: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                        maker: "0xd854343f41b2138b686f2d3ba38402a9f7fb4337"
+                        receiver: "0x08b067ad41e45babe5bbb52fc2fe7f692f628b06"
+                        allowedSender: "0x0000000000000000000000000000000000000000"
+                        makingAmount: "5000000"
+                        takingAmount: "2668059500000000"
+                        offsets: "11538857176101531340751540876976218711787563030373362950892101732139008"
+                        interactions: >-
+                          0xbf15fcd8000000000000000000000000303389f541ff2d620e42832f180a08e767b28e10000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000242cc2878d0064828d4300000000000000d854343f41b2138b686f2d3ba38402a9f7fb433700000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000d854343f41b2138b686f2d3ba38402a9f7fb43370000000000000000000000001111111254eeb25477b68fb85ed929f73a960582ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000064828d3d000000000000000000000000000000000000000000000000000000000000001bc2ed0b4b0c1c8e18b91733146ce2b4e5249999ce8f83d76766f4384fe9c64ffa20968ea5d1641cc018427acd72001d49b014f8f9d50c6e1504afdcc94fddd7f408b067ad41e45babe5bbb52fc2fe7f692f628b06
+                  userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                  metadata:
+                    origin: "https://1inch.io"
+              gnosis_safe_message:
+                summary: Gnosis safe multisig message
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      types:
+                        SafeTx:
+                          - type: address
+                            name: to
+                          - type: uint256
+                            name: value
+                          - type: bytes
+                            name: data
+                          - type: uint8
+                            name: operation
+                          - type: uint256
+                            name: safeTxGas
+                          - type: uint256
+                            name: baseGas
+                          - type: uint256
+                            name: gasPrice
+                          - type: address
+                            name: gasToken
+                          - type: address
+                            name: refundReceiver
+                          - type: uint256
+                            name: nonce
+                        EIP712Domain:
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                      domain:
+                        chainId: "1"
+                        verifyingContract: "0xbbdf3c556b67f20525b503ca20ceda8243627a47"
+                      primaryType: SafeTx
+                      message:
+                        to: "0x0000000006bc8d9e5e9d436217b88de704a9f307"
+                        value: "0"
+                        data: >-
+                          0x42842e0e000000000000000000000000bbdf3c556b67f20525b503ca20ceda8243627a47000000000000000000000000655af72e1500eb8a8d1c90856ae3b8f148a784710000000000000000000000000000000100000000000000000000000000000012
+                        operation: "0"
+                        safeTxGas: "0"
+                        baseGas: "0"
+                        gasPrice: "0"
+                        gasToken: "0x0000000000000000000000000000000000000000"
+                        refundReceiver: "0x0000000000000000000000000000000000000000"
+                        nonce: "0"
+                  userAccount: "0x655aF72e1500EB8A8d1c90856Ae3B8f148A78471"
+                  metadata:
+                    origin: "https://app.safe.global"
+
+              permit_2:
+                summary: Uniswap Permit2 Approval
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      types:
+                        PermitSingle:
+                          - name: details
+                            type: PermitDetails
+                          - name: spender
+                            type: address
+                          - name: sigDeadline
+                            type: uint256
+                        PermitDetails:
+                          - name: token
+                            type: address
+                          - name: amount
+                            type: uint160
+                          - name: expiration
+                            type: uint48
+                          - name: nonce
+                            type: uint48
+                        EIP712Domain:
+                          - name: name
+                            type: string
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                      domain:
+                        name: Permit2
+                        chainId: "1"
+                        verifyingContract: "0x000000000022d473030f116ddee9f6b43ac78ba3"
+                      primaryType: PermitSingle
+                      message:
+                        details:
+                          token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                          amount: "1461501637330902918203684832716283019655932542975"
+                          expiration: "1693008695"
+                          nonce: "0"
+                        spender: "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad"
+                        sigDeadline: "1690418495"
+                  userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                  metadata:
+                    origin: "https://app.uniswap.org"
       responses:
         "200":
           description: Successful response
@@ -1327,20 +1825,21 @@ paths:
                             rawInfo:
                               description: A machine-parsable state change object describing the state change.
                               oneOf:
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Permit"
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
                               discriminator:
                                 propertyName: kind
                                 mapping:
-                                  ERC20_PERMIT: "#/components/schemas/EvmStateChangeErc20Permit"
-                                  ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                  ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                  ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
-                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
+                                  ERC20_PERMIT: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                  ERC20_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
+                                  ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                  ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
                       error:
                         description: A nullable error object which includes the parsed simulation error encountered (if any)
                         nullable: true
@@ -1382,6 +1881,9 @@ paths:
                           rawInfo:
                             kind: ERC20_PERMIT
                             data:
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                               owner:
                                 kind: ACCOUNT
                                 address: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
@@ -1430,6 +1932,9 @@ paths:
                               amount:
                                 after: "157873734139299463313"
                                 before: "63823734139299463313"
+                              contract:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                kind: ACCOUNT
                               asset:
                                 address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
                                 symbol: ETH
@@ -1448,17 +1953,18 @@ paths:
                               amount:
                                 after: "52"
                                 before: "53"
+                              contract:
+                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
+                                kind: ACCOUNT
                               metadata:
                                 rawImageUrl: ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP
+                              name: BoredApeYachtClub
+                              symbol: BAYC
                               tokenId: "1726"
-                              asset:
-                                address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                name: BoredApeYachtClub
-                                symbol: BAYC
-                                price:
-                                  source: Simplehash
-                                  updatedAt: 1679331222
-                                  dollarValuePerToken: 3434.34
+                              assetPrice:
+                                source: Simplehash
+                                updatedAt: 1679331222
+                                dollarValuePerToken: 3434.34
                             kind: ERC721_TRANSFER
                       protocol:
                         trustLevel: TRUSTED
@@ -1467,6 +1973,374 @@ paths:
                         imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attefMtpxsPIa5Emm.png"
                         websiteUrl: "https://github.com/ProjectOpenSea/seaport"
                     warnings: []
+                seaport_bulk_order:
+                  summary: Selling 2 NFTs for 1 ETH each (minus royalties)
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: Receive 0.975 ETH
+                          rawInfo:
+                            kind: NATIVE_ASSET_TRANSFER
+                            data:
+                              amount:
+                                before: "137248305387542646"
+                                after: "1112248305387542646"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                              asset:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                symbol: ETH
+                                name: Ether
+                                decimals: 18
+                                verified: true
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690326202
+                                  dollarValuePerToken: 1860.31
+                        - humanReadableDiff: "Send Helga I #30420"
+                          rawInfo:
+                            kind: ERC721_TRANSFER
+                            data:
+                              symbol: PROMETHEANS
+                              name: "Helga I #30420"
+                              tokenId: "30420"
+                              amount:
+                                before: "1"
+                                after: "0"
+                              counterparty: null
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb"
+                              metadata:
+                                rawImageUrl: >-
+                                  https://cdn.simplehash.com/assets/71ccb5607035b2afdf9a17d05a76ae643d1197d21282967690f303f122d215d8.png
+                              assetPrice:
+                                source: Simplehash
+                                updatedAt: 1690315826
+                                dollarValuePerToken: 35.164152601171
+                        - humanReadableDiff: Receive 0.975 ETH
+                          rawInfo:
+                            kind: NATIVE_ASSET_TRANSFER
+                            data:
+                              amount:
+                                before: "137248305387542646"
+                                after: "1112248305387542646"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                              asset:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                symbol: ETH
+                                name: Ether
+                                decimals: 18
+                                verified: true
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690326202
+                                  dollarValuePerToken: 1860.31
+                        - humanReadableDiff: "Send Gavius I #53046"
+                          rawInfo:
+                            kind: ERC721_TRANSFER
+                            data:
+                              symbol: PROMETHEANS
+                              name: "Gavius I #53046"
+                              tokenId: "53046"
+                              amount:
+                                before: "1"
+                                after: "0"
+                              counterparty: null
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb"
+                              metadata:
+                                rawImageUrl: >-
+                                  https://cdn.simplehash.com/assets/d6cadf475256eb6d9fac570671e6947133a2a53ce27fed2a3bfe222fd2cfe334.png
+                              assetPrice:
+                                source: Simplehash
+                                updatedAt: 1690315826
+                                dollarValuePerToken: 35.164152601171
+                      error: null
+                      protocol: null
+                opensea_criteria_order:
+                  summary: Submitting an 0.01 WETH offer for 1 NFT from the Prometheans collection
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: Receive any 1 NFT from the Prometheans collection
+                          rawInfo:
+                            kind: ANY_NFT_FROM_COLLECTION_TRANSFER
+                            data:
+                              symbol: PROMETHEANS
+                              name: Prometheans
+                              amount:
+                                before: "0"
+                                after: "1"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb"
+                              imageUrl: >-
+                                https://lh3.googleusercontent.com/U9TK_6D-iXvcUB-FgDa8AYhwd0nOeBK_Fsr0GaQpPJX1_iQGVWJr2pnhGYkUsZH4syW1gXIiZpQOUqRdvfikoIeshF1VJOZvlK8
+                              assetPrice:
+                                source: Simplehash
+                                updatedAt: 1690495107
+                                dollarValuePerToken: 35.20011125067005
+                              type: ERC721
+                        - humanReadableDiff: Send 0.01 WETH
+                          rawInfo:
+                            kind: ERC20_TRANSFER
+                            data:
+                              amount:
+                                before: "10000000000000000"
+                                after: "0"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                              asset:
+                                address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                                symbol: WETH
+                                name: Wrapped Ether
+                                decimals: 18
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - ZERION
+                                  - ONE_INCH
+                                  - UNISWAP
+                                  - MY_CRYPTO_API
+                                  - KLEROS_TOKENS
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690495147
+                                  dollarValuePerToken: 1858.85
+                      error: null
+                      protocol: null
+                zero_ex_limit_order:
+                  summary: Trading 5 USDC for 3784829 PEPE token
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: Receive 3784829.18258 PEPE
+                          rawInfo:
+                            kind: ERC20_TRANSFER
+                            data:
+                              amount:
+                                before: "0"
+                                after: "3784829182575000000000000"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+                              asset:
+                                address: "0x6982508145454ce325ddbe47a25d4ec3d2311933"
+                                symbol: PEPE
+                                name: Pepe
+                                decimals: 18
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - UNISWAP
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x6982508145454ce325ddbe47a25d4ec3d2311933.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690417284
+                                  dollarValuePerToken: 0.00000133
+                        - humanReadableDiff: Send 5 USDC
+                          rawInfo:
+                            kind: ERC20_TRANSFER
+                            data:
+                              amount:
+                                before: "59204541"
+                                after: "54204541"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                              asset:
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                symbol: USDC
+                                name: USDCoin
+                                decimals: 6
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - ZERION
+                                  - ONE_INCH
+                                  - UNISWAP
+                                  - MY_CRYPTO_API
+                                  - KLEROS_TOKENS
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690417233
+                                  dollarValuePerToken: 0.999574
+                      error: null
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: 0x
+                        description: A router for token exchanges
+                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attYzMGqoCocgaJtr.png"
+                        websiteUrl: "https://0x.org/"
+                one_inch_limit_order:
+                  summary: Trading 5 USDC for 0.00267 ETH
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: Send 5 USDC
+                          rawInfo:
+                            kind: ERC20_TRANSFER
+                            data:
+                              amount:
+                                before: "59204541"
+                                after: "54204541"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                              asset:
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                symbol: USDC
+                                name: USDCoin
+                                decimals: 6
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - ZERION
+                                  - ONE_INCH
+                                  - UNISWAP
+                                  - MY_CRYPTO_API
+                                  - KLEROS_TOKENS
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690494784
+                                  dollarValuePerToken: 0.999985
+                        - humanReadableDiff: Receive 0.00267 ETH
+                          rawInfo:
+                            kind: NATIVE_ASSET_TRANSFER
+                            data:
+                              amount:
+                                before: "137248305387542646"
+                                after: "139916364887542646"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                              asset:
+                                address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+                                symbol: ETH
+                                name: Ether
+                                decimals: 18
+                                verified: true
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690494803
+                                  dollarValuePerToken: 1860.57
+                      error: null
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: 1inch
+                        description: A router for token exchanges
+                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/att3hwaz5CWUj3hF8.png"
+                        websiteUrl: "https://1inch.io/"
+                gnosis_safe_message:
+                  summary: Transfer 1 NFT from a 2/3 gnosis safe
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: "Send Curta #3402...1474"
+                          rawInfo:
+                            kind: ERC721_TRANSFER
+                            data:
+                              symbol: CTF
+                              name: Curta
+                              tokenId: "340282366920938463463374607431768211474"
+                              amount:
+                                before: "1"
+                                after: "0"
+                              counterparty:
+                                kind: ACCOUNT
+                                address: "0x655af72e1500eb8a8d1c90856ae3b8f148a78471"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0x0000000006bc8d9e5e9d436217b88de704a9f307"
+                              metadata:
+                                rawImageUrl: >-
+                                  https://cdn.simplehash.com/assets/618ae6278d159aefbff7489f030fcff96537df5fede1a6e8c8a0803b92a70ea4.svg
+                              assetPrice: null
+                      error: null
+                      protocol: null
+                permit_2:
+                  summary: Unlimited amount permit2 message
+                  value:
+                    action: WARN
+                    warnings:
+                      - kind: PERMIT_UNLIMITED_ALLOWANCE
+                        message: >-
+                          You are allowing this dApp to withdraw funds from your account in the
+                          future.
+                        severity: WARNING
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: Permit to transfer any amount of your USDC within a month
+                          rawInfo:
+                            kind: ERC20_PERMIT
+                            data:
+                              contract:
+                                kind: ACCOUNT
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                              owner:
+                                kind: ACCOUNT
+                                address: "0xd854343f41b2138b686f2d3ba38402a9f7fb4337"
+                              spender:
+                                kind: ACCOUNT
+                                address: "0x3fc91a3afd70395cd496c647d5a6cc9d4b2b7fad"
+                              amount: "1461501637330902918203684832716283019655932542975"
+                              nonce: "0"
+                              deadline: 1693008695
+                              asset:
+                                address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                symbol: USDC
+                                name: USDCoin
+                                decimals: 6
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - ZERION
+                                  - ONE_INCH
+                                  - UNISWAP
+                                  - MY_CRYPTO_API
+                                  - KLEROS_TOKENS
+                                imageUrl: >-
+                                  https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png
+                                price:
+                                  source: Coingecko
+                                  updatedAt: 1690416632
+                                  dollarValuePerToken: 0.999549
+                      error: null
+                      protocol:
+                        trustLevel: TRUSTED
+                        name: Permit2
+                        description: A protocol for signature-based token approvals
+                        imageUrl: "https://d2xobe0ejktb0m.cloudfront.net/attGMUjX0IpCJyZ1k.png"
+                        websiteUrl: "https://github.com/Uniswap/permit2"
                 unlimited_permit:
                   summary: Unlimited amount permit message
                   value:
@@ -1497,6 +2371,9 @@ paths:
                                   source: Coingecko
                                   updatedAt: 1679331222
                                   dollarValuePerToken: 34.32
+                              contract:
+                                address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984"
+                                kind: ACCOUNT
                               deadline: 1667556263
                               nonce: "0"
                               owner:
@@ -1572,12 +2449,6 @@ paths:
             enum:
               - "true"
               - "false"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1792,12 +2663,6 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1931,12 +2796,6 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1982,6 +2841,7 @@ paths:
                     - status
                     - riskScore
                     - labels
+                    - warnings
                   properties:
                     domain:
                       type: string
@@ -2001,6 +2861,7 @@ paths:
                       type: number
                       description: A risk score from 0.0 to 1.0. The higher the score, the higher our certainty that this domain is hosting a crypto-native scam.
                       format: float
+                      nullable: true
                       example: 1.0
                     labels:
                       type: array
@@ -2045,6 +2906,8 @@ paths:
                           - source=brand_whitelist
                           - copy_cat=brand_name:domain
                         example: blockchain=solana
+                    warnings:
+                      $ref: "#/components/schemas/Warning"
               examples:
                 simple:
                   summary: Response for a query specifying two domains
@@ -2086,6 +2949,7 @@ components:
       type: apiKey
       in: header
       name: X-Api-Key
+      x-default: "4daa1e3b-87e6-40b2-8883-758feb6a8e46"
   schemas:
     Unauthorized:
       type: object
@@ -2186,11 +3050,6 @@ components:
       description: API version like 2023-05-17
       default: "2023-05-17"
       example: "2023-05-17"
-    ApiKeyHeader:
-      description: API key
-      type: string
-      default: 4daa1e3b-87e6-40b2-8883-758feb6a8e46
-      example: e79e18b4-8ffa-4fab-9e2e-f24057644f93
     Languages:
       type: string
       default: en
@@ -2656,7 +3515,6 @@ components:
             - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
             - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-            - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
           discriminator:
             propertyName: kind
             mapping:
@@ -2668,7 +3526,6 @@ components:
               ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
               ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
               ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-              ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
     EvmExpectedStateChanges:
       type: array
       items:
@@ -2789,6 +3646,64 @@ components:
       properties:
         address:
           $ref: "#/components/schemas/EvmContractAddress"
+        symbol:
+          type: string
+          example: USDT
+          description: The symbol of the asset
+        name:
+          type: string
+          example: Tether USD
+          description: The name of the asset
+        decimals:
+          type: integer
+          example: 6
+          description: The number of decimal places used by the asset
+        verified:
+          type: boolean
+          example: true
+          description: Whether the asset is verified as safe
+        lists:
+          type: array
+          items:
+            type: string
+            enum:
+              - COINGECKO
+              - ZERION
+              - ONE_INCH
+              - UNISWAP
+              - MY_CRYPTO_API
+              - KLEROS_TOKENS
+              - POLYGON_POPULAR_TOKENS
+              - EVM_NATIVE
+              - BLOWFISH
+            example: COINGECKO
+          description: The trusted token lists on which this asset is listed
+        imageUrl:
+          type: string
+          description: The URL of the asset's image. Can be `null`.
+          nullable: true
+          example: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f.png"
+        price:
+          description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
+          $ref: "#/components/schemas/AssetPrice"
+          nullable: true
+    # NOTE: EvmAsset is only used in message endpoint due to older response format
+    EvmAsset:
+      type: object
+      required:
+        - address
+        - symbol
+        - name
+        - decimals
+        - verified
+        - lists
+        - imageUrl
+        - price
+      properties:
+        address:
+          type: string
+          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+          description: The contract address of the asset
         symbol:
           type: string
           example: USDT
@@ -3005,50 +3920,10 @@ components:
           type: string
           example: Unable to simulate transaction
           description: Human readable explanation of the error
-    EvmStateChangeErc20Permit:
-      type: object
-      description: ERC20 token permit message
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ERC20_PERMIT]
-          example: ERC20_PERMIT
-        data:
-          type: object
-          required:
-            - owner
-            - spender
-            - amount
-            - nonce
-            - deadline
-            - asset
-          properties:
-            owner:
-              description: The owner of the ERC20 tokens
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              description: The entity that will be allowed to spend them if the permit is granted
-              $ref: "#/components/schemas/EvmAddressInfo"
-            amount:
-              type: string
-              description: Stringified base unit amount of the token
-              example: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-            nonce:
-              type: string
-              description: Stringified nonce number
-              example: "0"
-            deadline:
-              type: number
-              description: "Unix timestamp when this permit will expire. Can be `null`: indicates no deadline."
-              example: 1667556263
-              nullable: true
-            asset:
-              $ref: "#/components/schemas/EvmErc20Asset"
-          description: Data associated with the state change
+    EvmTransferCounterparty:
+      nullable: true
+      description: Contains counterparty adress if known. To whom the transfer was made for Send or from whom was it made for Receive
+      $ref: "#/components/schemas/EvmAddressInfo"
     EvmStateChangeErc20Transfer:
       type: object
       description: ERC20 token transfers
@@ -3069,6 +3944,8 @@ components:
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
@@ -3119,10 +3996,14 @@ components:
           type: object
           required:
             - amount
+            - counterparty
             - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              nullable: true
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmNativeAsset"
           description: Data associated with the state change
@@ -3142,6 +4023,7 @@ components:
           type: object
           required:
             - amount
+            - counterparty
             - metadata
             - tokenId
             - asset
@@ -3149,7 +4031,8 @@ components:
             amount:
               $ref: "#/components/schemas/EvmAmount"
             counterparty:
-              $ref: "#/components/schemas/EvmAddressInfo"
+              nullable: true
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             metadata:
               $ref: "#/components/schemas/EvmNftMetadata"
             tokenId:
@@ -3247,6 +4130,9 @@ components:
               $ref: "#/components/schemas/EvmNftMetadata"
             tokenId:
               $ref: "#/components/schemas/EvmErc1155TokenId"
+            counterparty:
+              nullable: true
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmErc1155Asset"
           description: Data associated with the state change
@@ -3281,7 +4167,184 @@ components:
             asset:
               $ref: "#/components/schemas/EvmErc1155Asset"
           description: Data associated with the state change
-    EvmStateChangeAnyNftFromCollectionTransfer:
+    # Message endpoint uses 2023-03-08 state change types
+    EvmMessageStateChangeErc20Permit:
+      type: object
+      description: ERC20 token permit message
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC20_PERMIT]
+          example: ERC20_PERMIT
+        data:
+          type: object
+          required:
+            - contract
+            - owner
+            - spender
+            - amount
+            - nonce
+            - deadline
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            owner:
+              description: The owner of the ERC20 tokens
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              description: The entity that will be allowed to spend them if the permit is granted
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              type: string
+              description: Stringified base unit amount of the token
+              example: "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+            nonce:
+              type: string
+              description: Stringified nonce number
+              example: "0"
+            deadline:
+              type: number
+              description: "Unix timestamp when this permit will expire. Can be `null`: indicates no deadline."
+              example: 1667556263
+              nullable: true
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc20Transfer:
+      type: object
+      description: ERC20 token transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC20_TRANSFER]
+          example: ERC20_TRANSFER
+        data:
+          type: object
+          required:
+            - contract
+            - amount
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeNativeAssetTransfer:
+      type: object
+      description: ETH transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [NATIVE_ASSET_TRANSFER]
+          example: NATIVE_ASSET_TRANSFER
+        data:
+          type: object
+          required:
+            - contract
+            - amount
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              $ref: "#/components/schemas/EvmNativeAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc721Transfer:
+      type: object
+      description: ERC721 NFT transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC721_TRANSFER]
+          example: ERC721_TRANSFER
+        data:
+          type: object
+          required:
+            - amount
+            - contract
+            - metadata
+            - name
+            - symbol
+            - tokenId
+            - assetPrice
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              $ref: "#/components/schemas/EvmTransferCounterparty"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            name:
+              $ref: "#/components/schemas/EvmName"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc721TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc1155Transfer:
+      type: object
+      description: ERC1155 transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC1155_TRANSFER]
+          example: ERC1155_TRANSFER
+        data:
+          type: object
+          required:
+            - name
+            - amount
+            - contract
+            - metadata
+            - tokenId
+            - assetPrice
+          properties:
+            name:
+              $ref: "#/components/schemas/EvmName"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc1155TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmMessageStateChangeAnyNftFromCollectionTransfer:
       type: object
       description: A "wildcard" NFT transfer representing the transfer of any NFT from a given collection (eg. Opensea collection offers)
       required:
@@ -3335,6 +4398,7 @@ components:
                   description: The type of specified NFT
                   example: ERC721
           description: Data associated with the state change
+    # ---- End of /message endpoint specific types
     SolanaStateChangeSolTransfer:
       type: object
       description: Solana native token transfer

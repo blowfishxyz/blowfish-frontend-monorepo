@@ -1066,6 +1066,7 @@ paths:
                     - status
                     - riskScore
                     - labels
+                    - warnings
                   properties:
                     domain:
                       type: string
@@ -1091,6 +1092,7 @@ paths:
                         certainty that this domain is hosting a crypto-native
                         scam.
                       format: float
+                      nullable: true
                       example: 1.0
                     labels:
                       type: array
@@ -1135,6 +1137,8 @@ paths:
                           - source=brand_whitelist
                           - copy_cat=brand_name:domain
                         example: blockchain=solana
+                    warnings:
+                      $ref: "#/components/schemas/Warning"
         "400":
           description: Bad request
           content:

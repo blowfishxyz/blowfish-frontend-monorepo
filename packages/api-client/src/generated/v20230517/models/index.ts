@@ -2079,7 +2079,7 @@ export interface ScanDomain200ResponseInner {
      * @type {number}
      * @memberof ScanDomain200ResponseInner
      */
-    riskScore: number;
+    riskScore: number | null;
     /**
      * Additional metadata about the domain and our evaluation. Possible labels include
      * 
@@ -2090,6 +2090,12 @@ export interface ScanDomain200ResponseInner {
      * @memberof ScanDomain200ResponseInner
      */
     labels: Array<ScanDomain200ResponseInnerLabelsEnum>;
+    /**
+     * An array of warnings generated from scanning the transactions. All these warnings won't be returned in a single response (some are mutually exclusive) but it is advisable that your UI can display multiple warnings. Warnings are returned sorted by severity, so if you can only show a user one warning, show them the one at the 0th index.
+     * @type {Array<WarningInner>}
+     * @memberof ScanDomain200ResponseInner
+     */
+    warnings: Array<WarningInner>;
 }
 
 

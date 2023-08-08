@@ -10,12 +10,20 @@ import styled from "styled-components";
 import AssetImage from "~components/AssetImage";
 import AssetPrice from "~components/AssetPrice";
 
+function getAddress(stateChange: EvmExpectedStateChange) {
+  if ("asset" in stateChange.rawInfo.data) {
+    return stateChange.rawInfo.data.asset.address;
+  } else if ("contract" in stateChange.rawInfo.data) {
+    return stateChange.rawInfo.data.contract.address;
+  }
+}
+
 export const EnrichedSimulationResult: React.FC<{
   stateChange: EvmExpectedStateChange;
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }> = ({ stateChange, chainFamily, chainNetwork }) => {
-  const address = stateChange.rawInfo.data.asset.address;
+  const address = getAddress(stateChange);
   const { kind } = stateChange.rawInfo;
   const isApproval = kind.includes("APPROVAL");
   const isNft = kind.includes("ERC721") || kind.includes("ERC1155");
@@ -54,7 +62,7 @@ export const EnrichedSimulationResult: React.FC<{
           </StateChangeText>
           <AssetPrice stateChange={stateChange} />
         </Column>
-        {isNft && (
+        {isNft && address && (
           <BlockExplorerLink
             address={address}
             chainFamily={chainFamily}

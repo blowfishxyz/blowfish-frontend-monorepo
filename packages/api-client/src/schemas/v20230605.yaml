@@ -55,12 +55,6 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -264,12 +258,6 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -427,12 +415,6 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -536,21 +518,23 @@ paths:
                             rawInfo:
                               description: A machine-parsable state change object describing the state change.
                               oneOf:
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Permit"
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
                               discriminator:
                                 propertyName: kind
                                 mapping:
-                                  ERC20_PERMIT: "#/components/schemas/EvmStateChangeErc20Permit"
-                                  ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                  ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                  ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
-                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFro\
-                                    mCollectionTransfer"
+                                  ERC20_PERMIT: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                  ERC20_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmMessageStateChangeNativeAssetTr\
+                                    ansfer"
+                                  ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                  ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAn\
+                                    yNftFromCollectionTransfer"
                       error:
                         description: A nullable error object which includes the parsed simulation error
                           encountered (if any)
@@ -642,12 +626,6 @@ paths:
             enum:
               - "true"
               - "false"
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -913,12 +891,6 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1056,12 +1028,6 @@ paths:
       security:
         - ApiKeyAuth: []
       parameters:
-        - name: X-Api-Key
-          in: header
-          description: API Key
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiKeyHeader"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1101,6 +1067,7 @@ paths:
                     - status
                     - riskScore
                     - labels
+                    - warnings
                   properties:
                     domain:
                       type: string
@@ -1126,6 +1093,7 @@ paths:
                         certainty that this domain is hosting a crypto-native
                         scam.
                       format: float
+                      nullable: true
                       example: 1.0
                     labels:
                       type: array
@@ -1170,6 +1138,8 @@ paths:
                           - source=brand_whitelist
                           - copy_cat=brand_name:domain
                         example: blockchain=solana
+                    warnings:
+                      $ref: "#/components/schemas/Warning"
         "400":
           description: Bad request
           content:
@@ -1195,6 +1165,7 @@ components:
       type: apiKey
       in: header
       name: X-Api-Key
+      x-default: "4daa1e3b-87e6-40b2-8883-758feb6a8e46"
   schemas:
     Unauthorized:
       type: object
@@ -1304,11 +1275,6 @@ components:
       description: API version like 2023-05-17
       default: "2023-05-17"
       example: "2023-05-17"
-    ApiKeyHeader:
-      description: API key
-      type: string
-      default: 4daa1e3b-87e6-40b2-8883-758feb6a8e46
-      example: e79e18b4-8ffa-4fab-9e2e-f24057644f93
     Languages:
       type: string
       default: en
@@ -1746,7 +1712,6 @@ components:
             - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
             - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-            - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
           discriminator:
             propertyName: kind
             mapping:
@@ -1758,7 +1723,6 @@ components:
               ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
               ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
               ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-              ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
     EvmExpectedStateChanges:
       type: array
       items:
@@ -1890,6 +1854,67 @@ components:
       properties:
         address:
           $ref: "#/components/schemas/EvmContractAddress"
+        symbol:
+          type: string
+          example: USDT
+          description: The symbol of the asset
+        name:
+          type: string
+          example: Tether USD
+          description: The name of the asset
+        decimals:
+          type: integer
+          example: 6
+          description: The number of decimal places used by the asset
+        verified:
+          type: boolean
+          example: true
+          description: Whether the asset is verified as safe
+        lists:
+          type: array
+          items:
+            type: string
+            enum:
+              - COINGECKO
+              - ZERION
+              - ONE_INCH
+              - UNISWAP
+              - MY_CRYPTO_API
+              - KLEROS_TOKENS
+              - POLYGON_POPULAR_TOKENS
+              - EVM_NATIVE
+              - BLOWFISH
+            example: COINGECKO
+          description: The trusted token lists on which this asset is listed
+        imageUrl:
+          type: string
+          description: The URL of the asset's image. Can be `null`.
+          nullable: true
+          example: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%\
+            3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f\
+            .png"
+        price:
+          description: A $-value price of the asset. Floor price of the collection if
+            asset is an NFT. Can be `null`.
+          $ref: "#/components/schemas/AssetPrice"
+          nullable: true
+    # NOTE: EvmAsset is only used in message endpoint due to older response format
+    EvmAsset:
+      type: object
+      required:
+        - address
+        - symbol
+        - name
+        - decimals
+        - verified
+        - lists
+        - imageUrl
+        - price
+      properties:
+        address:
+          type: string
+          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+          description: The contract address of the asset
         symbol:
           type: string
           example: USDT
@@ -2115,53 +2140,11 @@ components:
           type: string
           example: Unable to simulate transaction
           description: Human readable explanation of the error
-    EvmStateChangeErc20Permit:
-      type: object
-      description: ERC20 token permit message
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC20_PERMIT ]
-          example: ERC20_PERMIT
-        data:
-          type: object
-          required:
-            - owner
-            - spender
-            - amount
-            - nonce
-            - deadline
-            - asset
-          properties:
-            owner:
-              description: The owner of the ERC20 tokens
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              description: The entity that will be allowed to spend them if the permit is
-                granted
-              $ref: "#/components/schemas/EvmAddressInfo"
-            amount:
-              type: string
-              description: Stringified base unit amount of the token
-              example: "115792089237316195423570985008687907853269984665640564039457584007913\
-                129639935"
-            nonce:
-              type: string
-              description: Stringified nonce number
-              example: "0"
-            deadline:
-              type: number
-              description: "Unix timestamp when this permit will expire. Can be `null`:
-                indicates no deadline."
-              example: 1667556263
-              nullable: true
-            asset:
-              $ref: "#/components/schemas/EvmErc20Asset"
-          description: Data associated with the state change
+    EvmTransferCounterparty:
+      nullable: true
+      description: Contains counterparty adress if known. To whom the transfer was
+        made for Send or from whom was it made for Receive
+      $ref: "#/components/schemas/EvmAddressInfo"
     EvmStateChangeErc20Transfer:
       type: object
       description: ERC20 token transfers
@@ -2182,6 +2165,8 @@ components:
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
@@ -2233,10 +2218,14 @@ components:
           type: object
           required:
             - amount
+            - counterparty
             - asset
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              nullable: true
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmNativeAsset"
           description: Data associated with the state change
@@ -2256,6 +2245,7 @@ components:
           type: object
           required:
             - amount
+            - counterparty
             - metadata
             - tokenId
             - asset
@@ -2263,7 +2253,8 @@ components:
             amount:
               $ref: "#/components/schemas/EvmAmount"
             counterparty:
-              $ref: "#/components/schemas/EvmAddressInfo"
+              nullable: true
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             metadata:
               $ref: "#/components/schemas/EvmNftMetadata"
             tokenId:
@@ -2361,6 +2352,9 @@ components:
               $ref: "#/components/schemas/EvmNftMetadata"
             tokenId:
               $ref: "#/components/schemas/EvmErc1155TokenId"
+            counterparty:
+              nullable: true
+              $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmErc1155Asset"
           description: Data associated with the state change
@@ -2396,7 +2390,187 @@ components:
             asset:
               $ref: "#/components/schemas/EvmErc1155Asset"
           description: Data associated with the state change
-    EvmStateChangeAnyNftFromCollectionTransfer:
+    # Message endpoint uses 2023-03-08 state change types
+    EvmMessageStateChangeErc20Permit:
+      type: object
+      description: ERC20 token permit message
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC20_PERMIT ]
+          example: ERC20_PERMIT
+        data:
+          type: object
+          required:
+            - contract
+            - owner
+            - spender
+            - amount
+            - nonce
+            - deadline
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            owner:
+              description: The owner of the ERC20 tokens
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              description: The entity that will be allowed to spend them if the permit is
+                granted
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              type: string
+              description: Stringified base unit amount of the token
+              example: "115792089237316195423570985008687907853269984665640564039457584007913\
+                129639935"
+            nonce:
+              type: string
+              description: Stringified nonce number
+              example: "0"
+            deadline:
+              type: number
+              description: "Unix timestamp when this permit will expire. Can be `null`:
+                indicates no deadline."
+              example: 1667556263
+              nullable: true
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc20Transfer:
+      type: object
+      description: ERC20 token transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC20_TRANSFER ]
+          example: ERC20_TRANSFER
+        data:
+          type: object
+          required:
+            - contract
+            - amount
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeNativeAssetTransfer:
+      type: object
+      description: ETH transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ NATIVE_ASSET_TRANSFER ]
+          example: NATIVE_ASSET_TRANSFER
+        data:
+          type: object
+          required:
+            - contract
+            - amount
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              $ref: "#/components/schemas/EvmNativeAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc721Transfer:
+      type: object
+      description: ERC721 NFT transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC721_TRANSFER ]
+          example: ERC721_TRANSFER
+        data:
+          type: object
+          required:
+            - amount
+            - contract
+            - metadata
+            - name
+            - symbol
+            - tokenId
+            - assetPrice
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              $ref: "#/components/schemas/EvmTransferCounterparty"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            name:
+              $ref: "#/components/schemas/EvmName"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc721TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc1155Transfer:
+      type: object
+      description: ERC1155 transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC1155_TRANSFER ]
+          example: ERC1155_TRANSFER
+        data:
+          type: object
+          required:
+            - name
+            - amount
+            - contract
+            - metadata
+            - tokenId
+            - assetPrice
+          properties:
+            name:
+              $ref: "#/components/schemas/EvmName"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc1155TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmMessageStateChangeAnyNftFromCollectionTransfer:
       type: object
       description: A "wildcard" NFT transfer representing the transfer of any NFT from
         a given collection (eg. Opensea collection offers)
@@ -2457,6 +2631,7 @@ components:
                   description: The type of specified NFT
                   example: ERC721
           description: Data associated with the state change
+    # ---- End of /message endpoint specific types
     SolanaStateChangeSolTransfer:
       type: object
       description: Solana native token transfer

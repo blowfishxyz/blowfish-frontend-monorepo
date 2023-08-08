@@ -23,7 +23,6 @@ import type {
 } from '../models/index';
 
 export interface DownloadBlocklistOperationRequest {
-    xApiKey: string;
     xApiVersion: string;
     contentType?: string;
     downloadBlocklistRequest?: DownloadBlocklistRequest;
@@ -39,10 +38,6 @@ export class DownloadBlocklistApi extends runtime.BaseAPI {
      * Blocklist
      */
     async downloadBlocklistRaw(requestParameters: DownloadBlocklistOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DownloadBlocklist200Response>> {
-        if (requestParameters.xApiKey === null || requestParameters.xApiKey === undefined) {
-            throw new runtime.RequiredError('xApiKey','Required parameter requestParameters.xApiKey was null or undefined when calling downloadBlocklist.');
-        }
-
         if (requestParameters.xApiVersion === null || requestParameters.xApiVersion === undefined) {
             throw new runtime.RequiredError('xApiVersion','Required parameter requestParameters.xApiVersion was null or undefined when calling downloadBlocklist.');
         }
@@ -52,10 +47,6 @@ export class DownloadBlocklistApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
-
-        if (requestParameters.xApiKey !== undefined && requestParameters.xApiKey !== null) {
-            headerParameters['X-Api-Key'] = String(requestParameters.xApiKey);
-        }
 
         if (requestParameters.xApiVersion !== undefined && requestParameters.xApiVersion !== null) {
             headerParameters['X-Api-Version'] = String(requestParameters.xApiVersion);

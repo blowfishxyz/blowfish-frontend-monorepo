@@ -309,6 +309,79 @@ export interface EvmAmount {
   before: string;
 }
 /**
+ *
+ * @export
+ * @interface EvmAsset
+ */
+export interface EvmAsset {
+  /**
+   * The contract address of the asset
+   * @type {string}
+   * @memberof EvmAsset
+   */
+  address: string;
+  /**
+   * The symbol of the asset
+   * @type {string}
+   * @memberof EvmAsset
+   */
+  symbol: string;
+  /**
+   * The name of the asset
+   * @type {string}
+   * @memberof EvmAsset
+   */
+  name: string;
+  /**
+   * The number of decimal places used by the asset
+   * @type {number}
+   * @memberof EvmAsset
+   */
+  decimals: number;
+  /**
+   * Whether the asset is verified as safe
+   * @type {boolean}
+   * @memberof EvmAsset
+   */
+  verified: boolean;
+  /**
+   * The trusted token lists on which this asset is listed
+   * @type {Array<string>}
+   * @memberof EvmAsset
+   */
+  lists: Array<EvmAssetListsEnum>;
+  /**
+   * The URL of the asset's image. Can be `null`.
+   * @type {string}
+   * @memberof EvmAsset
+   */
+  imageUrl: string | null;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof EvmAsset
+   */
+  price: AssetPrice | null;
+}
+
+/**
+ * @export
+ */
+export const EvmAssetListsEnum = {
+  Coingecko: "COINGECKO",
+  Zerion: "ZERION",
+  OneInch: "ONE_INCH",
+  Uniswap: "UNISWAP",
+  MyCryptoApi: "MY_CRYPTO_API",
+  KlerosTokens: "KLEROS_TOKENS",
+  PolygonPopularTokens: "POLYGON_POPULAR_TOKENS",
+  EvmNative: "EVM_NATIVE",
+  Blowfish: "BLOWFISH",
+} as const;
+export type EvmAssetListsEnum =
+  typeof EvmAssetListsEnum[keyof typeof EvmAssetListsEnum];
+
+/**
  * @type EvmDecodedCalldata
  * Parsed `data` field of the transaction using the contract's ABI. We don't recommend displaying this field to users when contract isn't trusted
  * (for example, using `protocol` field), as scammers can verify ABI with arbitrary and misleading function names (e.g. `withdraw`, when it's actually a transfer).
@@ -662,9 +735,6 @@ export interface EvmExpectedStateChange {
  * @export
  */
 export type EvmExpectedStateChangeRawInfo =
-  | ({
-      kind: "ANY_NFT_FROM_COLLECTION_TRANSFER";
-    } & EvmStateChangeAnyNftFromCollectionTransfer)
   | ({ kind: "ERC1155_APPROVAL_FOR_ALL" } & EvmStateChangeErc1155ApprovalForAll)
   | ({ kind: "ERC1155_TRANSFER" } & EvmStateChangeErc1155Transfer)
   | ({ kind: "ERC20_APPROVAL" } & EvmStateChangeErc20Approval)
@@ -697,6 +767,451 @@ export interface EvmLog {
    * @memberof EvmLog
    */
   data: string;
+}
+/**
+ * A "wildcard" NFT transfer representing the transfer of any NFT from a given collection (eg. Opensea collection offers)
+ * @export
+ * @interface EvmMessageStateChangeAnyNftFromCollectionTransfer
+ */
+export interface EvmMessageStateChangeAnyNftFromCollectionTransfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransfer
+   */
+  kind: EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangeAnyNftFromCollectionTransferData}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransfer
+   */
+  data: EvmMessageStateChangeAnyNftFromCollectionTransferData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum = {
+  AnyNftFromCollectionTransfer: "ANY_NFT_FROM_COLLECTION_TRANSFER",
+} as const;
+export type EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum =
+  typeof EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum[keyof typeof EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangeAnyNftFromCollectionTransferData
+ */
+export interface EvmMessageStateChangeAnyNftFromCollectionTransferData {
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferData
+   */
+  amount: EvmAmount;
+  /**
+   *
+   * @type {EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferData
+   */
+  asset: EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset;
+}
+/**
+ * Represents NFT collection as a whole, including collection-level image, etc.
+ * @export
+ * @interface EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+ */
+export interface EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset {
+  /**
+   * The contract address of the asset
+   * @type {string}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+   */
+  address: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+   */
+  symbol: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+   */
+  name: string;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+   */
+  price?: AssetPrice | null;
+  /**
+   * The URL of the collection's cover image
+   * @type {string}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+   */
+  imageUrl?: string | null;
+  /**
+   * The type of specified NFT
+   * @type {string}
+   * @memberof EvmMessageStateChangeAnyNftFromCollectionTransferDataAsset
+   */
+  type: EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum =
+  {
+    Erc721: "ERC721",
+    Erc1155: "ERC1155",
+  } as const;
+export type EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum =
+  typeof EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum[keyof typeof EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum];
+
+/**
+ * ERC1155 transfers
+ * @export
+ * @interface EvmMessageStateChangeErc1155Transfer
+ */
+export interface EvmMessageStateChangeErc1155Transfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc1155Transfer
+   */
+  kind: EvmMessageStateChangeErc1155TransferKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangeErc1155TransferData}
+   * @memberof EvmMessageStateChangeErc1155Transfer
+   */
+  data: EvmMessageStateChangeErc1155TransferData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeErc1155TransferKindEnum = {
+  Erc1155Transfer: "ERC1155_TRANSFER",
+} as const;
+export type EvmMessageStateChangeErc1155TransferKindEnum =
+  typeof EvmMessageStateChangeErc1155TransferKindEnum[keyof typeof EvmMessageStateChangeErc1155TransferKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangeErc1155TransferData
+ */
+export interface EvmMessageStateChangeErc1155TransferData {
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc1155TransferData
+   */
+  name: string;
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmMessageStateChangeErc1155TransferData
+   */
+  amount: EvmAmount;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc1155TransferData
+   */
+  contract: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmNftMetadata}
+   * @memberof EvmMessageStateChangeErc1155TransferData
+   */
+  metadata: EvmNftMetadata;
+  /**
+   * The ID of the ERC1155 token. Can be `null`.
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc1155TransferData
+   */
+  tokenId: string | null;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof EvmMessageStateChangeErc1155TransferData
+   */
+  assetPrice: AssetPrice | null;
+}
+/**
+ * ERC20 token permit message
+ * @export
+ * @interface EvmMessageStateChangeErc20Permit
+ */
+export interface EvmMessageStateChangeErc20Permit {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc20Permit
+   */
+  kind: EvmMessageStateChangeErc20PermitKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangeErc20PermitData}
+   * @memberof EvmMessageStateChangeErc20Permit
+   */
+  data: EvmMessageStateChangeErc20PermitData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeErc20PermitKindEnum = {
+  Erc20Permit: "ERC20_PERMIT",
+} as const;
+export type EvmMessageStateChangeErc20PermitKindEnum =
+  typeof EvmMessageStateChangeErc20PermitKindEnum[keyof typeof EvmMessageStateChangeErc20PermitKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangeErc20PermitData
+ */
+export interface EvmMessageStateChangeErc20PermitData {
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  contract: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  owner: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  spender: EvmAddressInfo;
+  /**
+   * Stringified base unit amount of the token
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  amount: string;
+  /**
+   * Stringified nonce number
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  nonce: string;
+  /**
+   * Unix timestamp when this permit will expire. Can be `null`: indicates no deadline.
+   * @type {number}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  deadline: number | null;
+  /**
+   *
+   * @type {EvmAsset}
+   * @memberof EvmMessageStateChangeErc20PermitData
+   */
+  asset: EvmAsset;
+}
+/**
+ * ERC20 token transfers
+ * @export
+ * @interface EvmMessageStateChangeErc20Transfer
+ */
+export interface EvmMessageStateChangeErc20Transfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc20Transfer
+   */
+  kind: EvmMessageStateChangeErc20TransferKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangeErc20TransferData}
+   * @memberof EvmMessageStateChangeErc20Transfer
+   */
+  data: EvmMessageStateChangeErc20TransferData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeErc20TransferKindEnum = {
+  Erc20Transfer: "ERC20_TRANSFER",
+} as const;
+export type EvmMessageStateChangeErc20TransferKindEnum =
+  typeof EvmMessageStateChangeErc20TransferKindEnum[keyof typeof EvmMessageStateChangeErc20TransferKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangeErc20TransferData
+ */
+export interface EvmMessageStateChangeErc20TransferData {
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc20TransferData
+   */
+  contract: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmMessageStateChangeErc20TransferData
+   */
+  amount: EvmAmount;
+  /**
+   *
+   * @type {EvmAsset}
+   * @memberof EvmMessageStateChangeErc20TransferData
+   */
+  asset: EvmAsset;
+}
+/**
+ * ERC721 NFT transfers
+ * @export
+ * @interface EvmMessageStateChangeErc721Transfer
+ */
+export interface EvmMessageStateChangeErc721Transfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc721Transfer
+   */
+  kind: EvmMessageStateChangeErc721TransferKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangeErc721TransferData}
+   * @memberof EvmMessageStateChangeErc721Transfer
+   */
+  data: EvmMessageStateChangeErc721TransferData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeErc721TransferKindEnum = {
+  Erc721Transfer: "ERC721_TRANSFER",
+} as const;
+export type EvmMessageStateChangeErc721TransferKindEnum =
+  typeof EvmMessageStateChangeErc721TransferKindEnum[keyof typeof EvmMessageStateChangeErc721TransferKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangeErc721TransferData
+ */
+export interface EvmMessageStateChangeErc721TransferData {
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  amount: EvmAmount;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  counterparty?: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  contract: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmNftMetadata}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  metadata: EvmNftMetadata;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  name: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  symbol: string;
+  /**
+   * The ID of the ERC721 token. Can be `null` in some edge cases where we are temporarily unable to parse it.
+   * @type {string}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  tokenId: string | null;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof EvmMessageStateChangeErc721TransferData
+   */
+  assetPrice: AssetPrice | null;
+}
+/**
+ * ETH transfers
+ * @export
+ * @interface EvmMessageStateChangeNativeAssetTransfer
+ */
+export interface EvmMessageStateChangeNativeAssetTransfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangeNativeAssetTransfer
+   */
+  kind: EvmMessageStateChangeNativeAssetTransferKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangeNativeAssetTransferData}
+   * @memberof EvmMessageStateChangeNativeAssetTransfer
+   */
+  data: EvmMessageStateChangeNativeAssetTransferData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangeNativeAssetTransferKindEnum = {
+  NativeAssetTransfer: "NATIVE_ASSET_TRANSFER",
+} as const;
+export type EvmMessageStateChangeNativeAssetTransferKindEnum =
+  typeof EvmMessageStateChangeNativeAssetTransferKindEnum[keyof typeof EvmMessageStateChangeNativeAssetTransferKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangeNativeAssetTransferData
+ */
+export interface EvmMessageStateChangeNativeAssetTransferData {
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangeNativeAssetTransferData
+   */
+  contract: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmMessageStateChangeNativeAssetTransferData
+   */
+  amount: EvmAmount;
+  /**
+   *
+   * @type {EvmNativeAsset}
+   * @memberof EvmMessageStateChangeNativeAssetTransferData
+   */
+  asset: EvmNativeAsset;
 }
 /**
  *
@@ -998,108 +1513,6 @@ export type EvmSimulationFailedErrorKindEnum =
   typeof EvmSimulationFailedErrorKindEnum[keyof typeof EvmSimulationFailedErrorKindEnum];
 
 /**
- * A "wildcard" NFT transfer representing the transfer of any NFT from a given collection (eg. Opensea collection offers)
- * @export
- * @interface EvmStateChangeAnyNftFromCollectionTransfer
- */
-export interface EvmStateChangeAnyNftFromCollectionTransfer {
-  /**
-   * What kind of state change this object is
-   * @type {string}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransfer
-   */
-  kind: EvmStateChangeAnyNftFromCollectionTransferKindEnum;
-  /**
-   *
-   * @type {EvmStateChangeAnyNftFromCollectionTransferData}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransfer
-   */
-  data: EvmStateChangeAnyNftFromCollectionTransferData;
-}
-
-/**
- * @export
- */
-export const EvmStateChangeAnyNftFromCollectionTransferKindEnum = {
-  AnyNftFromCollectionTransfer: "ANY_NFT_FROM_COLLECTION_TRANSFER",
-} as const;
-export type EvmStateChangeAnyNftFromCollectionTransferKindEnum =
-  typeof EvmStateChangeAnyNftFromCollectionTransferKindEnum[keyof typeof EvmStateChangeAnyNftFromCollectionTransferKindEnum];
-
-/**
- * Data associated with the state change
- * @export
- * @interface EvmStateChangeAnyNftFromCollectionTransferData
- */
-export interface EvmStateChangeAnyNftFromCollectionTransferData {
-  /**
-   *
-   * @type {EvmAmount}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferData
-   */
-  amount: EvmAmount;
-  /**
-   *
-   * @type {EvmStateChangeAnyNftFromCollectionTransferDataAsset}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferData
-   */
-  asset: EvmStateChangeAnyNftFromCollectionTransferDataAsset;
-}
-/**
- * Represents NFT collection as a whole, including collection-level image, etc.
- * @export
- * @interface EvmStateChangeAnyNftFromCollectionTransferDataAsset
- */
-export interface EvmStateChangeAnyNftFromCollectionTransferDataAsset {
-  /**
-   * The contract address of the asset
-   * @type {string}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferDataAsset
-   */
-  address: string;
-  /**
-   *
-   * @type {string}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferDataAsset
-   */
-  symbol: string;
-  /**
-   *
-   * @type {string}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferDataAsset
-   */
-  name: string;
-  /**
-   *
-   * @type {AssetPrice}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferDataAsset
-   */
-  price?: AssetPrice | null;
-  /**
-   * The URL of the collection's cover image
-   * @type {string}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferDataAsset
-   */
-  imageUrl?: string | null;
-  /**
-   * The type of specified NFT
-   * @type {string}
-   * @memberof EvmStateChangeAnyNftFromCollectionTransferDataAsset
-   */
-  type: EvmStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum;
-}
-
-/**
- * @export
- */
-export const EvmStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum = {
-  Erc721: "ERC721",
-  Erc1155: "ERC1155",
-} as const;
-export type EvmStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum =
-  typeof EvmStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum[keyof typeof EvmStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum];
-
-/**
  * Approval request for all owned ERC1155 assets
  * @export
  * @interface EvmStateChangeErc1155ApprovalForAll
@@ -1214,6 +1627,12 @@ export interface EvmStateChangeErc1155TransferData {
   tokenId: string | null;
   /**
    *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeErc1155TransferData
+   */
+  counterparty?: EvmAddressInfo;
+  /**
+   *
    * @type {EvmErc1155Asset}
    * @memberof EvmStateChangeErc1155TransferData
    */
@@ -1280,78 +1699,6 @@ export interface EvmStateChangeErc20ApprovalData {
   asset: EvmErc20Asset;
 }
 /**
- * ERC20 token permit message
- * @export
- * @interface EvmStateChangeErc20Permit
- */
-export interface EvmStateChangeErc20Permit {
-  /**
-   * What kind of state change this object is
-   * @type {string}
-   * @memberof EvmStateChangeErc20Permit
-   */
-  kind: EvmStateChangeErc20PermitKindEnum;
-  /**
-   *
-   * @type {EvmStateChangeErc20PermitData}
-   * @memberof EvmStateChangeErc20Permit
-   */
-  data: EvmStateChangeErc20PermitData;
-}
-
-/**
- * @export
- */
-export const EvmStateChangeErc20PermitKindEnum = {
-  Erc20Permit: "ERC20_PERMIT",
-} as const;
-export type EvmStateChangeErc20PermitKindEnum =
-  typeof EvmStateChangeErc20PermitKindEnum[keyof typeof EvmStateChangeErc20PermitKindEnum];
-
-/**
- * Data associated with the state change
- * @export
- * @interface EvmStateChangeErc20PermitData
- */
-export interface EvmStateChangeErc20PermitData {
-  /**
-   *
-   * @type {EvmAddressInfo}
-   * @memberof EvmStateChangeErc20PermitData
-   */
-  owner: EvmAddressInfo;
-  /**
-   *
-   * @type {EvmAddressInfo}
-   * @memberof EvmStateChangeErc20PermitData
-   */
-  spender: EvmAddressInfo;
-  /**
-   * Stringified base unit amount of the token
-   * @type {string}
-   * @memberof EvmStateChangeErc20PermitData
-   */
-  amount: string;
-  /**
-   * Stringified nonce number
-   * @type {string}
-   * @memberof EvmStateChangeErc20PermitData
-   */
-  nonce: string;
-  /**
-   * Unix timestamp when this permit will expire. Can be `null`: indicates no deadline.
-   * @type {number}
-   * @memberof EvmStateChangeErc20PermitData
-   */
-  deadline: number | null;
-  /**
-   *
-   * @type {EvmErc20Asset}
-   * @memberof EvmStateChangeErc20PermitData
-   */
-  asset: EvmErc20Asset;
-}
-/**
  * ERC20 token transfers
  * @export
  * @interface EvmStateChangeErc20Transfer
@@ -1392,6 +1739,12 @@ export interface EvmStateChangeErc20TransferData {
    * @memberof EvmStateChangeErc20TransferData
    */
   amount: EvmAmount;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeErc20TransferData
+   */
+  counterparty?: EvmAddressInfo;
   /**
    *
    * @type {EvmErc20Asset}
@@ -1577,7 +1930,7 @@ export interface EvmStateChangeErc721TransferData {
    * @type {EvmAddressInfo}
    * @memberof EvmStateChangeErc721TransferData
    */
-  counterparty?: EvmAddressInfo;
+  counterparty: EvmAddressInfo;
   /**
    *
    * @type {EvmNftMetadata}
@@ -1638,6 +1991,12 @@ export interface EvmStateChangeNativeAssetTransferData {
    * @memberof EvmStateChangeNativeAssetTransferData
    */
   amount: EvmAmount;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeNativeAssetTransferData
+   */
+  counterparty: EvmAddressInfo;
   /**
    *
    * @type {EvmNativeAsset}
@@ -1971,7 +2330,7 @@ export interface ScanDomain200ResponseInner {
    * @type {number}
    * @memberof ScanDomain200ResponseInner
    */
-  riskScore: number;
+  riskScore: number | null;
   /**
    * Additional metadata about the domain and our evaluation. Possible labels include
    *
@@ -1982,6 +2341,12 @@ export interface ScanDomain200ResponseInner {
    * @memberof ScanDomain200ResponseInner
    */
   labels: Array<ScanDomain200ResponseInnerLabelsEnum>;
+  /**
+   * An array of warnings generated from scanning the transactions. All these warnings won't be returned in a single response (some are mutually exclusive) but it is advisable that your UI can display multiple warnings. Warnings are returned sorted by severity, so if you can only show a user one warning, show them the one at the 0th index.
+   * @type {Array<WarningInner>}
+   * @memberof ScanDomain200ResponseInner
+   */
+  warnings: Array<WarningInner>;
 }
 
 /**
@@ -2157,12 +2522,14 @@ export type ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerR
 
     | ({
         kind: "ANY_NFT_FROM_COLLECTION_TRANSFER";
-      } & EvmStateChangeAnyNftFromCollectionTransfer)
-    | ({ kind: "ERC1155_TRANSFER" } & EvmStateChangeErc1155Transfer)
-    | ({ kind: "ERC20_PERMIT" } & EvmStateChangeErc20Permit)
-    | ({ kind: "ERC20_TRANSFER" } & EvmStateChangeErc20Transfer)
-    | ({ kind: "ERC721_TRANSFER" } & EvmStateChangeErc721Transfer)
-    | ({ kind: "NATIVE_ASSET_TRANSFER" } & EvmStateChangeNativeAssetTransfer);
+      } & EvmMessageStateChangeAnyNftFromCollectionTransfer)
+    | ({ kind: "ERC1155_TRANSFER" } & EvmMessageStateChangeErc1155Transfer)
+    | ({ kind: "ERC20_PERMIT" } & EvmMessageStateChangeErc20Permit)
+    | ({ kind: "ERC20_TRANSFER" } & EvmMessageStateChangeErc20Transfer)
+    | ({ kind: "ERC721_TRANSFER" } & EvmMessageStateChangeErc721Transfer)
+    | ({
+        kind: "NATIVE_ASSET_TRANSFER";
+      } & EvmMessageStateChangeNativeAssetTransfer);
 /**
  *
  * @export

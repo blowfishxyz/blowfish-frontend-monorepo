@@ -25,7 +25,6 @@ import type {
 } from "../models/index";
 
 export interface ScanTransactionsEvmOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
   chainFamily: ScanTransactionsEvmOperationChainFamilyEnum;
   chainNetwork: ScanTransactionsEvmOperationChainNetworkEnum;
@@ -35,7 +34,6 @@ export interface ScanTransactionsEvmOperationRequest {
 }
 
 export interface ScanTransactionsSolanaOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
   chainNetwork: ScanTransactionsSolanaOperationChainNetworkEnum;
   scanTransactionsSolanaRequest: ScanTransactionsSolanaRequest;
@@ -57,16 +55,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     requestParameters: ScanTransactionsEvmOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionsEvm200Response>> {
-    if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsEvm."
-      );
-    }
-
     if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
@@ -106,13 +94,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
 
     if (
       requestParameters.xApiVersion !== undefined &&
@@ -178,16 +159,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionsSolana200Response>> {
     if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsSolana."
-      );
-    }
-
-    if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
     ) {
@@ -235,13 +206,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
 
     if (
       requestParameters.xApiVersion !== undefined &&

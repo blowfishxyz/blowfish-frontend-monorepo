@@ -98,10 +98,7 @@ const AssetImage = ({
   ) {
     imageSrc = rawInfo.data?.metadata?.rawImageUrl;
     showPlaceholderImage = !imageSrc;
-    altText =
-      rawInfo.kind !== "ERC1155_TRANSFER"
-        ? rawInfo.data.asset.name
-        : `${altText} ${rawInfo.data.tokenId}`;
+    altText = `${altText} ${rawInfo.data.tokenId}`;
   } else if (
     rawInfo.kind === "ERC20_TRANSFER" ||
     rawInfo.kind === "ERC20_APPROVAL" ||

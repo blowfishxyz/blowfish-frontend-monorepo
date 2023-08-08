@@ -1,12 +1,12 @@
 import {
   EvmMessageExpectedStateChange,
-  EvmStateChangeErc20Permit,
+  EvmMessageStateChangeErc20Permit,
   EvmStateChangeErc20Transfer,
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
   EvmStateChangeNativeAssetTransfer,
   EvmTransactionExpectedStateChange,
-  EvmStateChangeAnyNftFromCollectionTransfer,
+  EvmMessageStateChangeAnyNftFromCollectionTransfer,
   EvmStateChangeErc1155ApprovalForAll,
   EvmStateChangeErc721Approval,
   EvmStateChangeErc20Approval,
@@ -24,6 +24,10 @@ export const sendNativeToken: EvmTransactionExpectedStateChange = {
       },
       contract: {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        kind: "ACCOUNT",
+      },
+      counterparty: {
+        address: "0x3Ed5fFfe493D4066191D7B7E76784A33deFd0018",
         kind: "ACCOUNT",
       },
       asset: {
@@ -55,6 +59,10 @@ export const receiveNativeToken: EvmTransactionExpectedStateChange = {
       },
       contract: {
         address: "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        kind: "ACCOUNT",
+      },
+      counterparty: {
+        address: "0x3Ed5fFfe493D4066191D7B7E76784A33deFd0018",
         kind: "ACCOUNT",
       },
       asset: {
@@ -182,7 +190,7 @@ export const permitErc20NoExpiration: EvmMessageExpectedStateChange = {
         },
       },
     },
-  } as EvmStateChangeErc20Permit,
+  } as EvmMessageStateChangeErc20Permit,
 };
 
 export const sendErc721: EvmTransactionExpectedStateChange = {
@@ -393,7 +401,7 @@ export const approveAllErc1155: EvmTransactionExpectedStateChange = {
   } as EvmStateChangeErc1155ApprovalForAll,
 };
 
-export const anyNftTransfer: EvmTransactionExpectedStateChange = {
+export const anyNftTransfer: EvmMessageExpectedStateChange = {
   humanReadableDiff: "Transfer any NFT from BoredApeYachtClub",
   rawInfo: {
     kind: "ANY_NFT_FROM_COLLECTION_TRANSFER",
@@ -413,7 +421,7 @@ export const anyNftTransfer: EvmTransactionExpectedStateChange = {
         },
       },
     },
-  } as EvmStateChangeAnyNftFromCollectionTransfer,
+  } as EvmMessageStateChangeAnyNftFromCollectionTransfer,
 };
 
 export const solTransfer: SolanaExpectedStateChange = {
