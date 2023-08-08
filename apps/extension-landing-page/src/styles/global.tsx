@@ -3,7 +3,7 @@ import { createGlobalStyle } from "styled-components";
 export const GlobalStyle = createGlobalStyle`
   html,
   body {
-    color: ${({ theme }) => theme.colors.primary};
+    color: #111;
     padding: 0;
     margin: 0;
     font-family: "GT-Planar", -apple-system, BlinkMacSystemFont, "Segoe UI",

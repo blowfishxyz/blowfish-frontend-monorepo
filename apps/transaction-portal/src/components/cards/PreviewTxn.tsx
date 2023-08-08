@@ -12,11 +12,11 @@ import {
   Row,
   Text,
   device,
-  SimulationResult,
   Icon,
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  StateChangePreview,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -27,10 +27,10 @@ import { Severity } from "@blowfish/utils/types";
 import {
   ChainFamily,
   ChainNetwork,
-  EvmTransactionExpectedStateChange,
-  EvmMessageExpectedStateChange,
   EvmProtocol,
   EvmDecodedCalldata,
+  EvmTransactionScanResult,
+  EvmMessageScanResult,
 } from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
@@ -43,15 +43,12 @@ export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
   account: string;
   message: string | undefined;
-  data:
-    | EvmMessageExpectedStateChange[]
-    | EvmTransactionExpectedStateChange[]
-    | undefined;
+  scanResult: EvmTransactionScanResult | EvmMessageScanResult;
   protocol?: EvmProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
 };
 
-const SectionHeading = styled(Text).attrs({ size: "xs", color: "base40" })``;
+const SectionHeading = styled(Text).attrs({ size: "sm", color: "base40" })``;
 
 const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
@@ -65,37 +62,6 @@ const StyledCardContent = styled(Row).attrs({
 const StyledColumn = styled(Column).attrs({
   paddingBlock: 18,
 })``;
-
-const TxnDataWrapper = styled.div`
-  padding: 5px 0 0;
-  height: 100%;
-  position: relative;
-  scrollbar-width: thin;
-  scrollbar-color: transparent;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    background-color: ${({ theme }) => theme.colors.backgroundPrimary};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.colors.backgroundSecondary};
-    border-radius: 4px;
-  }
-
-  scrollbar-color: ${({ theme }) =>
-    `${theme.colors.backgroundPrimary} ${theme.colors.backgroundSecondary}`};
-
-  & {
-    scrollbar-width: thin;
-  }
-
-  & {
-    scrollbar-color: ${({ theme }) =>
-      `${theme.colors.backgroundPrimary} ${theme.colors.backgroundSecondary}`};
-    scrollbar-width: thin;
-  }
-`;
 
 const TxnSimulationImage = styled.div`
   position: relative;
@@ -113,10 +79,10 @@ const VerifiedBadgeWrapper = styled(Row).attrs({
 `;
 
 const PreviewTokenTooltipContent = styled(TooltipContent)`
-  background-color: white;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
+  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+  box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
   padding: 15px;
-  border: 1px solid #ccc;
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 4px;
   z-index: 4;
   width: 200px;
@@ -343,10 +309,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   onReport,
   onCancel,
   advancedDetails,
-  simulationError,
 }) => {
-  const { dappUrl, data, message } = txnData;
+  const { dappUrl, scanResult, message } = txnData;
   const { origin, host } = dappUrl || {};
+  const chain = useChainMetadata();
 
   return (
     <PreviewCard
@@ -362,7 +328,13 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       advancedDetails={advancedDetails}
     >
       {message ? <SignaturePreview message={message} /> : null}
-      {<StateChangePreview data={data} simulationError={simulationError} />}
+      {
+        <StateChangePreview
+          scanResult={scanResult}
+          chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
+          chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}
+        />
+      }
     </PreviewCard>
   );
 };
@@ -428,58 +400,6 @@ const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
           </Text>
         </ShowMoreButton>
       </ShowMoreButtonWrapper>
-    </Column>
-  );
-};
-
-const StateChangePreview: React.FC<{
-  data: TxnSimulationDataType["data"];
-  simulationError: string | undefined;
-}> = ({ data, simulationError }) => {
-  const chain = useChainMetadata();
-  if (data && data.length > 0) {
-    return (
-      <Column gap="lg">
-        <Row justifyContent="space-between">
-          <SectionHeading>State</SectionHeading>
-        </Row>
-        <TxnDataWrapper>
-          {data.map((data, index) => {
-            return (
-              <SimulationResult
-                key={index}
-                txnData={data}
-                chainFamily={chain?.chainInfo?.chainFamily}
-                chainNetwork={chain?.chainInfo?.chainNetwork}
-              />
-            );
-          })}
-        </TxnDataWrapper>
-      </Column>
-    );
-  }
-
-  if (simulationError) {
-    return (
-      <Column gap="sm">
-        <Row justifyContent="space-between">
-          <SectionHeading>State</SectionHeading>
-        </Row>
-        <Text size="md" color="danger">
-          {simulationError}
-        </Text>
-      </Column>
-    );
-  }
-
-  return (
-    <Column gap="sm">
-      <Row justifyContent="space-between">
-        <SectionHeading>State</SectionHeading>
-      </Row>
-      <Text size="md" color="base30">
-        No state changes found. Proceed with caution
-      </Text>
     </Column>
   );
 };

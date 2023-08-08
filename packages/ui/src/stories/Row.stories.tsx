@@ -3,7 +3,7 @@ import { Row } from "~/common/layout";
 import { Meta, Story } from "@storybook/react";
 
 export default {
-  title: "Row",
+  title: "Internal/Row",
   component: Row,
   argTypes: {
     width: { control: "text" },

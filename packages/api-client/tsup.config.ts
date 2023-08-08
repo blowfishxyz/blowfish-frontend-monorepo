@@ -10,5 +10,6 @@ export default defineConfig((options) => ({
   minify: !options.watch,
   entry: {
     index: "./src/index.ts",
+    fixtures: "./src/fixtures/index.ts",
   },
 }));

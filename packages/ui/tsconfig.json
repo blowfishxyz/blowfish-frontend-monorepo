@@ -3,6 +3,8 @@
   "compilerOptions": {
     "outDir": "./build",
     "isolatedModules": false,
+    "moduleResolution": "Node16",
+    "rootDir": ".",
     "paths": {
       "~/*": ["./src/*"]
     }

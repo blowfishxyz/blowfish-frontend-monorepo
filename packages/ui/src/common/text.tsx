@@ -30,7 +30,9 @@ export type TextProps = {
 } & Colors;
 
 const StyledText = styled(StyledBaseText)<TextProps>`
-  font-family: "GT-Planar";
+  font-family: ${({ theme }) => theme.typography.fontFamily}, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
+    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   ${getDesignStyles}
   ${getSizeStyles}
   ${getWeightStyles}

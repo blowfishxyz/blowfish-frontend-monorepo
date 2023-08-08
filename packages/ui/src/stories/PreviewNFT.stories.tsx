@@ -29,6 +29,4 @@ const PreviewNFTStory = () => (
   </PreviewNftContainer>
 );
 
-storiesOf("Components/PreviewNft", module).add("NFT", () => (
-  <PreviewNFTStory />
-));
+storiesOf("Internal/PreviewNft", module).add("NFT", () => <PreviewNFTStory />);

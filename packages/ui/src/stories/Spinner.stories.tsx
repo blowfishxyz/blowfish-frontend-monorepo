@@ -4,7 +4,7 @@ import { Spinner, SpinnerProps } from "~/common/spinner";
 import { Column } from "~/common/layout";
 
 export default {
-  title: "Spinner",
+  title: "Internal/Spinner",
   component: Spinner,
   argTypes: {
     contrast: { control: "boolean" },
