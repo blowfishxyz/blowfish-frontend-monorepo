@@ -18,6 +18,9 @@ import type {
   EvmStateChangeErc20Approval,
   EvmStateChangeErc20Transfer,
   EvmStateChangeErc20Permit,
+  ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner,
+  SolanaStageChangeSplTransfer,
+  SolanaStateChangeSplApproval,
 } from "../../generated/v20230605/models";
 
 // TODO: use a separate ref in the schema to generate a standalone enum
@@ -31,14 +34,14 @@ export type EvmMessageExpectedStateChange =
 
 export type EvmTransactionExpectedStateChange = EvmExpectedStateChangesInner;
 
-export type NftStateChange =
+export type EvmNftStateChange =
   | EvmStateChangeErc1155ApprovalForAll
   | EvmStateChangeErc1155Transfer
   | EvmStateChangeErc721Approval
   | EvmStateChangeErc721ApprovalForAll
   | EvmStateChangeErc721Transfer;
 
-export type CurrencyStateChange =
+export type EvmCurrencyStateChange =
   | EvmStateChangeNativeAssetTransfer
   | EvmStateChangeErc20Transfer
   | EvmStateChangeErc20Permit
@@ -51,6 +54,10 @@ export type EvmExpectedStateChange =
 export type EvmTransactionScanResult = ScanTransactionEvm200Response;
 export type EvmTransactionsScanResult = ScanTransactionsEvm200Response;
 export type EvmMessageScanResult = ScanMessageEvm200Response;
+
+export type SolanaExpectedStateChange =
+  ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner;
+
 export interface SignTypedDataPayload {
   domain: {
     chainId?: string | number | bigint;

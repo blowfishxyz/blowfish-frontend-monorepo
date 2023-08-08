@@ -1,7 +1,7 @@
 import {
   EvmChainFamily,
   EvmChainNetwork,
-  CurrencyStateChange,
+  EvmCurrencyStateChange,
   EvmExpectedStateChange,
   EvmStateChangeErc1155ApprovalForAll,
   EvmStateChangeErc1155Transfer,
@@ -9,7 +9,7 @@ import {
   EvmStateChangeErc721Approval,
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
-  NftStateChange,
+  EvmNftStateChange,
 } from "@blowfishxyz/api-client";
 import Decimal from "decimal.js";
 
@@ -39,22 +39,9 @@ export const shortenEnsName = (name: string, showFatDots?: boolean): string => {
   )}`;
 };
 
-export const copyToClipboard = (address: string | undefined) => {
-  if (!address) return;
-
-  navigator.clipboard
-    .writeText(address)
-    .then(() => {
-      console.log("Address copied to clipboard!");
-    })
-    .catch((error) => {
-      console.error("Failed to copy address:", error);
-    });
-};
-
 export const isNftStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is NftStateChange => {
+): rawInfo is EvmNftStateChange => {
   return (
     rawInfo.kind === "ERC721_TRANSFER" ||
     rawInfo.kind === "ERC1155_TRANSFER" ||
@@ -67,7 +54,7 @@ export const isNftStateChange = (
 
 export const isCurrencyStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is CurrencyStateChange => {
+): rawInfo is EvmCurrencyStateChange => {
   return (
     rawInfo.kind === "ERC20_APPROVAL" ||
     rawInfo.kind === "ERC20_TRANSFER" ||
