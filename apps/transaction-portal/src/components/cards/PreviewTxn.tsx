@@ -29,7 +29,7 @@ import {
   ChainNetwork,
   EvmProtocol,
   EvmDecodedCalldata,
-  EvmTransactionScanResult,
+  EvmTransactionsScanResult,
   EvmMessageScanResult,
 } from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
@@ -43,7 +43,7 @@ export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
   account: string;
   message: string | undefined;
-  scanResult: EvmTransactionScanResult | EvmMessageScanResult;
+  scanResult: EvmTransactionsScanResult | EvmMessageScanResult;
   protocol?: EvmProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
 };

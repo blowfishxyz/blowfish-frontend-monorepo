@@ -7,7 +7,13 @@ import {
   PauseDuration,
   useTransactionScannerPauseResume,
 } from "@blowfish/hooks";
-import { Column, Row, Text } from "@blowfishxyz/ui";
+import {
+  Column,
+  Row,
+  Text,
+  getErrorFromScanResponse,
+  getResultsFromScanResponse,
+} from "@blowfishxyz/ui";
 import {
   BaseButton,
   BlockExplorerLink,
@@ -44,12 +50,7 @@ import {
   getPauseResumeSelection,
   sendPauseResumeSelection,
 } from "~utils/messages";
-import {
-  containsPunycode,
-  evmStateChangeHasImage,
-  getErrorFromScanResponse,
-  getResultsFromScanResponse,
-} from "~utils/utils";
+import { containsPunycode, evmStateChangeHasImage } from "~utils/utils";
 
 import { WarningNotice } from "./WarningNotice";
 

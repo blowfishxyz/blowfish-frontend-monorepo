@@ -2,9 +2,7 @@ import {
   EvmExpectedStateChange,
   EvmProtocol,
   ScanMessageEvm200ResponseSimulationResults,
-  ScanMessageEvm200ResponseSimulationResultsError,
   ScanTransactionsEvm200ResponseSimulationResults,
-  ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError,
 } from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -191,46 +189,4 @@ export const getProtocol = (
     return simulationResults.protocol;
   }
   return null;
-};
-
-export const getErrorFromScanResponse = (
-  simulationResults:
-    | ScanTransactionsEvm200ResponseSimulationResults
-    | ScanMessageEvm200ResponseSimulationResults
-    | null
-    | undefined
-):
-  | ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError
-  | ScanMessageEvm200ResponseSimulationResultsError
-  | null => {
-  if (!simulationResults) return null;
-
-  if ("aggregated" in simulationResults) {
-    return simulationResults.aggregated?.error;
-  } else {
-    return simulationResults.error;
-  }
-};
-
-export const getResultsFromScanResponse = (
-  simulationResults:
-    | ScanTransactionsEvm200ResponseSimulationResults
-    | ScanMessageEvm200ResponseSimulationResults
-    | null
-) => {
-  if (!simulationResults) return {};
-
-  if ("aggregated" in simulationResults) {
-    const aggregated = simulationResults.aggregated;
-    const { userAccount } = aggregated;
-    return {
-      expectedStateChanges: aggregated.expectedStateChanges[userAccount],
-      decodedCalldata: simulationResults.perTransaction[0].decodedCalldata,
-      decodedLogs: simulationResults.perTransaction[0].decodedLogs,
-    };
-  } else {
-    return {
-      expectedStateChanges: simulationResults.expectedStateChanges,
-    };
-  }
 };

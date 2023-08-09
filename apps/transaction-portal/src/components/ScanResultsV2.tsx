@@ -1,5 +1,9 @@
 import React, { useCallback, useMemo, useEffect, useState } from "react";
-import { Row } from "@blowfishxyz/ui";
+import {
+  Row,
+  getErrorFromScanResponse,
+  getResultsFromScanResponse,
+} from "@blowfishxyz/ui";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
   ChainFamily,
@@ -17,13 +21,7 @@ import {
   isSignTypedDataRequest,
   isTransactionRequest,
 } from "@blowfish/utils/types";
-import {
-  containsPunycode,
-  createValidURL,
-  getErrorFromScanResponse,
-  getProtocol,
-  getResultsFromScanResponse,
-} from "~utils/utils";
+import { containsPunycode, createValidURL, getProtocol } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~hooks/useChainMetadata";
@@ -63,8 +61,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
   const error = getErrorFromScanResponse(scanResults.simulationResults);
-  const { expectedStateChanges, decodedCalldata, decodedLogs } =
-    getResultsFromScanResponse(scanResults.simulationResults);
+  const result = getResultsFromScanResponse(scanResults.simulationResults);
 
   const hasPunycode = containsPunycode(dappUrl?.hostname);
 
@@ -207,11 +204,11 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   const txnData = {
     message: parsedMessageContent,
-    data: expectedStateChanges,
+    scanResult: scanResults,
     dappUrl,
     account: request.userAccount,
     protocol: getProtocol(scanResults?.simulationResults),
-    decodedCalldata: decodedCalldata,
+    decodedCalldata: result?.decodedCalldata,
   };
 
   return (
@@ -233,7 +230,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         chainNetwork={props.chainNetwork}
         chainFamily={props.chainFamily}
         advancedDetails={
-          <AdvancedDetails request={request} decodedLogs={decodedLogs} />
+          <AdvancedDetails
+            request={request}
+            decodedLogs={result?.decodedLogs}
+          />
         }
         onContinue={confirm}
         onCancel={() => {

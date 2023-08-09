@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { ScanParamsSuccess, useScanParams } from "~hooks/useScanParams";
-import { MessageError, getErrorFromScanResponse } from "~utils/utils";
+import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
   BlockedTransactionModal,
@@ -28,6 +28,7 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
+import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
 export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();

@@ -36,7 +36,7 @@ import {
 import { LoadingScreen } from "../LoadingScreen";
 import { PopupContainer } from "../PopupContainer";
 import { ScanResults } from "../ScanResults";
-import { getErrorFromScanResponse } from "~utils/utils";
+import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
 const ScanPageContainer = styled.div<{ severity?: Severity }>`
   width: 100%;

@@ -5,9 +5,9 @@ import {
   exampleEthSignScanResult,
   messageNoActionScanResult,
   messageWarnResultScanResult,
-  transactionBlockScanResult,
+  transactionsBlockScanResult,
   transactionNoActionScanResult,
-  transactionWarningScanResult,
+  transactionsWarningScanResult,
 } from "@blowfishxyz/api-client/fixtures";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
