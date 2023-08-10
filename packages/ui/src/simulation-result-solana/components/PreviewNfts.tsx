@@ -5,7 +5,7 @@ import { DataRowComponent } from "~/simulation-result-solana/components/PreviewT
 import { AssetPrice } from "~/simulation-result-solana/components/AssetPrice";
 import { Divider } from "~/simulation-result-solana/components/Divider";
 import { MetaplexTokenStandard } from "@blowfishxyz/api-client";
-import { formatMetaplexStandard } from "../utils";
+import { formatMetaplexStandard } from "~/simulation-result-solana/utils";
 
 interface PreviewNftProps {
   name: string | undefined | null;

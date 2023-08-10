@@ -76,50 +76,6 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
   );
 };
 
-// const TokenTooltipContent: React.FC<{
-//   rawInfo: SolanaExpectedStateChange["rawInfo"];
-// }> = ({ rawInfo }) => {
-//   if (
-//     (rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER") &&
-//     isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)
-//   ) {
-//     if (isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)) {
-//       return (
-//         <PreviewNfts
-//           name={rawInfo.data.asset.name}
-//           type={rawInfo.data.asset.metaplexTokenStandard}
-//           tokenId={rawInfo.data.asset.name}
-//           price={getAssetPriceInUsd(rawInfo)}
-//         />
-//       );
-//     }
-
-//     return (
-//       <PreviewTokens
-//         symbol={rawInfo.data.asset.symbol}
-//         name={rawInfo.data.asset.name}
-//         price={getAssetPricePerToken(rawInfo)}
-//         tokenList={null}
-//         verified={false}
-//       />
-//     );
-//   }
-
-//   if (rawInfo.kind === "SOL_TRANSFER") {
-//     return (
-//       <PreviewTokens
-//         symbol={rawInfo.data.asset.symbol}
-//         name={rawInfo.data.asset.name}
-//         price={getAssetPricePerToken(rawInfo)}
-//         tokenList={null}
-//         verified={false}
-//       />
-//     );
-//   }
-
-//   return null;
-// };
-
 const TokenFooter: React.FC<{
   rawInfo: SolanaExpectedStateChange["rawInfo"];
   chainNetwork: SolanaChainNetwork | undefined;

@@ -16,7 +16,6 @@ export default {
 export const SimulationResultSolanaComponent: ComponentStory<
   typeof SimulationResultSolana
 > = (props) => {
-  console.log("@@ HER", props.stateChange);
   return (
     <Wrapper>
       <SimulationResultSolana {...props} />
