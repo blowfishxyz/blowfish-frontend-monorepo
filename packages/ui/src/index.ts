@@ -7,6 +7,7 @@ export * from "./common/icon";
 export * from "./common/tooltip";
 export { Spinner } from "./common/spinner";
 export { device, size } from "./utils/breakpoints";
+export { getErrorFromScanResponse, getResultsFromScanResponse } from "./utils/state-change";
 export * from "./utils/animations";
 export { StyledBaseDiv, StyledBaseText } from "./common/base";
 

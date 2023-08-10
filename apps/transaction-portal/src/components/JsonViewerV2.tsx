@@ -53,16 +53,6 @@ const JsonData = styled.div`
   margin-top: 8px;
   width: 100%;
   position: relative;
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: ${({ theme }) => theme.colors.backgroundSecondary};
-    border-radius: 4px;
-  }
 `;
 
 interface FlatSectionProps {

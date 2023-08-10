@@ -28,6 +28,7 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
+import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
 export const ScanPageV2Inner: React.FC = () => {
   const data = useScanParams();
@@ -110,7 +111,8 @@ const ResultsView: React.FC<{
     error: scanError,
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
-  const simulationError = scanResults?.simulationResults?.error;
+  const error = getErrorFromScanResponse(scanResults?.simulationResults);
+
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
       ? message?.data.payload.method === "eth_sign"
@@ -128,15 +130,15 @@ const ResultsView: React.FC<{
       );
     }
 
-    if (simulationError) {
-      if (simulationError.kind === "SIMULATION_FAILED") {
+    if (error) {
+      if (error.kind === "SIMULATION_FAILED") {
         return (
           <TransactionRevertedModal
             // HACK(Alex): Remove after API version update
             error={
-              simulationError.humanReadableError ||
+              error.humanReadableError ||
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (simulationError as any).parsedErrorMessage
+              (error as any).parsedErrorMessage
             }
           />
         );
@@ -154,7 +156,7 @@ const ResultsView: React.FC<{
     return null;
   }, [
     scanResults?.action,
-    simulationError,
+    error,
     reject,
     mutate,
     isUnsupportedDangerousRequest,
