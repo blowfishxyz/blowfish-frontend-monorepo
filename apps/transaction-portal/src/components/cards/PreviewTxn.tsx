@@ -63,21 +63,6 @@ const StyledColumn = styled(Column).attrs({
   paddingBlock: 18,
 })``;
 
-const TxnSimulationImage = styled.div`
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-`;
-
-const VerifiedBadgeWrapper = styled(Row).attrs({
-  alignItems: "center",
-  justifyContent: "center",
-})`
-  position: absolute;
-  right: -2px;
-  bottom: -2px;
-`;
-
 const PreviewTokenTooltipContent = styled(TooltipContent)`
   background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
@@ -111,7 +96,7 @@ const DecodedCallDataText = styled(Text).attrs({ size: "sm" })`
   display: inline-block;
 `;
 
-const ProtocolName = styled(CardText).attrs({ size: "xs", marginLeft: 8 })`
+const ProtocolName = styled(CardText).attrs({ size: "xs", marginLeft: 4 })`
   display: flex;
   align-items: center;
 `;
@@ -177,44 +162,32 @@ const PreviewCard: FC<PreviewCardProps> = ({
               <Divider orientation="vertical" $margin="0 30px" />
               <StyledColumn gap="md" flex={1}>
                 <SectionHeading>Protocol</SectionHeading>
-                <Row alignItems="center">
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <TxnSimulationImage>
-                        {(txnData.protocol.trustLevel === "TRUSTED" ||
-                          txnData.protocol.trustLevel === "NATIVE") && (
-                          <VerifiedBadgeWrapper>
-                            <Icon variant="verified" size={14} />
-                          </VerifiedBadgeWrapper>
-                        )}
-
-                        <ImageBase
-                          src={txnData.protocol.imageUrl}
-                          alt={txnData.protocol.name}
-                          width={38}
-                          height={38}
-                          borderRadius="6px"
-                        />
-                      </TxnSimulationImage>
-                      <PreviewTokenTooltipContent showArrow={false}>
-                        <PreviewProtocol
-                          imageUrl={txnData.protocol.imageUrl}
-                          name={txnData.protocol.name}
-                          verified={
-                            txnData.protocol.trustLevel === "TRUSTED" ||
-                            txnData.protocol.trustLevel === "NATIVE"
-                          }
-                          description={txnData.protocol.description}
-                        />
-                      </PreviewTokenTooltipContent>
-                    </TooltipTrigger>
-                    <ProtocolName>
-                      <ProtocolLink href={txnData.protocol.websiteUrl || ""}>
-                        {txnData.protocol.name}
-                      </ProtocolLink>
-                    </ProtocolName>
-                  </Tooltip>
-                </Row>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Row alignItems="center">
+                      {(txnData.protocol.trustLevel === "TRUSTED" ||
+                        txnData.protocol.trustLevel === "NATIVE") && (
+                        <Icon variant="verified" size={20} />
+                      )}
+                      <ProtocolName>
+                        <ProtocolLink href={txnData.protocol.websiteUrl || ""}>
+                          {txnData.protocol.name}
+                        </ProtocolLink>
+                      </ProtocolName>
+                    </Row>
+                    <PreviewTokenTooltipContent showArrow={false}>
+                      <PreviewProtocol
+                        imageUrl={txnData.protocol.imageUrl}
+                        name={txnData.protocol.name}
+                        verified={
+                          txnData.protocol.trustLevel === "TRUSTED" ||
+                          txnData.protocol.trustLevel === "NATIVE"
+                        }
+                        description={txnData.protocol.description}
+                      />
+                    </PreviewTokenTooltipContent>
+                  </TooltipTrigger>
+                </Tooltip>
               </StyledColumn>
             </>
           )}
