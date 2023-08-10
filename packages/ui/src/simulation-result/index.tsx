@@ -24,6 +24,7 @@ import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
 import { Column, Row } from "~/common/layout";
+import { shortenHex } from "@blowfish/utils/hex";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -167,6 +168,11 @@ const TokenTooltipContent: React.FC<{
         imageUrl={rawInfo.data.metadata?.rawImageUrl}
         tokenId={rawInfo.data.tokenId}
         price={getAssetPriceInUsd(rawInfo)}
+        counterparty={
+          ("counterparty" in rawInfo.data &&
+            rawInfo.data.counterparty?.address) ||
+          ""
+        }
       />
     );
   }
@@ -210,6 +216,14 @@ const TokenFooter: React.FC<{
         {price ? (
           <Text size="sm" design="secondary">
             Floor price: <AssetPrice totalValue={price} />
+          </Text>
+        ) : null}
+        {typeStr === "ERC-721" && "counterparty" in rawInfo.data && rawInfo.data.counterparty ? (
+          <Text size="sm" design="secondary">
+            Counterparty:{" "}
+            <Text size="sm" design="primary">
+              {shortenHex(rawInfo.data.counterparty?.address || "", 3)}
+            </Text>
           </Text>
         ) : null}
       </Row>

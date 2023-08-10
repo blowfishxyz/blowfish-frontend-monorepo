@@ -5,6 +5,7 @@ import { DataRowComponent } from "~/simulation-result/components/PreviewTokens";
 import { ImageBase } from "~/simulation-result/components/ImageBase";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { Divider } from "~/simulation-result/components/Divider";
+import { shortenHex } from "@blowfish/utils/hex";
 
 interface PreviewNftProps {
   imageUrl: string | undefined;
@@ -13,6 +14,7 @@ interface PreviewNftProps {
   tokenId: string | null;
   type: string;
   price: number | null;
+  counterparty?: string;
 }
 
 export const PreviewNfts: React.FC<PreviewNftProps> = ({
@@ -22,6 +24,7 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
   price,
   symbol,
   type,
+  counterparty
 }) => {
   return (
     <div>
@@ -50,6 +53,12 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
           <DataRowComponent
             label="Floor Price"
             value={<AssetPrice totalValue={price} />}
+          />
+        ) : null}
+        {counterparty ? (
+          <DataRowComponent
+            label="Counterparty"
+            value={shortenHex(counterparty, 2)}
           />
         ) : null}
       </div>
