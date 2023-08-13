@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { styled } from "styled-components";
 import {
   transactionWarningScanResult,
-  transactionNoActionScanResult,
+  transactionsNoActionScanResult,
   exampleEthSignScanResult,
 } from "@blowfishxyz/api-client/fixtures";
 
@@ -34,7 +34,7 @@ export default {
 
 export const BuyErc721 = ApproveAllErc721.bind({});
 BuyErc721.args = {
-  scanResult: transactionNoActionScanResult,
+  scanResult: transactionsNoActionScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };

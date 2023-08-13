@@ -28,7 +28,8 @@ import {
   ChainFamily,
   ChainNetwork,
   EvmProtocol,
-  EvmTransactionScanResult,
+  EvmDecodedCalldata,
+  EvmTransactionsScanResult,
   EvmMessageScanResult,
 } from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
@@ -36,13 +37,15 @@ import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
 import { ImageBase } from "~components/common/ImageBase";
 import { PreviewProtocol } from "./PreviewProtocol";
+import { InfoIcon } from "@blowfish/protect-ui/icons";
 
 export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
   account: string;
   message: string | undefined;
-  scanResult: EvmTransactionScanResult | EvmMessageScanResult;
+  scanResult: EvmTransactionsScanResult | EvmMessageScanResult;
   protocol?: EvmProtocol | null;
+  decodedCalldata?: EvmDecodedCalldata | null;
 };
 
 const SectionHeading = styled(Text).attrs({ size: "sm", color: "base40" })``;
@@ -60,21 +63,6 @@ const StyledColumn = styled(Column).attrs({
   paddingBlock: 18,
 })``;
 
-const TxnSimulationImage = styled.div`
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
-`;
-
-const VerifiedBadgeWrapper = styled(Row).attrs({
-  alignItems: "center",
-  justifyContent: "center",
-})`
-  position: absolute;
-  right: -2px;
-  bottom: -2px;
-`;
-
 const PreviewTokenTooltipContent = styled(TooltipContent)`
   background-color: ${({ theme }) => theme.colors.backgroundPrimary};
   box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
@@ -84,6 +72,42 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
   z-index: 4;
   width: 200px;
   border-radius: 12px;
+`;
+
+const StyledInfoIcon = styled(InfoIcon)`
+  fill: rgba(0, 0, 0, 0.4);
+  width: 14px;
+  height: auto;
+  margin-left: 8px;
+  cursor: pointer;
+`;
+
+const DecodedCallDataArgs = styled(Text)`
+  &:not(:last-child)::after {
+    content: ", ";
+  }
+`;
+
+const DecodedCallDataText = styled(Text).attrs({ size: "sm" })`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 500px;
+  display: inline-block;
+`;
+
+const ProtocolName = styled(CardText).attrs({ size: "xs", marginLeft: 4 })`
+  display: flex;
+  align-items: center;
+`;
+
+const ProtocolLink = styled(LinkWithArrow)`
+  display: inline-block;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: capitalize;
 `;
 
 interface PreviewCardProps {
@@ -111,42 +135,46 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onCancel,
   advancedDetails,
   website,
-}) => (
-  <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
-    <CardWrapper>
-      <CardContent>
-        <Row justifyContent="space-between" alignItems="center">
-          <Text size="lg">{title}</Text>
-          <Chip $severity={severity} />
-        </Row>
-      </CardContent>
-      <Divider $margin="16px 0" />
-      <CardContent>{children}</CardContent>
-      <Divider $margin="24px 0 0" />
-      {txnData.protocol && (
-        <>
-          <CardContent>
-            <StyledColumn gap="md">
-              <SectionHeading>Protocol</SectionHeading>
-              <Row gap="sm" alignItems="center">
+}) => {
+  return (
+    <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
+      <CardWrapper>
+        <CardContent>
+          <Row justifyContent="space-between" alignItems="center">
+            <Text size="lg">{title}</Text>
+            <Chip $severity={severity} />
+          </Row>
+        </CardContent>
+        <Divider $margin="16px 0" />
+        <CardContent>{children}</CardContent>
+        <Divider $margin="24px 0 0" />
+        <StyledCardContent>
+          <StyledColumn gap="sm" flex={1}>
+            <SectionHeading>Website</SectionHeading>
+            <Row gap="xs" alignItems="center">
+              <CardText>
+                <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
+              </CardText>
+            </Row>
+          </StyledColumn>
+          {txnData.protocol && (
+            <>
+              <Divider orientation="vertical" $margin="0 30px" />
+              <StyledColumn gap="md" flex={1}>
+                <SectionHeading>Protocol</SectionHeading>
                 <Tooltip>
                   <TooltipTrigger>
-                    <TxnSimulationImage>
+                    <Row alignItems="center">
                       {(txnData.protocol.trustLevel === "TRUSTED" ||
                         txnData.protocol.trustLevel === "NATIVE") && (
-                        <VerifiedBadgeWrapper>
-                          <Icon variant="verified" size={14} />
-                        </VerifiedBadgeWrapper>
+                        <Icon variant="verified" size={20} />
                       )}
-
-                      <ImageBase
-                        src={txnData.protocol.imageUrl}
-                        alt={txnData.protocol.name}
-                        width={38}
-                        height={38}
-                        borderRadius="6px"
-                      />
-                    </TxnSimulationImage>
+                      <ProtocolName>
+                        <ProtocolLink href={txnData.protocol.websiteUrl || ""}>
+                          {txnData.protocol.name}
+                        </ProtocolLink>
+                      </ProtocolName>
+                    </Row>
                     <PreviewTokenTooltipContent showArrow={false}>
                       <PreviewProtocol
                         imageUrl={txnData.protocol.imageUrl}
@@ -159,28 +187,11 @@ const PreviewCard: FC<PreviewCardProps> = ({
                       />
                     </PreviewTokenTooltipContent>
                   </TooltipTrigger>
-                  <CardText size="xs" marginLeft={8}>
-                    <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
-                      {txnData.protocol.name}
-                    </LinkWithArrow>
-                  </CardText>
                 </Tooltip>
-              </Row>
-            </StyledColumn>
-          </CardContent>
-          <Divider />
-        </>
-      )}
-      <StyledCardContent>
-        <StyledColumn gap="sm">
-          <SectionHeading>Website</SectionHeading>
-          <Row gap="xs" alignItems="center">
-            <CardText>
-              <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
-            </CardText>
-          </Row>
-        </StyledColumn>
-        {/* <Divider orientation="vertical" $margin="0 36px" />
+              </StyledColumn>
+            </>
+          )}
+          {/* <Divider orientation="vertical" $margin="0 36px" />
       <StyledColumn gap="sm">
         <SectionHeading>Contract</SectionHeading>
         <CardText>
@@ -193,19 +204,55 @@ const PreviewCard: FC<PreviewCardProps> = ({
           </BlockExplorerLink>
         </CardText>
       </StyledColumn> */}
-      </StyledCardContent>
-      <Divider $margin="0 0 16px" />
-      {advancedDetails}
-    </CardWrapper>
-    <ConfirmTxn
-      onContinue={onContinue}
-      onReport={onReport}
-      onCancel={onCancel}
-      warnings={warnings}
-      severity={severity}
-    />
-  </PreviewWrapper>
-);
+        </StyledCardContent>
+        {txnData.decodedCalldata && (
+          <>
+            <Divider />
+            <CardContent>
+              <StyledColumn gap="md">
+                <Row>
+                  <SectionHeading>Decoded calldata</SectionHeading>
+                  {!txnData.protocol && (
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <StyledInfoIcon />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        We could not verify that this is a trusted protocol.
+                      </TooltipContent>
+                    </Tooltip>
+                  )}
+                </Row>
+
+                <Column gap="xs">
+                  <DecodedCallDataText>
+                    function {txnData.decodedCalldata?.data.functionName}(
+                    {txnData.decodedCalldata &&
+                      txnData.decodedCalldata.data.arguments.map((arg, i) => (
+                        <DecodedCallDataArgs key={`${arg}-${i}`}>
+                          {arg.paramType} {arg.name}
+                        </DecodedCallDataArgs>
+                      ))}
+                    )
+                  </DecodedCallDataText>
+                </Column>
+              </StyledColumn>
+            </CardContent>
+          </>
+        )}
+        <Divider $margin="0 0 16px" />
+        {advancedDetails}
+      </CardWrapper>
+      <ConfirmTxn
+        onContinue={onContinue}
+        onReport={onReport}
+        onCancel={onCancel}
+        warnings={warnings}
+        severity={severity}
+      />
+    </PreviewWrapper>
+  );
+};
 
 const PreviewWrapper = styled(Row)`
   @media (max-width: 1100px) {

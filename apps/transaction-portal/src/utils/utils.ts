@@ -2,7 +2,7 @@ import {
   EvmExpectedStateChange,
   EvmProtocol,
   ScanMessageEvm200ResponseSimulationResults,
-  ScanTransactionEvm200ResponseSimulationResults,
+  ScanTransactionsEvm200ResponseSimulationResults,
 } from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -179,11 +179,13 @@ export const createValidURL = (url: string): URL | undefined => {
 
 export const getProtocol = (
   simulationResults:
-    | ScanTransactionEvm200ResponseSimulationResults
+    | ScanTransactionsEvm200ResponseSimulationResults
     | ScanMessageEvm200ResponseSimulationResults
     | null
 ): EvmProtocol | null => {
-  if (simulationResults && "protocol" in simulationResults) {
+  if (simulationResults && "aggregated" in simulationResults) {
+    return simulationResults.perTransaction[0]?.protocol;
+  } else if (simulationResults && "protocol" in simulationResults) {
     return simulationResults.protocol;
   }
   return null;

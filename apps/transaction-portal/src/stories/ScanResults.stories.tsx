@@ -5,9 +5,9 @@ import {
   exampleEthSignScanResult,
   messageNoActionScanResult,
   messageWarnResultScanResult,
-  transactionBlockScanResult,
+  transactionsBlockScanResult,
   transactionNoActionScanResult,
-  transactionWarningScanResult,
+  transactionsWarningScanResult,
 } from "@blowfishxyz/api-client/fixtures";
 
 import { ApproveBottomMenu, SlimBottomMenu } from "../components/BottomMenus";
@@ -129,12 +129,12 @@ export const TransactionNoAction: ComponentStory<
 
 export const TransactionWarn = TransactionNoAction.bind({});
 TransactionWarn.args = {
-  scanResults: transactionWarningScanResult,
+  scanResults: transactionsWarningScanResult,
 };
 
 export const TransactionBlock = TransactionWarn.bind({});
 TransactionBlock.args = {
-  scanResults: transactionBlockScanResult,
+  scanResults: transactionsBlockScanResult,
 };
 
 export const TransactionUnsupported = TransactionNoAction.bind({});
