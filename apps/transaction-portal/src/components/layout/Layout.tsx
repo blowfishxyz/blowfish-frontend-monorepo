@@ -41,6 +41,17 @@ const Wrapper = styled(Column)<{ severity: Severity }>`
   overflow-y: auto;
   background-color: ${({ theme, severity }) =>
     theme.severityColors[severity].backgroundV2};
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    width: 0px;
+  }
 `;
 
 const WrapperInner = styled(Column)`

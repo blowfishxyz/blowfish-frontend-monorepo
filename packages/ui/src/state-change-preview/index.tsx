@@ -2,14 +2,18 @@ import {
   EvmChainFamily,
   EvmChainNetwork,
   EvmMessageScanResult,
-  EvmTransactionScanResult,
+  EvmTransactionsScanResult,
 } from "@blowfishxyz/api-client";
 import { styled } from "styled-components";
 import { Column, Row } from "~/common/layout";
 import { Text } from "~/common/text";
 import { SimulationResult } from "~/simulation-result";
+import {
+  getErrorFromScanResponse,
+  getResultsFromScanResponse,
+} from "~/utils/state-change";
 
-type ScanResult = EvmTransactionScanResult | EvmMessageScanResult;
+type ScanResult = EvmTransactionsScanResult | EvmMessageScanResult;
 export type StateChangePreviewProps = {
   scanResult: ScanResult;
   chainFamily: EvmChainFamily;
@@ -23,10 +27,11 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
   chainNetwork,
   sectionLabel = "State change",
 }) => {
-  const simulationResults =
-    scanResult.simulationResults?.expectedStateChanges || [];
-  const simulationError =
-    scanResult.simulationResults?.error?.humanReadableError;
+  const result = getResultsFromScanResponse(scanResult.simulationResults);
+  const simulationResults = result?.expectedStateChanges || [];
+  const simulationError = getErrorFromScanResponse(
+    scanResult.simulationResults
+  );
 
   if (simulationResults && simulationResults.length > 0) {
     return (
@@ -57,7 +62,7 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
           <SectionHeading>{sectionLabel}</SectionHeading>
         </Row>
         <Text size="md" color="danger">
-          {simulationError}
+          {simulationError.humanReadableError}
         </Text>
       </Column>
     );

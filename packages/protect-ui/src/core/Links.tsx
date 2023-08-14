@@ -51,17 +51,19 @@ export const LinkWithArrow = React.forwardRef<
   HTMLAnchorElement,
   LinkWithArrowProps
 >(({ className, style, href, children, hideArrow = false }, ref) => (
-  <A
-    className={className}
-    style={style}
-    href={href}
-    target="_blank"
-    rel="noopener"
-    ref={ref}
-  >
-    {children}
+  <>
+    <A
+      className={className}
+      style={style}
+      href={href}
+      target="_blank"
+      rel="noopener"
+      ref={ref}
+    >
+      {children}
+    </A>
     {!hideArrow && <SyledArrowIcon />}
-  </A>
+  </>
 ));
 
 LinkWithArrow.displayName = "LinkWithArrow";

@@ -2,8 +2,7 @@ import { createClient } from "@blowfishxyz/api-client";
 import type {
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
-  EvmTransactionScanResult,
-  ScanTransactionEvm200Response,
+  EvmTransactionsScanResult,
   ScanTransactionsEvm200Response,
 } from "@blowfishxyz/api-client";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
@@ -17,6 +16,7 @@ import {
 } from "@blowfish/utils/types";
 import useSWR, { SWRResponse } from "swr";
 import { isSmartContractWallet } from "../utils/wallets";
+import { useRef } from "react";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -41,7 +41,7 @@ const fetcher = async (
   chainNetwork: ChainNetwork,
   request: DappRequest,
   origin: string
-): Promise<EvmTransactionScanResult | EvmMessageScanResult> => {
+): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {
   const client = createClient(
     BLOWFISH_API_BASE_URL,
     // NOTE: The api key is rewritten on the proxy
@@ -59,7 +59,9 @@ const fetcher = async (
       .scanTransactions([request.payload], userAccount, {
         origin,
       })
-      .then(mapTransactionsToSingle);
+      .then((response: ScanTransactionsEvm200Response) => {
+        return response;
+      });
   } else if (isSignTypedDataRequest(request)) {
     const payload =
       request.signTypedDataVersion === SignTypedDataVersion.V1
@@ -97,47 +99,32 @@ export const useScanDappRequest = (
   chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
   origin: string | undefined
-): SWRResponse<EvmTransactionScanResult | EvmMessageScanResult, Error> => {
-  return useSWR(
+): SWRResponse<EvmTransactionsScanResult | EvmMessageScanResult, Error> => {
+  const prevResponseRef = useRef<SWRResponse<
+    EvmTransactionsScanResult | EvmMessageScanResult
+  > | null>(null);
+  const consecutiveErrorCountRef = useRef<number>(0);
+
+  const response = useSWR(
     getCacheKey(chainFamily, chainNetwork, request, origin),
     (params) => fetcher(...params),
     {
       refreshInterval: SCAN_REFRESH_INTERVAL_MS,
     }
   );
-};
 
-function mapTransactionsToSingle(
-  response: ScanTransactionsEvm200Response
-): ScanTransactionEvm200Response {
-  const { simulationResults, ...rest } = response;
-  const tx = simulationResults.perTransaction[0];
-  if (!tx) {
-    return {
-      ...rest,
-      simulationResults: {
-        gas: {
-          gasLimit: null,
-        },
-        protocol: null,
-        error: simulationResults.aggregated.error,
-        expectedStateChanges:
-          simulationResults.aggregated.expectedStateChanges[
-            simulationResults.aggregated.userAccount
-          ] || [],
-      },
-    };
+  if (response.error) {
+    consecutiveErrorCountRef.current += 1;
+
+    if (consecutiveErrorCountRef.current <= 2 && prevResponseRef.current) {
+      return prevResponseRef.current;
+    }
+
+    return response;
   }
-  const expectedStateChanges =
-    simulationResults.aggregated.expectedStateChanges[
-      simulationResults.aggregated.userAccount
-    ] || [];
-  const item = {
-    gas: tx.gas,
-    error: tx.error,
-    protocol: tx.protocol,
-    expectedStateChanges,
-  };
 
-  return { ...rest, simulationResults: item };
-}
+  consecutiveErrorCountRef.current = 0;
+  prevResponseRef.current = response ?? null;
+
+  return response;
+};
