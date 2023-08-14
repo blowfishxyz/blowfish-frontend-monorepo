@@ -69,6 +69,8 @@ const PreviewTokenTooltipContent = styled(TooltipContent)`
   border-radius: 12px;
 `;
 
+const CounterpartyLink = styled(Text).attrs({})``;
+
 export interface SimulationResultProps {
   stateChange: EvmExpectedStateChange;
   chainFamily: ChainFamily | undefined;
@@ -231,13 +233,18 @@ const TokenFooter: React.FC<{
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Text size="sm" design="secondary">
-              {isPositiveEffect ? "From" : "To"}:
-              <Text size="sm" design="primary">
-                {` ${shortenHex(rawInfo.data.counterparty?.address || "", 3)}`}
-                <Icon variant="arrow" size={10} />
+            <Row gap="xs" alignItems="center">
+              <Text size="sm" design="secondary">
+                {isPositiveEffect ? "From" : "To"}:
+                <Text size="sm" design="primary">
+                  {` ${shortenHex(
+                    rawInfo.data.counterparty?.address || "",
+                    3
+                  )}`}
+                </Text>
               </Text>
-            </Text>
+              <Icon variant="arrow" size={10} />
+            </Row>
           </LinkWrapper>
         ) : null}
       </Row>
