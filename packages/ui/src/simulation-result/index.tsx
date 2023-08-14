@@ -13,7 +13,7 @@ import {
   isPositiveStateChange,
   isApprovalForAllStateChange,
   chainToBlockExplorerUrl,
-  containsCounterpartyProperty,
+  hasCounterparty,
   shortenHex,
 } from "~/simulation-result/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
@@ -25,6 +25,7 @@ import {
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
+import { Icon } from "~/common/icon";
 import { Column, Row } from "~/common/layout";
 
 const TxnSimulationWrapper = styled(Row)`
@@ -84,6 +85,10 @@ export const SimulationResult: React.FC<SimulationResultProps> = ({
     chainFamily,
     chainNetwork,
   });
+  const counterpartyLink = generateCounterpartyBlockExplorerUrl(rawInfo, {
+    chainFamily,
+    chainNetwork,
+  });
 
   const isPositiveEffect = isPositiveStateChange(rawInfo);
   const tooltipContent = <TokenTooltipContent rawInfo={rawInfo} />;
@@ -93,8 +98,8 @@ export const SimulationResult: React.FC<SimulationResultProps> = ({
       justifyContent="space-between"
       alignItems="flex-start"
     >
-      <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
-        <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
           {hasStateChangeImage(rawInfo) ? (
             <Tooltip placement="bottom-start">
               <TooltipTrigger>
@@ -117,18 +122,19 @@ export const SimulationResult: React.FC<SimulationResultProps> = ({
               />
             </TxnSimulationImage>
           )}
+        </LinkWrapper>
 
-          <Column gap="xs">
-            <TxnSimulationText weight="normal">
-              {stateChange.humanReadableDiff}
-            </TxnSimulationText>
-            <TokenFooter
-              rawInfo={stateChange.rawInfo}
-              isPositiveEffect={isPositiveEffect}
-            />
-          </Column>
-        </TxnSimulationImageMsgWrapper>
-      </LinkWrapper>
+        <Column gap="xs">
+          <TxnSimulationText weight="normal">
+            {stateChange.humanReadableDiff}
+          </TxnSimulationText>
+          <TokenFooter
+            rawInfo={stateChange.rawInfo}
+            isPositiveEffect={isPositiveEffect}
+            counterpartyLink={counterpartyLink}
+          />
+        </Column>
+      </TxnSimulationImageMsgWrapper>
     </TxnSimulationWrapper>
   );
 };
@@ -181,7 +187,8 @@ const TokenTooltipContent: React.FC<{
 const TokenFooter: React.FC<{
   rawInfo: EvmExpectedStateChange["rawInfo"];
   isPositiveEffect: boolean;
-}> = ({ rawInfo, isPositiveEffect }) => {
+  counterpartyLink: string | undefined;
+}> = ({ rawInfo, isPositiveEffect, counterpartyLink }) => {
   if (isCurrencyStateChange(rawInfo)) {
     return (
       <Row gap="md">
@@ -218,13 +225,20 @@ const TokenFooter: React.FC<{
             Floor price: <AssetPrice totalValue={price} />
           </Text>
         ) : null}
-        {containsCounterpartyProperty(rawInfo) ? (
-          <Text size="sm" design="secondary">
-            {isPositiveEffect ? "From" : "To"}:
-            <Text size="sm" design="primary">
-              {` ${shortenHex(rawInfo.data.counterparty?.address || "", 3)}`}
+        {hasCounterparty(rawInfo) ? (
+          <LinkWrapper
+            href={counterpartyLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Text size="sm" design="secondary">
+              {isPositiveEffect ? "From" : "To"}:
+              <Text size="sm" design="primary">
+                {` ${shortenHex(rawInfo.data.counterparty?.address || "", 3)}`}
+                <Icon variant="arrow" size={10} />
+              </Text>
             </Text>
-          </Text>
+          </LinkWrapper>
         ) : null}
       </Row>
     );
@@ -266,4 +280,28 @@ function useAssetLinkFromRawInfo(
       nftTokenId: rawInfo.data.tokenId,
     });
   }
+}
+
+function generateCounterpartyBlockExplorerUrl(
+  rawInfo: EvmExpectedStateChange["rawInfo"],
+  {
+    chainFamily,
+    chainNetwork,
+  }: {
+    chainFamily: ChainFamily | undefined;
+    chainNetwork: ChainNetwork | undefined;
+  }
+): string | undefined {
+  if (!chainFamily || !chainNetwork) {
+    return undefined;
+  }
+
+  if (hasCounterparty(rawInfo) && rawInfo.data.counterparty) {
+    return chainToBlockExplorerUrl({
+      chainFamily,
+      chainNetwork,
+      address: rawInfo.data.counterparty.address,
+    });
+  }
+  return undefined;
 }

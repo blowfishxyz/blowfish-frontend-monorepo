@@ -13,7 +13,6 @@ import {
   NftStateChange,
 } from "@blowfishxyz/api-client";
 import Decimal from "decimal.js";
-import { getAddress, isAddress } from "@ethersproject/address";
 
 export const U256_MAX_VALUE = new Decimal(2).pow(256).sub(1);
 
@@ -88,11 +87,10 @@ const isApprovalStateChange = (
   return rawInfo.kind.includes("APPROVAL");
 };
 
-export const containsCounterpartyProperty = (
+export const hasCounterparty = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is
-  | EvmStateChangeErc721Transfer
-  | EvmStateChangeAnyNftFromCollectionTransfer => {
+  | EvmStateChangeErc721Transfer => {
   return rawInfo.kind === "ERC721_TRANSFER";
 };
 
@@ -243,6 +241,5 @@ export const chainToBlockExplorerUrl = ({
 };
 
 export const shortenHex = (hex: string, length = 5): string => {
-  const prettyHex = isAddress(hex) ? getAddress(hex) : hex;
-  return `${prettyHex.slice(0, length + 2)}...${prettyHex.slice(-length)}`;
+  return `${hex.slice(0, length + 2)}...${hex.slice(-length)}`;
 };
