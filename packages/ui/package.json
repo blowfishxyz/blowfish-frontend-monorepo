@@ -18,7 +18,8 @@
     "@emotion/is-prop-valid": "^1.2.0",
     "@floating-ui/react": "^0.23.1",
     "decimal.js": "^10.4.3",
-    "deepmerge": "^4.3.1"
+    "deepmerge": "^4.3.1",
+    "@ethersproject/address": "^5.7.0"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
