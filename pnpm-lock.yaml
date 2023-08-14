@@ -599,9 +599,6 @@ importers:
       '@blowfish/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@blowfish/utils':
-        specifier: workspace:*
-        version: link:../utils
       '@blowfishxyz/api-client':
         specifier: workspace:*
         version: link:../api-client
