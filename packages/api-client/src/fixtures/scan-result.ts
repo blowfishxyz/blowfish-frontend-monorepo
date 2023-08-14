@@ -1,6 +1,5 @@
 import {
   EvmMessageScanResult,
-  EvmTransactionScanResult,
   EvmTransactionsScanResult,
 } from "../clients/v20230605/types";
 import {
@@ -10,15 +9,20 @@ import {
   sendNativeToken,
 } from "./state-change";
 
-export const transactionNoActionScanResult: EvmTransactionScanResult = {
+export const transactionNoActionScanResult: EvmTransactionsScanResult = {
   action: "NONE",
   simulationResults: {
-    error: null,
-    protocol: null,
-    gas: {
-      gasLimit: null,
+    perTransaction: [],
+    aggregated: {
+      error: null,
+      userAccount: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+      expectedStateChanges: {
+        "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236": [
+          receiveErc721,
+          sendNativeToken,
+        ],
+      },
     },
-    expectedStateChanges: [receiveErc721, sendNativeToken],
   },
   warnings: [],
 };
@@ -66,15 +70,17 @@ export const transactionsNoActionScanResult: EvmTransactionsScanResult = {
   ],
 };
 
-export const transactionWarningScanResult: EvmTransactionScanResult = {
+export const transactionWarningScanResult: EvmTransactionsScanResult = {
   action: "WARN",
   simulationResults: {
-    error: null,
-    protocol: null,
-    gas: {
-      gasLimit: null,
+    perTransaction: [],
+    aggregated: {
+      error: null,
+      userAccount: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+      expectedStateChanges: {
+        "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236": [approveAllErc721],
+      },
     },
-    expectedStateChanges: [approveAllErc721],
   },
   warnings: [
     {
@@ -129,15 +135,17 @@ export const transactionsWarningScanResult: EvmTransactionsScanResult = {
   ],
 };
 
-export const transactionBlockScanResult: EvmTransactionScanResult = {
+export const transactionBlockScanResult: EvmTransactionsScanResult = {
   action: "BLOCK",
   simulationResults: {
-    error: null,
-    protocol: null,
-    gas: {
-      gasLimit: null,
+    perTransaction: [],
+    aggregated: {
+      error: null,
+      userAccount: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+      expectedStateChanges: {
+        "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236": [approveAllErc721],
+      },
     },
-    expectedStateChanges: [approveAllErc721],
   },
   warnings: [
     {
