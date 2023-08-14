@@ -3561,6 +3561,8 @@ export interface SplAsset {
    * @memberof SplAsset
    */
   price: AssetPrice | null;
+  // HACK(Alex): wait for update of the spec
+  imageUrl: string | null;
 }
 /**
  *

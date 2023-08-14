@@ -22,11 +22,17 @@ export const isNftMetaplexStandard = (metaplexStadard: MetaplexTokenStandard) =>
   metaplexStadard === "non_fungible" ||
   metaplexStadard === "non_fungible_edition";
 
+export const isSplStateChange = (
+  rawInfo: SolanaExpectedStateChange["rawInfo"]
+): rawInfo is SolanaStateChangeSplApproval | SolanaStageChangeSplTransfer => {
+  return rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER";
+};
+
 export const isNftStateChange = (
   rawInfo: SolanaExpectedStateChange["rawInfo"]
 ): rawInfo is SolanaStateChangeSplApproval | SolanaStageChangeSplTransfer => {
   return (
-    (rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER") &&
+    isSplStateChange(rawInfo) &&
     isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)
   );
 };

@@ -16,6 +16,7 @@ import { AssetPrice } from "~/simulation-result-solana/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
 import { Column, Row } from "~/common/layout";
+import { AssetImage } from "~/simulation-result-solana/components/AssetImage";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -39,6 +40,25 @@ const TxnSimulationImageMsgWrapper = styled(Row)`
   }
 `;
 
+const TxnSimulationImage = styled.div`
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+`;
+
+const TxnSimulationText = styled(Text).attrs({ size: "md" })``;
+
+// const PreviewTokenTooltipContent = styled(TooltipContent)`
+//   background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+//   box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
+//   padding: 15px;
+//   border: 1px solid ${({ theme }) => theme.colors.border};
+//   border-radius: 4px;
+//   z-index: 4;
+//   width: 200px;
+//   border-radius: 12px;
+// `;
+
 export interface SimulationResultSolanaProps {
   stateChange: SolanaExpectedStateChange;
   chainNetwork: SolanaChainNetwork | undefined;
@@ -52,6 +72,7 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
   const assetLink = useAssetLinkFromRawInfo(rawInfo, {
     chainNetwork,
   });
+  const isPositiveEffect = suggestedColor === "CREDIT";
 
   return (
     <TxnSimulationWrapper
@@ -59,22 +80,96 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
       alignItems="flex-start"
     >
       <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
-        <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
-          <Column gap="xs">
-            <Text weight="normal" size="md">
-              {stateChange.humanReadableDiff}
-            </Text>
+        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
+          <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+            {/* {isSplStateChange(rawInfo) ? (
+              <Tooltip placement="bottom-start">
+                <TooltipTrigger>
+                  <TxnSimulationImage>
+                    <AssetImage
+                      stateChange={stateChange}
+                      isPositiveEffect={isPositiveEffect}
+                    />
+                  </TxnSimulationImage>
+                  <PreviewTokenTooltipContent showArrow={false}>
+                    <TokenTooltipContent rawInfo={rawInfo} />
+                  </PreviewTokenTooltipContent>
+                </TooltipTrigger>
+              </Tooltip>
+            ) : (
+              <TxnSimulationImage>
+                <AssetImage
+                  stateChange={stateChange}
+                  isPositiveEffect={isPositiveEffect}
+                />
+              </TxnSimulationImage>
+            )} */}
+            <TxnSimulationImage>
+              <AssetImage
+                stateChange={stateChange}
+                isPositiveEffect={isPositiveEffect}
+              />
+            </TxnSimulationImage>
 
-            <TokenFooter
-              rawInfo={stateChange.rawInfo}
-              chainNetwork={chainNetwork}
-            />
-          </Column>
-        </TxnSimulationImageMsgWrapper>
+            <Column gap="xs">
+              <TxnSimulationText weight="normal">
+                {stateChange.humanReadableDiff}
+              </TxnSimulationText>
+              <TokenFooter
+                rawInfo={stateChange.rawInfo}
+                chainNetwork={chainNetwork}
+              />
+            </Column>
+          </TxnSimulationImageMsgWrapper>
+        </LinkWrapper>
       </LinkWrapper>
     </TxnSimulationWrapper>
   );
 };
+
+// const TokenTooltipContent: React.FC<{
+//   rawInfo: SolanaExpectedStateChange["rawInfo"];
+// }> = ({ rawInfo }) => {
+//   if (
+//     (rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER") &&
+//     isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)
+//   ) {
+//     if (isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)) {
+//       return (
+//         <PreviewNfts
+//           name={rawInfo.data.asset.name}
+//           type={rawInfo.data.asset.metaplexTokenStandard}
+//           tokenId={rawInfo.data.asset.name}
+//           price={getAssetPriceInUsd(rawInfo)}
+//         />
+//       );
+//     }
+
+//     return (
+//       <PreviewTokens
+//         symbol={rawInfo.data.asset.symbol}
+//         name={rawInfo.data.asset.name}
+//         price={getAssetPricePerToken(rawInfo)}
+//         tokenList={null}
+//         verified={false}
+//       />
+//     );
+//   }
+
+//   if (rawInfo.kind === "SOL_TRANSFER") {
+//     return (
+//       <PreviewTokens
+//         symbol={rawInfo.data.asset.symbol}
+//         name={rawInfo.data.asset.name}
+//         price={getAssetPricePerToken(rawInfo)}
+//         tokenList={null}
+//         verified={false}
+//       />
+//     );
+//   }
+
+//   return null;
+// };
 
 const TokenFooter: React.FC<{
   rawInfo: SolanaExpectedStateChange["rawInfo"];

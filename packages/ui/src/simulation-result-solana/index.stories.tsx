@@ -48,3 +48,8 @@ export const SolUserAccountOwnerChange = SimulationResultSolanaComponent.bind(
 SolUserAccountOwnerChange.args = {
   stateChange: stateChangesMap.solUserAccountOwnerChange,
 };
+
+export const SplTransferChange = SimulationResultSolanaComponent.bind({});
+SplTransferChange.args = {
+  stateChange: stateChangesMap.splTransferChange,
+};

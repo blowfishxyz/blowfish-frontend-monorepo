@@ -457,6 +457,7 @@ export const splTransfer: SolanaExpectedStateChange = {
         mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         supply: 5034943397677802,
         decimals: 6,
+        imageUrl: null,
         price: {
           source: "Coingecko",
           updatedAt: 1691479249,
@@ -481,6 +482,7 @@ export const splApproval: SolanaExpectedStateChange = {
       asset: {
         symbol: "USDC",
         name: "USD Coin",
+        imageUrl: null,
         metaplexTokenStandard: "unknown",
         mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         supply: 5034943397677802,
@@ -537,6 +539,35 @@ export const solUserAccountOwnerChange: SolanaExpectedStateChange = {
       lamports: 2087275079,
       currentOwner: "3ZPvbCiQuo3HxSiqQejCUTVWUrnpF3EbBCrrbtPJEBkU",
       futureOwner: "ABUoavPod8LDgVNHR8P4VXz8m3ivVo31GCNRysciBPJp",
+    },
+  },
+};
+
+export const splTransferChange: SolanaExpectedStateChange = {
+  humanReadableDiff: "Send 1 SDOGE",
+  suggestedColor: "DEBIT",
+  rawInfo: {
+    kind: "SPL_TRANSFER",
+    data: {
+      asset: {
+        symbol: "SDOGE",
+        name: "SolDoge",
+        mint: "8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s",
+        decimals: 0,
+        supply: 9957002411,
+        metaplexTokenStandard: "non_fungible",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1692001350,
+          dollarValuePerToken: 0.00001449,
+        },
+        imageUrl:
+          "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s.png",
+      },
+      diff: {
+        sign: "MINUS",
+        digits: 1,
+      },
     },
   },
 };
