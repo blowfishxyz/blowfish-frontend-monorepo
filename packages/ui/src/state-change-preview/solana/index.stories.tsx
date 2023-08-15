@@ -27,7 +27,7 @@ export default {
   component: NftTransfer,
   args: {
     scanResult: solanaNftTransfer,
-    userAddress: SOLANA_TEST_ACCOUNT,
+    userAccount: SOLANA_TEST_ACCOUNT,
     chainNetwork: "mainnet",
   },
 } as ComponentMeta<typeof StateChangePreviewSolana>;
@@ -35,6 +35,6 @@ export default {
 export const SetOwnerAuthority = NftTransfer.bind({});
 SetOwnerAuthority.args = {
   scanResult: solanaSetOwnerAuthority,
-  userAddress: SOLANA_TEST_ACCOUNT,
+  userAccount: SOLANA_TEST_ACCOUNT,
   chainNetwork: "mainnet",
 };
