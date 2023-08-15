@@ -1,51 +1,43 @@
 import {
-  EvmChainFamily,
-  EvmChainNetwork,
-  EvmMessageScanResult,
-  EvmTransactionsScanResult,
+  SolanaChainNetwork,
+  SolanaTransactionsResult,
 } from "@blowfishxyz/api-client";
 import { styled } from "styled-components";
 import { Column, Row } from "~/common/layout";
 import { Text } from "~/common/text";
-import { SimulationResult } from "~/simulation-result";
-import {
-  getErrorFromScanResponse,
-  getResultsFromScanResponse,
-} from "~/utils/state-change";
+import { SimulationResultSolana } from "~/simulation-result";
 
-type ScanResult = EvmTransactionsScanResult | EvmMessageScanResult;
-export type StateChangePreviewProps = {
-  scanResult: ScanResult;
-  chainFamily: EvmChainFamily;
-  chainNetwork: EvmChainNetwork;
+export type StateChangePreviewSolanaProps = {
+  scanResult: SolanaTransactionsResult;
+  chainNetwork: SolanaChainNetwork;
   sectionLabel?: string;
+  userAddress: string;
 };
 
-export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
+export const StateChangePreviewSolana: React.FC<
+  StateChangePreviewSolanaProps
+> = ({
   scanResult,
-  chainFamily,
   chainNetwork,
+  userAddress,
   sectionLabel = "State change",
 }) => {
-  const result = getResultsFromScanResponse(scanResult.simulationResults);
-  const simulationResults = result?.expectedStateChanges || [];
-  const simulationError = getErrorFromScanResponse(
-    scanResult.simulationResults
-  );
+  const simulationResults =
+    scanResult.aggregated.expectedStateChanges[userAddress] || [];
+  const simulationError = scanResult.aggregated.error;
 
   if (simulationResults && simulationResults.length > 0) {
     return (
-      <Column gap="lg">
+      <Column gap="md">
         <Row justifyContent="space-between">
           <SectionHeading>{sectionLabel}</SectionHeading>
         </Row>
         <TxnDataWrapper>
           {simulationResults.map((data, index) => {
             return (
-              <SimulationResult
+              <SimulationResultSolana
                 key={index}
                 stateChange={data}
-                chainFamily={chainFamily}
                 chainNetwork={chainNetwork}
               />
             );

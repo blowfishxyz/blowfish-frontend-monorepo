@@ -19,6 +19,7 @@ import type {
   EvmStateChangeErc20Transfer,
   EvmMessageStateChangeErc20Permit,
   ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner,
+  ScanTransactionsSolana200Response,
 } from "../../generated/v20230605/models";
 
 // TODO: use a separate ref in the schema to generate a standalone enum
@@ -53,6 +54,7 @@ export type EvmTransactionScanResult = ScanTransactionEvm200Response;
 export type EvmTransactionsScanResult = ScanTransactionsEvm200Response;
 export type EvmMessageScanResult = ScanMessageEvm200Response;
 
+export type SolanaTransactionsResult = ScanTransactionsSolana200Response;
 export type SolanaExpectedStateChange =
   ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner;
 

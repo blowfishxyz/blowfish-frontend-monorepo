@@ -5,6 +5,7 @@ import { DataRowComponent } from "~/simulation-result/components/PreviewTokens";
 import { ImageBase } from "~/simulation-result/components/ImageBase";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { Divider } from "~/simulation-result/components/Divider";
+import { PreviewTooltipContent } from "~/simulation-result/components/PreviewTooltip";
 
 interface PreviewNftProps {
   imageUrl: string | undefined;
@@ -24,7 +25,7 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
   type,
 }) => {
   return (
-    <div>
+    <PreviewTooltipContent>
       <ImageBase
         src={imageUrl}
         alt={name || "Token preview"}
@@ -53,6 +54,6 @@ export const PreviewNfts: React.FC<PreviewNftProps> = ({
           />
         ) : null}
       </div>
-    </div>
+    </PreviewTooltipContent>
   );
 };

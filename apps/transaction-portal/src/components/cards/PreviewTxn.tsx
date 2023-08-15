@@ -16,7 +16,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  StateChangePreview,
+  StateChangePreviewEvm,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -34,7 +34,6 @@ import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
-import { ImageBase } from "~components/common/ImageBase";
 import { PreviewProtocol } from "./PreviewProtocol";
 import { InfoIcon } from "@blowfish/protect-ui/icons";
 
@@ -301,7 +300,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
     >
       {message ? <SignaturePreview message={message} /> : null}
       {
-        <StateChangePreview
+        <StateChangePreviewEvm
           scanResult={scanResult}
           chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
           chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}

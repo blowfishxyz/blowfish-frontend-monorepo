@@ -1,31 +1,32 @@
 import { storiesOf } from "@storybook/react";
 import { styled } from "styled-components";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
+import { Text } from "~/common/text";
 import { PreviewTokens } from "~/simulation-result/components/PreviewTokens";
 
 const PreviewTokenContainer = styled.div`
-  position: absolute;
-  background-color: white;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  z-index: 1;
-  top: 0;
-  left: 60px;
-  width: 237px;
-  border-radius: 12px;
+  margin-left: 40px;
+  height: 400px;
+  width: 400px;
 `;
 
 const PreviewTokensStory = () => (
   <PreviewTokenContainer>
-    <PreviewTokens
-      imageUrl="/placeholder/placeholder-token.svg"
-      name="Token Name"
-      symbol="TKN"
-      price={100}
-      tokenList={3}
-      verified
-    />
+    <Tooltip initialOpen open>
+      <TooltipTrigger>
+        <Text></Text>
+      </TooltipTrigger>
+      <TooltipContent showArrow={false}>
+        <PreviewTokens
+          imageUrl="https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+          name="Ether"
+          symbol="ETH"
+          verified
+          tokenList={null}
+          price={1945}
+        />
+      </TooltipContent>
+    </Tooltip>
   </PreviewTokenContainer>
 );
 

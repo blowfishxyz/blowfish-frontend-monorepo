@@ -1,21 +1,29 @@
-import { EvmExpectedStateChange } from "@blowfishxyz/api-client";
 import { Icon } from "~/common/icon";
 import { styled, css, useTheme } from "styled-components";
 import {
   ImageBase,
   PlaceholderImage,
 } from "~/simulation-result/components/ImageBase";
-import {
-  isCurrencyStateChange,
-  isNftStateChangeWithMetadata,
-} from "~/simulation-result/utils";
 import { useMemo } from "react";
 import { Row } from "~/common/layout";
 
-interface AssetImageProps {
-  stateChange: EvmExpectedStateChange;
+type AssetImageProps = {
   isPositiveEffect: boolean;
-}
+  imageUrl: string | null;
+  name: string;
+  placeholder?: "solana-logo" | "missing-image";
+} & (
+  | {
+      type: "currency";
+      verified: boolean;
+    }
+  | {
+      type: "nft";
+    }
+  | {
+      type: "unknown";
+    }
+);
 
 const SimulationResultImageWrapper = styled.div`
   position: relative;
@@ -65,24 +73,21 @@ const VerifiedBadgeWrapper = styled(Row).attrs({
   bottom: -2px;
 `;
 
-export const AssetImage = ({
-  stateChange,
-  isPositiveEffect,
-}: AssetImageProps) => {
+export const AssetImage = (props: AssetImageProps) => {
   const theme = useTheme();
-  const rawInfo = stateChange.rawInfo;
+  const placeholder = props.placeholder || "missing-image";
   const content = useMemo(() => {
-    if (isCurrencyStateChange(rawInfo)) {
+    if (props.type === "currency") {
       return (
         <>
-          {rawInfo.data.asset.verified && (
+          {props.verified && (
             <VerifiedBadgeWrapper>
               <Icon variant="verified" size={14} />
             </VerifiedBadgeWrapper>
           )}
           <ImageBase
-            src={rawInfo.data.asset.imageUrl}
-            alt={rawInfo.data.asset.name}
+            src={props.imageUrl}
+            alt={props.name}
             width={38}
             height={38}
             borderRadius="100%"
@@ -91,11 +96,11 @@ export const AssetImage = ({
       );
     }
 
-    if (isNftStateChangeWithMetadata(rawInfo)) {
+    if (props.type === "nft") {
       return (
         <ImageBase
-          src={rawInfo.data.metadata.rawImageUrl}
-          alt={rawInfo.data.tokenId || ""}
+          src={props.imageUrl}
+          alt={props.name || ""}
           width={38}
           height={38}
           borderRadius={6}
@@ -103,18 +108,32 @@ export const AssetImage = ({
       );
     }
 
+    if (placeholder === "solana-logo") {
+      return (
+        <ImageBase
+          isSolanaLogo
+          alt="Solana logo"
+          width={38}
+          height={38}
+          borderRadius="100%"
+        />
+      );
+    }
+
     return <PlaceholderImage width={38} height={38} borderRadius={6} />;
-  }, [rawInfo]);
+  }, []);
 
   return (
     <SimulationResultImageWrapper>
       {content}
 
-      <SimulationIconWrapper $isPositiveEffect={isPositiveEffect}>
+      <SimulationIconWrapper $isPositiveEffect={props.isPositiveEffect}>
         <Icon
           variant="arrow-right"
           size={10}
-          color={isPositiveEffect ? theme.colors.success : theme.colors.danger}
+          color={
+            props.isPositiveEffect ? theme.colors.success : theme.colors.danger
+          }
         />
       </SimulationIconWrapper>
     </SimulationResultImageWrapper>

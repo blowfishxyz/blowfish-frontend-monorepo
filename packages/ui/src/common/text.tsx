@@ -40,6 +40,10 @@ const StyledText = styled(StyledBaseText)<TextProps>`
   ${colors}
 `;
 
+StyledText.defaultProps = {
+  color: "foregroundPrimary",
+};
+
 export const Text = React.memo(
   React.forwardRef<
     HTMLSpanElement,

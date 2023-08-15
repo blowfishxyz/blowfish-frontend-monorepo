@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { styled } from "styled-components";
 import * as stateChangesMap from "@blowfishxyz/api-client/fixtures";
 
-import { SimulationResultSolana } from "~/simulation-result-solana";
+import { SimulationResultSolana } from "~/simulation-result/solana";
 
 export default {
   title: "SimulationResultSolana",

@@ -2,31 +2,34 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { styled } from "styled-components";
 import { PreviewNfts } from "~/simulation-result/components/PreviewNfts";
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
+import { Text } from "~/common/text";
 
 const PreviewNftContainer = styled.div`
-  position: absolute;
-  background-color: white;
-  box-shadow: 0px 4px 24px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  z-index: 1;
-  top: 0;
-  left: 60px;
-  width: 237px;
-  border-radius: 12px;
+  margin-left: 40px;
+  height: 400px;
+  width: 400px;
 `;
 
 const PreviewNFTStory = () => (
   <PreviewNftContainer>
-    <PreviewNfts
-      imageUrl="/placeholder/placeholder-nft.svg"
-      name="NFT Name"
-      type="ERC-721"
-      tokenId="123"
-      price={100}
-    />
+    <Tooltip initialOpen open>
+      <TooltipTrigger>
+        <Text></Text>
+      </TooltipTrigger>
+      <TooltipContent showArrow={false}>
+        <PreviewNfts
+          imageUrl="https://ipfs.io/ipfs/QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP"
+          name="BoredApeYachtClub"
+          type="ERC-721"
+          tokenId="1726"
+          price={100}
+        />
+      </TooltipContent>
+    </Tooltip>
   </PreviewNftContainer>
 );
 
-storiesOf("Internal/PreviewNft", module).add("NFT", () => <PreviewNFTStory />);
+storiesOf("Internal/PreviewNft", module).add("Default", () => (
+  <PreviewNFTStory />
+));

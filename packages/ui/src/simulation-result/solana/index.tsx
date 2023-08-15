@@ -7,16 +7,18 @@ import {
   chainToBlockExplorerUrl,
   formatMetaplexStandard,
   shortenAddress,
-} from "~/simulation-result-solana/utils";
+  isSplStateChange,
+  isNftMetaplexStandard,
+} from "~/simulation-result/solana/utils";
 import {
   SolanaExpectedStateChange,
   SolanaChainNetwork,
 } from "@blowfishxyz/api-client";
-import { AssetPrice } from "~/simulation-result-solana/components/AssetPrice";
+import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
 import { Column, Row } from "~/common/layout";
-import { AssetImage } from "~/simulation-result-solana/components/AssetImage";
+import { AssetImage } from "~/simulation-result/components/AssetImage";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -48,17 +50,6 @@ const TxnSimulationImage = styled.div`
 
 const TxnSimulationText = styled(Text).attrs({ size: "md" })``;
 
-// const PreviewTokenTooltipContent = styled(TooltipContent)`
-//   background-color: ${({ theme }) => theme.colors.backgroundPrimary};
-//   box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
-//   padding: 15px;
-//   border: 1px solid ${({ theme }) => theme.colors.border};
-//   border-radius: 4px;
-//   z-index: 4;
-//   width: 200px;
-//   border-radius: 12px;
-// `;
-
 export interface SimulationResultSolanaProps {
   stateChange: SolanaExpectedStateChange;
   chainNetwork: SolanaChainNetwork | undefined;
@@ -68,11 +59,10 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
   stateChange,
   chainNetwork,
 }) => {
-  const { rawInfo, suggestedColor } = stateChange;
+  const { rawInfo } = stateChange;
   const assetLink = useAssetLinkFromRawInfo(rawInfo, {
     chainNetwork,
   });
-  const isPositiveEffect = suggestedColor === "CREDIT";
 
   return (
     <TxnSimulationWrapper
@@ -82,33 +72,8 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
       <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
         <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
           <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
-            {/* {isSplStateChange(rawInfo) ? (
-              <Tooltip placement="bottom-start">
-                <TooltipTrigger>
-                  <TxnSimulationImage>
-                    <AssetImage
-                      stateChange={stateChange}
-                      isPositiveEffect={isPositiveEffect}
-                    />
-                  </TxnSimulationImage>
-                  <PreviewTokenTooltipContent showArrow={false}>
-                    <TokenTooltipContent rawInfo={rawInfo} />
-                  </PreviewTokenTooltipContent>
-                </TooltipTrigger>
-              </Tooltip>
-            ) : (
-              <TxnSimulationImage>
-                <AssetImage
-                  stateChange={stateChange}
-                  isPositiveEffect={isPositiveEffect}
-                />
-              </TxnSimulationImage>
-            )} */}
             <TxnSimulationImage>
-              <AssetImage
-                stateChange={stateChange}
-                isPositiveEffect={isPositiveEffect}
-              />
+              <SimulationImage stateChange={stateChange} />
             </TxnSimulationImage>
 
             <Column gap="xs">
@@ -127,49 +92,44 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
   );
 };
 
-// const TokenTooltipContent: React.FC<{
-//   rawInfo: SolanaExpectedStateChange["rawInfo"];
-// }> = ({ rawInfo }) => {
-//   if (
-//     (rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER") &&
-//     isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)
-//   ) {
-//     if (isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)) {
-//       return (
-//         <PreviewNfts
-//           name={rawInfo.data.asset.name}
-//           type={rawInfo.data.asset.metaplexTokenStandard}
-//           tokenId={rawInfo.data.asset.name}
-//           price={getAssetPriceInUsd(rawInfo)}
-//         />
-//       );
-//     }
+const SimulationImage: React.FC<{
+  stateChange: SolanaExpectedStateChange;
+}> = ({ stateChange: { rawInfo, suggestedColor } }) => {
+  const isPositive = suggestedColor === "CREDIT";
 
-//     return (
-//       <PreviewTokens
-//         symbol={rawInfo.data.asset.symbol}
-//         name={rawInfo.data.asset.name}
-//         price={getAssetPricePerToken(rawInfo)}
-//         tokenList={null}
-//         verified={false}
-//       />
-//     );
-//   }
+  if (isSplStateChange(rawInfo)) {
+    if (isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)) {
+      return (
+        <AssetImage
+          type="nft"
+          imageUrl={rawInfo.data.asset.imageUrl}
+          name={rawInfo.data.asset.name}
+          isPositiveEffect={isPositive}
+        />
+      );
+    }
 
-//   if (rawInfo.kind === "SOL_TRANSFER") {
-//     return (
-//       <PreviewTokens
-//         symbol={rawInfo.data.asset.symbol}
-//         name={rawInfo.data.asset.name}
-//         price={getAssetPricePerToken(rawInfo)}
-//         tokenList={null}
-//         verified={false}
-//       />
-//     );
-//   }
+    return (
+      <AssetImage
+        type="currency"
+        imageUrl={rawInfo.data.asset.imageUrl}
+        name={rawInfo.data.asset.name}
+        verified={false}
+        isPositiveEffect={isPositive}
+      />
+    );
+  }
 
-//   return null;
-// };
+  return (
+    <AssetImage
+      type="unknown"
+      imageUrl={null}
+      name="Unkonwn"
+      isPositiveEffect={isPositive}
+      placeholder="solana-logo"
+    />
+  );
+};
 
 const TokenFooter: React.FC<{
   rawInfo: SolanaExpectedStateChange["rawInfo"];
