@@ -75,6 +75,7 @@ export class BlowfishApiClient {
           xApiVersion: this.apiVersion,
         });
       },
+      scanDomains: this.scanDomains,
     };
   };
 
@@ -136,10 +137,12 @@ export class BlowfishApiClient {
           xApiVersion: this.apiVersion,
         });
       },
+
+      scanDomains: this.scanDomains,
     };
   };
 
-  scanDomains = (domains: string[]) => {
+  private scanDomains = (domains: string[]) => {
     return this.apis.domain.scanDomain({
       objectWithDomainsPropertyOfTypeArray: {
         domains,
@@ -148,7 +151,7 @@ export class BlowfishApiClient {
     });
   };
 
-  downloadBlocklist = (request: DownloadBlocklistRequest) => {
+  private downloadBlocklist = (request: DownloadBlocklistRequest) => {
     return this.apis.blocklist.downloadBlocklist({
       xApiVersion: this.apiVersion,
       downloadBlocklistRequest: request,

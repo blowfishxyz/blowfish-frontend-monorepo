@@ -15,7 +15,7 @@ type StyledProviderProps = React.ComponentProps<typeof StyledThemeProvider>;
 
 type ThemeProviderProps = Omit<StyledProviderProps, "theme"> & {
   themeOverride?: DeepPartial<ITheme>;
-  mode?: "light" | "dark";
+  mode?: "light" | "dark" | "auto";
   fontFamily?: string;
 };
 
@@ -33,12 +33,19 @@ export function useTheme({
   themeOverride,
 }: {
   themeOverride?: DeepPartial<ITheme>;
-  mode?: "light" | "dark";
+  mode?: "light" | "dark" | "auto";
   fontFamily?: string;
 }): ITheme {
   const defaultTheme = useMemo(() => {
+    if (!mode) {
+      return light;
+    }
     let selectedMode = mode;
-    if (!selectedMode && typeof window !== "undefined" && window.matchMedia) {
+    if (
+      selectedMode === "auto" &&
+      typeof window !== "undefined" &&
+      window.matchMedia
+    ) {
       selectedMode = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
