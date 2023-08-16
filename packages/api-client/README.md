@@ -95,9 +95,6 @@ const domainsScan = await client.scanDomains([
 ]);
 ```
 
-## Local Blocklist (WIP)
+## Blocklist
 
-```tsx
-// Scan domains
-const localBlocklist = await client.downloadBlocklist();
-```
+Checkout our Blocklist NPM package: https://www.npmjs.com/package/@blowfishxyz/blocklist
