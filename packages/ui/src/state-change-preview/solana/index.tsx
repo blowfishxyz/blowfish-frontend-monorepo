@@ -10,7 +10,7 @@ import { SimulationResultSolana } from "~/simulation-result";
 export type StateChangePreviewSolanaProps = {
   scanResult: SolanaTransactionsResult;
   chainNetwork: SolanaChainNetwork;
-  sectionLabel?: string;
+  sectionLabel?: string | null;
   userAccount: string;
 };
 
@@ -29,9 +29,11 @@ export const StateChangePreviewSolana: React.FC<
   if (simulationResults && simulationResults.length > 0) {
     return (
       <Column gap="md">
-        <Row justifyContent="space-between">
-          <SectionHeading>{sectionLabel}</SectionHeading>
-        </Row>
+        {sectionLabel && (
+          <Row justifyContent="space-between">
+            <SectionHeading>{sectionLabel}</SectionHeading>
+          </Row>
+        )}
         <TxnDataWrapper>
           {simulationResults.map((data, index) => {
             return (

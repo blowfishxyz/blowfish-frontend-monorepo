@@ -3,7 +3,9 @@ import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import { light } from "~/theme/light";
 import { dark } from "~/theme/dark";
 import type { ITheme } from "~/theme/common";
-import { all as mergeAll } from "deepmerge";
+import deepmerge from "deepmerge";
+
+const { all: mergeAll } = deepmerge;
 
 type DeepPartial<T> = T extends object
   ? {

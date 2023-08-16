@@ -19,7 +19,7 @@ export type StateChangePreviewEvmProps = {
   scanResult: ScanResult;
   chainFamily: EvmChainFamily;
   chainNetwork: EvmChainNetwork;
-  sectionLabel?: string;
+  sectionLabel?: string | null;
 };
 
 export const StateChangePreviewEvm: React.FC<StateChangePreviewEvmProps> = ({
@@ -37,9 +37,11 @@ export const StateChangePreviewEvm: React.FC<StateChangePreviewEvmProps> = ({
   if (simulationResults && simulationResults.length > 0) {
     return (
       <Column gap="md">
-        <Row justifyContent="space-between">
-          <SectionHeading>{sectionLabel}</SectionHeading>
-        </Row>
+        {sectionLabel && (
+          <Row justifyContent="space-between">
+            <SectionHeading>{sectionLabel}</SectionHeading>
+          </Row>
+        )}
         <TxnDataWrapper>
           {simulationResults.map((data, index) => {
             return (

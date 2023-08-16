@@ -23,12 +23,12 @@
     "@emotion/is-prop-valid": "^1.2.0",
     "@floating-ui/react": "^0.23.1",
     "decimal.js": "^10.4.3",
-    "deepmerge": "^4.3.1"
+    "deepmerge": "^4.3.1",
+    "styled-components": "6.0.4"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0",
-    "styled-components": "^5.0.0 || ^6.0.0"
+    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "@blowfish/tsconfig": "workspace:*",
