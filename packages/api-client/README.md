@@ -2,7 +2,9 @@
 
 # `@blowfish/api-client` 🐡
 
-[Docs](https://docs.blowfish.xyz/)
+## API Documentation
+
+See https://docs.blowfish.xyz
 
 ## EVM Message and Transactions Scanning
 

@@ -4,6 +4,10 @@
 
 This package offers a set of customizable React UI components designed to simplify the integration of the Blowfish API into your React applications.
 
+# API Documentation
+
+See https://docs.blowfish.xyz
+
 # Key Features
 
 - **Zero-overhead Integration:** You need to just pass the API response to the component.
