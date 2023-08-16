@@ -212,6 +212,8 @@ const TokenFooter: React.FC<{
       typeStr = "ERC-1155";
     }
 
+    console.log(rawInfo.data, hasCounterparty(rawInfo));
+
     return (
       <Row gap="md">
         {typeStr ? (
@@ -227,7 +229,7 @@ const TokenFooter: React.FC<{
             Floor price: <AssetPrice totalValue={price} />
           </Text>
         ) : null}
-        {hasCounterparty(rawInfo) ? (
+        {hasCounterparty(rawInfo) && rawInfo.data.counterparty ? (
           <LinkWrapper
             href={counterpartyLink}
             target="_blank"
@@ -237,10 +239,7 @@ const TokenFooter: React.FC<{
               <Text size="sm" design="secondary">
                 {isPositiveEffect ? "From" : "To"}:
                 <Text size="sm" design="primary">
-                  {` ${shortenHex(
-                    rawInfo.data.counterparty?.address || "",
-                    3
-                  )}`}
+                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 3)}`}
                 </Text>
               </Text>
               <Icon variant="arrow" size={10} />
