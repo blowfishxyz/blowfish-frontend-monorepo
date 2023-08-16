@@ -33,15 +33,15 @@ function EvmApp() {
   const origin = "app.uniswap.org";
 
   const scanTransactions = () => {
-    return createClient(
+    return createEvmClient(
       BASE_URL,
       // Note: To not leak your private API key consider using a proxy.
-      API_KEY
-    )
-      .evm("ethereum", "mainnet")
-      .scanTransactions([tx], userAccount, {
-        origin,
-      });
+      API_KEY,
+      "ethereum",
+      "mainnet"
+    ).scanTransactions([tx], userAccount, {
+      origin,
+    });
   };
 
   const { data } = useSWR(getCacheKey(), scanTransactions, {
@@ -79,7 +79,7 @@ Use `StateChangePreviewSolana` to display state changes for solana transactions.
 
 ```tsx
 import useSWR from "swr";
-import { createClient } from "@blowfishxyz/api-client";
+import { createSolanaClient } from "@blowfishxyz/api-client";
 import { SimulationWarning, StateChangePreviewSolana } from "@blowfishxyz/ui";
 
 function SolanaApp() {
@@ -89,15 +89,14 @@ function SolanaApp() {
   const origin = "app.uniswap.org";
 
   const scanTransactions = () => {
-    return createClient(
+    return createEvmClient(
       BASE_URL,
       // Note: To not leak your private API key consider using a proxy.
-      API_KEY
-    )
-      .solana("mainnet")
-      .scanTransactions([tx1, tx2], userAccount, {
-        origin,
-      });
+      API_KEY,
+      "mainnet"
+    ).scanTransactions([tx1, tx2], userAccount, {
+      origin,
+    });
   };
 
   const { data } = useSWR("cache-key", scanTransactions, {

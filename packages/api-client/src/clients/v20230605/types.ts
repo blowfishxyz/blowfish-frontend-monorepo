@@ -25,6 +25,7 @@ import type {
 // TODO: use a separate ref in the schema to generate a standalone enum
 export type EvmChainFamily = ScanTransactionsEvmOperationChainFamilyEnum;
 export type EvmChainNetwork = ScanTransactionsEvmOperationChainNetworkEnum;
+export type SolanaChainFamily = "solana";
 export type SolanaChainNetwork =
   ScanTransactionsSolanaOperationChainNetworkEnum;
 

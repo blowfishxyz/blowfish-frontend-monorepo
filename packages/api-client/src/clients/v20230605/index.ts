@@ -1,2 +1,7 @@
-export { BlowfishApiClient, createClient } from "./client";
+export {
+  BlowfishEvmApiClient,
+  createEvmClient,
+  BlowfishSolanaApiClient,
+  createSolanaClient,
+} from "./client";
 export * from "./types";

@@ -2,15 +2,20 @@
 
 # `@blowfish/api-client` 🐡
 
-```ts
-import { createClient } from "@blowfishxyz/api-client";
+[Docs](https://docs.blowfish.xyz/)
 
-const client = createClient(
+## EVM Message and Transactions Scanning
+
+```ts
+import { createEvmClient } from "@blowfishxyz/api-client";
+
+const client = createEvmClient(
       API_BASE_URL,
       // Note: To not to leak your private API key consider using a proxy.
-      API_KEY
-    )
-      .evm("ethereum", "mainnet");
+      API_KEY,
+      "ethereum",
+      "mainnet"
+    );
 
 // Scan multiple transactions
 const transactionsScan = await client.scanTransactions(
@@ -55,4 +60,42 @@ const typedDataScan = await client.scanSignTypedData(
 const domainsScan = await client.scanDomains([
     "https://app.uniswap.org"
 ]);
+```
+
+## Solana Transactions Scanning
+
+```ts
+import { createSolanaClient } from "@blowfishxyz/api-client";
+
+const client = createSolanaClient(
+  BASE_URL,
+  // Note: To not leak your private API key consider using a proxy.
+  API_KEY,
+  "mainnet"
+);
+
+const transactionsScan = await client.scanTransactions(
+  ["AgAAA...", "AgAAA..."],
+  "5F64...",
+  {
+    origin: "app.uniswap.org",
+  }
+);
+```
+
+## Domains Scanning
+
+```tsx
+// Scan domains
+const domainsScan = await client.scanDomains([
+  "https://app.uniswap.org",
+  "https://opensea.io",
+]);
+```
+
+## Local Blocklist (WIP)
+
+```tsx
+// Scan domains
+const localBlocklist = await client.downloadBlocklist();
 ```

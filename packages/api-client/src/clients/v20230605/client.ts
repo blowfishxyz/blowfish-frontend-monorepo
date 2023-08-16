@@ -19,7 +19,7 @@ import {
   SolanaChainNetwork,
 } from "./types";
 
-export class BlowfishApiClient {
+export class BlowfishEvmApiClient {
   private apiVersion = "2023-06-05";
   private readonly config: Configuration;
 
@@ -47,7 +47,9 @@ export class BlowfishApiClient {
 
   constructor(
     private readonly basePath: string,
-    private readonly apiKey: string
+    apiKey: string,
+    private readonly chainFamily: EvmChainFamily,
+    private readonly chainNetwork: EvmChainNetwork
   ) {
     this.config = new Configuration(this.getConfig(apiKey));
     this.apis = {
@@ -58,91 +60,137 @@ export class BlowfishApiClient {
     };
   }
 
-  solana = (chainNetwork: SolanaChainNetwork) => {
-    return {
-      scanTransactions: (
-        transactions: string[],
-        userAccount: string,
-        metadata: RequestMetadata
-      ) => {
-        return this.apis.transactions.scanTransactionsSolana({
-          chainNetwork,
-          scanTransactionsSolanaRequest: {
-            transactions,
-            userAccount,
-            metadata,
-          },
-          xApiVersion: this.apiVersion,
-        });
+  scanMessage(
+    rawMessage: string,
+    userAccount: string,
+    metadata: RequestMetadata
+  ) {
+    return this.apis.message.scanMessageEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
+      scanMessageEvmRequest: {
+        message: {
+          kind: "SIGN_MESSAGE",
+          rawMessage,
+        },
+        userAccount,
+        metadata,
       },
-      scanDomains: this.scanDomains,
+      xApiVersion: this.apiVersion,
+    });
+  }
+
+  scanSignTypedData(
+    typedData: EvmSignTypedDataData,
+    userAccount: string,
+    metadata: RequestMetadata
+  ) {
+    return this.apis.message.scanMessageEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
+      scanMessageEvmRequest: {
+        message: {
+          kind: "SIGN_TYPED_DATA",
+          data: typedData,
+        },
+        userAccount,
+        metadata,
+      },
+      xApiVersion: this.apiVersion,
+    });
+  }
+
+  scanTransactions(
+    txObjects: EvmTxData[],
+    userAccount: string,
+    metadata: RequestMetadata
+  ) {
+    return this.apis.transactions.scanTransactionsEvm({
+      chainFamily: this.chainFamily,
+      chainNetwork: this.chainNetwork,
+      scanTransactionsEvmRequest: {
+        txObjects,
+        userAccount,
+        metadata,
+      },
+      xApiVersion: this.apiVersion,
+    });
+  }
+
+  scanDomains(domains: string[]) {
+    return this.apis.domain.scanDomain({
+      objectWithDomainsPropertyOfTypeArray: {
+        domains,
+      },
+      xApiVersion: this.apiVersion,
+    });
+  }
+
+  downloadBlocklist(request: DownloadBlocklistRequest = {}) {
+    return this.apis.blocklist.downloadBlocklist({
+      xApiVersion: this.apiVersion,
+      downloadBlocklistRequest: request,
+    });
+  }
+}
+
+export class BlowfishSolanaApiClient {
+  private apiVersion = "2023-06-05";
+  private readonly config: Configuration;
+
+  private getConfig(apiKey: string): ConfigurationParameters {
+    return {
+      basePath: this.basePath,
+      headers: this.getHeaders(),
+      apiKey,
     };
+  }
+
+  private getHeaders() {
+    const headers: HTTPHeaders = {
+      ["Content-Type"]: "application/json",
+    };
+    return headers;
+  }
+
+  private readonly apis: {
+    message: ScanMessageApi;
+    transactions: ScanTransactionsApi;
+    domain: ScanDomainApi;
+    blocklist: DownloadBlocklistApi;
   };
 
-  evm = (chainFamily: EvmChainFamily, chainNetwork: EvmChainNetwork) => {
-    return {
-      scanMessage: (
-        rawMessage: string,
-        userAccount: string,
-        metadata: RequestMetadata
-      ) => {
-        return this.apis.message.scanMessageEvm({
-          chainFamily,
-          chainNetwork,
-          scanMessageEvmRequest: {
-            message: {
-              kind: "SIGN_MESSAGE",
-              rawMessage,
-            },
-            userAccount,
-            metadata,
-          },
-          xApiVersion: this.apiVersion,
-        });
-      },
-
-      scanSignTypedData: (
-        typedData: EvmSignTypedDataData,
-        userAccount: string,
-        metadata: RequestMetadata
-      ) => {
-        return this.apis.message.scanMessageEvm({
-          chainFamily,
-          chainNetwork,
-          scanMessageEvmRequest: {
-            message: {
-              kind: "SIGN_TYPED_DATA",
-              data: typedData,
-            },
-            userAccount,
-            metadata,
-          },
-          xApiVersion: this.apiVersion,
-        });
-      },
-
-      scanTransactions: (
-        txObjects: EvmTxData[],
-        userAccount: string,
-        metadata: RequestMetadata
-      ) => {
-        return this.apis.transactions.scanTransactionsEvm({
-          chainFamily,
-          chainNetwork,
-          scanTransactionsEvmRequest: {
-            txObjects,
-            userAccount,
-            metadata,
-          },
-          xApiVersion: this.apiVersion,
-        });
-      },
-
-      scanDomains: this.scanDomains,
+  constructor(
+    private readonly basePath: string,
+    apiKey: string,
+    private readonly chainNetwork: SolanaChainNetwork
+  ) {
+    this.config = new Configuration(this.getConfig(apiKey));
+    this.apis = {
+      message: new ScanMessageApi(this.config),
+      transactions: new ScanTransactionsApi(this.config),
+      domain: new ScanDomainApi(this.config),
+      blocklist: new DownloadBlocklistApi(this.config),
     };
-  };
+  }
 
-  private scanDomains = (domains: string[]) => {
+  scanTransactions(
+    transactions: string[],
+    userAccount: string,
+    metadata: RequestMetadata
+  ) {
+    return this.apis.transactions.scanTransactionsSolana({
+      chainNetwork: this.chainNetwork,
+      scanTransactionsSolanaRequest: {
+        transactions,
+        userAccount,
+        metadata,
+      },
+      xApiVersion: this.apiVersion,
+    });
+  }
+
+  scanDomains = (domains: string[]) => {
     return this.apis.domain.scanDomain({
       objectWithDomainsPropertyOfTypeArray: {
         domains,
@@ -151,17 +199,27 @@ export class BlowfishApiClient {
     });
   };
 
-  private downloadBlocklist = (request: DownloadBlocklistRequest) => {
+  downloadBlocklist(request: DownloadBlocklistRequest = {}) {
     return this.apis.blocklist.downloadBlocklist({
       xApiVersion: this.apiVersion,
       downloadBlocklistRequest: request,
     });
-  };
+  }
 }
 
-export function createClient(
+export function createEvmClient(
   basePath: string,
-  apiKey: string
-): BlowfishApiClient {
-  return new BlowfishApiClient(basePath, apiKey);
+  apiKey: string,
+  chainFamily: EvmChainFamily,
+  chainNetwork: EvmChainNetwork
+): BlowfishEvmApiClient {
+  return new BlowfishEvmApiClient(basePath, apiKey, chainFamily, chainNetwork);
+}
+
+export function createSolanaClient(
+  basePath: string,
+  apiKey: string,
+  chainNetwork: SolanaChainNetwork
+): BlowfishSolanaApiClient {
+  return new BlowfishSolanaApiClient(basePath, apiKey, chainNetwork);
 }

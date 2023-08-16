@@ -1,4 +1,4 @@
-import { createClient } from "@blowfishxyz/api-client";
+import { createEvmClient } from "@blowfishxyz/api-client";
 import type {
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
@@ -42,11 +42,13 @@ const fetcher = async (
   request: DappRequest,
   origin: string
 ): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {
-  const client = createClient(
+  const client = createEvmClient(
     BLOWFISH_API_BASE_URL,
     // NOTE: The api key is rewritten on the proxy
-    ""
-  ).evm(chainFamily, chainNetwork);
+    "",
+    chainFamily,
+    chainNetwork
+  );
 
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to
