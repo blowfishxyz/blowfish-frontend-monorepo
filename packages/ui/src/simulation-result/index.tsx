@@ -212,7 +212,6 @@ const TokenFooter: React.FC<{
       typeStr = "ERC-1155";
     }
 
-    console.log(rawInfo.data, hasCounterparty(rawInfo));
 
     return (
       <Row gap="md">
