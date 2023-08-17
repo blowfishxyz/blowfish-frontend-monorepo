@@ -11,13 +11,13 @@ See https://docs.blowfish.xyz
 ```ts
 import { createEvmClient } from "@blowfishxyz/api-client";
 
-const client = createEvmClient(
-      API_BASE_URL,
-      // Note: To not to leak your private API key consider using a proxy.
-      API_KEY,
-      "ethereum",
-      "mainnet"
-    );
+const client = createEvmClient({
+    basePath: API_BASE_URL,
+    // Optional: Use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+    apiKey: API_KEY,
+    chainFamily: "ethereum",
+    chainNetwork: "mainnet",
+});
 
 // Scan multiple transactions
 const transactionsScan = await client.scanTransactions(
@@ -69,12 +69,12 @@ const domainsScan = await client.scanDomains([
 ```ts
 import { createSolanaClient } from "@blowfishxyz/api-client";
 
-const client = createSolanaClient(
-  BASE_URL,
-  // Note: To not leak your private API key consider using a proxy.
-  API_KEY,
-  "mainnet"
-);
+const client = createSolanaClient({
+  basePath: API_BASE_URL,
+  // Optional: Use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+  apiKey: API_KEY,
+  chainNetwork: "mainnet",
+});
 
 const transactionsScan = await client.scanTransactions(
   ["AgAAA...", "AgAAA..."],

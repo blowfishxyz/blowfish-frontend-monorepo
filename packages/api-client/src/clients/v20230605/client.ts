@@ -19,11 +19,11 @@ import {
   SolanaChainNetwork,
 } from "./types";
 
-export class BlowfishEvmApiClient {
-  private apiVersion = "2023-06-05";
+class BaseApiClient {
+  protected apiVersion = "2023-06-05";
   private readonly config: Configuration;
 
-  private getConfig(apiKey: string): ConfigurationParameters {
+  private getConfig(apiKey?: string): ConfigurationParameters {
     return {
       basePath: this.basePath,
       headers: this.getHeaders(),
@@ -38,19 +38,14 @@ export class BlowfishEvmApiClient {
     return headers;
   }
 
-  private readonly apis: {
+  protected readonly apis: {
     message: ScanMessageApi;
     transactions: ScanTransactionsApi;
     domain: ScanDomainApi;
     blocklist: DownloadBlocklistApi;
   };
 
-  constructor(
-    private readonly basePath: string,
-    apiKey: string,
-    private readonly chainFamily: EvmChainFamily,
-    private readonly chainNetwork: EvmChainNetwork
-  ) {
+  constructor(private readonly basePath: string, apiKey?: string) {
     this.config = new Configuration(this.getConfig(apiKey));
     this.apis = {
       message: new ScanMessageApi(this.config),
@@ -58,6 +53,17 @@ export class BlowfishEvmApiClient {
       domain: new ScanDomainApi(this.config),
       blocklist: new DownloadBlocklistApi(this.config),
     };
+  }
+}
+
+export class BlowfishEvmApiClient extends BaseApiClient {
+  constructor(
+    basePath: string,
+    private readonly chainFamily: EvmChainFamily,
+    private readonly chainNetwork: EvmChainNetwork,
+    apiKey?: string
+  ) {
+    super(basePath, apiKey);
   }
 
   scanMessage(
@@ -134,44 +140,13 @@ export class BlowfishEvmApiClient {
   }
 }
 
-export class BlowfishSolanaApiClient {
-  private apiVersion = "2023-06-05";
-  private readonly config: Configuration;
-
-  private getConfig(apiKey: string): ConfigurationParameters {
-    return {
-      basePath: this.basePath,
-      headers: this.getHeaders(),
-      apiKey,
-    };
-  }
-
-  private getHeaders() {
-    const headers: HTTPHeaders = {
-      ["Content-Type"]: "application/json",
-    };
-    return headers;
-  }
-
-  private readonly apis: {
-    message: ScanMessageApi;
-    transactions: ScanTransactionsApi;
-    domain: ScanDomainApi;
-    blocklist: DownloadBlocklistApi;
-  };
-
+export class BlowfishSolanaApiClient extends BaseApiClient {
   constructor(
-    private readonly basePath: string,
-    apiKey: string,
-    private readonly chainNetwork: SolanaChainNetwork
+    basePath: string,
+    private readonly chainNetwork: SolanaChainNetwork,
+    apiKey?: string
   ) {
-    this.config = new Configuration(this.getConfig(apiKey));
-    this.apis = {
-      message: new ScanMessageApi(this.config),
-      transactions: new ScanTransactionsApi(this.config),
-      domain: new ScanDomainApi(this.config),
-      blocklist: new DownloadBlocklistApi(this.config),
-    };
+    super(basePath, apiKey);
   }
 
   scanTransactions(
@@ -207,19 +182,28 @@ export class BlowfishSolanaApiClient {
   }
 }
 
-export function createEvmClient(
-  basePath: string,
-  apiKey: string,
-  chainFamily: EvmChainFamily,
-  chainNetwork: EvmChainNetwork
-): BlowfishEvmApiClient {
-  return new BlowfishEvmApiClient(basePath, apiKey, chainFamily, chainNetwork);
+export function createEvmClient({
+  basePath,
+  chainFamily,
+  chainNetwork,
+  apiKey,
+}: {
+  basePath: string;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
+  apiKey?: string;
+}): BlowfishEvmApiClient {
+  return new BlowfishEvmApiClient(basePath, chainFamily, chainNetwork, apiKey);
 }
 
-export function createSolanaClient(
-  basePath: string,
-  apiKey: string,
-  chainNetwork: SolanaChainNetwork
-): BlowfishSolanaApiClient {
-  return new BlowfishSolanaApiClient(basePath, apiKey, chainNetwork);
+export function createSolanaClient({
+  basePath,
+  apiKey,
+  chainNetwork,
+}: {
+  basePath: string;
+  apiKey?: string;
+  chainNetwork: SolanaChainNetwork;
+}): BlowfishSolanaApiClient {
+  return new BlowfishSolanaApiClient(basePath, chainNetwork, apiKey);
 }
