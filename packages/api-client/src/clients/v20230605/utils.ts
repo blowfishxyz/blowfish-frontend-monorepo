@@ -3,20 +3,14 @@ import {
   ScanMessageEvm200Response as ScanMessageEvm200ResponseV20230517,
 } from "../../generated/v20230517/models";
 import {
-  ScanTransactionEvm200Response,
-  ScanTransactionsEvm200Response,
   ScanMessageEvm200Response,
   EvmStateChangeErc721TransferData,
   EvmStateChangeAnyNftFromCollectionTransferData,
   ScanMessageEvm200ResponseSimulationResults,
-  ScanTransactionEvm200ResponseSimulationResults,
   EvmStateChangeErc1155TransferData,
   EvmStateChangeErc20PermitData,
   EvmStateChangeErc20TransferData,
   EvmStateChangeNativeAssetTransferData,
-  EvmStateChangeErc1155ApprovalForAllData,
-  EvmStateChangeErc721ApprovalForAllData,
-  EvmStateChangeErc721ApprovalData,
 } from "./types";
 
 export function mapMessageResponse(
