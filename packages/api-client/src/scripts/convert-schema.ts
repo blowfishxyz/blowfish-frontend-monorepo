@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { readFile, readdir, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import Yaml, { YAMLMap } from "yaml";
@@ -5,7 +6,12 @@ import Yaml, { YAMLMap } from "yaml";
 convertSchemas(process.argv[2], process.argv[3]);
 
 async function convertSchemas(sourceDir: string, targetDir: string) {
-  await mkdir(targetDir, { recursive: true });
+  if (!existsSync(targetDir)) {
+    await mkdir(targetDir, { recursive: true });
+  }
+  if (!existsSync(sourceDir)) {
+    throw new Error(`Directory ${sourceDir} does not exist`);
+  }
   const files = await readdir(sourceDir);
   const paths: [string, string][] = [];
 

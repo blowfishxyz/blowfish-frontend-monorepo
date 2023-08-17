@@ -14,7 +14,7 @@ export const ActionEnum = {
   Block: "BLOCK",
   Warn: "WARN",
 } as const;
-export type ActionEnum = typeof ActionEnum[keyof typeof ActionEnum];
+export type ActionEnum = (typeof ActionEnum)[keyof typeof ActionEnum];
 
 /**
  *
@@ -51,7 +51,7 @@ export const AssetPriceSourceEnum = {
   Coingecko: "Coingecko",
 } as const;
 export type AssetPriceSourceEnum =
-  typeof AssetPriceSourceEnum[keyof typeof AssetPriceSourceEnum];
+  (typeof AssetPriceSourceEnum)[keyof typeof AssetPriceSourceEnum];
 
 /**
  *
@@ -96,7 +96,7 @@ export const BlowfishSimulationErrorKindEnum = {
   BadRequest: "BAD_REQUEST",
 } as const;
 export type BlowfishSimulationErrorKindEnum =
-  typeof BlowfishSimulationErrorKindEnum[keyof typeof BlowfishSimulationErrorKindEnum];
+  (typeof BlowfishSimulationErrorKindEnum)[keyof typeof BlowfishSimulationErrorKindEnum];
 
 /**
  *
@@ -125,7 +125,7 @@ export const DiffSignEnum = {
   Plus: "PLUS",
   Minus: "MINUS",
 } as const;
-export type DiffSignEnum = typeof DiffSignEnum[keyof typeof DiffSignEnum];
+export type DiffSignEnum = (typeof DiffSignEnum)[keyof typeof DiffSignEnum];
 
 /**
  *
@@ -212,7 +212,7 @@ export const DownloadBlocklistRequestAllowListsEnum = {
   Defillama: "DEFILLAMA",
 } as const;
 export type DownloadBlocklistRequestAllowListsEnum =
-  typeof DownloadBlocklistRequestAllowListsEnum[keyof typeof DownloadBlocklistRequestAllowListsEnum];
+  (typeof DownloadBlocklistRequestAllowListsEnum)[keyof typeof DownloadBlocklistRequestAllowListsEnum];
 
 /**
  * @export
@@ -226,7 +226,7 @@ export const DownloadBlocklistRequestBlockListsEnum = {
   Metamask: "METAMASK",
 } as const;
 export type DownloadBlocklistRequestBlockListsEnum =
-  typeof DownloadBlocklistRequestBlockListsEnum[keyof typeof DownloadBlocklistRequestBlockListsEnum];
+  (typeof DownloadBlocklistRequestBlockListsEnum)[keyof typeof DownloadBlocklistRequestBlockListsEnum];
 
 /**
  * @export
@@ -237,7 +237,7 @@ export const DownloadBlocklistRequestPriorityAllowListsEnum = {
   Defillama: "DEFILLAMA",
 } as const;
 export type DownloadBlocklistRequestPriorityAllowListsEnum =
-  typeof DownloadBlocklistRequestPriorityAllowListsEnum[keyof typeof DownloadBlocklistRequestPriorityAllowListsEnum];
+  (typeof DownloadBlocklistRequestPriorityAllowListsEnum)[keyof typeof DownloadBlocklistRequestPriorityAllowListsEnum];
 
 /**
  * @export
@@ -251,7 +251,7 @@ export const DownloadBlocklistRequestPriorityBlockListsEnum = {
   Metamask: "METAMASK",
 } as const;
 export type DownloadBlocklistRequestPriorityBlockListsEnum =
-  typeof DownloadBlocklistRequestPriorityBlockListsEnum[keyof typeof DownloadBlocklistRequestPriorityBlockListsEnum];
+  (typeof DownloadBlocklistRequestPriorityBlockListsEnum)[keyof typeof DownloadBlocklistRequestPriorityBlockListsEnum];
 
 /**
  * Solidity token value. Addresses are serialized with `0x` prefix. Bytes and numbers are serialized as hex with `0x` prefix.
@@ -287,7 +287,7 @@ export const EvmAddressInfoKindEnum = {
   Account: "ACCOUNT",
 } as const;
 export type EvmAddressInfoKindEnum =
-  typeof EvmAddressInfoKindEnum[keyof typeof EvmAddressInfoKindEnum];
+  (typeof EvmAddressInfoKindEnum)[keyof typeof EvmAddressInfoKindEnum];
 
 /**
  *
@@ -379,7 +379,7 @@ export const EvmAssetListsEnum = {
   Blowfish: "BLOWFISH",
 } as const;
 export type EvmAssetListsEnum =
-  typeof EvmAssetListsEnum[keyof typeof EvmAssetListsEnum];
+  (typeof EvmAssetListsEnum)[keyof typeof EvmAssetListsEnum];
 
 /**
  * @type EvmDecodedCalldata
@@ -443,7 +443,7 @@ export const EvmDecodedCalldataFunctionKindEnum = {
   Function: "FUNCTION",
 } as const;
 export type EvmDecodedCalldataFunctionKindEnum =
-  typeof EvmDecodedCalldataFunctionKindEnum[keyof typeof EvmDecodedCalldataFunctionKindEnum];
+  (typeof EvmDecodedCalldataFunctionKindEnum)[keyof typeof EvmDecodedCalldataFunctionKindEnum];
 
 /**
  *
@@ -498,7 +498,7 @@ export const EvmDecodedCalldataProxiedFunctionKindEnum = {
   ProxiedFunction: "PROXIED_FUNCTION",
 } as const;
 export type EvmDecodedCalldataProxiedFunctionKindEnum =
-  typeof EvmDecodedCalldataProxiedFunctionKindEnum[keyof typeof EvmDecodedCalldataProxiedFunctionKindEnum];
+  (typeof EvmDecodedCalldataProxiedFunctionKindEnum)[keyof typeof EvmDecodedCalldataProxiedFunctionKindEnum];
 
 /**
  *
@@ -677,7 +677,7 @@ export const EvmErc20AssetListsEnum = {
   Blowfish: "BLOWFISH",
 } as const;
 export type EvmErc20AssetListsEnum =
-  typeof EvmErc20AssetListsEnum[keyof typeof EvmErc20AssetListsEnum];
+  (typeof EvmErc20AssetListsEnum)[keyof typeof EvmErc20AssetListsEnum];
 
 /**
  *
@@ -795,7 +795,7 @@ export const EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum = {
   AnyNftFromCollectionTransfer: "ANY_NFT_FROM_COLLECTION_TRANSFER",
 } as const;
 export type EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum =
-  typeof EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum[keyof typeof EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum];
+  (typeof EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum)[keyof typeof EvmMessageStateChangeAnyNftFromCollectionTransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -869,7 +869,7 @@ export const EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum 
     Erc1155: "ERC1155",
   } as const;
 export type EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum =
-  typeof EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum[keyof typeof EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum];
+  (typeof EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum)[keyof typeof EvmMessageStateChangeAnyNftFromCollectionTransferDataAssetTypeEnum];
 
 /**
  * ERC1155 transfers
@@ -898,7 +898,7 @@ export const EvmMessageStateChangeErc1155TransferKindEnum = {
   Erc1155Transfer: "ERC1155_TRANSFER",
 } as const;
 export type EvmMessageStateChangeErc1155TransferKindEnum =
-  typeof EvmMessageStateChangeErc1155TransferKindEnum[keyof typeof EvmMessageStateChangeErc1155TransferKindEnum];
+  (typeof EvmMessageStateChangeErc1155TransferKindEnum)[keyof typeof EvmMessageStateChangeErc1155TransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -970,7 +970,7 @@ export const EvmMessageStateChangeErc20PermitKindEnum = {
   Erc20Permit: "ERC20_PERMIT",
 } as const;
 export type EvmMessageStateChangeErc20PermitKindEnum =
-  typeof EvmMessageStateChangeErc20PermitKindEnum[keyof typeof EvmMessageStateChangeErc20PermitKindEnum];
+  (typeof EvmMessageStateChangeErc20PermitKindEnum)[keyof typeof EvmMessageStateChangeErc20PermitKindEnum];
 
 /**
  * Data associated with the state change
@@ -1048,7 +1048,7 @@ export const EvmMessageStateChangeErc20TransferKindEnum = {
   Erc20Transfer: "ERC20_TRANSFER",
 } as const;
 export type EvmMessageStateChangeErc20TransferKindEnum =
-  typeof EvmMessageStateChangeErc20TransferKindEnum[keyof typeof EvmMessageStateChangeErc20TransferKindEnum];
+  (typeof EvmMessageStateChangeErc20TransferKindEnum)[keyof typeof EvmMessageStateChangeErc20TransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -1102,7 +1102,7 @@ export const EvmMessageStateChangeErc721TransferKindEnum = {
   Erc721Transfer: "ERC721_TRANSFER",
 } as const;
 export type EvmMessageStateChangeErc721TransferKindEnum =
-  typeof EvmMessageStateChangeErc721TransferKindEnum[keyof typeof EvmMessageStateChangeErc721TransferKindEnum];
+  (typeof EvmMessageStateChangeErc721TransferKindEnum)[keyof typeof EvmMessageStateChangeErc721TransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -1186,7 +1186,7 @@ export const EvmMessageStateChangeNativeAssetTransferKindEnum = {
   NativeAssetTransfer: "NATIVE_ASSET_TRANSFER",
 } as const;
 export type EvmMessageStateChangeNativeAssetTransferKindEnum =
-  typeof EvmMessageStateChangeNativeAssetTransferKindEnum[keyof typeof EvmMessageStateChangeNativeAssetTransferKindEnum];
+  (typeof EvmMessageStateChangeNativeAssetTransferKindEnum)[keyof typeof EvmMessageStateChangeNativeAssetTransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -1322,7 +1322,7 @@ export const EvmProtocolTrustLevelEnum = {
   Native: "NATIVE",
 } as const;
 export type EvmProtocolTrustLevelEnum =
-  typeof EvmProtocolTrustLevelEnum[keyof typeof EvmProtocolTrustLevelEnum];
+  (typeof EvmProtocolTrustLevelEnum)[keyof typeof EvmProtocolTrustLevelEnum];
 
 /**
  *
@@ -1351,7 +1351,7 @@ export const EvmSignMessageKindEnum = {
   SignMessage: "SIGN_MESSAGE",
 } as const;
 export type EvmSignMessageKindEnum =
-  typeof EvmSignMessageKindEnum[keyof typeof EvmSignMessageKindEnum];
+  (typeof EvmSignMessageKindEnum)[keyof typeof EvmSignMessageKindEnum];
 
 /**
  *
@@ -1380,7 +1380,7 @@ export const EvmSignTypedDataKindEnum = {
   SignTypedData: "SIGN_TYPED_DATA",
 } as const;
 export type EvmSignTypedDataKindEnum =
-  typeof EvmSignTypedDataKindEnum[keyof typeof EvmSignTypedDataKindEnum];
+  (typeof EvmSignTypedDataKindEnum)[keyof typeof EvmSignTypedDataKindEnum];
 
 /**
  *
@@ -1510,7 +1510,7 @@ export const EvmSimulationFailedErrorKindEnum = {
   SimulationFailed: "SIMULATION_FAILED",
 } as const;
 export type EvmSimulationFailedErrorKindEnum =
-  typeof EvmSimulationFailedErrorKindEnum[keyof typeof EvmSimulationFailedErrorKindEnum];
+  (typeof EvmSimulationFailedErrorKindEnum)[keyof typeof EvmSimulationFailedErrorKindEnum];
 
 /**
  * Approval request for all owned ERC1155 assets
@@ -1539,7 +1539,7 @@ export const EvmStateChangeErc1155ApprovalForAllKindEnum = {
   Erc1155ApprovalForAll: "ERC1155_APPROVAL_FOR_ALL",
 } as const;
 export type EvmStateChangeErc1155ApprovalForAllKindEnum =
-  typeof EvmStateChangeErc1155ApprovalForAllKindEnum[keyof typeof EvmStateChangeErc1155ApprovalForAllKindEnum];
+  (typeof EvmStateChangeErc1155ApprovalForAllKindEnum)[keyof typeof EvmStateChangeErc1155ApprovalForAllKindEnum];
 
 /**
  * Data associated with the state change
@@ -1599,7 +1599,7 @@ export const EvmStateChangeErc1155TransferKindEnum = {
   Erc1155Transfer: "ERC1155_TRANSFER",
 } as const;
 export type EvmStateChangeErc1155TransferKindEnum =
-  typeof EvmStateChangeErc1155TransferKindEnum[keyof typeof EvmStateChangeErc1155TransferKindEnum];
+  (typeof EvmStateChangeErc1155TransferKindEnum)[keyof typeof EvmStateChangeErc1155TransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -1665,7 +1665,7 @@ export const EvmStateChangeErc20ApprovalKindEnum = {
   Erc20Approval: "ERC20_APPROVAL",
 } as const;
 export type EvmStateChangeErc20ApprovalKindEnum =
-  typeof EvmStateChangeErc20ApprovalKindEnum[keyof typeof EvmStateChangeErc20ApprovalKindEnum];
+  (typeof EvmStateChangeErc20ApprovalKindEnum)[keyof typeof EvmStateChangeErc20ApprovalKindEnum];
 
 /**
  * Data associated with the state change
@@ -1725,7 +1725,7 @@ export const EvmStateChangeErc20TransferKindEnum = {
   Erc20Transfer: "ERC20_TRANSFER",
 } as const;
 export type EvmStateChangeErc20TransferKindEnum =
-  typeof EvmStateChangeErc20TransferKindEnum[keyof typeof EvmStateChangeErc20TransferKindEnum];
+  (typeof EvmStateChangeErc20TransferKindEnum)[keyof typeof EvmStateChangeErc20TransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -1779,7 +1779,7 @@ export const EvmStateChangeErc721ApprovalKindEnum = {
   Erc721Approval: "ERC721_APPROVAL",
 } as const;
 export type EvmStateChangeErc721ApprovalKindEnum =
-  typeof EvmStateChangeErc721ApprovalKindEnum[keyof typeof EvmStateChangeErc721ApprovalKindEnum];
+  (typeof EvmStateChangeErc721ApprovalKindEnum)[keyof typeof EvmStateChangeErc721ApprovalKindEnum];
 
 /**
  * Data associated with the state change
@@ -1851,7 +1851,7 @@ export const EvmStateChangeErc721ApprovalForAllKindEnum = {
   Erc721ApprovalForAll: "ERC721_APPROVAL_FOR_ALL",
 } as const;
 export type EvmStateChangeErc721ApprovalForAllKindEnum =
-  typeof EvmStateChangeErc721ApprovalForAllKindEnum[keyof typeof EvmStateChangeErc721ApprovalForAllKindEnum];
+  (typeof EvmStateChangeErc721ApprovalForAllKindEnum)[keyof typeof EvmStateChangeErc721ApprovalForAllKindEnum];
 
 /**
  * Data associated with the state change
@@ -1911,7 +1911,7 @@ export const EvmStateChangeErc721TransferKindEnum = {
   Erc721Transfer: "ERC721_TRANSFER",
 } as const;
 export type EvmStateChangeErc721TransferKindEnum =
-  typeof EvmStateChangeErc721TransferKindEnum[keyof typeof EvmStateChangeErc721TransferKindEnum];
+  (typeof EvmStateChangeErc721TransferKindEnum)[keyof typeof EvmStateChangeErc721TransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -1977,7 +1977,7 @@ export const EvmStateChangeNativeAssetTransferKindEnum = {
   NativeAssetTransfer: "NATIVE_ASSET_TRANSFER",
 } as const;
 export type EvmStateChangeNativeAssetTransferKindEnum =
-  typeof EvmStateChangeNativeAssetTransferKindEnum[keyof typeof EvmStateChangeNativeAssetTransferKindEnum];
+  (typeof EvmStateChangeNativeAssetTransferKindEnum)[keyof typeof EvmStateChangeNativeAssetTransferKindEnum];
 
 /**
  * Data associated with the state change
@@ -2037,7 +2037,7 @@ export const EvmTransactionErrorKindEnum = {
   TransactionError: "TRANSACTION_ERROR",
 } as const;
 export type EvmTransactionErrorKindEnum =
-  typeof EvmTransactionErrorKindEnum[keyof typeof EvmTransactionErrorKindEnum];
+  (typeof EvmTransactionErrorKindEnum)[keyof typeof EvmTransactionErrorKindEnum];
 
 /**
  *
@@ -2072,7 +2072,7 @@ export const EvmTransactionRevertedErrorKindEnum = {
   TransactionReverted: "TRANSACTION_REVERTED",
 } as const;
 export type EvmTransactionRevertedErrorKindEnum =
-  typeof EvmTransactionRevertedErrorKindEnum[keyof typeof EvmTransactionRevertedErrorKindEnum];
+  (typeof EvmTransactionRevertedErrorKindEnum)[keyof typeof EvmTransactionRevertedErrorKindEnum];
 
 /**
  *
@@ -2132,7 +2132,7 @@ export const EvmUnknownErrorKindEnum = {
   UnknownError: "UNKNOWN_ERROR",
 } as const;
 export type EvmUnknownErrorKindEnum =
-  typeof EvmUnknownErrorKindEnum[keyof typeof EvmUnknownErrorKindEnum];
+  (typeof EvmUnknownErrorKindEnum)[keyof typeof EvmUnknownErrorKindEnum];
 
 /**
  *
@@ -2155,7 +2155,7 @@ export const InternalServerErrorErrorEnum = {
   InternalServerError: "Internal Server Error",
 } as const;
 export type InternalServerErrorErrorEnum =
-  typeof InternalServerErrorErrorEnum[keyof typeof InternalServerErrorErrorEnum];
+  (typeof InternalServerErrorErrorEnum)[keyof typeof InternalServerErrorErrorEnum];
 
 /**
  * Specify the desired language for the returned warning messages and human-readable simulation results. If unknown, defaults to English.
@@ -2261,7 +2261,7 @@ export const Languages = {
   ZhCn: "zh_CN",
   ZhTw: "zh_TW",
 } as const;
-export type Languages = typeof Languages[keyof typeof Languages];
+export type Languages = (typeof Languages)[keyof typeof Languages];
 
 /**
  *
@@ -2275,7 +2275,7 @@ export const MetaplexTokenStandard = {
   Unknown: "unknown",
 } as const;
 export type MetaplexTokenStandard =
-  typeof MetaplexTokenStandard[keyof typeof MetaplexTokenStandard];
+  (typeof MetaplexTokenStandard)[keyof typeof MetaplexTokenStandard];
 
 /**
  *
@@ -2358,7 +2358,7 @@ export const ScanDomain200ResponseInnerStatusEnum = {
   Unprocessable: "UNPROCESSABLE",
 } as const;
 export type ScanDomain200ResponseInnerStatusEnum =
-  typeof ScanDomain200ResponseInnerStatusEnum[keyof typeof ScanDomain200ResponseInnerStatusEnum];
+  (typeof ScanDomain200ResponseInnerStatusEnum)[keyof typeof ScanDomain200ResponseInnerStatusEnum];
 
 /**
  * @export
@@ -2404,7 +2404,7 @@ export const ScanDomain200ResponseInnerLabelsEnum = {
   CopyCatbrandNamedomain: "copy_cat=brand_name:domain",
 } as const;
 export type ScanDomain200ResponseInnerLabelsEnum =
-  typeof ScanDomain200ResponseInnerLabelsEnum[keyof typeof ScanDomain200ResponseInnerLabelsEnum];
+  (typeof ScanDomain200ResponseInnerLabelsEnum)[keyof typeof ScanDomain200ResponseInnerLabelsEnum];
 
 /**
  *
@@ -2492,7 +2492,7 @@ export const ScanMessageEvm200ResponseSimulationResultsErrorKindEnum = {
   UnsupportedMessage: "UNSUPPORTED_MESSAGE",
 } as const;
 export type ScanMessageEvm200ResponseSimulationResultsErrorKindEnum =
-  typeof ScanMessageEvm200ResponseSimulationResultsErrorKindEnum[keyof typeof ScanMessageEvm200ResponseSimulationResultsErrorKindEnum];
+  (typeof ScanMessageEvm200ResponseSimulationResultsErrorKindEnum)[keyof typeof ScanMessageEvm200ResponseSimulationResultsErrorKindEnum];
 
 /**
  *
@@ -2904,7 +2904,7 @@ export const ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValu
     Debit: "DEBIT",
   } as const;
 export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum =
-  typeof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum[keyof typeof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum];
+  (typeof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum)[keyof typeof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum];
 
 /**
  * @type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerRawInfo
@@ -3075,7 +3075,7 @@ export const SolanaProtocolTrustLevelEnum = {
   Native: "NATIVE",
 } as const;
 export type SolanaProtocolTrustLevelEnum =
-  typeof SolanaProtocolTrustLevelEnum[keyof typeof SolanaProtocolTrustLevelEnum];
+  (typeof SolanaProtocolTrustLevelEnum)[keyof typeof SolanaProtocolTrustLevelEnum];
 
 /**
  * Raw results of the simulation
@@ -3168,7 +3168,7 @@ export const SolanaSimulationProgramErrorKindEnum = {
   ProgramError: "PROGRAM_ERROR",
 } as const;
 export type SolanaSimulationProgramErrorKindEnum =
-  typeof SolanaSimulationProgramErrorKindEnum[keyof typeof SolanaSimulationProgramErrorKindEnum];
+  (typeof SolanaSimulationProgramErrorKindEnum)[keyof typeof SolanaSimulationProgramErrorKindEnum];
 
 /**
  *
@@ -3197,7 +3197,7 @@ export const SolanaSimulationTransactionErrorKindEnum = {
   TransactionError: "TRANSACTION_ERROR",
 } as const;
 export type SolanaSimulationTransactionErrorKindEnum =
-  typeof SolanaSimulationTransactionErrorKindEnum[keyof typeof SolanaSimulationTransactionErrorKindEnum];
+  (typeof SolanaSimulationTransactionErrorKindEnum)[keyof typeof SolanaSimulationTransactionErrorKindEnum];
 
 /**
  * SPL token transfer
@@ -3226,7 +3226,7 @@ export const SolanaStageChangeSplTransferKindEnum = {
   SplTransfer: "SPL_TRANSFER",
 } as const;
 export type SolanaStageChangeSplTransferKindEnum =
-  typeof SolanaStageChangeSplTransferKindEnum[keyof typeof SolanaStageChangeSplTransferKindEnum];
+  (typeof SolanaStageChangeSplTransferKindEnum)[keyof typeof SolanaStageChangeSplTransferKindEnum];
 
 /**
  *
@@ -3274,7 +3274,7 @@ export const SolanaStateChangeSolStakeAuthorityChangeKindEnum = {
   SolStakeAuthorityChange: "SOL_STAKE_AUTHORITY_CHANGE",
 } as const;
 export type SolanaStateChangeSolStakeAuthorityChangeKindEnum =
-  typeof SolanaStateChangeSolStakeAuthorityChangeKindEnum[keyof typeof SolanaStateChangeSolStakeAuthorityChangeKindEnum];
+  (typeof SolanaStateChangeSolStakeAuthorityChangeKindEnum)[keyof typeof SolanaStateChangeSolStakeAuthorityChangeKindEnum];
 
 /**
  *
@@ -3378,7 +3378,7 @@ export const SolanaStateChangeSolTransferKindEnum = {
   SolTransfer: "SOL_TRANSFER",
 } as const;
 export type SolanaStateChangeSolTransferKindEnum =
-  typeof SolanaStateChangeSolTransferKindEnum[keyof typeof SolanaStateChangeSolTransferKindEnum];
+  (typeof SolanaStateChangeSolTransferKindEnum)[keyof typeof SolanaStateChangeSolTransferKindEnum];
 
 /**
  * Machine-parseable data relevant to this state change kind
@@ -3426,7 +3426,7 @@ export const SolanaStateChangeSplApprovalKindEnum = {
   SplApproval: "SPL_APPROVAL",
 } as const;
 export type SolanaStateChangeSplApprovalKindEnum =
-  typeof SolanaStateChangeSplApprovalKindEnum[keyof typeof SolanaStateChangeSplApprovalKindEnum];
+  (typeof SolanaStateChangeSplApprovalKindEnum)[keyof typeof SolanaStateChangeSplApprovalKindEnum];
 
 /**
  *
@@ -3480,7 +3480,7 @@ export const SolanaStateChangeUserAccountOwnerChangeKindEnum = {
   UserAccountOwnerChange: "USER_ACCOUNT_OWNER_CHANGE",
 } as const;
 export type SolanaStateChangeUserAccountOwnerChangeKindEnum =
-  typeof SolanaStateChangeUserAccountOwnerChangeKindEnum[keyof typeof SolanaStateChangeUserAccountOwnerChangeKindEnum];
+  (typeof SolanaStateChangeUserAccountOwnerChangeKindEnum)[keyof typeof SolanaStateChangeUserAccountOwnerChangeKindEnum];
 
 /**
  *
@@ -3561,7 +3561,11 @@ export interface SplAsset {
    * @memberof SplAsset
    */
   price: AssetPrice | null;
-  // HACK(Alex): wait for update of the spec
+  /**
+   *  HACK(metreniuk): updated manually until it's not fixed in schema
+   * @type {string}
+   * @memberof SplAsset
+   */
   imageUrl: string | null;
 }
 /**
@@ -3611,7 +3615,7 @@ export const WarningInnerSeverityEnum = {
   Warning: "WARNING",
 } as const;
 export type WarningInnerSeverityEnum =
-  typeof WarningInnerSeverityEnum[keyof typeof WarningInnerSeverityEnum];
+  (typeof WarningInnerSeverityEnum)[keyof typeof WarningInnerSeverityEnum];
 
 /**
  * @export
@@ -3642,4 +3646,4 @@ export const WarningInnerKindEnum = {
   CopyCatDomain: "COPY_CAT_DOMAIN",
 } as const;
 export type WarningInnerKindEnum =
-  typeof WarningInnerKindEnum[keyof typeof WarningInnerKindEnum];
+  (typeof WarningInnerKindEnum)[keyof typeof WarningInnerKindEnum];

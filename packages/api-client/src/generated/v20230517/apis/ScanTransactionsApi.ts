@@ -269,7 +269,7 @@ export const ScanTransactionsEvmOperationChainFamilyEnum = {
   Optimism: "optimism",
 } as const;
 export type ScanTransactionsEvmOperationChainFamilyEnum =
-  typeof ScanTransactionsEvmOperationChainFamilyEnum[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];
+  (typeof ScanTransactionsEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];
 /**
  * @export
  */
@@ -279,7 +279,7 @@ export const ScanTransactionsEvmOperationChainNetworkEnum = {
   Goerli: "goerli",
 } as const;
 export type ScanTransactionsEvmOperationChainNetworkEnum =
-  typeof ScanTransactionsEvmOperationChainNetworkEnum[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
+  (typeof ScanTransactionsEvmOperationChainNetworkEnum)[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
 /**
  * @export
  */
@@ -289,7 +289,7 @@ export const ScanTransactionsSolanaOperationChainNetworkEnum = {
   Devnet: "devnet",
 } as const;
 export type ScanTransactionsSolanaOperationChainNetworkEnum =
-  typeof ScanTransactionsSolanaOperationChainNetworkEnum[keyof typeof ScanTransactionsSolanaOperationChainNetworkEnum];
+  (typeof ScanTransactionsSolanaOperationChainNetworkEnum)[keyof typeof ScanTransactionsSolanaOperationChainNetworkEnum];
 /**
  * @export
  */
@@ -298,4 +298,4 @@ export const ScanTransactionsSolanaOperationSimulateExpiredEnum = {
   False: "false",
 } as const;
 export type ScanTransactionsSolanaOperationSimulateExpiredEnum =
-  typeof ScanTransactionsSolanaOperationSimulateExpiredEnum[keyof typeof ScanTransactionsSolanaOperationSimulateExpiredEnum];
+  (typeof ScanTransactionsSolanaOperationSimulateExpiredEnum)[keyof typeof ScanTransactionsSolanaOperationSimulateExpiredEnum];
