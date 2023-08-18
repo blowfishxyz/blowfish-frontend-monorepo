@@ -9,6 +9,7 @@ import { ArrowIcon } from "../icons";
 
 const SyledArrowIcon = styled(ArrowIcon)`
   margin-left: 4px;
+  flex-shrink: 0;
 `;
 
 const UnstyledAComponent = React.forwardRef<
@@ -35,6 +36,9 @@ const AComponent = React.forwardRef<
 
 export const A = styled(AComponent)`
   color: ${(props) => props.theme.colors.foregroundPrimary};
+  display: flex;
+  align-items: center;
+  min-width: 0;
 `;
 
 export interface LinkWithArrowProps
@@ -51,19 +55,16 @@ export const LinkWithArrow = React.forwardRef<
   HTMLAnchorElement,
   LinkWithArrowProps
 >(({ className, style, href, children, hideArrow = false }, ref) => (
-  <>
-    <A
-      className={className}
-      style={style}
-      href={href}
-      target="_blank"
-      rel="noopener"
-      ref={ref}
-    >
-      {children}
-    </A>
-    {!hideArrow && <SyledArrowIcon />}
-  </>
+  <A
+    className={className}
+    style={style}
+    href={href}
+    target="_blank"
+    rel="noopener"
+    ref={ref}
+  >
+    {children} {!hideArrow && <SyledArrowIcon />}
+  </A>
 ));
 
 LinkWithArrow.displayName = "LinkWithArrow";

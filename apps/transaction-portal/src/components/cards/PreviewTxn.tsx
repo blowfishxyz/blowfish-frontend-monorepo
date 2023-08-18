@@ -94,20 +94,6 @@ const DecodedCallDataText = styled(Text).attrs({ size: "sm" })`
   display: inline-block;
 `;
 
-const ProtocolName = styled(CardText).attrs({ size: "xs", marginLeft: 4 })`
-  display: flex;
-  align-items: center;
-`;
-
-const ProtocolLink = styled(LinkWithArrow)`
-  display: inline-block;
-  max-width: 140px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-transform: capitalize;
-`;
-
 interface PreviewCardProps {
   txnData: TxnSimulationDataType;
   title: string;
@@ -150,15 +136,15 @@ const PreviewCard: FC<PreviewCardProps> = ({
           <StyledColumn gap="sm" flex={1}>
             <SectionHeading>Website</SectionHeading>
             <Row gap="xs" alignItems="center">
-              <CardText>
-                <LinkWithArrow href={origin || ""}>{website}</LinkWithArrow>
-              </CardText>
+              <LinkWithArrow href={origin || ""}>
+                <Text truncate>{website}</Text>
+              </LinkWithArrow>
             </Row>
           </StyledColumn>
           {txnData.protocol && (
             <>
               <Divider orientation="vertical" $margin="0 30px" />
-              <StyledColumn gap="md" flex={1}>
+              <StyledColumn gap="sm" flex={1}>
                 <SectionHeading>Protocol</SectionHeading>
                 <Tooltip>
                   <TooltipTrigger>
@@ -167,11 +153,9 @@ const PreviewCard: FC<PreviewCardProps> = ({
                         txnData.protocol.trustLevel === "NATIVE") && (
                         <Icon variant="verified" size={20} />
                       )}
-                      <ProtocolName>
-                        <ProtocolLink href={txnData.protocol.websiteUrl || ""}>
-                          {txnData.protocol.name}
-                        </ProtocolLink>
-                      </ProtocolName>
+                      <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
+                        <Text truncate>{txnData.protocol.name}</Text>
+                      </LinkWithArrow>
                     </Row>
                     <PreviewTokenTooltipContent showArrow={false}>
                       <PreviewProtocol
