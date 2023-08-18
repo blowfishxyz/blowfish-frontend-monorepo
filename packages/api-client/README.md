@@ -4,7 +4,9 @@
 
 ## API Documentation
 
-See https://docs.blowfish.xyz
+See [https://docs.blowfish.xyz](https://docs.blowfish.xyz/v2023-06-05)
+
+API version: **v2023-06-05**
 
 ## EVM Message and Transactions Scanning
 
@@ -13,7 +15,7 @@ import { createEvmClient } from "@blowfishxyz/api-client";
 
 const client = createEvmClient({
     basePath: API_BASE_URL,
-    // Optional: Use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+    // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
     apiKey: API_KEY,
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
@@ -71,7 +73,7 @@ import { createSolanaClient } from "@blowfishxyz/api-client";
 
 const client = createSolanaClient({
   basePath: API_BASE_URL,
-  // Optional: Use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+  // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
   apiKey: API_KEY,
   chainNetwork: "mainnet",
 });
