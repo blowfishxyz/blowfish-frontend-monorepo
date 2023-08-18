@@ -13,6 +13,8 @@ import {
   isPositiveStateChange,
   isApprovalForAllStateChange,
   chainToBlockExplorerUrl,
+  hasCounterparty,
+  shortenHex,
 } from "~/simulation-result/evm/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
 import {
@@ -24,6 +26,7 @@ import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { device } from "~/utils/breakpoints";
 import { Text } from "~/common/text";
 import { Column, Row } from "~/common/layout";
+import { Icon } from "~/common/icon";
 
 const TxnSimulationWrapper = styled(Row)`
   margin-bottom: 20px;
@@ -71,6 +74,10 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
     chainFamily,
     chainNetwork,
   });
+  const counterpartyLink = generateCounterpartyBlockExplorerUrl(rawInfo, {
+    chainFamily,
+    chainNetwork,
+  });
 
   return (
     <TxnSimulationWrapper
@@ -100,7 +107,11 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
             <TxnSimulationText weight="normal">
               {stateChange.humanReadableDiff}
             </TxnSimulationText>
-            <TokenFooter rawInfo={stateChange.rawInfo} />
+            <TokenFooter
+              rawInfo={stateChange.rawInfo}
+              counterpartyLink={counterpartyLink}
+              isPositiveEffect={isPositiveStateChange(rawInfo)}
+            />
           </Column>
         </TxnSimulationImageMsgWrapper>
       </LinkWrapper>
@@ -191,7 +202,9 @@ const TokenTooltipContent: React.FC<{
 
 const TokenFooter: React.FC<{
   rawInfo: EvmExpectedStateChange["rawInfo"];
-}> = ({ rawInfo }) => {
+  counterpartyLink: string | undefined;
+  isPositiveEffect: boolean;
+}> = ({ rawInfo, counterpartyLink, isPositiveEffect }) => {
   if (isCurrencyStateChange(rawInfo)) {
     return (
       <Row gap="md">
@@ -227,6 +240,23 @@ const TokenFooter: React.FC<{
           <Text size="sm" design="secondary">
             Floor price: <AssetPrice totalValue={price} />
           </Text>
+        ) : null}
+        {hasCounterparty(rawInfo) && rawInfo.data.counterparty ? (
+          <LinkWrapper
+            href={counterpartyLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Row gap="xs" alignItems="center">
+              <Text size="sm" design="secondary">
+                {isPositiveEffect ? "From" : "To"}:
+                <Text size="sm" design="primary">
+                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 3)}`}
+                </Text>
+              </Text>
+              <Icon variant="arrow" size={10} />
+            </Row>
+          </LinkWrapper>
         ) : null}
       </Row>
     );
@@ -268,4 +298,28 @@ function useAssetLinkFromRawInfo(
       nftTokenId: rawInfo.data.tokenId,
     });
   }
+}
+
+function generateCounterpartyBlockExplorerUrl(
+  rawInfo: EvmExpectedStateChange["rawInfo"],
+  {
+    chainFamily,
+    chainNetwork,
+  }: {
+    chainFamily: EvmChainFamily | undefined;
+    chainNetwork: EvmChainNetwork | undefined;
+  }
+): string | undefined {
+  if (!chainFamily || !chainNetwork) {
+    return undefined;
+  }
+
+  if (hasCounterparty(rawInfo) && rawInfo.data.counterparty) {
+    return chainToBlockExplorerUrl({
+      chainFamily,
+      chainNetwork,
+      address: rawInfo.data.counterparty.address,
+    });
+  }
+  return undefined;
 }
