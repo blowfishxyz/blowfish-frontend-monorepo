@@ -132,16 +132,7 @@ const ResultsView: React.FC<{
 
     if (error) {
       if (error.kind === "SIMULATION_FAILED") {
-        return (
-          <TransactionRevertedModal
-            // HACK(Alex): Remove after API version update
-            error={
-              error.humanReadableError ||
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              (error as any).parsedErrorMessage
-            }
-          />
-        );
+        return <TransactionRevertedModal error={error.humanReadableError} />;
       }
 
       return (

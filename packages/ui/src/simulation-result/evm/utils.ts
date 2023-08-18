@@ -3,7 +3,6 @@ import {
   EvmChainNetwork,
   EvmCurrencyStateChange,
   EvmExpectedStateChange,
-  EvmStateChangeAnyNftFromCollectionTransfer,
   EvmStateChangeErc1155ApprovalForAll,
   EvmStateChangeErc1155Transfer,
   EvmStateChangeErc20Approval,
@@ -76,8 +75,7 @@ const isApprovalStateChange = (
 
 export const hasCounterparty = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is
-  | EvmStateChangeErc721Transfer => {
+): rawInfo is EvmStateChangeErc721Transfer => {
   return rawInfo.kind === "ERC721_TRANSFER";
 };
 
@@ -150,10 +148,6 @@ export const getAssetPricePerToken = (
 ): number | null => {
   if ("asset" in rawInfo.data) {
     return rawInfo.data.asset.price?.dollarValuePerToken || null;
-  }
-
-  if ("assetPrice" in rawInfo.data) {
-    return rawInfo.data.assetPrice?.dollarValuePerToken || null;
   }
 
   return null;

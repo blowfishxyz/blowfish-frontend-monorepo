@@ -1,3 +1,4 @@
+import type { ScanMessageEvm200Response as ScanMessageEvm200ResponseLegacy } from "../../generated/v20230517/models";
 import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
@@ -18,6 +19,7 @@ import {
   DownloadBlocklistRequest,
   SolanaChainNetwork,
 } from "./types";
+import { mapMessageResponse } from "./utils";
 
 class BaseApiClient {
   protected apiVersion = "2023-06-05";
@@ -45,7 +47,10 @@ class BaseApiClient {
     blocklist: DownloadBlocklistApi;
   };
 
-  constructor(private readonly basePath: string, apiKey?: string) {
+  constructor(
+    private readonly basePath: string,
+    apiKey?: string
+  ) {
     this.config = new Configuration(this.getConfig(apiKey));
     this.apis = {
       message: new ScanMessageApi(this.config),
@@ -71,19 +76,21 @@ export class BlowfishEvmApiClient extends BaseApiClient {
     userAccount: string,
     metadata: RequestMetadata
   ) {
-    return this.apis.message.scanMessageEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
-      scanMessageEvmRequest: {
-        message: {
-          kind: "SIGN_MESSAGE",
-          rawMessage,
+    return this.apis.message
+      .scanMessageEvm({
+        chainFamily: this.chainFamily,
+        chainNetwork: this.chainNetwork,
+        scanMessageEvmRequest: {
+          message: {
+            kind: "SIGN_MESSAGE",
+            rawMessage,
+          },
+          userAccount,
+          metadata,
         },
-        userAccount,
-        metadata,
-      },
-      xApiVersion: this.apiVersion,
-    });
+        xApiVersion: this.apiVersion,
+      })
+      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
   }
 
   scanSignTypedData(
@@ -91,19 +98,21 @@ export class BlowfishEvmApiClient extends BaseApiClient {
     userAccount: string,
     metadata: RequestMetadata
   ) {
-    return this.apis.message.scanMessageEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
-      scanMessageEvmRequest: {
-        message: {
-          kind: "SIGN_TYPED_DATA",
-          data: typedData,
+    return this.apis.message
+      .scanMessageEvm({
+        chainFamily: this.chainFamily,
+        chainNetwork: this.chainNetwork,
+        scanMessageEvmRequest: {
+          message: {
+            kind: "SIGN_TYPED_DATA",
+            data: typedData,
+          },
+          userAccount,
+          metadata,
         },
-        userAccount,
-        metadata,
-      },
-      xApiVersion: this.apiVersion,
-    });
+        xApiVersion: this.apiVersion,
+      })
+      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
   }
 
   scanTransactions(
