@@ -25,7 +25,6 @@ import type {
 } from "../models/index";
 
 export interface ScanTransactionsEvmOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
   chainFamily: ScanTransactionsEvmOperationChainFamilyEnum;
   chainNetwork: ScanTransactionsEvmOperationChainNetworkEnum;
@@ -35,8 +34,8 @@ export interface ScanTransactionsEvmOperationRequest {
 }
 
 export interface ScanTransactionsSolanaOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
+  chainNetwork: ScanTransactionsSolanaOperationChainNetworkEnum;
   scanTransactionsSolanaRequest: ScanTransactionsSolanaRequest;
   language?: Languages;
   simulationTimeoutMs?: number;
@@ -56,16 +55,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     requestParameters: ScanTransactionsEvmOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionsEvm200Response>> {
-    if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsEvm."
-      );
-    }
-
     if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
@@ -105,13 +94,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
 
     if (
       requestParameters.xApiVersion !== undefined &&
@@ -177,22 +159,22 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionsSolana200Response>> {
     if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionsSolana."
-      );
-    }
-
-    if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
     ) {
       throw new runtime.RequiredError(
         "xApiVersion",
         "Required parameter requestParameters.xApiVersion was null or undefined when calling scanTransactionsSolana."
+      );
+    }
+
+    if (
+      requestParameters.chainNetwork === null ||
+      requestParameters.chainNetwork === undefined
+    ) {
+      throw new runtime.RequiredError(
+        "chainNetwork",
+        "Required parameter requestParameters.chainNetwork was null or undefined when calling scanTransactionsSolana."
       );
     }
 
@@ -226,13 +208,6 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
     headerParameters["Content-Type"] = "application/json";
 
     if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
-
-    if (
       requestParameters.xApiVersion !== undefined &&
       requestParameters.xApiVersion !== null
     ) {
@@ -252,7 +227,10 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
 
     const response = await this.request(
       {
-        path: `/solana/v0/mainnet/scan/transactions`,
+        path: `/solana/v0/{chain-network}/scan/transactions`.replace(
+          `{${"chain-network"}}`,
+          encodeURIComponent(String(requestParameters.chainNetwork))
+        ),
         method: "POST",
         headers: headerParameters,
         query: queryParameters,
@@ -302,6 +280,16 @@ export const ScanTransactionsEvmOperationChainNetworkEnum = {
 } as const;
 export type ScanTransactionsEvmOperationChainNetworkEnum =
   (typeof ScanTransactionsEvmOperationChainNetworkEnum)[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
+/**
+ * @export
+ */
+export const ScanTransactionsSolanaOperationChainNetworkEnum = {
+  Mainnet: "mainnet",
+  Testnet: "testnet",
+  Devnet: "devnet",
+} as const;
+export type ScanTransactionsSolanaOperationChainNetworkEnum =
+  (typeof ScanTransactionsSolanaOperationChainNetworkEnum)[keyof typeof ScanTransactionsSolanaOperationChainNetworkEnum];
 /**
  * @export
  */

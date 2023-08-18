@@ -3,15 +3,9 @@
 ## How to generate the client
 
 1. Make sure you have a Java Runtime installed (`brew install openjdk`)
-1. Run `pnpm schema:convert`
-1. Run `pnpm generate`
-1. Due to a bug inside `openapitools` run `pnpm typecheck` and fix the errors
-
-## How to update the client
-
-1. Add the new schema to the `original-schemas` directory
-1. Remove the oldest schema from `original-schemas` directory (it is important that api-client stays up-to-date)
-1. Run `pnpm schema:convert`
-1. Run `pnpm generate`
-1. Due to a bug inside `openapitools` run `pnpm typecheck` and fix the errors
-1. If there are some breaking changes make sure to deprecate old functionality, but maintain full backwards compatibility
+1. Run `pnpm generate`. It consists of 5 steps
+   - `pnpm schema:download` – download all the schemas from `https://api.blowfish.xyz/openapi/`.
+   - `pnpm schema:convert` – adapt the schemas to a generator-friendly format.
+   - `pnpm schema:generate` – generate the API clients for last 2 versions.
+   - `pnpm clients:fix` – fix any **longterm** issues with the generated clients.
+   - `pnpm clients:format` – format the generated clients using prettier.

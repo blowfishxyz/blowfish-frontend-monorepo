@@ -16,7 +16,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  StateChangePreview,
+  StateChangePreviewEvm,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -25,13 +25,12 @@ import { CardWrapper, CardContent, Divider, CardText } from "./common";
 import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
-  ChainFamily,
-  ChainNetwork,
   EvmProtocol,
   EvmDecodedCalldata,
   EvmTransactionsScanResult,
   EvmMessageScanResult,
 } from "@blowfishxyz/api-client";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
 import { useChainMetadata } from "~hooks/useChainMetadata";
@@ -301,7 +300,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
     >
       {message ? <SignaturePreview message={message} /> : null}
       {
-        <StateChangePreview
+        <StateChangePreviewEvm
           scanResult={scanResult}
           chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
           chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}

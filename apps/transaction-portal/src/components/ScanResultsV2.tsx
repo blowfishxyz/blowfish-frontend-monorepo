@@ -6,12 +6,11 @@ import {
 } from "@blowfishxyz/ui";
 import { PreviewTxn } from "~components/cards/PreviewTxn";
 import {
-  ChainFamily,
-  ChainNetwork,
   EvmMessageScanResult,
   EvmTransactionsScanResult,
   WarningInnerKindEnum,
 } from "@blowfishxyz/api-client";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import {
   DappRequest,
   Message,

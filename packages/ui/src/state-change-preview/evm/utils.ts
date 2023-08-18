@@ -32,13 +32,11 @@ export const getResultsFromScanResponse = (
     | ScanTransactionsEvm200ResponseSimulationResults
     | ScanMessageEvm200ResponseSimulationResults
     | null
-):
-  | {
-      expectedStateChanges: EvmExpectedStateChange[] | undefined;
-      decodedCalldata?: EvmDecodedCalldata | null;
-      decodedLogs?: EvmDecodedLog[];
-    }
-  | null => {
+): {
+  expectedStateChanges: EvmExpectedStateChange[] | undefined;
+  decodedCalldata?: EvmDecodedCalldata | null;
+  decodedLogs?: EvmDecodedLog[];
+} | null => {
   if (!simulationResults) return null;
 
   if ("aggregated" in simulationResults) {
@@ -46,8 +44,8 @@ export const getResultsFromScanResponse = (
     const { userAccount } = aggregated;
     return {
       expectedStateChanges: aggregated.expectedStateChanges[userAccount],
-      decodedCalldata: simulationResults.perTransaction[0].decodedCalldata,
-      decodedLogs: simulationResults.perTransaction[0].decodedLogs,
+      decodedCalldata: simulationResults.perTransaction[0]?.decodedCalldata,
+      decodedLogs: simulationResults.perTransaction[0]?.decodedLogs,
     };
   } else {
     return {

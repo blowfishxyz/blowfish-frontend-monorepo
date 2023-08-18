@@ -5,12 +5,12 @@ import {
 import {
   ScanMessageEvm200Response,
   EvmStateChangeErc721TransferData,
-  EvmStateChangeAnyNftFromCollectionTransferData,
+  EvmMessageStateChangeAnyNftFromCollectionTransferData,
   ScanMessageEvm200ResponseSimulationResults,
   EvmStateChangeErc1155TransferData,
-  EvmStateChangeErc20PermitData,
+  EvmMessageStateChangeErc20PermitData,
   EvmStateChangeErc20TransferData,
-  EvmStateChangeNativeAssetTransferData,
+  EvmMessageStateChangeNativeAssetTransferData,
 } from "./types";
 
 export function mapMessageResponse(
@@ -26,6 +26,7 @@ export function mapMessageResponse(
         amount: stateChange.rawInfo.data.amount,
         metadata: stateChange.rawInfo.data.metadata,
         tokenId: stateChange.rawInfo.data.tokenId,
+        counterparty: stateChange.rawInfo.data.counterparty!,
         asset: {
           address: stateChange.rawInfo.data.contract.address,
           symbol: stateChange.rawInfo.data.symbol,
@@ -42,7 +43,7 @@ export function mapMessageResponse(
       };
     }
     if (stateChange.rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER") {
-      const data: EvmStateChangeAnyNftFromCollectionTransferData = {
+      const data: EvmMessageStateChangeAnyNftFromCollectionTransferData = {
         amount: stateChange.rawInfo.data.amount,
         asset: {
           address: stateChange.rawInfo.data.contract.address,
@@ -81,7 +82,8 @@ export function mapMessageResponse(
       };
     }
     if (stateChange.rawInfo.kind === "ERC20_PERMIT") {
-      const data: EvmStateChangeErc20PermitData = stateChange.rawInfo.data;
+      const data: EvmMessageStateChangeErc20PermitData =
+        stateChange.rawInfo.data;
       return {
         ...stateChange,
         rawInfo: {
@@ -101,7 +103,7 @@ export function mapMessageResponse(
       };
     }
     if (stateChange.rawInfo.kind === "NATIVE_ASSET_TRANSFER") {
-      const data: EvmStateChangeNativeAssetTransferData =
+      const data: EvmMessageStateChangeNativeAssetTransferData =
         stateChange.rawInfo.data;
       return {
         ...stateChange,

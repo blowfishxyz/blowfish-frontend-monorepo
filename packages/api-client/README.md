@@ -1,45 +1,54 @@
-# Blowfish API Client
+![](https://framerusercontent.com/images/LMkkyrT6aZKMqZNobSZKDY8lnM.jpg)
+
+# `@blowfish/api-client` 🐡
+
+## API Documentation
+
+See [https://docs.blowfish.xyz](https://docs.blowfish.xyz/v2023-06-05)
+
+API version: **v2023-06-05**
+
+## EVM Message and Transactions Scanning
 
 ```ts
-import { BlowfishApiClient } from "@blowfishxyz/api-client";
+import { createEvmClient } from "@blowfishxyz/api-client";
 
-const client = const client = new BlowfishApiClient(
-    baseUrl,
-    apiKey,
-    chainFamily,
-    chainNetwork
+const client = createEvmClient({
+    basePath: API_BASE_URL,
+    // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+    apiKey: API_KEY,
+    chainFamily: "ethereum",
+    chainNetwork: "mainnet",
+});
+
+// Scan multiple transactions
+const transactionsScan = await client.scanTransactions(
+  [
+    {
+      data: "0x35935...",
+      from: "0x1ed8c3b56583497f4813ab38f1b4bf76a94496b6",
+      to: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+      value: "0x5af3107a4000",
+    },
+    {
+      data: "0x35935...",
+      from: "0x1ed8c3b56583497f4813ab38f1b4bf76a94496b6",
+      to: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+      value: "0x5af3107a4000",
+    },
+  ],
+  "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+  { origin: "https://app.uniswap.org" }
 );
 
-// scan multiple transactions
-const transactionsScan = await client.scanTransactionsEvm(
-    txObjects: [
-        {
-            data: "0x35935...",
-            from: "0x1ed8c3b56583497f4813ab38f1b4bf76a94496b6",
-            gas: "0x2c977",
-            to: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
-            value: "0x5af3107a4000",
-        },
-        {
-            data: "0x35935...",
-            from: "0x1ed8c3b56583497f4813ab38f1b4bf76a94496b6",
-            gas: "0x2c977",
-            to: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
-            value: "0x5af3107a4000",
-        },
-    ],
-    "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
-    { origin: "https://app.uniswap.org" },
-);
-
-// scan a raw message
-const messageScan = await client.scanMessageEvm(
+// Scan a raw message
+const messageScan = await client.scanMessage(
     "0x7761676d692e...",
     "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
     { origin: "https://app.uniswap.org" },
 );
 
-// scan typed data
+// Scan typed data
 const typedDataScan = await client.scanSignTypedData(
     {
         domain: { ... },
@@ -51,8 +60,43 @@ const typedDataScan = await client.scanSignTypedData(
     { origin: "https://app.uniswap.org" },
 );
 
-// scan domains
+// Scan domains
 const domainsScan = await client.scanDomains([
     "https://app.uniswap.org"
 ]);
 ```
+
+## Solana Transactions Scanning
+
+```ts
+import { createSolanaClient } from "@blowfishxyz/api-client";
+
+const client = createSolanaClient({
+  basePath: API_BASE_URL,
+  // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+  apiKey: API_KEY,
+  chainNetwork: "mainnet",
+});
+
+const transactionsScan = await client.scanTransactions(
+  ["AgAAA...", "AgAAA..."],
+  "5F64...",
+  {
+    origin: "app.uniswap.org",
+  }
+);
+```
+
+## Domains Scanning
+
+```tsx
+// Scan domains
+const domainsScan = await client.scanDomains([
+  "https://app.uniswap.org",
+  "https://opensea.io",
+]);
+```
+
+## Blocklist
+
+Checkout our Blocklist NPM package: https://www.npmjs.com/package/@blowfishxyz/blocklist

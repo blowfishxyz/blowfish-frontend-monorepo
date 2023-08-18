@@ -158,10 +158,10 @@ export const TooltipTrigger = forwardRef<
 });
 
 const StyledTooltip = styled.div`
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-  border-radius: 7px;
-  background: white;
+  border: 1px solid ${(props) => props.theme.colors.border};
+  box-shadow: 0 4px 24px ${(props) => props.theme.colors.border};
+  border-radius: 12px;
+  background: ${(props) => props.theme.colors.backgroundPrimary};
   padding: 8px 12px;
 `;
 

@@ -6,7 +6,7 @@ import {
   messageNoActionScanResult,
   messageWarnResultScanResult,
   transactionsBlockScanResult,
-  transactionNoActionScanResult,
+  transactionsNoActionScanResult,
   transactionsWarningScanResult,
 } from "@blowfishxyz/api-client/fixtures";
 
@@ -36,7 +36,7 @@ export default {
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
     request: exampleTransactionRequest,
-    scanResults: transactionNoActionScanResult,
+    scanResults: transactionsNoActionScanResult,
   },
 } as ComponentMeta<typeof PopupContainer>;
 

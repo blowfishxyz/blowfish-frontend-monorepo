@@ -36,7 +36,6 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
   const rawInfo = stateChange.rawInfo;
   let totalValue;
   let withInfoTooltip = false;
-  //TODO: refactor price once the API is transitioned away from assetPrice
   const pricePerToken =
     "asset" in rawInfo.data
       ? rawInfo.data.asset.price?.dollarValuePerToken

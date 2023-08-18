@@ -1,4 +1,4 @@
-import { BlowfishApiClient } from "@blowfishxyz/api-client";
+import { createEvmClient } from "@blowfishxyz/api-client";
 import type {
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
@@ -42,13 +42,12 @@ const fetcher = async (
   request: DappRequest,
   origin: string
 ): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {
-  const client = new BlowfishApiClient(
-    BLOWFISH_API_BASE_URL,
-    // NOTE: The api key is rewritten on the proxy
-    "",
+  // NOTE: The api key is rewritten on the proxy
+  const client = createEvmClient({
+    basePath: BLOWFISH_API_BASE_URL,
     chainFamily,
-    chainNetwork
-  );
+    chainNetwork,
+  });
 
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to
@@ -58,7 +57,7 @@ const fetcher = async (
       ? request.payload.to
       : request.userAccount;
     return client
-      .scanTransactionsEvm([request.payload], userAccount, {
+      .scanTransactions([request.payload], userAccount, {
         origin,
       })
       .then((response: ScanTransactionsEvm200Response) => {
@@ -89,7 +88,7 @@ const fetcher = async (
       }
     );
   } else if (isSignMessageRequest(request)) {
-    return client.scanMessageEvm(request.payload.message, request.userAccount, {
+    return client.scanMessage(request.payload.message, request.userAccount, {
       origin,
     });
   }

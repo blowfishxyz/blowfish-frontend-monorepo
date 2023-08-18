@@ -6,14 +6,14 @@ import {
   exampleEthSignScanResult,
 } from "@blowfishxyz/api-client/fixtures";
 
-import { StateChangePreview } from "~/state-change-preview";
+import { StateChangePreviewEvm } from "~/state-change-preview/evm";
 
-export const ApproveAllErc721: ComponentStory<typeof StateChangePreview> = (
+export const ApproveAllErc721: ComponentStory<typeof StateChangePreviewEvm> = (
   props
 ) => {
   return (
     <Wrapper>
-      <StateChangePreview {...props} />
+      <StateChangePreviewEvm {...props} />
     </Wrapper>
   );
 };
@@ -23,14 +23,14 @@ const Wrapper = styled.div`
 `;
 
 export default {
-  title: "StateChangePreview",
+  title: "StateChangePreviewEvm",
   component: ApproveAllErc721,
   args: {
     scanResult: transactionWarningScanResult,
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
   },
-} as ComponentMeta<typeof StateChangePreview>;
+} as ComponentMeta<typeof StateChangePreviewEvm>;
 
 export const BuyErc721 = ApproveAllErc721.bind({});
 BuyErc721.args = {

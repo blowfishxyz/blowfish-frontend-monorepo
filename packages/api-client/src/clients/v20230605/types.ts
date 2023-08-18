@@ -1,6 +1,7 @@
 import {
   ScanTransactionsEvmOperationChainFamilyEnum,
   ScanTransactionsEvmOperationChainNetworkEnum,
+  ScanTransactionsSolanaOperationChainNetworkEnum,
 } from "../../generated/v20230605";
 import type {
   ScanMessageEvm200Response,
@@ -16,29 +17,34 @@ import type {
   EvmStateChangeNativeAssetTransfer,
   EvmStateChangeErc20Approval,
   EvmStateChangeErc20Transfer,
-  EvmStateChangeErc20Permit,
+  EvmMessageStateChangeErc20Permit,
+  ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner,
+  ScanTransactionsSolana200Response,
 } from "../../generated/v20230605/models";
 
 // TODO: use a separate ref in the schema to generate a standalone enum
-export type ChainFamily = ScanTransactionsEvmOperationChainFamilyEnum;
-export type ChainNetwork = ScanTransactionsEvmOperationChainNetworkEnum;
+export type EvmChainFamily = ScanTransactionsEvmOperationChainFamilyEnum;
+export type EvmChainNetwork = ScanTransactionsEvmOperationChainNetworkEnum;
+export type SolanaChainFamily = "solana";
+export type SolanaChainNetwork =
+  ScanTransactionsSolanaOperationChainNetworkEnum;
 
 export type EvmMessageExpectedStateChange =
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner;
 
 export type EvmTransactionExpectedStateChange = EvmExpectedStateChangesInner;
 
-export type NftStateChange =
+export type EvmNftStateChange =
   | EvmStateChangeErc1155ApprovalForAll
   | EvmStateChangeErc1155Transfer
   | EvmStateChangeErc721Approval
   | EvmStateChangeErc721ApprovalForAll
   | EvmStateChangeErc721Transfer;
 
-export type CurrencyStateChange =
+export type EvmCurrencyStateChange =
   | EvmStateChangeNativeAssetTransfer
   | EvmStateChangeErc20Transfer
-  | EvmStateChangeErc20Permit
+  | EvmMessageStateChangeErc20Permit
   | EvmStateChangeErc20Approval;
 
 export type EvmExpectedStateChange =
@@ -48,6 +54,11 @@ export type EvmExpectedStateChange =
 export type EvmTransactionScanResult = ScanTransactionEvm200Response;
 export type EvmTransactionsScanResult = ScanTransactionsEvm200Response;
 export type EvmMessageScanResult = ScanMessageEvm200Response;
+
+export type SolanaTransactionsResult = ScanTransactionsSolana200Response;
+export type SolanaExpectedStateChange =
+  ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner;
+
 export interface SignTypedDataPayload {
   domain: {
     chainId?: string | number | bigint;

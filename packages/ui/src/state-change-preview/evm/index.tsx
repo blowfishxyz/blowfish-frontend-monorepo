@@ -1,27 +1,28 @@
 import {
-  ChainFamily,
-  ChainNetwork,
+  EvmChainFamily,
+  EvmChainNetwork,
   EvmMessageScanResult,
   EvmTransactionsScanResult,
 } from "@blowfishxyz/api-client";
 import { styled } from "styled-components";
 import { Column, Row } from "~/common/layout";
 import { Text } from "~/common/text";
-import { SimulationResult } from "~/simulation-result";
+import { SimulationResultEvm } from "~/simulation-result";
 import {
   getErrorFromScanResponse,
   getResultsFromScanResponse,
-} from "~/utils/state-change";
+} from "~/state-change-preview/evm/utils";
 
 type ScanResult = EvmTransactionsScanResult | EvmMessageScanResult;
-export type StateChangePreviewProps = {
+
+export type StateChangePreviewEvmProps = {
   scanResult: ScanResult;
-  chainFamily: ChainFamily;
-  chainNetwork: ChainNetwork;
-  sectionLabel?: string;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
+  sectionLabel?: string | null;
 };
 
-export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
+export const StateChangePreviewEvm: React.FC<StateChangePreviewEvmProps> = ({
   scanResult,
   chainFamily,
   chainNetwork,
@@ -35,14 +36,16 @@ export const StateChangePreview: React.FC<StateChangePreviewProps> = ({
 
   if (simulationResults && simulationResults.length > 0) {
     return (
-      <Column gap="lg">
-        <Row justifyContent="space-between">
-          <SectionHeading>{sectionLabel}</SectionHeading>
-        </Row>
+      <Column gap="md">
+        {sectionLabel && (
+          <Row justifyContent="space-between">
+            <SectionHeading>{sectionLabel}</SectionHeading>
+          </Row>
+        )}
         <TxnDataWrapper>
           {simulationResults.map((data, index) => {
             return (
-              <SimulationResult
+              <SimulationResultEvm
                 key={index}
                 stateChange={data}
                 chainFamily={chainFamily}
@@ -115,3 +118,5 @@ const TxnDataWrapper = styled.div`
     scrollbar-width: thin;
   }
 `;
+
+export { getErrorFromScanResponse, getResultsFromScanResponse };

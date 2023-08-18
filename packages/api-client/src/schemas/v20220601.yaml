@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: API reference
-  version: "2023-06-05"
+  version: "2022-06-01"
   description: "The Blowfish API reference specification"
   contact:
     name: Blowfish API Support
@@ -21,211 +21,9 @@ tags:
   - name: Scan message
     description: Endpoints related to scanning blockchain messages
   - name: Scan transaction
-    description: Endpoints related to scanning a blockchain transaction
-  - name: Scan transactions
-    description: Endpoints related to scanning multiple blockchain transactions
-security:
-  - ApiKeyAuth: []
+    description: Endpoints related to scanning blockchain transactions
 
 paths:
-  "/{chain-family}/v0/{chain-network}/scan/transactions":
-    post:
-      tags:
-        - Scan transactions
-      summary: EVM
-      operationId: scan-transactions-evm
-      description: |
-        Scan a list of EVM transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transactions will do.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and
-            simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-        - name: chain-family
-          in: path
-          description: The chain family to use
-          schema:
-            type: string
-            enum:
-              - ethereum
-              - polygon
-              - bnb
-              - arbitrum
-              - optimism
-          required: true
-        - name: chain-network
-          in: path
-          description: The chain network to use
-          schema:
-            type: string
-            enum:
-              - mainnet
-              - one
-              - goerli
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txObjects:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/EvmTxData"
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-              required:
-                - txObjects
-                - userAccount
-                - metadata
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - action
-                  - warnings
-                  - simulationResults
-                properties:
-                  action:
-                    $ref: "#/components/schemas/ActionEnum"
-                  warnings:
-                    $ref: "#/components/schemas/Warning"
-                  simulationResults:
-                    type: object
-                    required:
-                      - aggregated
-                      - perTransaction
-                    properties:
-                      aggregated:
-                        type: object
-                        required:
-                          - error
-                          - expectedStateChanges
-                          - userAccount
-                        properties:
-                          userAccount:
-                            $ref: "#/components/schemas/EvmUserAccount"
-                          expectedStateChanges:
-                            $ref: "#/components/schemas/EvmByAccountExpectedStateChanges"
-                          error:
-                            description: A error object which includes the parsed simulation error
-                              encountered (if any). Can be `null`.
-                            oneOf:
-                              - $ref: "#/components/schemas/EvmSimulationFailedError"
-                              - $ref: "#/components/schemas/EvmUnknownError"
-                            discriminator:
-                              propertyName: kind
-                              mapping:
-                                SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                                UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                            nullable: true
-                      perTransaction:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - error
-                            - gas
-                            - protocol
-                            - logs
-                            - decodedLogs
-                            - decodedCalldata
-                          properties:
-                            error:
-                              description: A error object which includes the parsed simulation error
-                                encountered (if any). Can be `null`.
-                              oneOf:
-                                - $ref: "#/components/schemas/EvmTransactionRevertedError"
-                                - $ref: "#/components/schemas/EvmTransactionError"
-                                - $ref: "#/components/schemas/EvmSimulationFailedError"
-                                - $ref: "#/components/schemas/EvmUnknownError"
-                              discriminator:
-                                propertyName: kind
-                                mapping:
-                                  TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
-                                  TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-                                  SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                                  UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                              nullable: true
-                            gas:
-                              type: object
-                              description: An object that contains nullable fields with information about the
-                                estimated gas consumption of the simulated
-                                transaction
-                              required:
-                                - gasLimit
-                              properties:
-                                gasLimit:
-                                  type: string
-                                  example: "46220"
-                                  description: A field that if the simulation was successful contains the
-                                    estimated upper limit of gas usage for this
-                                    transaction. The gasLimit should be viewed
-                                    as an upper bound of how much gas the
-                                    transaction can use, not as an accurate
-                                    estimate how much it will realistically
-                                    consume when submitted on-chain. Can be
-                                    `null`.
-                                  nullable: true
-                            protocol:
-                              $ref: "#/components/schemas/EvmProtocol"
-                            logs:
-                              $ref: "#/components/schemas/EvmLogs"
-                            decodedLogs:
-                              $ref: "#/components/schemas/EvmDecodedLogs"
-                            decodedCalldata:
-                              $ref: "#/components/schemas/EvmDecodedCalldata"
-
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
   "/{chain-family}/v0/{chain-network}/scan/transaction":
     post:
       tags:
@@ -298,7 +96,27 @@ paths:
               type: object
               properties:
                 txObject:
-                  $ref: "#/components/schemas/EvmTxData"
+                  type: object
+                  properties:
+                    from:
+                      type: string
+                      description: Hex-representation address of transaction signer
+                      example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                    to:
+                      type: string
+                      description: Hex-representation address of transaction recipient
+                      example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                    data:
+                      type: string
+                      description: Hex-representation of ABI encoded call data
+                      example: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4\
+                        b3b3bffffffffffffffffffffffffffffffffffffffffffffffffff\
+                        ffffffffffffff"
+                    value:
+                      type: string
+                      description: String representation of Ether/Matic (in Wei) to send with the
+                        transaction
+                      example: "0"
                 metadata:
                   $ref: "#/components/schemas/RequestMetadata"
                 userAccount:
@@ -329,32 +147,69 @@ paths:
                       - expectedStateChanges
                       - error
                       - gas
-                      - protocol
                     properties:
                       expectedStateChanges:
-                        $ref: "#/components/schemas/EvmExpectedStateChanges"
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - humanReadableDiff
+                            - rawInfo
+                          properties:
+                            humanReadableDiff:
+                              type: string
+                              example: Send 10000 USDT
+                              description: Computed explanation of the state change that can be directly
+                                presented to the end-user. While the API is
+                                still in development, we suggest integrators
+                                expose this in their signing UI if they
+                                encounter a `rawInfo.kind` they don't recognize.
+                            rawInfo:
+                              description: A machine-parsable state change object describing the state change.
+                              oneOf:
+                                - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc20Approval"
+                                - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
+                                - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+                                - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+                                - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
+                              discriminator:
+                                propertyName: kind
+                                mapping:
+                                  ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
+                                  ERC20_APPROVAL: "#/components/schemas/EvmStateChangeErc20Approval"
+                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+                                  ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
+                                  ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
+                                  ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForA\
+                                    ll"
+                                  ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                  ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalFo\
+                                    rAll"
+
                       error:
-                        description: A error object which includes the parsed simulation error
+                        description: An error object which includes the parsed simulation error
                           encountered (if any). Can be `null`.
                         oneOf:
-                          - $ref: "#/components/schemas/EvmTransactionRevertedError"
-                          - $ref: "#/components/schemas/EvmTransactionError"
+                          - $ref: "#/components/schemas/EvmInvalidTransactionError"
                           - $ref: "#/components/schemas/EvmSimulationFailedError"
                           - $ref: "#/components/schemas/EvmUnknownError"
                         discriminator:
                           propertyName: kind
                           mapping:
-                            TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
-                            TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
+                            INVALID_TRANSACTION: "#/components/schemas/EvmInvalidTransactionError"
                             SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
                             UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
                         nullable: true
                       gas:
                         type: object
-                        description: An object that contains nullable fields with information about the
-                          estimated gas consumption of the simulated transaction
                         required:
                           - gasLimit
+                        description: An object that contains nullable fields with information about the
+                          estimated gas consumption of the simulated transaction
                         properties:
                           gasLimit:
                             type: string
@@ -367,8 +222,6 @@ paths:
                               realistically consume when submitted on-chain. Can
                               be `null`.
                             nullable: true
-                      protocol:
-                        $ref: "#/components/schemas/EvmProtocol"
 
         "400":
           description: Bad request
@@ -405,6 +258,7 @@ paths:
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
+        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
         Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
@@ -492,12 +346,10 @@ paths:
                     type: object
                     description: |
                       Can be `null`. Message simulation requires in-depth understanding of the contract verifying the message and is not a generalizable solution that works for any message. If we do not support simulating a particular message the simulationResults property will be returned as null and the recommended action is to fallback to showing the raw message data to the user before they sign
-                      Currently supported messages: OpenSea Seaport orders & ERC20 Permit approvals
+                      Currently supported messages: OpenSea Seaport orders & ERC20 Permit approvals.
                     required:
                       - expectedStateChanges
                       - error
-                      - protocol
-                    nullable: true
                     properties:
                       expectedStateChanges:
                         type: array
@@ -518,26 +370,24 @@ paths:
                             rawInfo:
                               description: A machine-parsable state change object describing the state change.
                               oneOf:
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Permit"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc20Permit"
+                                - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
+                                - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
+                                - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
                               discriminator:
                                 propertyName: kind
                                 mapping:
-                                  ERC20_PERMIT: "#/components/schemas/EvmMessageStateChangeErc20Permit"
-                                  ERC20_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
-                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmMessageStateChangeNativeAssetTr\
-                                    ansfer"
-                                  ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
-                                  ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
-                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAn\
-                                    yNftFromCollectionTransfer"
+                                  ERC20_PERMIT: "#/components/schemas/EvmStateChangeErc20Permit"
+                                  ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
+                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
+                                  ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
+                                  ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFro\
+                                    mCollectionTransfer"
                       error:
-                        description: A nullable error object which includes the parsed simulation error
-                          encountered (if any)
+                        description: An error object which includes the parsed simulation error
+                          encountered (if any). Can be `null`.
                         nullable: true
                         type: object
                         required:
@@ -564,8 +414,6 @@ paths:
                             description: Human readable & translated string that can be directly exposed to
                               end-users
                             example: Unsupported order type, unable to simulate message
-                      protocol:
-                        $ref: "#/components/schemas/EvmProtocol"
         "400":
           description: Bad request
           content:
@@ -588,7 +436,7 @@ paths:
   "/solana/v0/{chain-network}/scan/transactions":
     post:
       tags:
-        - Scan transactions
+        - Scan transaction
       summary: Solana
       operationId: scan-transactions-solana
       description: |
@@ -608,24 +456,6 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
-        - name: simulationTimeoutMs
-          in: query
-          description: The desired timeout for the transaction simulation (defaults to 30
-            seconds)
-          schema:
-            type: number
-            example: 30000
-        - name: simulateExpired
-          in: query
-          description: Simulate the transactions even if they are already expired. Do not
-            use in production. This can be helpful in understanding historical
-            transactions.
-          schema:
-            type: string
-            example: "true"
-            enum:
-              - "true"
-              - "false"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -705,103 +535,228 @@ paths:
               schema:
                 type: object
                 required:
-                  - aggregated
-                  - perTransaction
+                  - action
+                  - warnings
+                  - simulationResults
+                  - status
                 properties:
-                  aggregated:
+                  action:
+                    $ref: "#/components/schemas/ActionEnum"
+                  warnings:
+                    $ref: "#/components/schemas/Warning"
+                  simulationResults:
                     type: object
                     required:
-                      - action
-                      - warnings
-                      - error
+                      - isRecentBlockhashExpired
                       - expectedStateChanges
+                      - error
+                      - raw
                     properties:
-                      action:
-                        $ref: "#/components/schemas/ActionEnum"
-                      warnings:
-                        $ref: "#/components/schemas/Warning"
-                      error:
-                        $ref: "#/components/schemas/BlowfishSimulationError"
+                      isRecentBlockhashExpired:
+                        type: boolean
+                        example: false
+                        description: Whether all of the transaction's recentBlockhashes have expired
                       expectedStateChanges:
+                        type: array
+                        description: An array of state changes one could expect if these transactions
+                          were submitted on-chain. Each state change represents
+                          a meaningful change to the end-user's assets or
+                          permissions on-chain. We reserve the right to add new
+                          state change types, so any handling logic custom to
+                          state change types should fallback gracefully to
+                          showing the end-user the `humanReadableDiff` of any
+                          unrecognized state change types.
+                        items:
+                          type: object
+                          required:
+                            - humanReadableDiff
+                            - suggestedColor
+                            - rawInfo
+                          properties:
+                            humanReadableDiff:
+                              type: string
+                              description: Computed explanation of the state change that can be directly
+                                presented to the end-user. While the API is
+                                still in development, we suggest integrators
+                                expose this in their signing UI since the list
+                                of state change kinds has not yet stabilized.
+                              example: Receive 0.05657 SOL
+                            suggestedColor:
+                              type: string
+                              description: Suggested text color when presenting the diff to end-users
+                              enum:
+                                - CREDIT
+                                - DEBIT
+                              example: CREDIT
+                            rawInfo:
+                              description: A machine-parsable state change object describing the state change.
+                              oneOf:
+                                - $ref: "#/components/schemas/SolanaStateChangeSolTransfer"
+                                - $ref: "#/components/schemas/SolanaStageChangeSplTransfer"
+                                - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
+                                - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
+                                - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
+                              discriminator:
+                                propertyName: kind
+                                mapping:
+                                  SOL_TRANSFER: "#/components/schemas/SolanaStateChangeSolTransfer"
+                                  SPL_TRANSFER: "#/components/schemas/SolanaStageChangeSplTransfer"
+                                  SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
+                                  SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuth\
+                                    orityChange"
+                                  USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOw\
+                                    nerChange"
+                      error:
                         type: object
-                        description: A mapping of account to the state changes to expect if these
-                          transactions were submitted on-chain. Each state
-                          change represents a meaningful change to the account's
-                          assets or permissions on-chain. We reserve the right
-                          to add new state change types, so any handling logic
-                          custom to state change types should fallback
-                          gracefully to showing the end-user the
-                          `humanReadableDiff` of any unrecognized state change
-                          types.
-                        additionalProperties:
-                          type: array
-                          items:
+                        required:
+                          - kind
+                          - humanReadableError
+                        properties:
+                          kind:
+                            type: string
+                            description: A unique representation of the error kind. Currently maps to the
+                              screaming case of the SystemError enum values,
+                              TokenError and TransactionError enum values. It
+                              returns `UNKNOWN_ERROR` if the Solana program
+                              reverts with an error we are unable to decode.
+                            example: INSUFFICIENT_FUNDS
+                            enum:
+                              - SIMULATION_FAILED
+                              - SIMULATION_TIMED_OUT
+                              - TOO_MANY_TRANSACTIONS
+                              - BAD_REQUEST
+                              - AN_ACCOUNT_WITH_THE_SAME_ADDRESS_ALREADY_EXISTS
+                              - ACCOUNT_DOES_NOT_HAVE_ENOUGH_SOL_TO_PERFORM_THE_OPERATION
+                              - CANNOT_ASSIGN_ACCOUNT_TO_THIS_PROGRAM_ID
+                              - CANNOT_ALLOCATE_ACCOUNT_DATA_OF_THIS_LENGTH
+                              - LENGTH_OF_REQUESTED_SEED_IS_TOO_LONG
+                              - PROVIDED_ADDRESS_DOES_NOT_MATCH_ADDRESSED_DERIVED_FROM_SEED
+                              - ADVANCING_STORED_NONCE_REQUIRES_A_POPULATED_RECENTBLOCKHASHES_SYSVAR
+                              - STORED_NONCE_IS_STILL_IN_RECENT_BLOCKHASHES
+                              - SPECIFIED_NONCE_DOES_NOT_MATCH_STORED_NONCE
+                              - LAMPORT_BALANCE_BELOW_RENT-EXEMPT_THRESHOLD
+                              - INSUFFICIENT_FUNDS
+                              - INVALID_MINT
+                              - ACCOUNT_NOT_ASSOCIATED_WITH_THIS_MINT
+                              - OWNER_DOES_NOT_MATCH
+                              - FIXED_SUPPLY
+                              - ALREADY_IN_USE
+                              - INVALID_NUMBER_OF_PROVIDED_SIGNERS
+                              - INVALID_NUMBER_OF_REQUIRED_SIGNERS
+                              - STATE_IS_UNINITIALIZED
+                              - INSTRUCTION_DOES_NOT_SUPPORT_NATIVE_TOKENS
+                              - NON-NATIVE_ACCOUNT_CAN_ONLY_BE_CLOSED_IF_ITS_BALANCE_IS_ZERO
+                              - INVALID_INSTRUCTION
+                              - STATE_IS_INVALID_FOR_REQUESTED_OPERATION
+                              - OPERATION_OVERFLOWED
+                              - ACCOUNT_DOES_NOT_SUPPORT_SPECIFIED_AUTHORITY_TYPE
+                              - THIS_TOKEN_MINT_CANNOT_FREEZE_ACCOUNTS
+                              - ACCOUNT_IS_FROZEN
+                              - THE_PROVIDED_DECIMALS_VALUE_DIFFERENT_FROM_THE_MINT_DECIMALS
+                              - INSTRUCTION_DOES_NOT_SUPPORT_NON-NATIVE_TOKENS
+                              - ACCOUNT_IN_USE
+                              - ACCOUNT_LOADED_TWICE
+                              - ATTEMPT_TO_DEBIT_AN_ACCOUNT_BUT_FOUND_NO_RECORD_OF_A_PRIOR_CREDIT.
+                              - ATTEMPT_TO_LOAD_A_PROGRAM_THAT_DOES_NOT_EXIST
+                              - INSUFFICIENT_FUNDS_FOR_FEE
+                              - THIS_ACCOUNT_MAY_NOT_BE_USED_TO_PAY_TRANSACTION_FEES
+                              - THIS_TRANSACTION_HAS_ALREADY_BEEN_PROCESSED
+                              - BLOCKHASH_NOT_FOUND
+                              - ERROR_PROCESSING_INSTRUCTION_{0}:_{1}
+                              - LOADER_CALL_CHAIN_IS_TOO_DEEP
+                              - TRANSACTION_REQUIRES_A_FEE_BUT_HAS_NO_SIGNATURE_PRESENT
+                              - TRANSACTION_CONTAINS_AN_INVALID_ACCOUNT_REFERENCE
+                              - TRANSACTION_DID_NOT_PASS_SIGNATURE_VERIFICATION
+                              - THIS_PROGRAM_MAY_NOT_BE_USED_FOR_EXECUTING_INSTRUCTIONS
+                              - TRANSACTION_FAILED_TO_SANITIZE_ACCOUNTS_OFFSETS_CORRECTLY
+                              - TRANSACTIONS_ARE_CURRENTLY_DISABLED_DUE_TO_CLUSTER_MAINTENANCE
+                              - TRANSACTION_PROCESSING_LEFT_AN_ACCOUNT_WITH_AN_OUTSTANDING_BORROWED_REFERENCE
+                              - TRANSACTION_WOULD_EXCEED_MAX_BLOCK_COST_LIMIT
+                              - TRANSACTION_VERSION_IS_UNSUPPORTED
+                              - TRANSACTION_LOADS_A_WRITABLE_ACCOUNT_THAT_CANNOT_BE_WRITTEN
+                              - TRANSACTION_WOULD_EXCEED_MAX_ACCOUNT_LIMIT_WITHIN_THE_BLOCK
+                              - TRANSACTION_WOULD_EXCEED_ACCOUNT_DATA_LIMIT_WITHIN_THE_BLOCK
+                              - TRANSACTION_LOCKED_TOO_MANY_ACCOUNTS
+                              - TRANSACTION_LOADS_AN_ADDRESS_TABLE_ACCOUNT_THAT_DOESN'T_EXIST
+                              - TRANSACTION_LOADS_AN_ADDRESS_TABLE_ACCOUNT_WITH_AN_INVALID_OWNER
+                              - TRANSACTION_LOADS_AN_ADDRESS_TABLE_ACCOUNT_WITH_INVALID_DATA
+                              - TRANSACTION_ADDRESS_TABLE_LOOKUP_USES_AN_INVALID_INDEX
+                              - TRANSACTION_LEAVES_AN_ACCOUNT_WITH_A_LOWER_BALANCE_THAN_RENT-EXEMPT_MINIMUM
+                              - TRANSACTION_WOULD_EXCEED_MAX_VOTE_COST_LIMIT
+                              - TRANSACTION_WOULD_EXCEED_TOTAL_ACCOUNT_DATA_LIMIT
+                              - TRANSACTION_CONTAINS_A_DUPLICATE_INSTRUCTION_({0})_THAT_IS_NOT_ALLOWED
+                              - UNKNOWN_ERROR
+                          humanReadableError:
+                            type: string
+                            description: Human readable version of the error
+                            example: You don't have enough tokens for this transaction
+                        description: An error object which includes the parsed simulation error
+                          encountered (if any). Can be `null`.
+                        nullable: true
+                      raw:
+                        type: object
+                        description: Raw results of the simulation
+                        required:
+                          - err
+                          - logs
+                          - unitsConsumed
+                          - returnData
+                        properties:
+                          err:
+                            type: string
+                            description: Program instruction error causing the failure. Can be `null`.
+                            example: BlockhashNotFound
+                            nullable: true
+                          logs:
+                            type: array
+                            description: Program logs generated during execution
+                            items:
+                              type: string
+                              example: Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]
+                          unitsConsumed:
+                            type: integer
+                            format: int32
+                            example: 148013
+                          returnData:
                             type: object
+                            description: Can be `null`.
+                            nullable: true
                             required:
-                              - humanReadableDiff
-                              - suggestedColor
-                              - rawInfo
+                              - programId
+                              - data
                             properties:
-                              humanReadableDiff:
+                              programId:
                                 type: string
-                                description: Computed explanation of the state change that can be directly
-                                  presented to the end-user. While the API is
-                                  still in development, we suggest integrators
-                                  expose this in their signing UI since the list
-                                  of state change kinds has not yet stabilized.
-                                example: Receive 0.05657 SOL
-                              suggestedColor:
-                                type: string
-                                description: Suggested text color when presenting the diff to end-users
-                                enum:
-                                  - CREDIT
-                                  - DEBIT
-                                example: CREDIT
-                              rawInfo:
-                                description: A machine-parsable state change object describing the state change.
-                                oneOf:
-                                  - $ref: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                  - $ref: "#/components/schemas/SolanaStageChangeSplTransfer"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
-                                  - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
-                                discriminator:
-                                  propertyName: kind
-                                  mapping:
-                                    SOL_TRANSFER: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                    SPL_TRANSFER: "#/components/schemas/SolanaStageChangeSplTransfer"
-                                    SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
-                                    SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuth\
-                                      orityChange"
-                                    USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOw\
-                                      nerChange"
-                  perTransaction:
-                    type: array
-                    items:
-                      type: object
-                      required:
-                        - isNonceValid
-                        - error
-                        - raw
-                        - protocols
-                        - instructions
-                      properties:
-                        isNonceValid:
-                          type: boolean
-                          example: false
-                          description: Whether the tx nonce is valid
-                        error:
-                          $ref: "#/components/schemas/SolanaSimulationError"
-                        raw:
-                          $ref: "#/components/schemas/SolanaRawSimulationResults"
-                        protocols:
-                          type: array
-                          items:
-                            $ref: "#/components/schemas/SolanaProtocol"
-                        instructions:
-                          type: array
-                          items:
-                            $ref: "#/components/schemas/SolanaInstruction"
+                                description: the program that generated the return data, as base-58 encoded
+                                  Pubkey
+                                example: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA
+                              data:
+                                type: array
+                                description: The return data itself, as base-64 encoded binary data and it's
+                                  encoding as the second element
+                                items:
+                                  type: string
+                                  example: "AQAAANVgbnOWDT3H5I2/oye32/palPUEeT1S5fbKj2WqgpTuAQAAAAAAAAAAAQEAAADVY\
+                                    G5zlg09x+SNv6Mnt9v6WpT1BHk9UuX2yo9lqoKU7g=="
+                                example:
+                                  [
+                                    "AQAAANVgbnOWDT3H5I2/oye32/palPUEeT1S5fbK\
+                                      j2WqgpTuAQAAAAAAAAAAAQEAAADVYG5zlg09x+SNv\
+                                      6Mnt9v6WpT1BHk9UuX2yo9lqoKU7g==",
+                                    "base64"
+                                  ]
+                  status:
+                    type: string
+                    enum:
+                      - CHECKS_PASSED
+                      - SUSPECTED_MALICIOUS
+                      - KNOWN_MALICIOUS
+                    example: CHECKS_PASSED
+                    deprecated: true
+                    description: An enum value describing whether a program in the proposed
+                      transactions was either a known or suspected malicious
+                      program. Deprecated. Use `action` instead.
+
         "400":
           description: Bad request
           content:
@@ -1043,11 +998,19 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              title: Object with domains property of type array
-              properties:
-                domains:
-                  type: array
+              oneOf:
+                - type: object
+                  title: Object with domains property of type array
+                  properties:
+                    domains:
+                      type: array
+                      items:
+                        type: string
+                        description: Domains to check. Be sure to submit fully-qualified urls (with
+                          protocol prefix -- e.g., http)
+                        example: "https://iaunchmynft.io"
+                - type: array
+                  title: Array of domains
                   items:
                     type: string
                     description: Domains to check. Be sure to submit fully-qualified urls (with
@@ -1065,6 +1028,7 @@ paths:
                   required:
                     - domain
                     - status
+                    - risk_score
                     - riskScore
                     - labels
                     - warnings
@@ -1087,6 +1051,14 @@ paths:
                         PROCESSED -> Our analysis completed successfully
                       enum: [ PROCESSED, PROCESSING, UNPROCESSABLE ]
                       example: PROCESSED
+                    risk_score:
+                      type: number
+                      description: A risk score from 0.0 to 1.0. The higher the score, the higher our
+                        certainty that this domain is hosting a crypto-native
+                        scam.
+                      format: float
+                      nullable: true
+                      example: 1.0
                     riskScore:
                       type: number
                       description: A risk score from 0.0 to 1.0. The higher the score, the higher our
@@ -1263,7 +1235,7 @@ components:
           message:
             type: string
             description: human-readable message to present to the end-user
-            example: "Domain found on blocklists maintained by: Blowfish. This website is
+            example: "Domain found on blocklists maintained by/: Blowfish. This website is
               very likely to be a scam."
     ContentType:
       description: Expected response content type
@@ -1272,9 +1244,9 @@ components:
       example: "application/json"
     ApiVersionHeader:
       type: string
-      description: API version like 2023-05-17
-      default: "2023-05-17"
-      example: "2023-05-17"
+      description: API version like 2022-06-01
+      default: "2022-06-01"
+      example: "2022-06-01"
     Languages:
       type: string
       default: en
@@ -1393,268 +1365,21 @@ components:
       type: object
       required:
         - source
-        - updatedAt
-        - dollarValuePerToken
+        - last_updated_at
+        - dollar_value_per_token
       nullable: true
       properties:
         source:
           type: string
           enum: [ "Simplehash", "Defillama", "Coingecko" ]
           example: Coingecko
-        updatedAt:
+        last_updated_at:
           type: number
           example: 1679331222
-        dollarValuePerToken:
+        dollar_value_per_token:
           type: number
           format: float
           example: 0.2784
-    EvmDecodedLogs:
-      type: array
-      description: Decoded events emmited by this transaction
-      items:
-        $ref: "#/components/schemas/EvmDecodedLog"
-    EvmDecodedLog:
-      type: object
-      description: Decoded event. Null if not decoded
-      nullable: true
-      required:
-        - name
-        - signature
-        - params
-      properties:
-        name:
-          type: string
-          description: Event name
-          example: Approval
-        signature:
-          type: string
-          description: Hash of event signature. First topic
-          example: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
-        params:
-          type: array
-          items:
-            $ref: "#/components/schemas/EvmDecodedLogParam"
-    EvmDecodedLogParam:
-      type: object
-      required:
-        - name
-        - paramType
-        - value
-      properties:
-        name:
-          type: string
-          description: Parameter name
-        paramType:
-          type: string
-          description: Parameter type
-        value:
-          $ref: "#/components/schemas/EvmAbiSerializedToken"
-    EvmDecodedCalldata:
-      description: |
-        Parsed `data` field of the transaction using the contract's ABI. We don't recommend displaying this field to users when contract isn't trusted
-        (for example, using `protocol` field), as scammers can verify ABI with arbitrary and misleading function names (e.g. `withdraw`, when it's actually a transfer).
-        Can be `null` if ABI is not available for contract or we failed to parse it.
-      oneOf:
-        - $ref: "#/components/schemas/EvmDecodedCalldataFunction"
-        - $ref: "#/components/schemas/EvmDecodedCalldataProxiedFunction"
-      discriminator:
-        propertyName: kind
-        mapping:
-          FUNCTION: "#/components/schemas/EvmDecodedCalldataFunction"
-          PROXIED_FUNCTION: "#/components/schemas/EvmDecodedCalldataProxiedFunction"
-      nullable: true
-    EvmDecodedCalldataFunction:
-      type: object
-      description: |
-        Direct function call in a contract.
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          enum:
-            - FUNCTION
-          example: FUNCTION
-        data:
-          type: object
-          required:
-            - contract
-            - functionName
-            - arguments
-          properties:
-            contract:
-              type: string
-              description: Contract address from `to` field that was called
-              example: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-            functionName:
-              type: string
-              description: Name of the called function in the contract
-              example: "transfer"
-            arguments:
-              type: array
-              items:
-                $ref: "#/components/schemas/EvmDecodedCalldataArgument"
-    EvmDecodedCalldataProxiedFunction:
-      type: object
-      description: |
-        Function call in a contract that went through a fallback on a proxy contract.
-        We include function name and arguments for the final implementation contract.
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          enum:
-            - PROXIED_FUNCTION
-          example: PROXIED_FUNCTION
-        data:
-          type: object
-          required:
-            - contract
-            - proxiedImplementation
-            - functionName
-            - arguments
-          properties:
-            contract:
-              type: string
-              description: Original proxy contract address from `to` field
-              example: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-            proxiedImplementation:
-              type: string
-              description: Implementation contract address that was called after going through
-                the proxy and contains the parsed function
-              example: "0xa2327a938febf5fec13bacfb16ae10ecbc4cbdcf"
-            functionName:
-              type: string
-              description: Name of the called function in the contract
-              example: "transfer"
-            arguments:
-              type: array
-              items:
-                $ref: "#/components/schemas/EvmDecodedCalldataArgument"
-    EvmDecodedCalldataArgument:
-      type: object
-      description: |
-        Argument of a function call.
-      required:
-        - name
-        - value
-        - paramType
-      properties:
-        name:
-          type: string
-          description: Name of the argument
-          example: "to"
-        value:
-          $ref: "#/components/schemas/EvmAbiSerializedToken"
-        paramType:
-          type: string
-          description: Type of the argument
-          example: "address"
-    EvmAbiSerializedToken:
-      description: |
-        Solidity token value. Addresses are serialized with `0x` prefix. Bytes and numbers are serialized as hex with `0x` prefix.
-        Serialized as a list of tokens if parameter is an array.
-      oneOf: []
-    EvmLogs:
-      type: array
-      description: Events emmited by this transaction
-      items:
-        $ref: "#/components/schemas/EvmLog"
-    EvmLog:
-      type: object
-      properties:
-        address:
-          type: string
-          example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-        topics:
-          type: array
-          items:
-            type: string
-            example: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
-        data:
-          type: string
-          example: "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
-      required:
-        - address
-        - topics
-        - data
-    EvmProtocol:
-      type: object
-      description: Human-readable protocol information. Note that a single protocol
-        can consist of multiple contracts.
-      nullable: true
-      properties:
-        trustLevel:
-          type: string
-          enum: [ KNOWN, TRUSTED, NATIVE ]
-          example: KNOWN
-          description: |
-            `NATIVE` means it’s a native asset transfer, an operation on WETH or any other transaction that is considered to be as secure as the chain itself. `TRUSTED` means it’s one of core projects that control 80-90% of TVL on the chain. `KNOWN` means it’s one of “long tail projects” without significant adoption.
-        name:
-          type: string
-          example: Uniswap
-        description:
-          type: string
-          example: "A decentralized token exchange"
-        imageUrl:
-          type: string
-          nullable: true
-          example: "https://d2xobe0ejktb0m.cloudfront.net/attEQcQmNq7dbhjwB.png"
-          description: URL of the protocol's logo. Can be null if no logo is available.
-        websiteUrl:
-          type: string
-          example: "https://uniswap.org"
-      required:
-        - trustLevel
-        - name
-        - description
-        - websiteUrl
-        - imageUrl
-    SolanaProtocol:
-      type: object
-      description: Human-readable protocol information. Note that a single protocol
-        can consist of multiple programs.
-      properties:
-        trustLevel:
-          type: string
-          enum: [ KNOWN, TRUSTED, NATIVE ]
-          example: KNOWN
-          description: |
-            `NATIVE` means it’s a SOL transfer, an SPL Program or any other program written and maintained by the Solana Foundation. `TRUSTED` means it’s one of the core projects that control 80-90% of TVL on the chain. `KNOWN` means it’s one of “long tail projects” without significant adoption."
-        name:
-          type: string
-          example: Memo Program
-        description:
-          type: string
-          example: "A protocol to publish on-chain text messages"
-        imageUrl:
-          type: string
-          nullable: true
-          example: "https://d2xobe0ejktb0m.cloudfront.net/attEQcQmNq7dbhjwB.png"
-          description: URL of the protocol's logo. Can be null if no logo is available.
-        websiteUrl:
-          type: string
-          example: "https://solana.com"
-      required:
-        - trustLevel
-        - name
-        - description
-        - websiteUrl
-        - imageUrl
-    SolanaInstruction:
-      type: object
-      description: Information about each instruction
-      required:
-        - protocolIndex
-      properties:
-        protocolIndex:
-          type: number
-          example: 0
-          nullable: true
-          description: Index of the protocol in the list of protocols for this instruction
     MetaplexTokenStandard:
       type: string
       enum:
@@ -1666,77 +1391,6 @@ components:
           unknown
         ]
       example: fungible
-    EvmTxData:
-      type: object
-      properties:
-        from:
-          type: string
-          description: Hex-representation address of transaction signer
-          example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-        to:
-          type: string
-          description: Hex-representation address of transaction recipient
-          example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-        data:
-          type: string
-          description: Hex-representation of ABI encoded call data
-          example: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4\
-            b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\
-            ff"
-        value:
-          type: string
-          description: String representation of Ether/Matic (in Wei) to send with the
-            transaction
-          example: "0"
-    EvmExpectedStateChange:
-      type: object
-      required:
-        - humanReadableDiff
-        - rawInfo
-      properties:
-        humanReadableDiff:
-          type: string
-          example: Send 10000 USDT
-          description: Computed explanation of the state change that can be directly
-            presented to the end-user. While the API is still in development, we
-            suggest integrators expose this in their signing UI if they
-            encounter a `rawInfo.kind` they don't recognize.
-        rawInfo:
-          description: A machine-parsable state change object describing the state change.
-          oneOf:
-            - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
-            - $ref: "#/components/schemas/EvmStateChangeErc20Approval"
-            - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-            - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
-            - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
-            - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
-            - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
-            - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-          discriminator:
-            propertyName: kind
-            mapping:
-              ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
-              ERC20_APPROVAL: "#/components/schemas/EvmStateChangeErc20Approval"
-              NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-              ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
-              ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
-              ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
-              ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
-              ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
-    EvmExpectedStateChanges:
-      type: array
-      items:
-        $ref: "#/components/schemas/EvmExpectedStateChange"
-    EvmByAccountExpectedStateChanges:
-      type: object
-      description: A mapping of account to the state changes to expect if these
-        transactions were submitted on-chain. Each state change represents a
-        meaningful change to the account's assets or permissions on-chain. We
-        reserve the right to add new state change types, so any handling logic
-        custom to state change types should fallback gracefully to showing the
-        end-user the `humanReadableDiff` of any unrecognized state change types.
-      additionalProperties:
-        $ref: "#/components/schemas/EvmExpectedStateChanges"
     EvmUserAccount:
       type: string
       description: A hex-representation of the user account who is being asked to sign
@@ -1758,6 +1412,9 @@ components:
           enum: [ ACCOUNT ]
           example: ACCOUNT
           description: The type of address
+    EvmDecimals:
+      type: integer
+      example: 6
     EvmSymbol:
       type: string
       example: USDT
@@ -1778,14 +1435,14 @@ components:
     EvmErc721TokenId:
       type: string
       nullable: true
-      example: "100"
       description: The ID of the ERC721 token. Can be `null` in some edge cases where
         we are temporarily unable to parse it.
+      example: "100"
     EvmErc1155TokenId:
       type: string
       nullable: true
-      example: "100"
       description: The ID of the ERC1155 token. Can be `null`.
+      example: "100"
     EvmAmount:
       type: object
       required:
@@ -1800,105 +1457,6 @@ components:
           type: string
           example: "15000000000"
           description: The value of the amount before the state change occurs
-    EvmErc1155Asset:
-      type: object
-      required:
-        - address
-        - name
-        - price
-      properties:
-        address:
-          $ref: "#/components/schemas/EvmContractAddress"
-        name:
-          $ref: "#/components/schemas/EvmName"
-          nullable: true
-        price:
-          description: A $-value price of the asset. Floor price of the collection if
-            asset is an NFT. Can be `null`.
-          $ref: "#/components/schemas/AssetPrice"
-          nullable: true
-    EvmErc721Asset:
-      type: object
-      required:
-        - address
-        - symbol
-        - name
-        - price
-      properties:
-        address:
-          $ref: "#/components/schemas/EvmContractAddress"
-        symbol:
-          description: Some NFTs don't have a symbol/name as it's not required in a standard
-          $ref: "#/components/schemas/EvmSymbol"
-          nullable: true
-        name:
-          description: Some NFTs don't have a symbol/name as it's not required in a standard
-          $ref: "#/components/schemas/EvmName"
-          nullable: true
-        price:
-          description: A $-value price of the asset. Floor price of the collection if
-            asset is an NFT. Can be `null`.
-          $ref: "#/components/schemas/AssetPrice"
-          nullable: true
-    EvmErc20Asset:
-      type: object
-      required:
-        - address
-        - symbol
-        - name
-        - decimals
-        - verified
-        - lists
-        - imageUrl
-        - price
-      properties:
-        address:
-          $ref: "#/components/schemas/EvmContractAddress"
-        symbol:
-          type: string
-          example: USDT
-          description: The symbol of the asset
-        name:
-          type: string
-          example: Tether USD
-          description: The name of the asset
-        decimals:
-          type: integer
-          example: 6
-          description: The number of decimal places used by the asset
-        verified:
-          type: boolean
-          example: true
-          description: Whether the asset is verified as safe
-        lists:
-          type: array
-          items:
-            type: string
-            enum:
-              - COINGECKO
-              - ZERION
-              - ONE_INCH
-              - UNISWAP
-              - MY_CRYPTO_API
-              - KLEROS_TOKENS
-              - POLYGON_POPULAR_TOKENS
-              - EVM_NATIVE
-              - BLOWFISH
-            example: COINGECKO
-          description: The trusted token lists on which this asset is listed
-        imageUrl:
-          type: string
-          description: The URL of the asset's image. Can be `null`.
-          nullable: true
-          example: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%\
-            3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f\
-            .png"
-        price:
-          description: A $-value price of the asset. Floor price of the collection if
-            asset is an NFT. Can be `null`.
-          $ref: "#/components/schemas/AssetPrice"
-          nullable: true
-    # NOTE: EvmAsset is only used in message endpoint due to older response format
     EvmAsset:
       type: object
       required:
@@ -1949,7 +1507,7 @@ components:
           description: The trusted token lists on which this asset is listed
         imageUrl:
           type: string
-          description: The URL of the asset's image. Can be `null`.
+          description: The URL of the asset's image
           nullable: true
           example: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%\
             3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f\
@@ -1958,7 +1516,6 @@ components:
           description: A $-value price of the asset. Floor price of the collection if
             asset is an NFT. Can be `null`.
           $ref: "#/components/schemas/AssetPrice"
-          nullable: true
     EvmNativeAsset:
       type: object
       required:
@@ -1971,7 +1528,9 @@ components:
         - price
       properties:
         address:
-          $ref: "#/components/schemas/EvmContractAddress"
+          type: string
+          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+          description: The contract address of the asset
         symbol:
           type: string
           example: USDT
@@ -1983,17 +1542,17 @@ components:
         decimals:
           type: integer
           example: 6
-          description: The number of decimal places used by the asset. Always true for the
-            native asset.
+          description: The number of decimal places used by the asset
         verified:
           type: boolean
           example: true
           enum:
             - true
-          description: Whether the asset is verified as safe
+          description: Whether the asset is verified as safe. Always true for the native
+            asset.
         imageUrl:
           type: string
-          description: The URL of the asset's image. Can be `null`.
+          description: The URL of the asset's image
           nullable: true
           example: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%\
             3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f\
@@ -2002,11 +1561,6 @@ components:
           description: A $-value price of the asset. Floor price of the collection if
             asset is an NFT. Can be `null`.
           $ref: "#/components/schemas/AssetPrice"
-          nullable: true
-    EvmContractAddress:
-      type: string
-      example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
-      description: The contract address of the asset
     EvmSignTypedData:
       type: object
       properties:
@@ -2062,57 +1616,32 @@ components:
           example: SIGN_MESSAGE
         rawMessage:
           type: string
-          example: "0x40ac14ef28d35fb4540e0cd0950123b378224d3585ec887c26f7a510da544552"
           description: The hex encoded eth_sign message that the dapp is proposing the
             user to sign.
+          example: "0x40ac14ef28d35fb4540e0cd0950123b378224d3585ec887c26f7a510da544552"
       required:
         - kind
         - rawMessage
-    EvmTransactionRevertedError:
+    EvmInvalidTransactionError:
       type: object
       required:
         - kind
         - humanReadableError
-        - revertReason
       properties:
         kind:
           type: string
-          enum: [ TRANSACTION_REVERTED ]
-          example: TRANSACTION_REVERTED
+          enum: [ INVALID_TRANSACTION ]
+          example: INVALID_TRANSACTION
         humanReadableError:
           type: string
           description: Human readable explanation of the error
-          example: Transaction reverted (Token does not exist)
-        revertReason:
-          type: string
-          example: "execution reverted: Too little received"
-          description: Why the transaction reverted
-    EvmTransactionError:
-      type: object
-      required:
-        - kind
-        - humanReadableError
-        - errorType
-      properties:
-        kind:
-          type: string
-          enum: [ TRANSACTION_ERROR ]
-          example: TRANSACTION_ERROR
-        humanReadableError:
-          type: string
-          description: Human readable explanation of the error
-          example: Transaction error (LackOfFundForGasLimit)
-        errorType:
-          type: string
-          example: "LackOfFundForGasLimit"
-          description: For all the errors during the execution that do not have a revert
-            reason. Like InvalidOpcode or LackOfFundForGasLimit.
+          example: Transaction missing valid from property
     EvmSimulationFailedError:
       type: object
       required:
         - kind
         - humanReadableError
-        - reason
+        - parsedErrorMessage
       properties:
         kind:
           type: string
@@ -2122,10 +1651,9 @@ components:
           type: string
           description: Human readable explanation of the error
           example: Transaction simulation failed
-        reason:
+        parsedErrorMessage:
           type: string
-          description: Internal reason for the simulation failure
-          example: Example reason
+          example: "LackOfFundForGasLimit"
     EvmUnknownError:
       type: object
       required:
@@ -2138,260 +1666,9 @@ components:
           example: UNKNOWN_ERROR
         humanReadableError:
           type: string
-          example: Unable to simulate transaction
           description: Human readable explanation of the error
-    EvmTransferCounterparty:
-      nullable: true
-      description: Contains counterparty adress if known. To whom the transfer was
-        made for Send or from whom was it made for Receive
-      $ref: "#/components/schemas/EvmAddressInfo"
-    EvmStateChangeErc20Transfer:
-      type: object
-      description: ERC20 token transfers
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC20_TRANSFER ]
-          example: ERC20_TRANSFER
-        data:
-          type: object
-          required:
-            - amount
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            counterparty:
-              $ref: "#/components/schemas/EvmTransferCounterparty"
-            asset:
-              $ref: "#/components/schemas/EvmErc20Asset"
-          description: Data associated with the state change
-    EvmStateChangeErc20Approval:
-      type: object
-      description: Approval request to transfer user's ERC20 tokens
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC20_APPROVAL ]
-          example: ERC20_APPROVAL
-        data:
-          type: object
-          required:
-            - owner
-            - spender
-            - amount
-            - asset
-          properties:
-            owner:
-              description: The owner of the ERC20 tokens
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              description: The entity that will be allowed to spend them if the approval is
-                granted
-              $ref: "#/components/schemas/EvmAddressInfo"
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            asset:
-              $ref: "#/components/schemas/EvmErc20Asset"
-          description: Data associated with the state change
-    EvmStateChangeNativeAssetTransfer:
-      type: object
-      description: ETH transfers
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ NATIVE_ASSET_TRANSFER ]
-          example: NATIVE_ASSET_TRANSFER
-        data:
-          type: object
-          required:
-            - amount
-            - counterparty
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            counterparty:
-              nullable: true
-              $ref: "#/components/schemas/EvmTransferCounterparty"
-            asset:
-              $ref: "#/components/schemas/EvmNativeAsset"
-          description: Data associated with the state change
-    EvmStateChangeErc721Transfer:
-      type: object
-      description: ERC721 NFT transfers
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC721_TRANSFER ]
-          example: ERC721_TRANSFER
-        data:
-          type: object
-          required:
-            - amount
-            - counterparty
-            - metadata
-            - tokenId
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            counterparty:
-              nullable: true
-              $ref: "#/components/schemas/EvmTransferCounterparty"
-            metadata:
-              $ref: "#/components/schemas/EvmNftMetadata"
-            tokenId:
-              $ref: "#/components/schemas/EvmErc721TokenId"
-            asset:
-              $ref: "#/components/schemas/EvmErc721Asset"
-          description: Data associated with the state change
-    EvmStateChangeErc721Approval:
-      type: object
-      description: Approval request for a specific token in an ERC721 collection
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC721_APPROVAL ]
-          example: ERC721_APPROVAL
-        data:
-          type: object
-          required:
-            - amount
-            - metadata
-            - owner
-            - spender
-            - tokenId
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            metadata:
-              $ref: "#/components/schemas/EvmNftMetadata"
-            owner:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            tokenId:
-              $ref: "#/components/schemas/EvmErc721TokenId"
-            asset:
-              $ref: "#/components/schemas/EvmErc721Asset"
-          description: Data associated with the state change
-    EvmStateChangeErc721ApprovalForAll:
-      type: object
-      description: Approval request for all owned ERC721 NFTs in a collection
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC721_APPROVAL_FOR_ALL ]
-          example: ERC721_APPROVAL_FOR_ALL
-        data:
-          type: object
-          required:
-            - amount
-            - owner
-            - spender
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            owner:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            asset:
-              $ref: "#/components/schemas/EvmErc721Asset"
-          description: Data associated with the state change
-    EvmStateChangeErc1155Transfer:
-      type: object
-      description: ERC1155 transfers
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC1155_TRANSFER ]
-          example: ERC1155_TRANSFER
-        data:
-          type: object
-          required:
-            - amount
-            - metadata
-            - tokenId
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            metadata:
-              $ref: "#/components/schemas/EvmNftMetadata"
-            tokenId:
-              $ref: "#/components/schemas/EvmErc1155TokenId"
-            counterparty:
-              nullable: true
-              $ref: "#/components/schemas/EvmTransferCounterparty"
-            asset:
-              $ref: "#/components/schemas/EvmErc1155Asset"
-          description: Data associated with the state change
-    EvmStateChangeErc1155ApprovalForAll:
-      type: object
-      description: Approval request for all owned ERC1155 assets
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC1155_APPROVAL_FOR_ALL ]
-          example: ERC1155_APPROVAL_FOR_ALL
-        data:
-          type: object
-          required:
-            - amount
-            - owner
-            - spender
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            owner:
-              description: The owner of the ERC1155 tokens
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              description: The entity that will be allowed to transfer all the owner's tokens
-                of the given ERC1155 contract if the approval is granted
-              $ref: "#/components/schemas/EvmAddressInfo"
-            asset:
-              $ref: "#/components/schemas/EvmErc1155Asset"
-          description: Data associated with the state change
-    # Message endpoint uses 2023-03-08 state change types
-    EvmMessageStateChangeErc20Permit:
+          example: Unable to simulate transaction
+    EvmStateChangeErc20Permit:
       type: object
       description: ERC20 token permit message
       required:
@@ -2409,9 +1686,12 @@ components:
             - contract
             - owner
             - spender
+            - decimals
             - amount
             - nonce
             - deadline
+            - name
+            - symbol
             - asset
           properties:
             contract:
@@ -2423,6 +1703,10 @@ components:
               description: The entity that will be allowed to spend them if the permit is
                 granted
               $ref: "#/components/schemas/EvmAddressInfo"
+            decimals:
+              $ref: "#/components/schemas/EvmDecimals"
+              deprecated: true
+              description: Deprecated, use asset.decimals instead
             amount:
               type: string
               description: Stringified base unit amount of the token
@@ -2435,13 +1719,21 @@ components:
             deadline:
               type: number
               description: "Unix timestamp when this permit will expire. Can be `null`:
-                indicates no deadline."
+                indicates no deadline"
               example: 1667556263
               nullable: true
+            name:
+              $ref: "#/components/schemas/EvmName"
+              deprecated: true
+              description: Deprecated, use asset.name instead
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+              deprecated: true
+              description: Deprecated, use asset.symbol instead
             asset:
               $ref: "#/components/schemas/EvmAsset"
           description: Data associated with the state change
-    EvmMessageStateChangeErc20Transfer:
+    EvmStateChangeErc20Transfer:
       type: object
       description: ERC20 token transfers
       required:
@@ -2457,17 +1749,82 @@ components:
           type: object
           required:
             - contract
+            - decimals
             - amount
+            - symbol
+            - name
             - asset
           properties:
             contract:
               $ref: "#/components/schemas/EvmAddressInfo"
+            decimals:
+              $ref: "#/components/schemas/EvmDecimals"
+              deprecated: true
+              description: Deprecated, use asset.decimals instead
             amount:
               $ref: "#/components/schemas/EvmAmount"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+              deprecated: true
+              description: Deprecated, use asset.symbol instead
+            name:
+              $ref: "#/components/schemas/EvmName"
+              deprecated: true
+              description: Deprecated, use asset.name instead
             asset:
               $ref: "#/components/schemas/EvmAsset"
           description: Data associated with the state change
-    EvmMessageStateChangeNativeAssetTransfer:
+    EvmStateChangeErc20Approval:
+      type: object
+      description: Approval request to transfer user's ERC20 tokens
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC20_APPROVAL ]
+          example: ERC20_APPROVAL
+        data:
+          type: object
+          required:
+            - contract
+            - owner
+            - spender
+            - decimals
+            - amount
+            - symbol
+            - name
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            owner:
+              description: The owner of the ERC20 tokens
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              description: The entity that will be allowed to spend them if the approval is
+                granted
+              $ref: "#/components/schemas/EvmAddressInfo"
+            decimals:
+              $ref: "#/components/schemas/EvmDecimals"
+              deprecated: true
+              description: Deprecated, use asset.decimals instead
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+              deprecated: true
+              description: Deprecated, use asset.symbol instead
+            name:
+              $ref: "#/components/schemas/EvmName"
+              deprecated: true
+              description: Deprecated, use asset.name instead
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmStateChangeNativeAssetTransfer:
       type: object
       description: ETH transfers
       required:
@@ -2483,17 +1840,26 @@ components:
           type: object
           required:
             - contract
+            - decimals
             - amount
+            - symbol
+            - name
             - asset
           properties:
             contract:
               $ref: "#/components/schemas/EvmAddressInfo"
+            decimals:
+              $ref: "#/components/schemas/EvmDecimals"
             amount:
               $ref: "#/components/schemas/EvmAmount"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            name:
+              $ref: "#/components/schemas/EvmName"
             asset:
               $ref: "#/components/schemas/EvmNativeAsset"
           description: Data associated with the state change
-    EvmMessageStateChangeErc721Transfer:
+    EvmStateChangeErc721Transfer:
       type: object
       description: ERC721 NFT transfers
       required:
@@ -2518,8 +1884,6 @@ components:
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            counterparty:
-              $ref: "#/components/schemas/EvmTransferCounterparty"
             contract:
               $ref: "#/components/schemas/EvmAddressInfo"
             metadata:
@@ -2534,7 +1898,91 @@ components:
               description: The NFT collection's $-value floor price
               $ref: "#/components/schemas/AssetPrice"
           description: Data associated with the state change
-    EvmMessageStateChangeErc1155Transfer:
+    EvmStateChangeErc721Approval:
+      type: object
+      description: Approval request for a specific token in an ERC721 collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC721_APPROVAL ]
+          example: ERC721_APPROVAL
+        data:
+          type: object
+          required:
+            - amount
+            - contract
+            - metadata
+            - name
+            - owner
+            - spender
+            - symbol
+            - tokenId
+            - assetPrice
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            name:
+              $ref: "#/components/schemas/EvmName"
+            owner:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc721TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmStateChangeErc721ApprovalForAll:
+      type: object
+      description: Approval request for all owned ERC721 NFTs in a collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC721_APPROVAL_FOR_ALL ]
+          example: ERC721_APPROVAL_FOR_ALL
+        data:
+          type: object
+          required:
+            - amount
+            - contract
+            - name
+            - owner
+            - spender
+            - symbol
+            - assetPrice
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            name:
+              $ref: "#/components/schemas/EvmName"
+            owner:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmStateChangeErc1155Transfer:
       type: object
       description: ERC1155 transfers
       required:
@@ -2549,15 +1997,13 @@ components:
         data:
           type: object
           required:
-            - name
             - amount
             - contract
             - metadata
             - tokenId
             - assetPrice
+            - name
           properties:
-            name:
-              $ref: "#/components/schemas/EvmName"
             amount:
               $ref: "#/components/schemas/EvmAmount"
             contract:
@@ -2569,8 +2015,49 @@ components:
             assetPrice:
               description: The NFT collection's $-value floor price
               $ref: "#/components/schemas/AssetPrice"
+            name:
+              $ref: "#/components/schemas/EvmName"
           description: Data associated with the state change
-    EvmMessageStateChangeAnyNftFromCollectionTransfer:
+    EvmStateChangeErc1155ApprovalForAll:
+      type: object
+      description: Approval request for all owned ERC1155 assets
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC1155_APPROVAL_FOR_ALL ]
+          example: ERC1155_APPROVAL_FOR_ALL
+        data:
+          type: object
+          required:
+            - amount
+            - contract
+            - owner
+            - spender
+            - assetPrice
+            - name
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            owner:
+              description: The owner of the ERC1155 tokens
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              description: The entity that will be allowed to transfer all the owner's tokens
+                of the given ERC1155 contract if the approval is granted
+              $ref: "#/components/schemas/EvmAddressInfo"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+            name:
+              $ref: "#/components/schemas/EvmName"
+          description: Data associated with the state change
+    EvmStateChangeAnyNftFromCollectionTransfer:
       type: object
       description: A "wildcard" NFT transfer representing the transfer of any NFT from
         a given collection (eg. Opensea collection offers)
@@ -2587,51 +2074,35 @@ components:
           type: object
           required:
             - amount
-            - asset
+            - contract
+            - name
+            - symbol
+            - type
           properties:
             amount:
               $ref: "#/components/schemas/EvmAmount"
-            asset:
-              description: Represents NFT collection as a whole, including collection-level
-                image, etc.
-              type: object
-              required:
-                - address
-                - symbol
-                - name
-                - type
-              properties:
-                address:
-                  $ref: "#/components/schemas/EvmContractAddress"
-                symbol:
-                  description: Some NFTs don't have a symbol/name as it's not required in a
-                    standard
-                  $ref: "#/components/schemas/EvmSymbol"
-                  nullable: true
-                name:
-                  description: Some NFTs don't have a symbol/name as it's not required in a
-                    standard
-                  $ref: "#/components/schemas/EvmName"
-                  nullable: true
-                price:
-                  description: A $-value price of the asset. Floor price of the collection if
-                    asset is an NFT. Can be `null`.
-                  $ref: "#/components/schemas/AssetPrice"
-                  nullable: true
-                imageUrl:
-                  type: string
-                  description: The URL of the collection's cover image
-                  nullable: true
-                  example: "https://lh3.googleusercontent.com/C_fjl1iM5iRwuk74N9DBrOmU-1-_lc_8x66\
-                    BsWU8votTb3iwXiVJwmqJ2qd8BUI1DSDo_9KxcNcNJrdpnnxebLwpeJB7ei\
-                    YSeI8"
-                type:
-                  enum: [ ERC721, ERC1155 ]
-                  type: string
-                  description: The type of specified NFT
-                  example: ERC721
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            name:
+              $ref: "#/components/schemas/EvmName"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+            imageUrl:
+              type: string
+              description: The URL of the collection's cover image
+              nullable: true
+              example: "https://lh3.googleusercontent.com/C_fjl1iM5iRwuk74N9DBrOmU-1-_lc_8x66\
+                BsWU8votTb3iwXiVJwmqJ2qd8BUI1DSDo_9KxcNcNJrdpnnxebLwpeJB7eiYSeI\
+                8"
+            type:
+              enum: [ ERC721, ERC1155 ]
+              type: string
+              description: The type of specified NFT
+              example: ERC721
           description: Data associated with the state change
-    # ---- End of /message endpoint specific types
     SolanaStateChangeSolTransfer:
       type: object
       description: Solana native token transfer
@@ -2648,11 +2119,23 @@ components:
           type: object
           description: Machine-parseable data relevant to this state change kind
           required:
+            - symbol
+            - name
+            - decimals
             - diff
-            - asset
           properties:
-            asset:
-              $ref: "#/components/schemas/SolAsset"
+            symbol:
+              type: string
+              description: Symbol of the Solana native token
+              example: SOL
+            name:
+              type: string
+              description: Name of the Solana native token
+              example: Solana Native Token
+            decimals:
+              type: integer
+              description: Decimals of the Solana native token
+              example: 9
             diff:
               $ref: "#/components/schemas/Diff"
     Diff:
@@ -2668,67 +2151,8 @@ components:
           example: PLUS
         digits:
           type: integer
+          description: The unsigned quantity
           example: 500000
-    SolAsset:
-      type: object
-      required:
-        - symbol
-        - name
-        - decimals
-        - price
-      properties:
-        symbol:
-          type: string
-          description: Symbol of the Solana native token
-          example: SOL
-        name:
-          type: string
-          description: Name of the Solana native token
-          example: Solana Native Token
-        decimals:
-          type: integer
-          description: Decimals of the Solana native token
-          example: 9
-        price:
-          description: The $-value price of the asset
-          $ref: "#/components/schemas/AssetPrice"
-    SplAsset:
-      type: object
-      required:
-        - symbol
-        - name
-        - mint
-        - decimals
-        - supply
-        - metaplexTokenStandard
-        - price
-      properties:
-        symbol:
-          type: string
-          description: SPL token symbol
-          example: USDC
-        name:
-          type: string
-          description: SPL token name
-          example: USD Coin
-        mint:
-          type: string
-          description: The SPL token mint program address
-          example: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
-        decimals:
-          type: integer
-          description: SPL token decimals
-          example: 13
-        supply:
-          type: integer
-          description: SPL token supply
-          example: 1
-        metaplexTokenStandard:
-          description: The Metaplex token standard for this asset if any
-          $ref: "#/components/schemas/MetaplexTokenStandard"
-        price:
-          description: The $-value price of the asset
-          $ref: "#/components/schemas/AssetPrice"
     SolanaStageChangeSplTransfer:
       type: object
       description: SPL token transfer
@@ -2744,13 +2168,43 @@ components:
         data:
           type: object
           required:
-            - asset
+            - symbol
+            - name
+            - mint
+            - decimals
             - diff
+            - supply
+            - metaplexTokenStandard
+            - assetPrice
           properties:
-            asset:
-              $ref: "#/components/schemas/SplAsset"
+            symbol:
+              type: string
+              description: SPL token symbol
+              example: USDC
+            name:
+              type: string
+              description: SPL token name
+              example: USD Coin
+            mint:
+              type: string
+              description: The SPL token mint program address
+              example: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+            decimals:
+              type: integer
+              description: SPL token decimals
+              example: 13
             diff:
               $ref: "#/components/schemas/Diff"
+            supply:
+              type: integer
+              description: SPL token supply
+              example: 1
+            metaplexTokenStandard:
+              description: The Metaplex token standard for this asset if any
+              $ref: "#/components/schemas/MetaplexTokenStandard"
+            assetPrice:
+              description: The $-value price of the asset
+              $ref: "#/components/schemas/AssetPrice"
     SolanaStateChangeSplApproval:
       type: object
       description: Approval request to transfer user's tokens
@@ -2767,17 +2221,48 @@ components:
           type: object
           required:
             - delegate
-            - asset
+            - mint
+            - symbol
+            - name
+            - decimals
             - diff
+            - supply
+            - metaplexTokenStandard
+            - assetPrice
           properties:
             delegate:
               type: string
               description: Who will be able to transfer the user's tokens on their behalf
               example: 3kQJyZKC4tdQy3nqCqFiLDT2V7dzG65vSKtkUGCht5L3
-            asset:
-              $ref: "#/components/schemas/SplAsset"
+            mint:
+              type: string
+              description: The SPL token mint program address
+              example: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+            symbol:
+              type: string
+              description: SPL token symbol
+              example: USDC
+            name:
+              type: string
+              description: SPL token name
+              example: USD Coin
+            decimals:
+              type: integer
+              description: SPL token decimals
+              example: 13
             diff:
               $ref: "#/components/schemas/Diff"
+            supply:
+              type: integer
+              description: Total supply of the token
+              example: 1000000000000000000
+            metaplexTokenStandard:
+              description: The Metaplex token standard for this asset if any
+              $ref: "#/components/schemas/MetaplexTokenStandard"
+            assetPrice:
+              description: The $-value price of the asset
+              $ref: "#/components/schemas/AssetPrice"
+
     SolanaStateChangeUserAccountOwnerChange:
       type: object
       description: Transferring control over a user's Solana account to a different
@@ -2833,7 +2318,9 @@ components:
             - stakeAccount
             - currentAuthorities
             - futureAuthorities
-            - asset
+            - symbol
+            - name
+            - decimals
             - solStaked
           properties:
             stakeAccount:
@@ -2842,10 +2329,10 @@ components:
               example: 2AG3beWwvyvEMLfwJcQS9DKMV62C3UWTTf8d7gp2vFQS
             currentAuthorities:
               type: object
-              description: Current authorities with control over the staking account
               required:
                 - staker
                 - withdrawer
+              description: Current authorities with control over the staking account
               properties:
                 staker:
                   type: string
@@ -2857,10 +2344,10 @@ components:
                   example: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
             futureAuthorities:
               type: object
-              description: Future authorities who will have control over the staking account
               required:
                 - staker
                 - withdrawer
+              description: Future authorities who will have control over the staking account
               properties:
                 staker:
                   type: string
@@ -2870,138 +2357,19 @@ components:
                   type: string
                   description: Authority who can withdraw the funds from the staking account
                   example: EpochxXNkmM2akxBTuCEizW1oWyzgrPZ1CVZ3GpD7Egm
-            asset:
-              $ref: "#/components/schemas/SolAsset"
+            symbol:
+              type: string
+              description: Symbol of the Solana native token
+              example: SOL
+            name:
+              type: string
+              description: Name of the Solana native token
+              example: Solana Native Token
+            decimals:
+              type: integer
+              description: Decimals of the Solana native token
+              example: 9
             solStaked:
               type: integer
               description: Amount of SOL staked by this account
               example: 1000000000000
-    SolanaSimulationError:
-      description: A error object which includes the parsed simulation error
-        encountered (if any). Can be `null`.
-      oneOf:
-        - $ref: "#/components/schemas/SolanaSimulationTransactionError"
-        - $ref: "#/components/schemas/SolanaSimulationProgramError"
-      discriminator:
-        propertyName: kind
-        mapping:
-          TRANSACTION_ERROR: "#/components/schemas/SolanaSimulationTransactionError"
-          PROGRAM_ERROR: "#/components/schemas/SolanaSimulationProgramError"
-      nullable: true
-    SolanaSimulationProgramError:
-      type: object
-      required:
-        - kind
-        - humanReadableError
-        - solanaProgramAddress
-      properties:
-        kind:
-          type: string
-          enum: [ PROGRAM_ERROR ]
-          example: PROGRAM_ERROR
-        humanReadableError:
-          type: string
-          description: Human-readable version of the error.
-          example: Lamport balance below rent-exempt threshold
-        solanaProgramAddress:
-          type: string
-          example: ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL
-          description: The address of the Solana program where this revert error occurred
-    SolanaSimulationTransactionError:
-      type: object
-      required:
-        - humanReadableError
-      properties:
-        kind:
-          type: string
-          enum: [ TRANSACTION_ERROR ]
-          example: TRANSACTION_ERROR
-        humanReadableError:
-          type: string
-          description: Human-readable version of the error. Values match the string
-            version of the `TransactionError` enum values in the Solana repo
-          example: Blockhash not found
-    BlowfishSimulationError:
-      type: object
-      required:
-        - kind
-        - humanReadableError
-      properties:
-        kind:
-          type: string
-          description: "The error that caused us to be unable to run transaction
-            simulation for this request. `SIMULATION_TIMED_OUT` is returned if
-            the simulation took too long and timed out. `BAD_REQUEST` is
-            returned if the transaction(s) or `user_account` submitted were
-            invalid (this is similar to a 400 bad request).
-            `TOO_MANY_TRANSACTIONS` us returned if a request includes too many
-            transactions (current max: 100 txns). `SIMULATION_FAILED` is
-            returned if simulation failed because of a dependent RPC failure or
-            internal server error during simulation execution."
-          example: BAD_REQUEST
-          enum:
-            - SIMULATION_FAILED
-            - SIMULATION_TIMED_OUT
-            - TOO_MANY_TRANSACTIONS
-            - BAD_REQUEST
-        humanReadableError:
-          type: string
-          example: User account supplied in request not found
-          description: Human readable version of the error with more details about why it
-            failed (esp. for BAD_REQUEST). SIMULATION_FAILED is only returned if
-            we were unable to run the simulation because of an internal error
-            (akin to a 500 error code).
-      description: An error object describing why we were unable to simulate the
-        transactions in the request. Can be `null`.
-      nullable: true
-    SolanaRawSimulationResults:
-      type: object
-      description: Raw results of the simulation
-      required:
-        - err
-        - logs
-        - unitsConsumed
-        - returnData
-      properties:
-        err:
-          type: string
-          description: Program instruction error causing the failure. Can be `null`.
-          example: BlockhashNotFound
-          nullable: true
-        logs:
-          type: array
-          description: Program logs generated during execution
-          items:
-            type: string
-            example: Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]
-        unitsConsumed:
-          type: integer
-          format: int32
-          example: 148013
-        returnData:
-          type: object
-          description: Can be `null`.
-          nullable: true
-          required:
-            - programId
-            - data
-          properties:
-            programId:
-              type: string
-              description: the program that generated the return data, as base-58 encoded
-                Pubkey
-              example: TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA
-            data:
-              type: array
-              description: The return data itself, as base-64 encoded binary data and it's
-                encoding as the second element
-              items:
-                type: string
-                example: "AQAAANVgbnOWDT3H5I2/oye32/palPUEeT1S5fbKj2WqgpTuAQAAAAAAAAAAAQEAAADVY\
-                  G5zlg09x+SNv6Mnt9v6WpT1BHk9UuX2yo9lqoKU7g=="
-              example:
-                [
-                  "AQAAANVgbnOWDT3H5I2/oye32/palPUEeT1S5fbKj2WqgpTuAQAAAAAAAA\
-                    AAAQEAAADVYG5zlg09x+SNv6Mnt9v6WpT1BHk9UuX2yo9lqoKU7g==",
-                  "base64"
-                ]

@@ -1,13 +1,11 @@
 import React from "react";
-import { styled } from "styled-components";
 import { Row, Column } from "~/common/layout";
 import { Text } from "~/common/text";
 import { AssetPrice } from "~/simulation-result/components/AssetPrice";
 import { Divider } from "~/simulation-result/components/Divider";
 import { ImageBase } from "~/simulation-result/components/ImageBase";
 import { Icon } from "~/common/icon";
-
-const PreviewTokenContainer = styled.div``;
+import { PreviewTooltipContent } from "~/simulation-result/components/PreviewTooltip";
 
 interface DataRowProps {
   label: string;
@@ -41,7 +39,7 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
   verified,
 }) => {
   return (
-    <PreviewTokenContainer>
+    <PreviewTooltipContent>
       <ImageBase
         src={imageUrl || undefined}
         alt={name || "Token preview"}
@@ -72,6 +70,6 @@ export const PreviewTokens: React.FC<PreviewTokensProps> = ({
           <DataRowComponent label="Token Lists" value={tokenList} />
         ) : null}
       </div>
-    </PreviewTokenContainer>
+    </PreviewTooltipContent>
   );
 };

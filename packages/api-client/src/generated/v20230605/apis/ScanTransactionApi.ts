@@ -23,7 +23,6 @@ import type {
 } from "../models/index";
 
 export interface ScanTransactionEvmOperationRequest {
-  xApiKey: string;
   xApiVersion: string;
   chainFamily: ScanTransactionEvmOperationChainFamilyEnum;
   chainNetwork: ScanTransactionEvmOperationChainNetworkEnum;
@@ -44,16 +43,6 @@ export class ScanTransactionApi extends runtime.BaseAPI {
     requestParameters: ScanTransactionEvmOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
   ): Promise<runtime.ApiResponse<ScanTransactionEvm200Response>> {
-    if (
-      requestParameters.xApiKey === null ||
-      requestParameters.xApiKey === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiKey",
-        "Required parameter requestParameters.xApiKey was null or undefined when calling scanTransactionEvm."
-      );
-    }
-
     if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
@@ -93,13 +82,6 @@ export class ScanTransactionApi extends runtime.BaseAPI {
     const headerParameters: runtime.HTTPHeaders = {};
 
     headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiKey !== undefined &&
-      requestParameters.xApiKey !== null
-    ) {
-      headerParameters["X-Api-Key"] = String(requestParameters.xApiKey);
-    }
 
     if (
       requestParameters.xApiVersion !== undefined &&
