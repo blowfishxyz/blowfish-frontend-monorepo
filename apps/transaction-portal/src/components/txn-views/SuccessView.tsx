@@ -31,7 +31,7 @@ export const SuccessView: React.FC<{
   const explorerText: string = useMemo(() => {
     const chainFamily = chain?.chainInfo?.chainFamily;
     if (!chainFamily) return "Explorer";
-    return chainToBlockExplorerTitle(chainFamily);
+    return chainToBlockExplorerTitle(chainFamily) || "Explorer";
   }, [chain?.chainInfo?.chainFamily]);
 
   const closingText = useMemo(() => {
