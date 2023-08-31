@@ -290,6 +290,41 @@ export type EvmAddressInfoKindEnum =
   (typeof EvmAddressInfoKindEnum)[keyof typeof EvmAddressInfoKindEnum];
 
 /**
+ * @type EvmAggregatedSimulationError
+ * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+ * @export
+ */
+export type EvmAggregatedSimulationError =
+  | ({ kind: "SIMULATION_FAILED" } & EvmSimulationFailedError)
+  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError);
+/**
+ *
+ * @export
+ * @interface EvmAggregatedSimulationResults
+ */
+export interface EvmAggregatedSimulationResults {
+  /**
+   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
+   * @type {string}
+   * @memberof EvmAggregatedSimulationResults
+   */
+  userAccount: string;
+  /**
+   * A mapping of account to the state changes to expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the account's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
+   * @type {{ [key: string]: Array<EvmExpectedStateChange> | undefined; }}
+   * @memberof EvmAggregatedSimulationResults
+   */
+  expectedStateChanges: {
+    [key: string]: Array<EvmExpectedStateChange> | undefined;
+  };
+  /**
+   *
+   * @type {EvmAggregatedSimulationError}
+   * @memberof EvmAggregatedSimulationResults
+   */
+  error: EvmAggregatedSimulationError | null;
+}
+/**
  *
  * @export
  * @interface EvmAmount
@@ -705,6 +740,12 @@ export interface EvmErc721Asset {
   name: string;
   /**
    *
+   * @type {string}
+   * @memberof EvmErc721Asset
+   */
+  collection: string;
+  /**
+   *
    * @type {AssetPrice}
    * @memberof EvmErc721Asset
    */
@@ -741,8 +782,25 @@ export type EvmExpectedStateChangeRawInfo =
   | ({ kind: "ERC20_TRANSFER" } & EvmStateChangeErc20Transfer)
   | ({ kind: "ERC721_APPROVAL" } & EvmStateChangeErc721Approval)
   | ({ kind: "ERC721_APPROVAL_FOR_ALL" } & EvmStateChangeErc721ApprovalForAll)
+  | ({ kind: "ERC721_LOCK_APPROVAL" } & EvmStateChangeErc721LockApproval)
+  | ({
+      kind: "ERC721_LOCK_APPROVAL_FOR_ALL";
+    } & EvmStateChangeErc721LockApprovalForAll)
   | ({ kind: "ERC721_TRANSFER" } & EvmStateChangeErc721Transfer)
   | ({ kind: "NATIVE_ASSET_TRANSFER" } & EvmStateChangeNativeAssetTransfer);
+/**
+ * An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
+ * @export
+ * @interface EvmGas
+ */
+export interface EvmGas {
+  /**
+   * A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+   * @type {string}
+   * @memberof EvmGas
+   */
+  gasLimit: string | null;
+}
 /**
  *
  * @export
@@ -1276,6 +1334,59 @@ export interface EvmNftMetadata {
   rawImageUrl: string;
 }
 /**
+ * @type EvmPerTransactionError
+ * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+ * @export
+ */
+export type EvmPerTransactionError =
+  | ({ kind: "SIMULATION_FAILED" } & EvmSimulationFailedError)
+  | ({ kind: "TRANSACTION_ERROR" } & EvmTransactionError)
+  | ({ kind: "TRANSACTION_REVERTED" } & EvmTransactionRevertedError)
+  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError);
+/**
+ *
+ * @export
+ * @interface EvmPerTransactionSimulationResultsInner
+ */
+export interface EvmPerTransactionSimulationResultsInner {
+  /**
+   *
+   * @type {EvmPerTransactionError}
+   * @memberof EvmPerTransactionSimulationResultsInner
+   */
+  error: EvmPerTransactionError | null;
+  /**
+   *
+   * @type {EvmGas}
+   * @memberof EvmPerTransactionSimulationResultsInner
+   */
+  gas: EvmGas;
+  /**
+   *
+   * @type {EvmProtocol}
+   * @memberof EvmPerTransactionSimulationResultsInner
+   */
+  protocol: EvmProtocol | null;
+  /**
+   * Events emmited by this transaction
+   * @type {Array<EvmLog>}
+   * @memberof EvmPerTransactionSimulationResultsInner
+   */
+  logs: Array<EvmLog>;
+  /**
+   * Decoded events emmited by this transaction
+   * @type {Array<EvmDecodedLog>}
+   * @memberof EvmPerTransactionSimulationResultsInner
+   */
+  decodedLogs: Array<EvmDecodedLog>;
+  /**
+   *
+   * @type {EvmDecodedCalldata}
+   * @memberof EvmPerTransactionSimulationResultsInner
+   */
+  decodedCalldata: EvmDecodedCalldata | null;
+}
+/**
  * Human-readable protocol information. Note that a single protocol can consist of multiple contracts.
  * @export
  * @interface EvmProtocol
@@ -1512,6 +1623,138 @@ export const EvmSimulationFailedErrorKindEnum = {
 export type EvmSimulationFailedErrorKindEnum =
   (typeof EvmSimulationFailedErrorKindEnum)[keyof typeof EvmSimulationFailedErrorKindEnum];
 
+/**
+ *
+ * @export
+ * @interface EvmSimulationResult
+ */
+export interface EvmSimulationResult {
+  /**
+   *
+   * @type {Array<EvmExpectedStateChange>}
+   * @memberof EvmSimulationResult
+   */
+  expectedStateChanges: Array<EvmExpectedStateChange>;
+  /**
+   *
+   * @type {EvmPerTransactionError}
+   * @memberof EvmSimulationResult
+   */
+  error: EvmPerTransactionError | null;
+  /**
+   *
+   * @type {EvmGas}
+   * @memberof EvmSimulationResult
+   */
+  gas: EvmGas;
+  /**
+   *
+   * @type {EvmProtocol}
+   * @memberof EvmSimulationResult
+   */
+  protocol: EvmProtocol | null;
+}
+/**
+ *
+ * @export
+ * @interface EvmSimulationResults
+ */
+export interface EvmSimulationResults {
+  /**
+   *
+   * @type {EvmAggregatedSimulationResults}
+   * @memberof EvmSimulationResults
+   */
+  aggregated: EvmAggregatedSimulationResults;
+  /**
+   *
+   * @type {Array<EvmPerTransactionSimulationResultsInner>}
+   * @memberof EvmSimulationResults
+   */
+  perTransaction: Array<EvmPerTransactionSimulationResultsInner>;
+}
+/**
+ * An optional advanced usage configuration to change the simulator environment during simulation. Under normal circumstances this configuration should not be set when making requests.
+ * @export
+ * @interface EvmSimulatorConfig
+ */
+export interface EvmSimulatorConfig {
+  /**
+   * Simulate the transaction at the head of this historical block. Note that transaction enrichment data may not contain historical values and execution may differ from on-chain execution due to block transaction index variations affecting the outcome
+   * @type {string}
+   * @memberof EvmSimulatorConfig
+   */
+  blockNumber?: string;
+  /**
+   *
+   * @type {EvmSimulatorConfigStateOverrides}
+   * @memberof EvmSimulatorConfig
+   */
+  stateOverrides?: EvmSimulatorConfigStateOverrides;
+}
+/**
+ *
+ * @export
+ * @interface EvmSimulatorConfigStateOverrides
+ */
+export interface EvmSimulatorConfigStateOverrides {
+  /**
+   *
+   * @type {Array<EvmSimulatorConfigStateOverridesNativeBalancesInner>}
+   * @memberof EvmSimulatorConfigStateOverrides
+   */
+  nativeBalances: Array<EvmSimulatorConfigStateOverridesNativeBalancesInner>;
+  /**
+   *
+   * @type {Array<EvmSimulatorConfigStateOverridesStorageInner>}
+   * @memberof EvmSimulatorConfigStateOverrides
+   */
+  storage: Array<EvmSimulatorConfigStateOverridesStorageInner>;
+}
+/**
+ *
+ * @export
+ * @interface EvmSimulatorConfigStateOverridesNativeBalancesInner
+ */
+export interface EvmSimulatorConfigStateOverridesNativeBalancesInner {
+  /**
+   * The account for which to override the native balance during simulation
+   * @type {string}
+   * @memberof EvmSimulatorConfigStateOverridesNativeBalancesInner
+   */
+  address: string;
+  /**
+   * The amount in native token base units to set the account balance to. This value can be passed in either decimal or 0x prefixed hexadecimal form
+   * @type {string}
+   * @memberof EvmSimulatorConfigStateOverridesNativeBalancesInner
+   */
+  value: string;
+}
+/**
+ *
+ * @export
+ * @interface EvmSimulatorConfigStateOverridesStorageInner
+ */
+export interface EvmSimulatorConfigStateOverridesStorageInner {
+  /**
+   * The address of the contract for which to override storage in the simulation
+   * @type {string}
+   * @memberof EvmSimulatorConfigStateOverridesStorageInner
+   */
+  address: string;
+  /**
+   * The storage slot in the contract's storage to override. This value can be passed in either decimal or 0x prefixed hexadecimal form
+   * @type {string}
+   * @memberof EvmSimulatorConfigStateOverridesStorageInner
+   */
+  slot: string;
+  /**
+   * The numerical value to set the storage slot to. This value can be passed in either decimal or 0x prefixed hexadecimal form
+   * @type {string}
+   * @memberof EvmSimulatorConfigStateOverridesStorageInner
+   */
+  value: string;
+}
 /**
  * Approval request for all owned ERC1155 assets
  * @export
@@ -1885,6 +2128,64 @@ export interface EvmStateChangeErc721ApprovalForAllData {
   asset: EvmErc721Asset;
 }
 /**
+ * Lock approval request for a specific token in an ERC721 collection
+ * @export
+ * @interface EvmStateChangeErc721LockApproval
+ */
+export interface EvmStateChangeErc721LockApproval {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockApproval
+   */
+  kind: EvmStateChangeErc721LockApprovalKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeErc721ApprovalData}
+   * @memberof EvmStateChangeErc721LockApproval
+   */
+  data: EvmStateChangeErc721ApprovalData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeErc721LockApprovalKindEnum = {
+  Erc721LockApproval: "ERC721_LOCK_APPROVAL",
+} as const;
+export type EvmStateChangeErc721LockApprovalKindEnum =
+  (typeof EvmStateChangeErc721LockApprovalKindEnum)[keyof typeof EvmStateChangeErc721LockApprovalKindEnum];
+
+/**
+ * Lock approval request for all owned ERC721 NFTs in a collection
+ * @export
+ * @interface EvmStateChangeErc721LockApprovalForAll
+ */
+export interface EvmStateChangeErc721LockApprovalForAll {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockApprovalForAll
+   */
+  kind: EvmStateChangeErc721LockApprovalForAllKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeErc721ApprovalForAllData}
+   * @memberof EvmStateChangeErc721LockApprovalForAll
+   */
+  data: EvmStateChangeErc721ApprovalForAllData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeErc721LockApprovalForAllKindEnum = {
+  Erc721LockApprovalForAll: "ERC721_LOCK_APPROVAL_FOR_ALL",
+} as const;
+export type EvmStateChangeErc721LockApprovalForAllKindEnum =
+  (typeof EvmStateChangeErc721LockApprovalForAllKindEnum)[keyof typeof EvmStateChangeErc721LockApprovalForAllKindEnum];
+
+/**
  * ERC721 NFT transfers
  * @export
  * @interface EvmStateChangeErc721Transfer
@@ -2134,6 +2435,25 @@ export const EvmUnknownErrorKindEnum = {
 export type EvmUnknownErrorKindEnum =
   (typeof EvmUnknownErrorKindEnum)[keyof typeof EvmUnknownErrorKindEnum];
 
+/**
+ *
+ * @export
+ * @interface HistoricalTransactionEvmRequest
+ */
+export interface HistoricalTransactionEvmRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof HistoricalTransactionEvmRequest
+   */
+  txHash: string;
+  /**
+   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
+   * @type {string}
+   * @memberof HistoricalTransactionEvmRequest
+   */
+  userAccount: string;
+}
 /**
  *
  * @export
@@ -2583,41 +2903,10 @@ export interface ScanTransactionEvm200Response {
   warnings: Array<WarningInner>;
   /**
    *
-   * @type {ScanTransactionEvm200ResponseSimulationResults}
+   * @type {EvmSimulationResult}
    * @memberof ScanTransactionEvm200Response
    */
-  simulationResults: ScanTransactionEvm200ResponseSimulationResults;
-}
-/**
- *
- * @export
- * @interface ScanTransactionEvm200ResponseSimulationResults
- */
-export interface ScanTransactionEvm200ResponseSimulationResults {
-  /**
-   *
-   * @type {Array<EvmExpectedStateChange>}
-   * @memberof ScanTransactionEvm200ResponseSimulationResults
-   */
-  expectedStateChanges: Array<EvmExpectedStateChange>;
-  /**
-   *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError}
-   * @memberof ScanTransactionEvm200ResponseSimulationResults
-   */
-  error: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError | null;
-  /**
-   *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas}
-   * @memberof ScanTransactionEvm200ResponseSimulationResults
-   */
-  gas: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas;
-  /**
-   *
-   * @type {EvmProtocol}
-   * @memberof ScanTransactionEvm200ResponseSimulationResults
-   */
-  protocol: EvmProtocol | null;
+  simulationResults: EvmSimulationResult;
 }
 /**
  *
@@ -2643,6 +2932,12 @@ export interface ScanTransactionEvmRequest {
    * @memberof ScanTransactionEvmRequest
    */
   userAccount: string;
+  /**
+   *
+   * @type {EvmSimulatorConfig}
+   * @memberof ScanTransactionEvmRequest
+   */
+  simulatorConfig?: EvmSimulatorConfig;
 }
 /**
  *
@@ -2664,131 +2959,10 @@ export interface ScanTransactionsEvm200Response {
   warnings: Array<WarningInner>;
   /**
    *
-   * @type {ScanTransactionsEvm200ResponseSimulationResults}
+   * @type {EvmSimulationResults}
    * @memberof ScanTransactionsEvm200Response
    */
-  simulationResults: ScanTransactionsEvm200ResponseSimulationResults;
-}
-/**
- *
- * @export
- * @interface ScanTransactionsEvm200ResponseSimulationResults
- */
-export interface ScanTransactionsEvm200ResponseSimulationResults {
-  /**
-   *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsAggregated}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResults
-   */
-  aggregated: ScanTransactionsEvm200ResponseSimulationResultsAggregated;
-  /**
-   *
-   * @type {Array<ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner>}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResults
-   */
-  perTransaction: Array<ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner>;
-}
-/**
- *
- * @export
- * @interface ScanTransactionsEvm200ResponseSimulationResultsAggregated
- */
-export interface ScanTransactionsEvm200ResponseSimulationResultsAggregated {
-  /**
-   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
-   * @type {string}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsAggregated
-   */
-  userAccount: string;
-  /**
-   * A mapping of account to the state changes to expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the account's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
-   * @type {{ [key: string]: Array<EvmExpectedStateChange> | undefined; }}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsAggregated
-   */
-  expectedStateChanges: {
-    [key: string]: Array<EvmExpectedStateChange> | undefined;
-  };
-  /**
-   *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsAggregatedError}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsAggregated
-   */
-  error: ScanTransactionsEvm200ResponseSimulationResultsAggregatedError | null;
-}
-/**
- * @type ScanTransactionsEvm200ResponseSimulationResultsAggregatedError
- * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
- * @export
- */
-export type ScanTransactionsEvm200ResponseSimulationResultsAggregatedError =
-  | ({ kind: "SIMULATION_FAILED" } & EvmSimulationFailedError)
-  | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError);
-/**
- *
- * @export
- * @interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
- */
-export interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner {
-  /**
-   *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
-   */
-  error: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError | null;
-  /**
-   *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
-   */
-  gas: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas;
-  /**
-   *
-   * @type {EvmProtocol}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
-   */
-  protocol: EvmProtocol | null;
-  /**
-   * Events emmited by this transaction
-   * @type {Array<EvmLog>}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
-   */
-  logs: Array<EvmLog>;
-  /**
-   * Decoded events emmited by this transaction
-   * @type {Array<EvmDecodedLog>}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
-   */
-  decodedLogs: Array<EvmDecodedLog>;
-  /**
-   *
-   * @type {EvmDecodedCalldata}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInner
-   */
-  decodedCalldata: EvmDecodedCalldata | null;
-}
-/**
- * @type ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError
- * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
- * @export
- */
-export type ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError =
-
-    | ({ kind: "SIMULATION_FAILED" } & EvmSimulationFailedError)
-    | ({ kind: "TRANSACTION_ERROR" } & EvmTransactionError)
-    | ({ kind: "TRANSACTION_REVERTED" } & EvmTransactionRevertedError)
-    | ({ kind: "UNKNOWN_ERROR" } & EvmUnknownError);
-/**
- * An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
- * @export
- * @interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas
- */
-export interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas {
-  /**
-   * A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
-   * @type {string}
-   * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas
-   */
-  gasLimit: string | null;
+  simulationResults: EvmSimulationResults;
 }
 /**
  *
@@ -2814,6 +2988,12 @@ export interface ScanTransactionsEvmRequest {
    * @memberof ScanTransactionsEvmRequest
    */
   userAccount: string;
+  /**
+   *
+   * @type {EvmSimulatorConfig}
+   * @memberof ScanTransactionsEvmRequest
+   */
+  simulatorConfig?: EvmSimulatorConfig;
 }
 /**
  *
@@ -3014,6 +3194,12 @@ export interface SolAsset {
    * @memberof SolAsset
    */
   price: AssetPrice | null;
+  /**
+   * Image URL for the Solana native token
+   * @type {string}
+   * @memberof SolAsset
+   */
+  imageUrl: string;
 }
 /**
  * Information about each instruction
@@ -3562,7 +3748,7 @@ export interface SplAsset {
    */
   price: AssetPrice | null;
   /**
-   *  HACK(metreniuk): updated manually until it's not fixed in schema
+   * The URL of the asset's image. Can be `null`.
    * @type {string}
    * @memberof SplAsset
    */
@@ -3644,6 +3830,13 @@ export const WarningInnerKindEnum = {
   PoisonedAddress: "POISONED_ADDRESS",
   ApprovalToEOA: "APPROVAL_TO_E_O_A",
   CopyCatDomain: "COPY_CAT_DOMAIN",
+  CopyCatImageUnresponsiveDomain: "COPY_CAT_IMAGE_UNRESPONSIVE_DOMAIN",
+  MultiCopyCatDomain: "MULTI_COPY_CAT_DOMAIN",
+  UserAccountOwnerChange: "USER_ACCOUNT_OWNER_CHANGE",
+  NewDomain: "NEW_DOMAIN",
+  UnusualGasConsumption: "UNUSUAL_GAS_CONSUMPTION",
+  ReferencedOfacAddress: "REFERENCED_OFAC_ADDRESS",
+  MainnetReplayPossible: "MAINNET_REPLAY_POSSIBLE",
 } as const;
 export type WarningInnerKindEnum =
   (typeof WarningInnerKindEnum)[keyof typeof WarningInnerKindEnum];

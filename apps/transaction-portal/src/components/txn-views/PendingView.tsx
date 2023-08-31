@@ -27,7 +27,6 @@ export const PendingView: React.FC<{
 
   const explorerText: string = useMemo(() => {
     const chainFamily = chain?.chainInfo?.chainFamily;
-    if (!chainFamily) return "Explorer";
     switch (chainFamily) {
       case "ethereum":
       case "optimism":
@@ -38,6 +37,8 @@ export const PendingView: React.FC<{
         return "Bscscan";
       case "arbitrum":
         return "Arbiscan";
+      default:
+        return "Explorer";
     }
   }, [chain?.chainInfo?.chainFamily]);
 

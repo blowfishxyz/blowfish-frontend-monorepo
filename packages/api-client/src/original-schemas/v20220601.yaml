@@ -45,7 +45,7 @@ paths:
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       deprecated: true
       security:
         - ApiKeyAuth: []
@@ -95,6 +95,8 @@ paths:
                   $ref: "#/components/schemas/RequestMetadata"
                 userAccount:
                   $ref: "#/components/schemas/EvmUserAccount"
+                simulatorConfig:
+                  $ref: "#/components/schemas/EvmSimulatorConfig"
               required:
                 - txObject
                 - userAccount
@@ -164,6 +166,8 @@ paths:
                                 - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
                                 - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
                                 - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+                                - $ref: "#/components/schemas/EvmStateChangeErc721LockApproval"
+                                - $ref: "#/components/schemas/EvmStateChangeErc721LockApprovalForAll"
                                 - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
                                 - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
                                 - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
@@ -176,6 +180,8 @@ paths:
                                   ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
                                   ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
                                   ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+                                  ERC721_LOCK_APPROVAL: "#/components/schemas/EvmStateChangeErc721LockApproval"
+                                  ERC721_LOCK_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721LockApprovalForAll"
                                   ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
                                   ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
 
@@ -555,7 +561,7 @@ paths:
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -1321,6 +1327,7 @@ paths:
                               diff:
                                 sign: PLUS
                                 digits: 56573477
+                              imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__So11111111111111111111111111111111111111112.png
                         - humanReadableDiff: Send 2 USDT
                           suggestedColor: DEBIT
                           rawInfo:
@@ -1339,6 +1346,7 @@ paths:
                               diff:
                                 sign: MINUS
                                 digits: 2000000
+                              imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB.png
                         - humanReadableDiff: Approve to transfer Phantom QA NFT
                           suggestedColor: DEBIT
                           rawInfo:
@@ -1355,6 +1363,7 @@ paths:
                               supply: 1
                               metaplexTokenStandard: non_fungible
                               assetPrice: null
+                              imageUrl: https://cdn.simplehash.com/assets/2b6b37a30a85f4d7f3727574afc296026d3453cc813f982a7c4c358668060ea9.png
                         - humanReadableDiff: Unapprove from transferring up to 0.00132 USDC
                           suggestedColor: CREDIT
                           rawInfo:
@@ -1374,6 +1383,7 @@ paths:
                                 source: Coingecko
                                 last_updated_at: 1679331222
                                 dollar_value_per_token: 0.99
+                              imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png
                         - humanReadableDiff: Transfer control over your SOL staking account (2AG3be..p2vFQS)
                           suggestedColor: DEBIT
                           rawInfo:
@@ -1446,6 +1456,7 @@ paths:
                               diff:
                                 sign: MINUS
                                 digits: 2000000000
+                              imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB.png
                       error: null
                       raw:
                         err: null
@@ -1810,6 +1821,10 @@ paths:
                       riskScore: 1.0
                       labels:
                         - source=blowfish_blocklist
+                      warnings:
+                        - kind: TRUSTED_BLOCKLIST_DOMAIN
+                          message: "Domain found on blocklists maintained by: Blowfish. This website is very likely to be a scam."
+                          severity: CRITICAL
                     - domain: "1nich.com"
                       status: PROCESSED
                       risk_score: 0.5
@@ -1818,6 +1833,10 @@ paths:
                         - source=metamask_blocklist
                         - source=phishfort_blocklist
                         - warning[all]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
+                      warnings:
+                        - kind: MULTI_COPY_CAT_DOMAIN
+                          message: This domain has been flagged for impersonating well-known brands. Approving may lead to loss of funds.
+                          severity: WARNING
         "400":
           description: Bad request
           content:
@@ -1929,6 +1948,13 @@ components:
               - POISONED_ADDRESS
               - APPROVAL_TO_E_O_A
               - COPY_CAT_DOMAIN
+              - COPY_CAT_IMAGE_UNRESPONSIVE_DOMAIN
+              - MULTI_COPY_CAT_DOMAIN
+              - USER_ACCOUNT_OWNER_CHANGE
+              - NEW_DOMAIN
+              - UNUSUAL_GAS_CONSUMPTION
+              - REFERENCED_OFAC_ADDRESS
+              - MAINNET_REPLAY_POSSIBLE
             example: SUSPECTED_MALICIOUS
           message:
             type: string
@@ -2085,6 +2111,81 @@ components:
       type: string
       description: A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
       example: "0xc1e42f862d202b4a0ed552c1145735ee088f6ccf"
+    EvmSimulatorConfig:
+      description: "An optional advanced usage configuration to change the simulator environment during simulation. Under normal circumstances this configuration should not be set when making requests."
+      type: object
+      properties:
+        blockNumber:
+          type: string
+          examples:
+            - decimal:
+                value: "17408997"
+                summary: "Decimal value example"
+            - hex:
+                value: "0x109a3e5"
+                summary: "Hexadecimal value example"
+          description: "Simulate the transaction at the head of this historical block. Note that transaction enrichment data may not contain historical values and execution may differ from on-chain execution due to block transaction index variations affecting the outcome"
+        stateOverrides:
+          type: object
+          required:
+            - nativeBalances
+            - storage
+          properties:
+            nativeBalances:
+              type: array
+              items:
+                type: object
+                required:
+                  - address
+                  - value
+                properties:
+                  address:
+                    type: string
+                    example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+                    description: "The account for which to override the native balance during simulation"
+                  value:
+                    type: string
+                    examples:
+                      - decimal:
+                          value: "1000000000000000000"
+                          summary: "Decimal value example"
+                      - hex:
+                          value: "0xde0b6b3a7640000"
+                          summary: "Hexadecimal value example"
+                    description: "The amount in native token base units to set the account balance to. This value can be passed in either decimal or 0x prefixed hexadecimal form"
+            storage:
+              type: array
+              items:
+                type: object
+                required:
+                  - address
+                  - slot
+                  - value
+                properties:
+                  address:
+                    type: string
+                    example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                    description: "The address of the contract for which to override storage in the simulation"
+                  slot:
+                    type: string
+                    examples:
+                      - decimal:
+                          value: "4"
+                          summary: "Decimal value example"
+                      - hex:
+                          value: "0xde0b6b3a7640000"
+                          summary: "Hexadecimal value example"
+                    description: "The storage slot in the contract's storage to override. This value can be passed in either decimal or 0x prefixed hexadecimal form"
+                  value:
+                    type: string
+                    examples:
+                      - decimal:
+                          value: "1"
+                          summary: "Decimal value example"
+                      - hex:
+                          value: "0xde0b6b3a7640000"
+                          summary: "Hexadecimal value example"
+                    description: "The numerical value to set the storage slot to. This value can be passed in either decimal or 0x prefixed hexadecimal form"
     EvmAddressInfo:
       type: object
       required:
@@ -2572,6 +2673,39 @@ components:
               description: The NFT collection's $-value floor price
               $ref: "#/components/schemas/AssetPrice"
           description: Data associated with the state change
+    EvmStateChangeErc721ApprovalData:
+      type: object
+      required:
+        - amount
+        - contract
+        - metadata
+        - name
+        - owner
+        - spender
+        - symbol
+        - tokenId
+        - assetPrice
+      properties:
+        amount:
+          $ref: "#/components/schemas/EvmAmount"
+        contract:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        metadata:
+          $ref: "#/components/schemas/EvmNftMetadata"
+        name:
+          $ref: "#/components/schemas/EvmName"
+        owner:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        spender:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        symbol:
+          $ref: "#/components/schemas/EvmSymbol"
+        tokenId:
+          $ref: "#/components/schemas/EvmErc721TokenId"
+        assetPrice:
+          description: The NFT collection's $-value floor price
+          $ref: "#/components/schemas/AssetPrice"
+      description: Data associated with the state change
     EvmStateChangeErc721Approval:
       type: object
       description: Approval request for a specific token in an ERC721 collection
@@ -2585,38 +2719,62 @@ components:
           enum: [ERC721_APPROVAL]
           example: ERC721_APPROVAL
         data:
-          type: object
-          required:
-            - amount
-            - contract
-            - metadata
-            - name
-            - owner
-            - spender
-            - symbol
-            - tokenId
-            - assetPrice
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            metadata:
-              $ref: "#/components/schemas/EvmNftMetadata"
-            name:
-              $ref: "#/components/schemas/EvmName"
-            owner:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            symbol:
-              $ref: "#/components/schemas/EvmSymbol"
-            tokenId:
-              $ref: "#/components/schemas/EvmErc721TokenId"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
-          description: Data associated with the state change
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalData"
+    EvmStateChangeErc721LockApproval:
+      type: object
+      description: Lock approval request for a specific token in an ERC721 collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC721_LOCK_APPROVAL]
+          example: ERC721_LOCK_APPROVAL
+        data:
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalData"
+    EvmStateChangeErc721ApprovalForAllData:
+      type: object
+      required:
+        - amount
+        - contract
+        - name
+        - owner
+        - spender
+        - symbol
+        - assetPrice
+      properties:
+        amount:
+          $ref: "#/components/schemas/EvmAmount"
+        contract:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        name:
+          $ref: "#/components/schemas/EvmName"
+        owner:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        spender:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        symbol:
+          $ref: "#/components/schemas/EvmSymbol"
+        assetPrice:
+          description: The NFT collection's $-value floor price
+          $ref: "#/components/schemas/AssetPrice"
+      description: Data associated with the state change
+    EvmStateChangeErc721LockApprovalForAll:
+      type: object
+      description: Lock approval request for all owned ERC721 NFTs in a collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC721_LOCK_APPROVAL_FOR_ALL]
+          example: ERC721_LOCK_APPROVAL_FOR_ALL
+        data:
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAllData"
     EvmStateChangeErc721ApprovalForAll:
       type: object
       description: Approval request for all owned ERC721 NFTs in a collection
@@ -2630,32 +2788,7 @@ components:
           enum: [ERC721_APPROVAL_FOR_ALL]
           example: ERC721_APPROVAL_FOR_ALL
         data:
-          type: object
-          required:
-            - amount
-            - contract
-            - name
-            - owner
-            - spender
-            - symbol
-            - assetPrice
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            name:
-              $ref: "#/components/schemas/EvmName"
-            owner:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            symbol:
-              $ref: "#/components/schemas/EvmSymbol"
-            assetPrice:
-              description: The NFT collection's $-value floor price
-              $ref: "#/components/schemas/AssetPrice"
-          description: Data associated with the state change
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAllData"
     EvmStateChangeErc1155Transfer:
       type: object
       description: ERC1155 transfers
@@ -2793,6 +2926,7 @@ components:
             - name
             - decimals
             - diff
+            - imageUrl
           properties:
             symbol:
               type: string
@@ -2808,6 +2942,10 @@ components:
               example: 9
             diff:
               $ref: "#/components/schemas/Diff"
+            imageUrl:
+              type: string
+              description: Image URL for the Solana native token
+              example: https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__So11111111111111111111111111111111111111112.png
     Diff:
       type: object
       required:
@@ -2846,6 +2984,7 @@ components:
             - supply
             - metaplexTokenStandard
             - assetPrice
+            - imageUrl
           properties:
             symbol:
               type: string
@@ -2875,6 +3014,10 @@ components:
             assetPrice:
               description: The $-value price of the asset
               $ref: "#/components/schemas/AssetPrice"
+            imageUrl:
+              description: Image URL of the asset if any
+              type: string
+              nullable: true
     SolanaStateChangeSplApproval:
       type: object
       description: Approval request to transfer user's tokens
@@ -2899,6 +3042,7 @@ components:
             - supply
             - metaplexTokenStandard
             - assetPrice
+            - imageUrl
           properties:
             delegate:
               type: string
@@ -2932,6 +3076,10 @@ components:
             assetPrice:
               description: The $-value price of the asset
               $ref: "#/components/schemas/AssetPrice"
+            imageUrl:
+              description: Image URL of the asset if any
+              type: string
+              nullable: true
 
     SolanaStateChangeUserAccountOwnerChange:
       type: object

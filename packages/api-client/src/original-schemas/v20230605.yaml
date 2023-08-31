@@ -28,6 +28,87 @@ security:
   - ApiKeyAuth: []
 
 paths:
+  /ethereum/v0/mainnet/historical/transaction:
+    post:
+      tags:
+        - Simulate historical transaction
+      summary: EVM
+      operationId: historical-transaction-evm
+      description: |
+        Simulates historical transaction to get the actual state changes it produced.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/historical/transaction |
+        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/historical/transaction |
+        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/historical/transaction |
+        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/historical/transaction |
+        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/historical/transaction |
+        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/historical/transaction |
+        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/historical/transaction |
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                txHash:
+                  $ref: "#/components/schemas/EvmTxHash"
+                userAccount:
+                  $ref: "#/components/schemas/EvmUserAccount"
+              required:
+                - txHash
+                - userAccount
+            examples:
+              native_transfer:
+                summary: Native Transfer
+                value:
+                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+                  txHash: "0x8010da429a651ca117e5c087497cdd8d62e2b7ac1d4095358897817a4d1aa477"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvmSimulationResults"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
   /ethereum/v0/mainnet/scan/transactions:
     post:
       tags:
@@ -45,7 +126,7 @@ paths:
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -79,6 +160,8 @@ paths:
                   $ref: "#/components/schemas/RequestMetadata"
                 userAccount:
                   $ref: "#/components/schemas/EvmUserAccount"
+                simulatorConfig:
+                  $ref: "#/components/schemas/EvmSimulatorConfig"
               required:
                 - txObjects
                 - userAccount
@@ -152,79 +235,7 @@ paths:
                   warnings:
                     $ref: "#/components/schemas/Warning"
                   simulationResults:
-                    type: object
-                    required:
-                      - aggregated
-                      - perTransaction
-                    properties:
-                      aggregated:
-                        type: object
-                        required:
-                          - error
-                          - expectedStateChanges
-                          - userAccount
-                        properties:
-                          userAccount:
-                            $ref: "#/components/schemas/EvmUserAccount"
-                          expectedStateChanges:
-                            $ref: "#/components/schemas/EvmByAccountExpectedStateChanges"
-                          error:
-                            description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
-                            oneOf:
-                              - $ref: "#/components/schemas/EvmSimulationFailedError"
-                              - $ref: "#/components/schemas/EvmUnknownError"
-                              - type: "null"
-                            discriminator:
-                              propertyName: kind
-                              mapping:
-                                SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                                UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                      perTransaction:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - error
-                            - gas
-                            - protocol
-                            - logs
-                            - decodedLogs
-                            - decodedCalldata
-                          properties:
-                            error:
-                              description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
-                              oneOf:
-                                - $ref: "#/components/schemas/EvmTransactionRevertedError"
-                                - $ref: "#/components/schemas/EvmTransactionError"
-                                - $ref: "#/components/schemas/EvmSimulationFailedError"
-                                - $ref: "#/components/schemas/EvmUnknownError"
-                                - type: "null"
-                              discriminator:
-                                propertyName: kind
-                                mapping:
-                                  TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
-                                  TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-                                  SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                                  UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                            gas:
-                              type: object
-                              description: An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
-                              required:
-                                - gasLimit
-                              properties:
-                                gasLimit:
-                                  type: string
-                                  example: "46220"
-                                  description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
-                                  nullable: true
-                            protocol:
-                              $ref: "#/components/schemas/EvmProtocol"
-                            logs:
-                              $ref: "#/components/schemas/EvmLogs"
-                            decodedLogs:
-                              $ref: "#/components/schemas/EvmDecodedLogs"
-                            decodedCalldata:
-                              $ref: "#/components/schemas/EvmDecodedCalldata"
+                    $ref: "#/components/schemas/EvmSimulationResults"
               examples:
                 erc20_swap_with_enrichment:
                   summary: ERC20 Swap WETH for USDC (SushiSwap)
@@ -668,7 +679,8 @@ paths:
                                   tokenId: "7238"
                                   asset:
                                     address: "0xbd3531da5cf5857e7cfaa92426877b022e612cf8"
-                                    name: PudgyPenguins
+                                    name: PudgyPenguins #7238
+                                    collection: PudgyPenguins
                                     symbol: PPG
                                     price:
                                       source: Simplehash
@@ -738,6 +750,7 @@ paths:
                                   asset:
                                     address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
                                     name: BoredApeYachtClub
+                                    collection: BoredApeYachtClub
                                     symbol: BAYC
                                     price:
                                       source: Simplehash
@@ -779,7 +792,8 @@ paths:
                                   tokenId: "6603"
                                   asset:
                                     address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d"
-                                    name: BoredApeYachtClub
+                                    name: BoredApeYachtClub #6603
+                                    collection: BoredApeYachtClub
                                     symbol: BAYC
                                     price:
                                       source: Simplehash
@@ -937,7 +951,7 @@ paths:
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       deprecated: true
       security:
         - ApiKeyAuth: []
@@ -970,6 +984,8 @@ paths:
                   $ref: "#/components/schemas/RequestMetadata"
                 userAccount:
                   $ref: "#/components/schemas/EvmUserAccount"
+                simulatorConfig:
+                  $ref: "#/components/schemas/EvmSimulatorConfig"
               required:
                 - txObject
                 - userAccount
@@ -1012,44 +1028,7 @@ paths:
                   warnings:
                     $ref: "#/components/schemas/Warning"
                   simulationResults:
-                    type: object
-                    required:
-                      - expectedStateChanges
-                      - error
-                      - gas
-                      - protocol
-                    properties:
-                      expectedStateChanges:
-                        $ref: "#/components/schemas/EvmExpectedStateChanges"
-                      error:
-                        description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
-                        oneOf:
-                          - $ref: "#/components/schemas/EvmTransactionRevertedError"
-                          - $ref: "#/components/schemas/EvmTransactionError"
-                          - $ref: "#/components/schemas/EvmSimulationFailedError"
-                          - $ref: "#/components/schemas/EvmUnknownError"
-                          - type: "null"
-                        discriminator:
-                          propertyName: kind
-                          mapping:
-                            TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
-                            TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-                            SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                            UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                      gas:
-                        type: object
-                        description: An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
-                        required:
-                          - gasLimit
-                        properties:
-                          gasLimit:
-                            type: string
-                            example: "46220"
-                            description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
-                            nullable: true
-                      protocol:
-                        $ref: "#/components/schemas/EvmProtocol"
-
+                    $ref: "#/components/schemas/EvmSimulationResult"
         "400":
           description: Bad request
           content:
@@ -1085,7 +1064,7 @@ paths:
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
-        Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -2045,7 +2024,7 @@ paths:
                                   source: Coingecko
                                   updatedAt: 1690326202
                                   dollarValuePerToken: 1860.31
-                        - humanReadableDiff: "Send Gavius I #53046"
+                        - humanReadableDiff: "Send Prometheans #53046"
                           rawInfo:
                             kind: ERC721_TRANSFER
                             data:
@@ -2917,6 +2896,10 @@ paths:
                       riskScore: 1.0
                       labels:
                         - source=blowfish_blocklist
+                      warnings:
+                        - kind: TRUSTED_BLOCKLIST_DOMAIN
+                          message: "Domain found on blocklists maintained by: Blowfish. This website is very likely to be a scam."
+                          severity: CRITICAL
                     - domain: "1nich.com"
                       status: PROCESSED
                       riskScore: 0.5
@@ -2924,6 +2907,10 @@ paths:
                         - source=metamask_blocklist
                         - source=phishfort_blocklist
                         - warning[all]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
+                      warnings:
+                        - kind: MULTI_COPY_CAT_DOMAIN
+                          message: This domain has been flagged for impersonating well-known brands. Approving may lead to loss of funds.
+                          severity: WARNING
         "400":
           description: Bad request
           content:
@@ -3035,6 +3022,13 @@ components:
               - POISONED_ADDRESS
               - APPROVAL_TO_E_O_A
               - COPY_CAT_DOMAIN
+              - COPY_CAT_IMAGE_UNRESPONSIVE_DOMAIN
+              - MULTI_COPY_CAT_DOMAIN
+              - USER_ACCOUNT_OWNER_CHANGE
+              - NEW_DOMAIN
+              - UNUSUAL_GAS_CONSUMPTION
+              - REFERENCED_OFAC_ADDRESS
+              - MAINNET_REPLAY_POSSIBLE
             example: SUSPECTED_MALICIOUS
           message:
             type: string
@@ -3398,6 +3392,106 @@ components:
         - address
         - topics
         - data
+    EvmGas:
+      type: object
+      description: An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
+      required:
+        - gasLimit
+      properties:
+        gasLimit:
+          type: string
+          example: "46220"
+          description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+          nullable: true
+    EvmSimulationResults:
+      type: object
+      required:
+        - aggregated
+        - perTransaction
+      properties:
+        aggregated:
+          $ref: "#/components/schemas/EvmAggregatedSimulationResults"
+        perTransaction:
+          $ref: "#/components/schemas/EvmPerTransactionSimulationResults"
+    EvmAggregatedSimulationResults:
+      type: object
+      required:
+        - error
+        - expectedStateChanges
+        - userAccount
+      properties:
+        userAccount:
+          $ref: "#/components/schemas/EvmUserAccount"
+        expectedStateChanges:
+          $ref: "#/components/schemas/EvmByAccountExpectedStateChanges"
+        error:
+          $ref: "#/components/schemas/EvmAggregatedSimulationError"
+    EvmPerTransactionSimulationResults:
+      type: array
+      items:
+        type: object
+        required:
+          - error
+          - gas
+          - protocol
+          - logs
+          - decodedLogs
+          - decodedCalldata
+        properties:
+          error:
+            $ref: "#/components/schemas/EvmPerTransactionError"
+          gas:
+            $ref: "#/components/schemas/EvmGas"
+          protocol:
+            $ref: "#/components/schemas/EvmProtocol"
+          logs:
+            $ref: "#/components/schemas/EvmLogs"
+          decodedLogs:
+            $ref: "#/components/schemas/EvmDecodedLogs"
+          decodedCalldata:
+            $ref: "#/components/schemas/EvmDecodedCalldata"
+    EvmAggregatedSimulationError:
+      description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+      oneOf:
+        - $ref: "#/components/schemas/EvmSimulationFailedError"
+        - $ref: "#/components/schemas/EvmUnknownError"
+        - type: "null"
+      discriminator:
+        propertyName: kind
+        mapping:
+          SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
+          UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
+    EvmPerTransactionError:
+      description: A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+      oneOf:
+        - $ref: "#/components/schemas/EvmTransactionRevertedError"
+        - $ref: "#/components/schemas/EvmTransactionError"
+        - $ref: "#/components/schemas/EvmSimulationFailedError"
+        - $ref: "#/components/schemas/EvmUnknownError"
+        - type: "null"
+      discriminator:
+        propertyName: kind
+        mapping:
+          TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
+          TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
+          SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
+          UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
+    EvmSimulationResult:
+      type: object
+      required:
+        - expectedStateChanges
+        - error
+        - gas
+        - protocol
+      properties:
+        expectedStateChanges:
+          $ref: "#/components/schemas/EvmExpectedStateChanges"
+        error:
+          $ref: "#/components/schemas/EvmPerTransactionError"
+        gas:
+          $ref: "#/components/schemas/EvmGas"
+        protocol:
+          $ref: "#/components/schemas/EvmProtocol"
     EvmProtocol:
       type: object
       description: Human-readable protocol information. Note that a single protocol can consist of multiple contracts.
@@ -3475,6 +3569,8 @@ components:
       enum:
         [non_fungible, fungible_asset, fungible, non_fungible_edition, unknown]
       example: fungible
+    EvmTxHash:
+      type: string
     EvmTxData:
       type: object
       properties:
@@ -3513,6 +3609,8 @@ components:
             - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc721Approval"
             - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+            - $ref: "#/components/schemas/EvmStateChangeErc721LockApproval"
+            - $ref: "#/components/schemas/EvmStateChangeErc721LockApprovalForAll"
             - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
           discriminator:
@@ -3524,6 +3622,8 @@ components:
               ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
               ERC721_APPROVAL: "#/components/schemas/EvmStateChangeErc721Approval"
               ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
+              ERC721_LOCK_APPROVAL: "#/components/schemas/EvmStateChangeErc721LockApproval"
+              ERC721_LOCK_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721LockApprovalForAll"
               ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
               ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
     EvmExpectedStateChanges:
@@ -3539,6 +3639,81 @@ components:
       type: string
       description: A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
       example: "0xc1e42f862d202b4a0ed552c1145735ee088f6ccf"
+    EvmSimulatorConfig:
+      description: "An optional advanced usage configuration to change the simulator environment during simulation. Under normal circumstances this configuration should not be set when making requests."
+      type: object
+      properties:
+        blockNumber:
+          type: string
+          examples:
+            - decimal:
+                value: "17408997"
+                summary: "Decimal value example"
+            - hex:
+                value: "0x109a3e5"
+                summary: "Hexadecimal value example"
+          description: "Simulate the transaction at the head of this historical block. Note that transaction enrichment data may not contain historical values and execution may differ from on-chain execution due to block transaction index variations affecting the outcome"
+        stateOverrides:
+          type: object
+          required:
+            - nativeBalances
+            - storage
+          properties:
+            nativeBalances:
+              type: array
+              items:
+                type: object
+                required:
+                  - address
+                  - value
+                properties:
+                  address:
+                    type: string
+                    example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+                    description: "The account for which to override the native balance during simulation"
+                  value:
+                    type: string
+                    examples:
+                      - decimal:
+                          value: "1000000000000000000"
+                          summary: "Decimal value example"
+                      - hex:
+                          value: "0xde0b6b3a7640000"
+                          summary: "Hexadecimal value example"
+                    description: "The amount in native token base units to set the account balance to. This value can be passed in either decimal or 0x prefixed hexadecimal form"
+            storage:
+              type: array
+              items:
+                type: object
+                required:
+                  - address
+                  - slot
+                  - value
+                properties:
+                  address:
+                    type: string
+                    example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                    description: "The address of the contract for which to override storage in the simulation"
+                  slot:
+                    type: string
+                    examples:
+                      - decimal:
+                          value: "4"
+                          summary: "Decimal value example"
+                      - hex:
+                          value: "0xde0b6b3a7640000"
+                          summary: "Hexadecimal value example"
+                    description: "The storage slot in the contract's storage to override. This value can be passed in either decimal or 0x prefixed hexadecimal form"
+                  value:
+                    type: string
+                    examples:
+                      - decimal:
+                          value: "1"
+                          summary: "Decimal value example"
+                      - hex:
+                          value: "0xde0b6b3a7640000"
+                          summary: "Hexadecimal value example"
+                    description: "The numerical value to set the storage slot to. This value can be passed in either decimal or 0x prefixed hexadecimal form"
     EvmAddressInfo:
       type: object
       required:
@@ -3560,6 +3735,9 @@ components:
     EvmName:
       type: string
       example: Tether USD
+    EvmCollectionName:
+      type: string
+      example: Bored Ape Yacht Club
     EvmNftMetadata:
       type: object
       required:
@@ -3616,17 +3794,22 @@ components:
         - address
         - symbol
         - name
+        - collection
         - price
       properties:
         address:
           $ref: "#/components/schemas/EvmContractAddress"
         symbol:
-          description: Some NFTs don't have a symbol/name as it's not required in a standard
+          description: Some NFTs don't have a symbol as it's not required in a standard
           $ref: "#/components/schemas/EvmSymbol"
           nullable: true
         name:
-          description: Some NFTs don't have a symbol/name as it's not required in a standard
+          description: Some NFTs don't have a name as it's not required in a standard
           $ref: "#/components/schemas/EvmName"
+          nullable: true
+        collection:
+          description: Some NFTs don't have a collection name as it's not required in a standard
+          $ref: "#/components/schemas/EvmCollectionName"
           nullable: true
         price:
           description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
@@ -4040,6 +4223,43 @@ components:
             asset:
               $ref: "#/components/schemas/EvmErc721Asset"
           description: Data associated with the state change
+    EvmStateChangeErc721ApprovalData:
+      type: object
+      required:
+        - amount
+        - metadata
+        - owner
+        - spender
+        - tokenId
+        - asset
+      properties:
+        amount:
+          $ref: "#/components/schemas/EvmAmount"
+        metadata:
+          $ref: "#/components/schemas/EvmNftMetadata"
+        owner:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        spender:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        tokenId:
+          $ref: "#/components/schemas/EvmErc721TokenId"
+        asset:
+          $ref: "#/components/schemas/EvmErc721Asset"
+      description: Data associated with the state change
+    EvmStateChangeErc721LockApproval:
+      type: object
+      description: Lock approval request for a specific token in an ERC721 collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC721_LOCK_APPROVAL]
+          example: ERC721_LOCK_APPROVAL
+        data:
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalData"
     EvmStateChangeErc721Approval:
       type: object
       description: Approval request for a specific token in an ERC721 collection
@@ -4053,28 +4273,38 @@ components:
           enum: [ERC721_APPROVAL]
           example: ERC721_APPROVAL
         data:
-          type: object
-          required:
-            - amount
-            - metadata
-            - owner
-            - spender
-            - tokenId
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            metadata:
-              $ref: "#/components/schemas/EvmNftMetadata"
-            owner:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            tokenId:
-              $ref: "#/components/schemas/EvmErc721TokenId"
-            asset:
-              $ref: "#/components/schemas/EvmErc721Asset"
-          description: Data associated with the state change
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalData"
+    EvmStateChangeErc721ApprovalForAllData:
+      type: object
+      required:
+        - amount
+        - owner
+        - spender
+        - asset
+      properties:
+        amount:
+          $ref: "#/components/schemas/EvmAmount"
+        owner:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        spender:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        asset:
+          $ref: "#/components/schemas/EvmErc721Asset"
+      description: Data associated with the state change
+    EvmStateChangeErc721LockApprovalForAll:
+      type: object
+      description: Lock approval request for all owned ERC721 NFTs in a collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ERC721_LOCK_APPROVAL_FOR_ALL]
+          example: ERC721_LOCK_APPROVAL_FOR_ALL
+        data:
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAllData"
     EvmStateChangeErc721ApprovalForAll:
       type: object
       description: Approval request for all owned ERC721 NFTs in a collection
@@ -4088,22 +4318,7 @@ components:
           enum: [ERC721_APPROVAL_FOR_ALL]
           example: ERC721_APPROVAL_FOR_ALL
         data:
-          type: object
-          required:
-            - amount
-            - owner
-            - spender
-            - asset
-          properties:
-            amount:
-              $ref: "#/components/schemas/EvmAmount"
-            owner:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            asset:
-              $ref: "#/components/schemas/EvmErc721Asset"
-          description: Data associated with the state change
+          $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAllData"
     EvmStateChangeErc1155Transfer:
       type: object
       description: ERC1155 transfers
@@ -4443,6 +4658,7 @@ components:
         - name
         - decimals
         - price
+        - imageUrl
       properties:
         symbol:
           type: string
@@ -4459,6 +4675,10 @@ components:
         price:
           description: The $-value price of the asset
           $ref: "#/components/schemas/AssetPrice"
+        imageUrl:
+          type: string
+          description: Image URL for the Solana native token
+          example: https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__So11111111111111111111111111111111111111112.png
     SplAsset:
       type: object
       required:
@@ -4469,6 +4689,7 @@ components:
         - supply
         - metaplexTokenStandard
         - price
+        - imageUrl
       properties:
         symbol:
           type: string
@@ -4496,6 +4717,11 @@ components:
         price:
           description: The $-value price of the asset
           $ref: "#/components/schemas/AssetPrice"
+        imageUrl:
+          type: string
+          description: The URL of the asset's image. Can be `null`.
+          nullable: true
+          example: "https://cdn.simplehash.com/assets/2b6b37a30a85f4d7f3727574afc296026d3453cc813f982a7c4c358668060ea9.png"
     SolanaStageChangeSplTransfer:
       type: object
       description: SPL token transfer

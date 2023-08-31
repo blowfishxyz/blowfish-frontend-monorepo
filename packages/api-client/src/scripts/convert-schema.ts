@@ -181,6 +181,7 @@ function createEvmChainFamily() {
         - bnb
         - arbitrum
         - optimism
+        - base
     required: true
   `) as YAMLMap;
 

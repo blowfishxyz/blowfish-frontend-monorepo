@@ -218,6 +218,7 @@ export const chainToBlockExplorerUrl = ({
     case "bnb":
       return `https://bscscan.com/address/${address}`;
     case "ethereum":
+    default:
       // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
       return `https://${prefix}etherscan.io/${assetType}/${address}${
         nftTokenId ? `/${nftTokenId}` : ""

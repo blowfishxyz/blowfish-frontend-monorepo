@@ -4,18 +4,18 @@ import {
   EvmExpectedStateChange,
   ScanMessageEvm200ResponseSimulationResults,
   ScanMessageEvm200ResponseSimulationResultsError,
-  ScanTransactionsEvm200ResponseSimulationResults,
-  ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError,
+  EvmSimulationResults,
+  EvmAggregatedSimulationError,
 } from "@blowfishxyz/api-client";
 
 export const getErrorFromScanResponse = (
   simulationResults:
-    | ScanTransactionsEvm200ResponseSimulationResults
+    | EvmSimulationResults
     | ScanMessageEvm200ResponseSimulationResults
     | null
     | undefined
 ):
-  | ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError
+  | EvmAggregatedSimulationError
   | ScanMessageEvm200ResponseSimulationResultsError
   | null => {
   if (!simulationResults) return null;
@@ -29,7 +29,7 @@ export const getErrorFromScanResponse = (
 
 export const getResultsFromScanResponse = (
   simulationResults:
-    | ScanTransactionsEvm200ResponseSimulationResults
+    | EvmSimulationResults
     | ScanMessageEvm200ResponseSimulationResults
     | null
 ): {

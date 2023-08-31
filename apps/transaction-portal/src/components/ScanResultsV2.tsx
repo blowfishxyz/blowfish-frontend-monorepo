@@ -121,11 +121,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
               severity: "WARNING",
               message: `This transaction failed during simulation. Proceed with caution`,
             };
-          case "TRANSACTION_ERROR":
-            return {
-              severity: "WARNING",
-              message: `This transaction does not seem valid. Proceed with caution`,
-            };
           case "UNSUPPORTED_ORDER_TYPE":
             return {
               severity: "WARNING",
@@ -134,7 +129,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
             };
           // TODO: Add more specific messages for these errors
           case "UNSUPPORTED_MESSAGE":
-          case "TRANSACTION_REVERTED":
           default:
             return {
               severity: "WARNING",

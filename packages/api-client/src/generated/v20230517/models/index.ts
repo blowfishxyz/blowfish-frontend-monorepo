@@ -615,6 +615,10 @@ export type EvmExpectedStateChangesInnerRawInfo =
   | ({ kind: "ERC20_TRANSFER" } & EvmStateChangeErc20Transfer)
   | ({ kind: "ERC721_APPROVAL" } & EvmStateChangeErc721Approval)
   | ({ kind: "ERC721_APPROVAL_FOR_ALL" } & EvmStateChangeErc721ApprovalForAll)
+  | ({ kind: "ERC721_LOCK_APPROVAL" } & EvmStateChangeErc721LockApproval)
+  | ({
+      kind: "ERC721_LOCK_APPROVAL_FOR_ALL";
+    } & EvmStateChangeErc721LockApprovalForAll)
   | ({ kind: "ERC721_TRANSFER" } & EvmStateChangeErc721Transfer)
   | ({ kind: "NATIVE_ASSET_TRANSFER" } & EvmStateChangeNativeAssetTransfer);
 /**
@@ -1628,6 +1632,64 @@ export interface EvmStateChangeErc721ApprovalForAllData {
    */
   assetPrice: AssetPrice | null;
 }
+/**
+ * Lock approval request for a specific token in an ERC721 collection
+ * @export
+ * @interface EvmStateChangeErc721LockApproval
+ */
+export interface EvmStateChangeErc721LockApproval {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockApproval
+   */
+  kind: EvmStateChangeErc721LockApprovalKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeErc721ApprovalData}
+   * @memberof EvmStateChangeErc721LockApproval
+   */
+  data: EvmStateChangeErc721ApprovalData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeErc721LockApprovalKindEnum = {
+  Erc721LockApproval: "ERC721_LOCK_APPROVAL",
+} as const;
+export type EvmStateChangeErc721LockApprovalKindEnum =
+  (typeof EvmStateChangeErc721LockApprovalKindEnum)[keyof typeof EvmStateChangeErc721LockApprovalKindEnum];
+
+/**
+ * Lock approval request for all owned ERC721 NFTs in a collection
+ * @export
+ * @interface EvmStateChangeErc721LockApprovalForAll
+ */
+export interface EvmStateChangeErc721LockApprovalForAll {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockApprovalForAll
+   */
+  kind: EvmStateChangeErc721LockApprovalForAllKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeErc721ApprovalForAllData}
+   * @memberof EvmStateChangeErc721LockApprovalForAll
+   */
+  data: EvmStateChangeErc721ApprovalForAllData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeErc721LockApprovalForAllKindEnum = {
+  Erc721LockApprovalForAll: "ERC721_LOCK_APPROVAL_FOR_ALL",
+} as const;
+export type EvmStateChangeErc721LockApprovalForAllKindEnum =
+  (typeof EvmStateChangeErc721LockApprovalForAllKindEnum)[keyof typeof EvmStateChangeErc721LockApprovalForAllKindEnum];
+
 /**
  * ERC721 NFT transfers
  * @export
@@ -2778,6 +2840,12 @@ export interface SolAsset {
    * @memberof SolAsset
    */
   price: AssetPrice | null;
+  /**
+   * Image URL for the Solana native token
+   * @type {string}
+   * @memberof SolAsset
+   */
+  imageUrl: string;
 }
 /**
  * Information about each instruction
@@ -3408,6 +3476,13 @@ export const WarningInnerKindEnum = {
   PoisonedAddress: "POISONED_ADDRESS",
   ApprovalToEOA: "APPROVAL_TO_E_O_A",
   CopyCatDomain: "COPY_CAT_DOMAIN",
+  CopyCatImageUnresponsiveDomain: "COPY_CAT_IMAGE_UNRESPONSIVE_DOMAIN",
+  MultiCopyCatDomain: "MULTI_COPY_CAT_DOMAIN",
+  UserAccountOwnerChange: "USER_ACCOUNT_OWNER_CHANGE",
+  NewDomain: "NEW_DOMAIN",
+  UnusualGasConsumption: "UNUSUAL_GAS_CONSUMPTION",
+  ReferencedOfacAddress: "REFERENCED_OFAC_ADDRESS",
+  MainnetReplayPossible: "MAINNET_REPLAY_POSSIBLE",
 } as const;
 export type WarningInnerKindEnum =
   (typeof WarningInnerKindEnum)[keyof typeof WarningInnerKindEnum];
