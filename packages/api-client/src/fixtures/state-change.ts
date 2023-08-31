@@ -435,6 +435,7 @@ export const solTransfer: SolanaExpectedStateChange = {
         name: "Solana Native Token",
         decimals: 9,
         price: null,
+        imageUrl: "",
       },
       diff: {
         sign: "MINUS",
@@ -522,6 +523,7 @@ export const solStakeAuthorityChange: SolanaExpectedStateChange = {
         name: "Solana Native Token",
         decimals: 9,
         price: null,
+        imageUrl: "",
       },
       solStaked: 17859729,
     },

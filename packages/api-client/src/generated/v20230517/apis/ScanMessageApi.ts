@@ -36,7 +36,7 @@ export interface ScanMessageEvmOperationRequest {
  */
 export class ScanMessageApi extends runtime.BaseAPI {
   /**
-   * Scan an EVM message in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what signing the message will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message | | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message | Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+   * Scan an EVM message in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what signing the message will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message | | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message | Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
    * EVM
    */
   async scanMessageEvmRaw(
@@ -124,7 +124,7 @@ export class ScanMessageApi extends runtime.BaseAPI {
   }
 
   /**
-   * Scan an EVM message in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what signing the message will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message | | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message | Note:  All EVM endpoints are equivalent when it comes to functionality as well as request and response formats.
+   * Scan an EVM message in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what signing the message will do. ### Supported networks | Network | Base URL | | --- | --- | | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message | | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message | | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message | | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message | | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message | | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message | | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message | Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
    * EVM
    */
   async scanMessageEvm(
@@ -148,6 +148,7 @@ export const ScanMessageEvmOperationChainFamilyEnum = {
   Bnb: "bnb",
   Arbitrum: "arbitrum",
   Optimism: "optimism",
+  Base: "base",
 } as const;
 export type ScanMessageEvmOperationChainFamilyEnum =
   (typeof ScanMessageEvmOperationChainFamilyEnum)[keyof typeof ScanMessageEvmOperationChainFamilyEnum];

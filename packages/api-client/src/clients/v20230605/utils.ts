@@ -32,6 +32,7 @@ export function mapMessageResponse(
           symbol: stateChange.rawInfo.data.symbol,
           name: stateChange.rawInfo.data.name,
           price: stateChange.rawInfo.data.assetPrice,
+          collection: stateChange.rawInfo.data.contract.address,
         },
       };
       return {

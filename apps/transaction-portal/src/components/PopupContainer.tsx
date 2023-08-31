@@ -36,6 +36,8 @@ const IconForChain: React.FC<{ chainFamily: ChainFamily }> = ({
       return <BnbChainIcon style={{ height: "16px", width: "auto" }} />;
     case "optimism":
       return <OptimismIcon style={{ height: "16px", width: "auto" }} />;
+    default:
+      return null;
   }
 };
 const IconForChainMemo = React.memo(IconForChain);
