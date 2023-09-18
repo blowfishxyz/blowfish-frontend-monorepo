@@ -12,90 +12,72 @@
  * Do not edit the class manually.
  */
 
-import * as runtime from "../runtime";
+
+import * as runtime from '../runtime';
 import type {
   BadRequest,
   InternalServerError,
   ObjectWithDomainsPropertyOfTypeArray,
   ScanDomain200ResponseInner,
   Unauthorized,
-} from "../models/index";
+} from '../models/index';
 
 export interface ScanDomainRequest {
-  xApiVersion: string;
-  contentType?: string;
-  objectWithDomainsPropertyOfTypeArray?: ObjectWithDomainsPropertyOfTypeArray;
+    xApiVersion: string;
+    contentType?: string;
+    objectWithDomainsPropertyOfTypeArray?: ObjectWithDomainsPropertyOfTypeArray;
 }
 
 /**
- *
+ * 
  */
 export class ScanDomainApi extends runtime.BaseAPI {
-  /**
-   * This endpoint allows customers to analyze dApp domains to determine if they are safe for users to interact with
-   * Domain
-   */
-  async scanDomainRaw(
-    requestParameters: ScanDomainRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<Array<ScanDomain200ResponseInner>>> {
-    if (
-      requestParameters.xApiVersion === null ||
-      requestParameters.xApiVersion === undefined
-    ) {
-      throw new runtime.RequiredError(
-        "xApiVersion",
-        "Required parameter requestParameters.xApiVersion was null or undefined when calling scanDomain."
-      );
+
+    /**
+     * This endpoint allows customers to analyze dApp domains to determine if they are safe for users to interact with 
+     * Domain
+     */
+    async scanDomainRaw(requestParameters: ScanDomainRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ScanDomain200ResponseInner>>> {
+        if (requestParameters.xApiVersion === null || requestParameters.xApiVersion === undefined) {
+            throw new runtime.RequiredError('xApiVersion','Required parameter requestParameters.xApiVersion was null or undefined when calling scanDomain.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (requestParameters.xApiVersion !== undefined && requestParameters.xApiVersion !== null) {
+            headerParameters['X-Api-Version'] = String(requestParameters.xApiVersion);
+        }
+
+        if (requestParameters.contentType !== undefined && requestParameters.contentType !== null) {
+            headerParameters['Content-Type'] = String(requestParameters.contentType);
+        }
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["X-Api-Key"] = this.configuration.apiKey("X-Api-Key"); // ApiKeyAuth authentication
+        }
+
+        const response = await this.request({
+            path: `/v0/domains`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: requestParameters.objectWithDomainsPropertyOfTypeArray,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response);
     }
 
-    const queryParameters: any = {};
-
-    const headerParameters: runtime.HTTPHeaders = {};
-
-    headerParameters["Content-Type"] = "application/json";
-
-    if (
-      requestParameters.xApiVersion !== undefined &&
-      requestParameters.xApiVersion !== null
-    ) {
-      headerParameters["X-Api-Version"] = String(requestParameters.xApiVersion);
+    /**
+     * This endpoint allows customers to analyze dApp domains to determine if they are safe for users to interact with 
+     * Domain
+     */
+    async scanDomain(requestParameters: ScanDomainRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ScanDomain200ResponseInner>> {
+        const response = await this.scanDomainRaw(requestParameters, initOverrides);
+        return await response.value();
     }
 
-    if (
-      requestParameters.contentType !== undefined &&
-      requestParameters.contentType !== null
-    ) {
-      headerParameters["Content-Type"] = String(requestParameters.contentType);
-    }
-
-    if (this.configuration && this.configuration.apiKey) {
-      headerParameters["X-Api-Key"] = this.configuration.apiKey("X-Api-Key"); // ApiKeyAuth authentication
-    }
-
-    const response = await this.request(
-      {
-        path: `/v0/domains`,
-        method: "POST",
-        headers: headerParameters,
-        query: queryParameters,
-        body: requestParameters.objectWithDomainsPropertyOfTypeArray,
-      },
-      initOverrides
-    );
-
-    return new runtime.JSONApiResponse(response);
-  }
-
-  /**
-   * This endpoint allows customers to analyze dApp domains to determine if they are safe for users to interact with
-   * Domain
-   */
-  async scanDomain(
-    requestParameters: ScanDomainRequest,
-    initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<Array<ScanDomain200ResponseInner>> {
-    const response = await this.scanDomainRaw(requestParameters, initOverrides);
-    return await response.value();
-  }
 }
