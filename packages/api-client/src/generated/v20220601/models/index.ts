@@ -169,6 +169,12 @@ export interface DownloadBlocklistRequest {
    * @memberof DownloadBlocklistRequest
    */
   priorityBlockLists?: Array<DownloadBlocklistRequestPriorityBlockListsEnum>;
+  /**
+   * How long a bloom filter and corresponding `hash` should remain static. By default, 24 hours. Minimum 24 hours, maximum 14 days. During this time, new domains will be added to `recentlyAdded` and removed from `recentlyRemoved` fields.
+   * @type {number}
+   * @memberof DownloadBlocklistRequest
+   */
+  bloomFilterTtl?: number;
 }
 
 /**
@@ -188,6 +194,7 @@ export type DownloadBlocklistRequestAllowListsEnum =
 export const DownloadBlocklistRequestBlockListsEnum = {
   Phantom: "PHANTOM",
   Blowfish: "BLOWFISH",
+  BlowfishAutomated: "BLOWFISH_AUTOMATED",
   Solfare: "SOLFARE",
   Phishfort: "PHISHFORT",
   Scamsniffer: "SCAMSNIFFER",
@@ -213,6 +220,7 @@ export type DownloadBlocklistRequestPriorityAllowListsEnum =
 export const DownloadBlocklistRequestPriorityBlockListsEnum = {
   Phantom: "PHANTOM",
   Blowfish: "BLOWFISH",
+  BlowfishAutomated: "BLOWFISH_AUTOMATED",
   Solfare: "SOLFARE",
   Phishfort: "PHISHFORT",
   Scamsniffer: "SCAMSNIFFER",
@@ -1357,6 +1365,35 @@ export interface EvmStateChangeErc721ApprovalForAllData {
   assetPrice: AssetPrice | null;
 }
 /**
+ * Approval request for a specific token in an ERC721 collection
+ * @export
+ * @interface EvmStateChangeErc721Lock
+ */
+export interface EvmStateChangeErc721Lock {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeErc721Lock
+   */
+  kind: EvmStateChangeErc721LockKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeErc721LockData}
+   * @memberof EvmStateChangeErc721Lock
+   */
+  data: EvmStateChangeErc721LockData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeErc721LockKindEnum = {
+  Erc721Lock: "ERC721_LOCK",
+} as const;
+export type EvmStateChangeErc721LockKindEnum =
+  (typeof EvmStateChangeErc721LockKindEnum)[keyof typeof EvmStateChangeErc721LockKindEnum];
+
+/**
  * Lock approval request for a specific token in an ERC721 collection
  * @export
  * @interface EvmStateChangeErc721LockApproval
@@ -1414,6 +1451,61 @@ export const EvmStateChangeErc721LockApprovalForAllKindEnum = {
 export type EvmStateChangeErc721LockApprovalForAllKindEnum =
   (typeof EvmStateChangeErc721LockApprovalForAllKindEnum)[keyof typeof EvmStateChangeErc721LockApprovalForAllKindEnum];
 
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmStateChangeErc721LockData
+ */
+export interface EvmStateChangeErc721LockData {
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  amount: EvmAmount;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  contract: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmNftMetadata}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  metadata: EvmNftMetadata;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  name: string;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  owner: EvmAddressInfo;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  symbol: string;
+  /**
+   * The ID of the ERC721 token. Can be `null` in some edge cases where we are temporarily unable to parse it.
+   * @type {string}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  tokenId: string | null;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof EvmStateChangeErc721LockData
+   */
+  assetPrice: AssetPrice | null;
+}
 /**
  * ERC721 NFT transfers
  * @export
@@ -2115,6 +2207,7 @@ export type ScanTransactionEvm200ResponseSimulationResultsExpectedStateChangesIn
     | ({ kind: "ERC20_TRANSFER" } & EvmStateChangeErc20Transfer)
     | ({ kind: "ERC721_APPROVAL" } & EvmStateChangeErc721Approval)
     | ({ kind: "ERC721_APPROVAL_FOR_ALL" } & EvmStateChangeErc721ApprovalForAll)
+    | ({ kind: "ERC721_LOCK" } & EvmStateChangeErc721Lock)
     | ({ kind: "ERC721_LOCK_APPROVAL" } & EvmStateChangeErc721LockApproval)
     | ({
         kind: "ERC721_LOCK_APPROVAL_FOR_ALL";
