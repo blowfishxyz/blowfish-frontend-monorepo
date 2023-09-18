@@ -27,6 +27,7 @@ const StatsGroup = styled.div`
   flex: 1;
   display: flex;
   justify-content: space-around;
+  gap: 80px;
   padding-top: 30px;
 
   @media only screen and (${device.md}) {
@@ -48,6 +49,7 @@ const Timeframe = styled.div`
 const Stat = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 const StatNumber = styled.div`
   font-size: 21px;
@@ -92,12 +94,16 @@ export const Stats: React.FC = () => {
         </Timeframe>
         <StatsGroup>
           <Stat>
-            <StatNumber>207m</StatNumber>
+            <StatNumber>234m</StatNumber>
             <StatLabel>Txns Scanned</StatLabel>
           </Stat>
           <Stat>
-            <StatNumber>18k</StatNumber>
+            <StatNumber>114k</StatNumber>
             <StatLabel>Scams prevented</StatLabel>
+          </Stat>
+          <Stat>
+            <StatNumber>Over $1bn</StatNumber>
+            <StatLabel>assets protected</StatLabel>
           </Stat>
         </StatsGroup>
       </StatsSection>
