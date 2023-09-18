@@ -67,38 +67,6 @@ export interface BadRequest {
   error: string;
 }
 /**
- * An error object describing why we were unable to simulate the transactions in the request. Can be `null`.
- * @export
- * @interface BlowfishSimulationError
- */
-export interface BlowfishSimulationError {
-  /**
-   * The error that caused us to be unable to run transaction simulation for this request. `SIMULATION_TIMED_OUT` is returned if the simulation took too long and timed out. `BAD_REQUEST` is returned if the transaction(s) or `user_account` submitted were invalid (this is similar to a 400 bad request). `TOO_MANY_TRANSACTIONS` us returned if a request includes too many transactions (current max: 100 txns). `SIMULATION_FAILED` is returned if simulation failed because of a dependent RPC failure or internal server error during simulation execution.
-   * @type {string}
-   * @memberof BlowfishSimulationError
-   */
-  kind: BlowfishSimulationErrorKindEnum;
-  /**
-   * Human readable version of the error with more details about why it failed (esp. for BAD_REQUEST). SIMULATION_FAILED is only returned if we were unable to run the simulation because of an internal error (akin to a 500 error code).
-   * @type {string}
-   * @memberof BlowfishSimulationError
-   */
-  humanReadableError: string;
-}
-
-/**
- * @export
- */
-export const BlowfishSimulationErrorKindEnum = {
-  SimulationFailed: "SIMULATION_FAILED",
-  SimulationTimedOut: "SIMULATION_TIMED_OUT",
-  TooManyTransactions: "TOO_MANY_TRANSACTIONS",
-  BadRequest: "BAD_REQUEST",
-} as const;
-export type BlowfishSimulationErrorKindEnum =
-  (typeof BlowfishSimulationErrorKindEnum)[keyof typeof BlowfishSimulationErrorKindEnum];
-
-/**
  *
  * @export
  * @interface Diff
@@ -1642,7 +1610,7 @@ export interface EvmStateChangeErc721ApprovalForAllData {
   assetPrice: AssetPrice | null;
 }
 /**
- * Approval request for a specific token in an ERC721 collection
+ * Lock approval request for a specific token in an ERC721 collection
  * @export
  * @interface EvmStateChangeErc721Lock
  */
@@ -2183,6 +2151,43 @@ export type Languages = (typeof Languages)[keyof typeof Languages];
 /**
  *
  * @export
+ * @interface LegacyAssetPrice
+ */
+export interface LegacyAssetPrice {
+  /**
+   *
+   * @type {string}
+   * @memberof LegacyAssetPrice
+   */
+  source: LegacyAssetPriceSourceEnum;
+  /**
+   *
+   * @type {number}
+   * @memberof LegacyAssetPrice
+   */
+  lastUpdatedAt: number;
+  /**
+   *
+   * @type {number}
+   * @memberof LegacyAssetPrice
+   */
+  dollarValuePerToken: number;
+}
+
+/**
+ * @export
+ */
+export const LegacyAssetPriceSourceEnum = {
+  Simplehash: "Simplehash",
+  Defillama: "Defillama",
+  Coingecko: "Coingecko",
+} as const;
+export type LegacyAssetPriceSourceEnum =
+  (typeof LegacyAssetPriceSourceEnum)[keyof typeof LegacyAssetPriceSourceEnum];
+
+/**
+ *
+ * @export
  */
 export const MetaplexTokenStandard = {
   NonFungible: "non_fungible",
@@ -2464,7 +2469,7 @@ export interface ScanMessageEvmRequest {
    */
   metadata: RequestMetadata;
   /**
-   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject. This is the same account that got passed in the request
+   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
    * @type {string}
    * @memberof ScanMessageEvmRequest
    */
@@ -2553,7 +2558,7 @@ export interface ScanTransactionEvmRequest {
    */
   metadata: RequestMetadata;
   /**
-   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject. This is the same account that got passed in the request
+   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
    * @type {string}
    * @memberof ScanTransactionEvmRequest
    */
@@ -2630,7 +2635,7 @@ export interface ScanTransactionsEvm200ResponseSimulationResultsAggregated {
 }
 /**
  * @type ScanTransactionsEvm200ResponseSimulationResultsAggregatedError
- * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
+ * A error object which includes the aggregated parsed simulation error encountered (if any). Can be `null`.
  * @export
  */
 export type ScanTransactionsEvm200ResponseSimulationResultsAggregatedError =
@@ -2722,7 +2727,7 @@ export interface ScanTransactionsEvmRequest {
    */
   metadata: RequestMetadata;
   /**
-   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject. This is the same account that got passed in the request
+   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
    * @type {string}
    * @memberof ScanTransactionsEvmRequest
    */
@@ -2742,95 +2747,247 @@ export interface ScanTransactionsEvmRequest {
 export interface ScanTransactionsSolana200Response {
   /**
    *
-   * @type {ScanTransactionsSolana200ResponseAggregated}
-   * @memberof ScanTransactionsSolana200Response
-   */
-  aggregated: ScanTransactionsSolana200ResponseAggregated;
-  /**
-   *
-   * @type {Array<ScanTransactionsSolana200ResponsePerTransactionInner>}
-   * @memberof ScanTransactionsSolana200Response
-   */
-  perTransaction: Array<ScanTransactionsSolana200ResponsePerTransactionInner>;
-}
-/**
- *
- * @export
- * @interface ScanTransactionsSolana200ResponseAggregated
- */
-export interface ScanTransactionsSolana200ResponseAggregated {
-  /**
-   *
    * @type {ActionEnum}
-   * @memberof ScanTransactionsSolana200ResponseAggregated
+   * @memberof ScanTransactionsSolana200Response
    */
   action: ActionEnum;
   /**
    * An array of warnings generated from scanning the transactions. All these warnings won't be returned in a single response (some are mutually exclusive) but it is advisable that your UI can display multiple warnings. Warnings are returned sorted by severity, so if you can only show a user one warning, show them the one at the 0th index.
    * @type {Array<WarningInner>}
-   * @memberof ScanTransactionsSolana200ResponseAggregated
+   * @memberof ScanTransactionsSolana200Response
    */
   warnings: Array<WarningInner>;
   /**
    *
-   * @type {BlowfishSimulationError}
-   * @memberof ScanTransactionsSolana200ResponseAggregated
+   * @type {ScanTransactionsSolana200ResponseSimulationResults}
+   * @memberof ScanTransactionsSolana200Response
    */
-  error: BlowfishSimulationError | null;
+  simulationResults: ScanTransactionsSolana200ResponseSimulationResults;
   /**
-   * A mapping of account to the state changes to expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the account's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
-   * @type {{ [key: string]: Array<ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner> | undefined; }}
-   * @memberof ScanTransactionsSolana200ResponseAggregated
+   * An enum value describing whether a program in the proposed transactions was either a known or suspected malicious program. Deprecated. Use `action` instead.
+   * @type {string}
+   * @memberof ScanTransactionsSolana200Response
+   * @deprecated
    */
-  expectedStateChanges: {
-    [key: string]:
-      | Array<ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner>
-      | undefined;
-  };
+  status: ScanTransactionsSolana200ResponseStatusEnum;
 }
+
+/**
+ * @export
+ */
+export const ScanTransactionsSolana200ResponseStatusEnum = {
+  ChecksPassed: "CHECKS_PASSED",
+  SuspectedMalicious: "SUSPECTED_MALICIOUS",
+  KnownMalicious: "KNOWN_MALICIOUS",
+} as const;
+export type ScanTransactionsSolana200ResponseStatusEnum =
+  (typeof ScanTransactionsSolana200ResponseStatusEnum)[keyof typeof ScanTransactionsSolana200ResponseStatusEnum];
+
 /**
  *
  * @export
- * @interface ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner
+ * @interface ScanTransactionsSolana200ResponseSimulationResults
  */
-export interface ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner {
+export interface ScanTransactionsSolana200ResponseSimulationResults {
+  /**
+   * Whether all of the transaction's recentBlockhashes have expired
+   * @type {boolean}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResults
+   */
+  isRecentBlockhashExpired: boolean;
+  /**
+   * An array of state changes one could expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the end-user's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
+   * @type {Array<ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner>}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResults
+   */
+  expectedStateChanges: Array<ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner>;
+  /**
+   *
+   * @type {ScanTransactionsSolana200ResponseSimulationResultsError}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResults
+   */
+  error: ScanTransactionsSolana200ResponseSimulationResultsError | null;
+  /**
+   *
+   * @type {ScanTransactionsSolana200ResponseSimulationResultsRaw}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResults
+   */
+  raw: ScanTransactionsSolana200ResponseSimulationResultsRaw;
+}
+/**
+ * An error object which includes the parsed simulation error encountered (if any). Can be `null`.
+ * @export
+ * @interface ScanTransactionsSolana200ResponseSimulationResultsError
+ */
+export interface ScanTransactionsSolana200ResponseSimulationResultsError {
+  /**
+   * A unique representation of the error kind. Currently maps to the screaming case of the SystemError enum values, TokenError and TransactionError enum values. It returns `UNKNOWN_ERROR` if the Solana program reverts with an error we are unable to decode.
+   * @type {string}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsError
+   */
+  kind: ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum;
+  /**
+   * Human readable version of the error
+   * @type {string}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsError
+   */
+  humanReadableError: string;
+}
+
+/**
+ * @export
+ */
+export const ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum = {
+  SimulationFailed: "SIMULATION_FAILED",
+  SimulationTimedOut: "SIMULATION_TIMED_OUT",
+  TooManyTransactions: "TOO_MANY_TRANSACTIONS",
+  BadRequest: "BAD_REQUEST",
+  AnAccountWithTheSameAddressAlreadyExists:
+    "AN_ACCOUNT_WITH_THE_SAME_ADDRESS_ALREADY_EXISTS",
+  AccountDoesNotHaveEnoughSolToPerformTheOperation:
+    "ACCOUNT_DOES_NOT_HAVE_ENOUGH_SOL_TO_PERFORM_THE_OPERATION",
+  CannotAssignAccountToThisProgramId:
+    "CANNOT_ASSIGN_ACCOUNT_TO_THIS_PROGRAM_ID",
+  CannotAllocateAccountDataOfThisLength:
+    "CANNOT_ALLOCATE_ACCOUNT_DATA_OF_THIS_LENGTH",
+  LengthOfRequestedSeedIsTooLong: "LENGTH_OF_REQUESTED_SEED_IS_TOO_LONG",
+  ProvidedAddressDoesNotMatchAddressedDerivedFromSeed:
+    "PROVIDED_ADDRESS_DOES_NOT_MATCH_ADDRESSED_DERIVED_FROM_SEED",
+  AdvancingStoredNonceRequiresAPopulatedRecentblockhashesSysvar:
+    "ADVANCING_STORED_NONCE_REQUIRES_A_POPULATED_RECENTBLOCKHASHES_SYSVAR",
+  StoredNonceIsStillInRecentBlockhashes:
+    "STORED_NONCE_IS_STILL_IN_RECENT_BLOCKHASHES",
+  SpecifiedNonceDoesNotMatchStoredNonce:
+    "SPECIFIED_NONCE_DOES_NOT_MATCH_STORED_NONCE",
+  LamportBalanceBelowRentExemptThreshold:
+    "LAMPORT_BALANCE_BELOW_RENT-EXEMPT_THRESHOLD",
+  InsufficientFunds: "INSUFFICIENT_FUNDS",
+  InvalidMint: "INVALID_MINT",
+  AccountNotAssociatedWithThisMint: "ACCOUNT_NOT_ASSOCIATED_WITH_THIS_MINT",
+  OwnerDoesNotMatch: "OWNER_DOES_NOT_MATCH",
+  FixedSupply: "FIXED_SUPPLY",
+  AlreadyInUse: "ALREADY_IN_USE",
+  InvalidNumberOfProvidedSigners: "INVALID_NUMBER_OF_PROVIDED_SIGNERS",
+  InvalidNumberOfRequiredSigners: "INVALID_NUMBER_OF_REQUIRED_SIGNERS",
+  StateIsUninitialized: "STATE_IS_UNINITIALIZED",
+  InstructionDoesNotSupportNativeTokens:
+    "INSTRUCTION_DOES_NOT_SUPPORT_NATIVE_TOKENS",
+  NonNativeAccountCanOnlyBeClosedIfItsBalanceIsZero:
+    "NON-NATIVE_ACCOUNT_CAN_ONLY_BE_CLOSED_IF_ITS_BALANCE_IS_ZERO",
+  InvalidInstruction: "INVALID_INSTRUCTION",
+  StateIsInvalidForRequestedOperation:
+    "STATE_IS_INVALID_FOR_REQUESTED_OPERATION",
+  OperationOverflowed: "OPERATION_OVERFLOWED",
+  AccountDoesNotSupportSpecifiedAuthorityType:
+    "ACCOUNT_DOES_NOT_SUPPORT_SPECIFIED_AUTHORITY_TYPE",
+  ThisTokenMintCannotFreezeAccounts: "THIS_TOKEN_MINT_CANNOT_FREEZE_ACCOUNTS",
+  AccountIsFrozen: "ACCOUNT_IS_FROZEN",
+  TheProvidedDecimalsValueDifferentFromTheMintDecimals:
+    "THE_PROVIDED_DECIMALS_VALUE_DIFFERENT_FROM_THE_MINT_DECIMALS",
+  InstructionDoesNotSupportNonNativeTokens:
+    "INSTRUCTION_DOES_NOT_SUPPORT_NON-NATIVE_TOKENS",
+  AccountInUse: "ACCOUNT_IN_USE",
+  AccountLoadedTwice: "ACCOUNT_LOADED_TWICE",
+  AttemptToDebitAnAccountButFoundNoRecordOfAPriorCredit:
+    "ATTEMPT_TO_DEBIT_AN_ACCOUNT_BUT_FOUND_NO_RECORD_OF_A_PRIOR_CREDIT.",
+  AttemptToLoadAProgramThatDoesNotExist:
+    "ATTEMPT_TO_LOAD_A_PROGRAM_THAT_DOES_NOT_EXIST",
+  InsufficientFundsForFee: "INSUFFICIENT_FUNDS_FOR_FEE",
+  ThisAccountMayNotBeUsedToPayTransactionFees:
+    "THIS_ACCOUNT_MAY_NOT_BE_USED_TO_PAY_TRANSACTION_FEES",
+  ThisTransactionHasAlreadyBeenProcessed:
+    "THIS_TRANSACTION_HAS_ALREADY_BEEN_PROCESSED",
+  BlockhashNotFound: "BLOCKHASH_NOT_FOUND",
+  ErrorProcessingInstruction01: "ERROR_PROCESSING_INSTRUCTION_{0}:_{1}",
+  LoaderCallChainIsTooDeep: "LOADER_CALL_CHAIN_IS_TOO_DEEP",
+  TransactionRequiresAFeeButHasNoSignaturePresent:
+    "TRANSACTION_REQUIRES_A_FEE_BUT_HAS_NO_SIGNATURE_PRESENT",
+  TransactionContainsAnInvalidAccountReference:
+    "TRANSACTION_CONTAINS_AN_INVALID_ACCOUNT_REFERENCE",
+  TransactionDidNotPassSignatureVerification:
+    "TRANSACTION_DID_NOT_PASS_SIGNATURE_VERIFICATION",
+  ThisProgramMayNotBeUsedForExecutingInstructions:
+    "THIS_PROGRAM_MAY_NOT_BE_USED_FOR_EXECUTING_INSTRUCTIONS",
+  TransactionFailedToSanitizeAccountsOffsetsCorrectly:
+    "TRANSACTION_FAILED_TO_SANITIZE_ACCOUNTS_OFFSETS_CORRECTLY",
+  TransactionsAreCurrentlyDisabledDueToClusterMaintenance:
+    "TRANSACTIONS_ARE_CURRENTLY_DISABLED_DUE_TO_CLUSTER_MAINTENANCE",
+  TransactionProcessingLeftAnAccountWithAnOutstandingBorrowedReference:
+    "TRANSACTION_PROCESSING_LEFT_AN_ACCOUNT_WITH_AN_OUTSTANDING_BORROWED_REFERENCE",
+  TransactionWouldExceedMaxBlockCostLimit:
+    "TRANSACTION_WOULD_EXCEED_MAX_BLOCK_COST_LIMIT",
+  TransactionVersionIsUnsupported: "TRANSACTION_VERSION_IS_UNSUPPORTED",
+  TransactionLoadsAWritableAccountThatCannotBeWritten:
+    "TRANSACTION_LOADS_A_WRITABLE_ACCOUNT_THAT_CANNOT_BE_WRITTEN",
+  TransactionWouldExceedMaxAccountLimitWithinTheBlock:
+    "TRANSACTION_WOULD_EXCEED_MAX_ACCOUNT_LIMIT_WITHIN_THE_BLOCK",
+  TransactionWouldExceedAccountDataLimitWithinTheBlock:
+    "TRANSACTION_WOULD_EXCEED_ACCOUNT_DATA_LIMIT_WITHIN_THE_BLOCK",
+  TransactionLockedTooManyAccounts: "TRANSACTION_LOCKED_TOO_MANY_ACCOUNTS",
+  TransactionLoadsAnAddressTableAccountThatDoesntExist:
+    "TRANSACTION_LOADS_AN_ADDRESS_TABLE_ACCOUNT_THAT_DOESN'T_EXIST",
+  TransactionLoadsAnAddressTableAccountWithAnInvalidOwner:
+    "TRANSACTION_LOADS_AN_ADDRESS_TABLE_ACCOUNT_WITH_AN_INVALID_OWNER",
+  TransactionLoadsAnAddressTableAccountWithInvalidData:
+    "TRANSACTION_LOADS_AN_ADDRESS_TABLE_ACCOUNT_WITH_INVALID_DATA",
+  TransactionAddressTableLookupUsesAnInvalidIndex:
+    "TRANSACTION_ADDRESS_TABLE_LOOKUP_USES_AN_INVALID_INDEX",
+  TransactionLeavesAnAccountWithALowerBalanceThanRentExemptMinimum:
+    "TRANSACTION_LEAVES_AN_ACCOUNT_WITH_A_LOWER_BALANCE_THAN_RENT-EXEMPT_MINIMUM",
+  TransactionWouldExceedMaxVoteCostLimit:
+    "TRANSACTION_WOULD_EXCEED_MAX_VOTE_COST_LIMIT",
+  TransactionWouldExceedTotalAccountDataLimit:
+    "TRANSACTION_WOULD_EXCEED_TOTAL_ACCOUNT_DATA_LIMIT",
+  TransactionContainsADuplicateInstruction0ThatIsNotAllowed:
+    "TRANSACTION_CONTAINS_A_DUPLICATE_INSTRUCTION_({0})_THAT_IS_NOT_ALLOWED",
+  UnknownError: "UNKNOWN_ERROR",
+} as const;
+export type ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum =
+  (typeof ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum)[keyof typeof ScanTransactionsSolana200ResponseSimulationResultsErrorKindEnum];
+
+/**
+ *
+ * @export
+ * @interface ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner
+ */
+export interface ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner {
   /**
    * Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI since the list of state change kinds has not yet stabilized.
    * @type {string}
-   * @memberof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner
    */
   humanReadableDiff: string;
   /**
    * Suggested text color when presenting the diff to end-users
    * @type {string}
-   * @memberof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner
    */
-  suggestedColor: ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum;
+  suggestedColor: ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum;
   /**
    *
-   * @type {ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerRawInfo}
-   * @memberof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner
+   * @type {ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerRawInfo}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner
    */
-  rawInfo: ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerRawInfo;
+  rawInfo: ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerRawInfo;
 }
 
 /**
  * @export
  */
-export const ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum =
+export const ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum =
   {
     Credit: "CREDIT",
     Debit: "DEBIT",
   } as const;
-export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum =
-  (typeof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum)[keyof typeof ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerSuggestedColorEnum];
+export type ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum =
+  (typeof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum)[keyof typeof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum];
 
 /**
- * @type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerRawInfo
+ * @type ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerRawInfo
  * A machine-parsable state change object describing the state change.
  * @export
  */
-export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerRawInfo =
+export type ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerRawInfo =
 
     | ({
         kind: "SOL_STAKE_AUTHORITY_CHANGE";
@@ -2842,41 +2999,54 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
         kind: "USER_ACCOUNT_OWNER_CHANGE";
       } & SolanaStateChangeUserAccountOwnerChange);
 /**
- *
+ * Raw results of the simulation
  * @export
- * @interface ScanTransactionsSolana200ResponsePerTransactionInner
+ * @interface ScanTransactionsSolana200ResponseSimulationResultsRaw
  */
-export interface ScanTransactionsSolana200ResponsePerTransactionInner {
+export interface ScanTransactionsSolana200ResponseSimulationResultsRaw {
   /**
-   * Whether the tx nonce is valid
-   * @type {boolean}
-   * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
+   * Program instruction error causing the failure. Can be `null`.
+   * @type {string}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsRaw
    */
-  isNonceValid: boolean;
+  err: string | null;
   /**
-   *
-   * @type {SolanaSimulationError}
-   * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
+   * Program logs generated during execution
+   * @type {Array<string>}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsRaw
    */
-  error: SolanaSimulationError | null;
-  /**
-   *
-   * @type {SolanaRawSimulationResults}
-   * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
-   */
-  raw: SolanaRawSimulationResults;
+  logs: Array<string>;
   /**
    *
-   * @type {Array<SolanaProtocol>}
-   * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
+   * @type {number}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsRaw
    */
-  protocols: Array<SolanaProtocol>;
+  unitsConsumed: number;
   /**
    *
-   * @type {Array<SolanaInstruction>}
-   * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
+   * @type {ScanTransactionsSolana200ResponseSimulationResultsRawReturnData}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsRaw
    */
-  instructions: Array<SolanaInstruction>;
+  returnData: ScanTransactionsSolana200ResponseSimulationResultsRawReturnData | null;
+}
+/**
+ * Can be `null`.
+ * @export
+ * @interface ScanTransactionsSolana200ResponseSimulationResultsRawReturnData
+ */
+export interface ScanTransactionsSolana200ResponseSimulationResultsRawReturnData {
+  /**
+   * the program that generated the return data, as base-58 encoded Pubkey
+   * @type {string}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsRawReturnData
+   */
+  programId: string;
+  /**
+   * The return data itself, as base-64 encoded binary data and it's encoding as the second element
+   * @type {Array<string>}
+   * @memberof ScanTransactionsSolana200ResponseSimulationResultsRawReturnData
+   */
+  data: Array<string>;
 }
 /**
  *
@@ -2903,227 +3073,6 @@ export interface ScanTransactionsSolanaRequest {
    */
   metadata: RequestMetadata;
 }
-/**
- *
- * @export
- * @interface SolAsset
- */
-export interface SolAsset {
-  /**
-   * Symbol of the Solana native token
-   * @type {string}
-   * @memberof SolAsset
-   */
-  symbol: string;
-  /**
-   * Name of the Solana native token
-   * @type {string}
-   * @memberof SolAsset
-   */
-  name: string;
-  /**
-   * Decimals of the Solana native token
-   * @type {number}
-   * @memberof SolAsset
-   */
-  decimals: number;
-  /**
-   *
-   * @type {AssetPrice}
-   * @memberof SolAsset
-   */
-  price: AssetPrice | null;
-  /**
-   * Image URL for the Solana native token
-   * @type {string}
-   * @memberof SolAsset
-   */
-  imageUrl: string;
-}
-/**
- * Information about each instruction
- * @export
- * @interface SolanaInstruction
- */
-export interface SolanaInstruction {
-  /**
-   * Index of the protocol in the list of protocols for this instruction
-   * @type {number}
-   * @memberof SolanaInstruction
-   */
-  protocolIndex: number | null;
-}
-/**
- * Human-readable protocol information. Note that a single protocol can consist of multiple programs.
- * @export
- * @interface SolanaProtocol
- */
-export interface SolanaProtocol {
-  /**
-   * `NATIVE` means it’s a SOL transfer, an SPL Program or any other program written and maintained by the Solana Foundation. `TRUSTED` means it’s one of the core projects that control 80-90% of TVL on the chain. `KNOWN` means it’s one of “long tail projects” without significant adoption."
-   * @type {string}
-   * @memberof SolanaProtocol
-   */
-  trustLevel: SolanaProtocolTrustLevelEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof SolanaProtocol
-   */
-  name: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SolanaProtocol
-   */
-  description: string;
-  /**
-   * URL of the protocol's logo. Can be null if no logo is available.
-   * @type {string}
-   * @memberof SolanaProtocol
-   */
-  imageUrl: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof SolanaProtocol
-   */
-  websiteUrl: string;
-}
-
-/**
- * @export
- */
-export const SolanaProtocolTrustLevelEnum = {
-  Known: "KNOWN",
-  Trusted: "TRUSTED",
-  Native: "NATIVE",
-} as const;
-export type SolanaProtocolTrustLevelEnum =
-  (typeof SolanaProtocolTrustLevelEnum)[keyof typeof SolanaProtocolTrustLevelEnum];
-
-/**
- * Raw results of the simulation
- * @export
- * @interface SolanaRawSimulationResults
- */
-export interface SolanaRawSimulationResults {
-  /**
-   * Program instruction error causing the failure. Can be `null`.
-   * @type {string}
-   * @memberof SolanaRawSimulationResults
-   */
-  err: string | null;
-  /**
-   * Program logs generated during execution
-   * @type {Array<string>}
-   * @memberof SolanaRawSimulationResults
-   */
-  logs: Array<string>;
-  /**
-   *
-   * @type {number}
-   * @memberof SolanaRawSimulationResults
-   */
-  unitsConsumed: number;
-  /**
-   *
-   * @type {SolanaRawSimulationResultsReturnData}
-   * @memberof SolanaRawSimulationResults
-   */
-  returnData: SolanaRawSimulationResultsReturnData | null;
-}
-/**
- * Can be `null`.
- * @export
- * @interface SolanaRawSimulationResultsReturnData
- */
-export interface SolanaRawSimulationResultsReturnData {
-  /**
-   * the program that generated the return data, as base-58 encoded Pubkey
-   * @type {string}
-   * @memberof SolanaRawSimulationResultsReturnData
-   */
-  programId: string;
-  /**
-   * The return data itself, as base-64 encoded binary data and it's encoding as the second element
-   * @type {Array<string>}
-   * @memberof SolanaRawSimulationResultsReturnData
-   */
-  data: Array<string>;
-}
-/**
- * @type SolanaSimulationError
- * A error object which includes the parsed simulation error encountered (if any). Can be `null`.
- * @export
- */
-export type SolanaSimulationError =
-  | ({ kind: "PROGRAM_ERROR" } & SolanaSimulationProgramError)
-  | ({ kind: "TRANSACTION_ERROR" } & SolanaSimulationTransactionError);
-/**
- *
- * @export
- * @interface SolanaSimulationProgramError
- */
-export interface SolanaSimulationProgramError {
-  /**
-   *
-   * @type {string}
-   * @memberof SolanaSimulationProgramError
-   */
-  kind: SolanaSimulationProgramErrorKindEnum;
-  /**
-   * Human-readable version of the error.
-   * @type {string}
-   * @memberof SolanaSimulationProgramError
-   */
-  humanReadableError: string;
-  /**
-   * The address of the Solana program where this revert error occurred
-   * @type {string}
-   * @memberof SolanaSimulationProgramError
-   */
-  solanaProgramAddress: string;
-}
-
-/**
- * @export
- */
-export const SolanaSimulationProgramErrorKindEnum = {
-  ProgramError: "PROGRAM_ERROR",
-} as const;
-export type SolanaSimulationProgramErrorKindEnum =
-  (typeof SolanaSimulationProgramErrorKindEnum)[keyof typeof SolanaSimulationProgramErrorKindEnum];
-
-/**
- *
- * @export
- * @interface SolanaSimulationTransactionError
- */
-export interface SolanaSimulationTransactionError {
-  /**
-   *
-   * @type {string}
-   * @memberof SolanaSimulationTransactionError
-   */
-  kind: SolanaSimulationTransactionErrorKindEnum;
-  /**
-   * Human-readable version of the error. Values match the string version of the `TransactionError` enum values in the Solana repo
-   * @type {string}
-   * @memberof SolanaSimulationTransactionError
-   */
-  humanReadableError: string;
-}
-
-/**
- * @export
- */
-export const SolanaSimulationTransactionErrorKindEnum = {
-  TransactionError: "TRANSACTION_ERROR",
-} as const;
-export type SolanaSimulationTransactionErrorKindEnum =
-  (typeof SolanaSimulationTransactionErrorKindEnum)[keyof typeof SolanaSimulationTransactionErrorKindEnum];
-
 /**
  * SPL token transfer
  * @export
@@ -3160,17 +3109,59 @@ export type SolanaStageChangeSplTransferKindEnum =
  */
 export interface SolanaStageChangeSplTransferData {
   /**
-   *
-   * @type {SplAsset}
+   * SPL token symbol
+   * @type {string}
    * @memberof SolanaStageChangeSplTransferData
    */
-  asset: SplAsset;
+  symbol: string;
+  /**
+   * SPL token name
+   * @type {string}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  name: string;
+  /**
+   * The SPL token mint program address
+   * @type {string}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  mint: string;
+  /**
+   * SPL token decimals
+   * @type {number}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  decimals: number;
   /**
    *
    * @type {Diff}
    * @memberof SolanaStageChangeSplTransferData
    */
   diff: Diff;
+  /**
+   * SPL token supply
+   * @type {number}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  supply: number;
+  /**
+   *
+   * @type {MetaplexTokenStandard}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  metaplexTokenStandard: MetaplexTokenStandard;
+  /**
+   *
+   * @type {LegacyAssetPrice}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  assetPrice: LegacyAssetPrice | null;
+  /**
+   * Image URL of the asset if any
+   * @type {string}
+   * @memberof SolanaStageChangeSplTransferData
+   */
+  imageUrl: string | null;
 }
 /**
  * Transferring control over a user's SOL staking account
@@ -3226,11 +3217,23 @@ export interface SolanaStateChangeSolStakeAuthorityChangeData {
    */
   futureAuthorities: SolanaStateChangeSolStakeAuthorityChangeDataFutureAuthorities;
   /**
-   *
-   * @type {SolAsset}
+   * Symbol of the Solana native token
+   * @type {string}
    * @memberof SolanaStateChangeSolStakeAuthorityChangeData
    */
-  asset: SolAsset;
+  symbol: string;
+  /**
+   * Name of the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAuthorityChangeData
+   */
+  name: string;
+  /**
+   * Decimals of the Solana native token
+   * @type {number}
+   * @memberof SolanaStateChangeSolStakeAuthorityChangeData
+   */
+  decimals: number;
   /**
    * Amount of SOL staked by this account
    * @type {number}
@@ -3312,17 +3315,35 @@ export type SolanaStateChangeSolTransferKindEnum =
  */
 export interface SolanaStateChangeSolTransferData {
   /**
-   *
-   * @type {SolAsset}
+   * Symbol of the Solana native token
+   * @type {string}
    * @memberof SolanaStateChangeSolTransferData
    */
-  asset: SolAsset;
+  symbol: string;
+  /**
+   * Name of the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolTransferData
+   */
+  name: string;
+  /**
+   * Decimals of the Solana native token
+   * @type {number}
+   * @memberof SolanaStateChangeSolTransferData
+   */
+  decimals: number;
   /**
    *
    * @type {Diff}
    * @memberof SolanaStateChangeSolTransferData
    */
   diff: Diff;
+  /**
+   * Image URL for the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolTransferData
+   */
+  imageUrl: string;
 }
 /**
  * Approval request to transfer user's tokens
@@ -3366,17 +3387,59 @@ export interface SolanaStateChangeSplApprovalData {
    */
   delegate: string;
   /**
-   *
-   * @type {SplAsset}
+   * The SPL token mint program address
+   * @type {string}
    * @memberof SolanaStateChangeSplApprovalData
    */
-  asset: SplAsset;
+  mint: string;
+  /**
+   * SPL token symbol
+   * @type {string}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  symbol: string;
+  /**
+   * SPL token name
+   * @type {string}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  name: string;
+  /**
+   * SPL token decimals
+   * @type {number}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  decimals: number;
   /**
    *
    * @type {Diff}
    * @memberof SolanaStateChangeSplApprovalData
    */
   diff: Diff;
+  /**
+   * Total supply of the token
+   * @type {number}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  supply: number;
+  /**
+   *
+   * @type {MetaplexTokenStandard}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  metaplexTokenStandard: MetaplexTokenStandard;
+  /**
+   *
+   * @type {LegacyAssetPrice}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  assetPrice: LegacyAssetPrice | null;
+  /**
+   * Image URL of the asset if any
+   * @type {string}
+   * @memberof SolanaStateChangeSplApprovalData
+   */
+  imageUrl: string | null;
 }
 /**
  * Transferring control over a user's Solana account to a different program (defaults to Solana system program)
@@ -3437,61 +3500,6 @@ export interface SolanaStateChangeUserAccountOwnerChangeData {
    * @memberof SolanaStateChangeUserAccountOwnerChangeData
    */
   futureOwner: string;
-}
-/**
- *
- * @export
- * @interface SplAsset
- */
-export interface SplAsset {
-  /**
-   * SPL token symbol
-   * @type {string}
-   * @memberof SplAsset
-   */
-  symbol: string;
-  /**
-   * SPL token name
-   * @type {string}
-   * @memberof SplAsset
-   */
-  name: string;
-  /**
-   * The SPL token mint program address
-   * @type {string}
-   * @memberof SplAsset
-   */
-  mint: string;
-  /**
-   * SPL token decimals
-   * @type {number}
-   * @memberof SplAsset
-   */
-  decimals: number;
-  /**
-   * SPL token supply
-   * @type {number}
-   * @memberof SplAsset
-   */
-  supply: number;
-  /**
-   *
-   * @type {MetaplexTokenStandard}
-   * @memberof SplAsset
-   */
-  metaplexTokenStandard: MetaplexTokenStandard;
-  /**
-   *
-   * @type {AssetPrice}
-   * @memberof SplAsset
-   */
-  price: AssetPrice | null;
-  /**
-   * URL of the asset's image. Can be null if the asset has no image in our records.
-   * @type {string}
-   * @memberof SplAsset
-   */
-  imageUrl: string | null;
 }
 /**
  *

@@ -1,4 +1,4 @@
-import { WarningInnerKindEnum } from "@blowfishxyz/api-client";
+import { WarningInnerKindEnum } from "@blowfishxyz/api-client/v20230605";
 import { useMemo } from "react";
 import { styled } from "styled-components";
 import { Row, Column } from "~/common/layout";
@@ -62,6 +62,20 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
         return "Unlimited allowance to NFTs";
       case WarningInnerKindEnum.WhitelistedDomainCrossOrigin:
         return "Whitelisted domain cross-origin";
+      case WarningInnerKindEnum.NewDomain:
+        return "New Domain";
+      case WarningInnerKindEnum.CopyCatImageUnresponsiveDomain:
+        return "Copycat unresponsive domain";
+      case WarningInnerKindEnum.MultiCopyCatDomain:
+        return "Multi copycat domain";
+      case WarningInnerKindEnum.UserAccountOwnerChange:
+        return "User account owner change";
+      case WarningInnerKindEnum.UnusualGasConsumption:
+        return "Unusual gas consumption";
+      case WarningInnerKindEnum.ReferencedOfacAddress:
+        return "Referenced OFAC Sanctioned Address";
+      case WarningInnerKindEnum.MainnetReplayPossible:
+        return "Mainnet replay possible";
     }
   }, [warning.kind]);
   const defaultKindText =
@@ -74,8 +88,11 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.ApprovalToEOA:
       case WarningInnerKindEnum.CompromisedAuthorityUpgrade:
       case WarningInnerKindEnum.SetOwnerAuthority:
+      case WarningInnerKindEnum.UserAccountOwnerChange:
         return "user";
       case WarningInnerKindEnum.CopyCatDomain:
+      case WarningInnerKindEnum.MultiCopyCatDomain:
+      case WarningInnerKindEnum.CopyCatImageUnresponsiveDomain:
         return "identification";
       case WarningInnerKindEnum.DevtoolsDisabled:
         return "dev-tools";
@@ -88,6 +105,7 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
         return "lock-open";
       case WarningInnerKindEnum.TooManyTransactions:
       case WarningInnerKindEnum.TradeForNothing:
+      case WarningInnerKindEnum.NewDomain:
         return "question-mark";
       case WarningInnerKindEnum.BlocklistedDomainCrossOrigin:
       case WarningInnerKindEnum.BulkApprovalsRequest:
@@ -100,6 +118,9 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.TransferringErc20ToOwnContract:
       case WarningInnerKindEnum.TrustedBlocklistDomain:
       case WarningInnerKindEnum.WhitelistedDomainCrossOrigin:
+      case WarningInnerKindEnum.ReferencedOfacAddress:
+      case WarningInnerKindEnum.UnusualGasConsumption:
+      case WarningInnerKindEnum.MainnetReplayPossible:
       default:
         return "exclamation";
     }
