@@ -73,7 +73,7 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.UnusualGasConsumption:
         return "Unusual gas consumption";
       case WarningInnerKindEnum.ReferencedOfacAddress:
-        return "Referenced OFAC Address";
+        return "Referenced OFAC Sanctioned Address";
       case WarningInnerKindEnum.MainnetReplayPossible:
         return "Mainnet replay possible";
     }
