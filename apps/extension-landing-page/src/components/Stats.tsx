@@ -29,6 +29,7 @@ const StatsGroup = styled.div`
   justify-content: space-around;
   gap: 80px;
   padding-top: 30px;
+  flex-wrap: wrap;
 
   @media only screen and (${device.md}) {
     padding-top: 0px;
