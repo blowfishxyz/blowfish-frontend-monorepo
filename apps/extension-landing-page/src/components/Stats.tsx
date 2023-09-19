@@ -15,12 +15,17 @@ const StatsSection = styled.div`
   border-bottom-width: 1px;
   border-left-width: 0px;
   border-right-width: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media only screen and (${device.md}) {
     display: flex;
+    flex-direction: row;
   }
   @media only screen and (${device.lg}) {
     display: flex;
+    flex-direction: row;
   }
 `;
 const StatsGroup = styled.div`
@@ -33,9 +38,11 @@ const StatsGroup = styled.div`
 
   @media only screen and (${device.md}) {
     padding-top: 0px;
+    flex-wrap: nowrap;
   }
   @media only screen and (${device.lg}) {
     padding-top: 0px;
+    flex-wrap: nowrap;
   }
 `;
 const Timeframe = styled.div`
