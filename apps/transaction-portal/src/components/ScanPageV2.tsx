@@ -8,7 +8,7 @@ import {
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { ScanParamsSuccess, useScanParams } from "~hooks/useScanParams";
+import { ScanParams, ScanParamsSuccess } from "~hooks/useScanParams";
 import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
@@ -30,9 +30,7 @@ import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
 import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
-export const ScanPageV2Inner: React.FC = () => {
-  const data = useScanParams();
-
+export const ScanPageV2Inner: React.FC<{ data: ScanParams }> = ({ data }) => {
   if (!data) {
     return <ProtectLoadingScreen key="loading" />;
   }
@@ -203,10 +201,10 @@ const ResultsView: React.FC<{
   );
 };
 
-export const ScanPageV2: React.FC = () => {
+export const ScanPageV2: React.FC<{ data: ScanParams | any }> = ({ data }) => {
   return (
     <Layout>
-      <ScanPageV2Inner />
+      <ScanPageV2Inner data={data} />
     </Layout>
   );
 };
