@@ -190,3 +190,81 @@ export const getProtocol = (
   }
   return null;
 };
+
+export const normalizeData = (data: any) => {
+  if (!data) return;
+
+  if (data.txObjects) {
+    const transaction = data.txObjects[0];
+
+    return {
+      message: {
+        data: {
+          type: "TRANSACTION",
+          payload: {
+            data: transaction.data,
+            from: transaction.from,
+            to: transaction.to,
+          },
+          userAccount: data.userAccount,
+        },
+        origin: data.metadata.origin,
+        type: "TRANSACTION",
+      },
+      userAccount: data.userAccount,
+      request: {
+        type: "TRANSACTION",
+        payload: {
+          data: transaction.data,
+          from: transaction.from,
+          to: transaction.to,
+        },
+        userAccount: data.userAccount,
+      },
+    };
+  }
+
+  if (data.message && data.message.kind === "SIGN_TYPED_DATA") {
+    return {
+      message: {
+        data: {
+          type: "SIGN_TYPED_DATA",
+          payload: data.message.data,
+          userAccount: data.userAccount,
+        },
+        origin: data.metadata.origin,
+      },
+      userAccount: data.userAccount,
+      request: {
+        type: "SIGN_TYPED_DATA",
+        payload: data.message.data,
+        userAccount: data.userAccount,
+      },
+    };
+  }
+
+  if (data.message && data.message.kind === "SIGN_MESSAGE") {
+    return {
+      message: {
+        data: {
+          type: "SIGN_MESSAGE",
+          payload: {
+            message: data.message.rawMessage,
+          },
+          userAccount: data.userAccount,
+        },
+        origin: data.metadata.origin,
+      },
+      userAccount: data.userAccount,
+      request: {
+        type: "SIGN_MESSAGE",
+        payload: {
+          message: data.message.rawMessage,
+        },
+        userAccount: data.userAccount,
+      },
+    };
+  }
+
+  return data;
+};

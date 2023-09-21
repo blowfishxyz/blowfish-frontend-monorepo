@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { ScanParams, ScanParamsSuccess } from "~hooks/useScanParams";
-import { MessageError } from "~utils/utils";
+import { MessageError, normalizeData } from "~utils/utils";
 import {
   AccountNotConnectedModal,
   BlockedTransactionModal,
@@ -30,29 +30,40 @@ import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
 import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
-export const ScanPageV2Inner: React.FC<{ data: ScanParams }> = ({ data }) => {
-  if (!data) {
+export const ScanPageV2Inner: React.FC<{
+  data: ScanParams;
+  isRequestParam: boolean;
+}> = ({ data, isRequestParam }) => {
+  const normalizedData = normalizeData(data);
+
+  if (!normalizedData) {
     return <ProtectLoadingScreen key="loading" />;
   }
 
-  if ("error" in data) {
-    if (data.error === MessageError.PARAMS_NOT_OK) {
+  if ("error" in normalizedData) {
+    if (normalizedData.error === MessageError.PARAMS_NOT_OK) {
       return <TransactionNotFoundModal />;
     }
-    if (data.error === MessageError.OUTDATED_EXTENSION) {
+    if (normalizedData.error === MessageError.OUTDATED_EXTENSION) {
       return <OutdatedExtensionModal />;
     }
 
     return <TransactionNotFoundModal />;
   }
 
-  return <FullfieldView data={data} />;
+  return (
+    <FullfieldView data={normalizedData} isRequestParam={isRequestParam} />
+  );
 };
 
-const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
+const FullfieldView: React.FC<{
+  data: ScanParamsSuccess;
+  isRequestParam: boolean;
+}> = ({ data, isRequestParam }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
+
   const { reject } = useUserDecision({
-    chainId: chain?.chainId,
+    chainId: isRequestParam ? undefined : chain?.chainId,
     message,
     request,
   });
@@ -63,7 +74,7 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
     );
   }
 
-  if (!chain?.chainInfo) {
+  if (!isRequestParam && !chain?.chainInfo) {
     return <UnsupportedChainModal closeWindow={reject} />;
   }
 
@@ -71,11 +82,12 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
     <ResultsView
       message={message}
       request={request}
-      chainInfo={chain.chainInfo}
-      chainId={chain.chainId}
+      chainInfo={chain?.chainInfo}
+      chainId={chain?.chainId}
       isImpersonating={isImpersonating}
       userAccount={userAccount}
       reject={reject}
+      isRequestParam={isRequestParam}
     />
   );
 };
@@ -83,10 +95,11 @@ const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
 const ResultsView: React.FC<{
   message: Message<DappRequest["type"], DappRequest>;
   request: DappRequest;
-  chainInfo: ChainInfo;
-  chainId: number;
+  chainInfo: ChainInfo | undefined;
+  chainId: number | undefined;
   userAccount: string;
   isImpersonating: boolean;
+  isRequestParam: boolean;
   reject?: () => Promise<void>;
 }> = ({
   chainInfo,
@@ -96,6 +109,7 @@ const ResultsView: React.FC<{
   message,
   reject,
   request,
+  isRequestParam,
 }) => {
   const { address, isConnected } = useAccount();
   const connectedChainId = useConnectedChainId();
@@ -103,7 +117,10 @@ const ResultsView: React.FC<{
   const { switchNetworkAsync } = useSwitchNetwork({
     throwForSwitchChainNotSupported: true,
   });
-  const { chainFamily, chainNetwork } = chainInfo;
+  let chainFamily, chainNetwork;
+  if (chainInfo) {
+    ({ chainFamily, chainNetwork } = chainInfo);
+  }
   const {
     data: scanResults,
     error: scanError,
@@ -159,7 +176,7 @@ const ResultsView: React.FC<{
     return <WrongAccountModal correctAddress={userAccount} />;
   }
 
-  if (chainId !== connectedChainId) {
+  if (!isRequestParam && chainId !== connectedChainId) {
     return (
       <WrongNetworkModal
         targetChainId={chainId}
@@ -201,10 +218,13 @@ const ResultsView: React.FC<{
   );
 };
 
-export const ScanPageV2: React.FC<{ data: ScanParams | any }> = ({ data }) => {
+export const ScanPageV2: React.FC<{
+  data: ScanParams;
+  isRequestParam: boolean;
+}> = ({ data, isRequestParam }) => {
   return (
     <Layout>
-      <ScanPageV2Inner data={data} />
+      <ScanPageV2Inner data={data} isRequestParam={isRequestParam} />
     </Layout>
   );
 };

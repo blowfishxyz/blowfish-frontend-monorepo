@@ -1,7 +1,7 @@
+import { MessageError } from "~utils/utils";
 import { useQueryParams } from "./useQueryParams";
-import { ScanParams } from "./useScanParams";
 
-export function useURLRequestParams(): ScanParams | any {
+export function useURLRequestParams(): any {
   const { request: requestParam } = useQueryParams<{
     request?: string;
   }>();
@@ -10,11 +10,11 @@ export function useURLRequestParams(): ScanParams | any {
     parsedRequest = JSON.parse(decodeURIComponent(requestParam));
   }
 
-  console.log({ parsedRequest });
-
-  const data = {
-    
+  if (!parsedRequest) {
+    return {
+      error: MessageError.PARAMS_NOT_OK,
+    };
   }
 
-  return data;
+  return parsedRequest;
 }

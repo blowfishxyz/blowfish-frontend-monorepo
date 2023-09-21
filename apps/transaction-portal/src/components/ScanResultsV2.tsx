@@ -40,8 +40,8 @@ export type UIWarning = {
 interface ScanResultsV2Props {
   request: DappRequest;
   scanResults: EvmMessageScanResult | EvmTransactionsScanResult;
-  chainNetwork: ChainNetwork;
-  chainFamily: ChainFamily;
+  chainNetwork: ChainNetwork | undefined;
+  chainFamily: ChainFamily | undefined;
   dappUrl: string;
   message: Message<DappRequest["type"], DappRequest>;
   impersonatingAddress: string | undefined;
