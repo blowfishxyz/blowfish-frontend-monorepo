@@ -15,25 +15,34 @@ const StatsSection = styled.div`
   border-bottom-width: 1px;
   border-left-width: 0px;
   border-right-width: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media only screen and (${device.md}) {
     display: flex;
+    flex-direction: row;
   }
   @media only screen and (${device.lg}) {
     display: flex;
+    flex-direction: row;
   }
 `;
 const StatsGroup = styled.div`
   flex: 1;
   display: flex;
   justify-content: space-around;
+  gap: 80px;
   padding-top: 30px;
+  flex-wrap: wrap;
 
   @media only screen and (${device.md}) {
     padding-top: 0px;
+    flex-wrap: nowrap;
   }
   @media only screen and (${device.lg}) {
     padding-top: 0px;
+    flex-wrap: nowrap;
   }
 `;
 const Timeframe = styled.div`
@@ -48,6 +57,7 @@ const Timeframe = styled.div`
 const Stat = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 const StatNumber = styled.div`
   font-size: 21px;
@@ -92,12 +102,16 @@ export const Stats: React.FC = () => {
         </Timeframe>
         <StatsGroup>
           <Stat>
-            <StatNumber>207m</StatNumber>
+            <StatNumber>234m</StatNumber>
             <StatLabel>Txns Scanned</StatLabel>
           </Stat>
           <Stat>
-            <StatNumber>18k</StatNumber>
+            <StatNumber>114k</StatNumber>
             <StatLabel>Scams prevented</StatLabel>
+          </Stat>
+          <Stat>
+            <StatNumber>Over $1bn</StatNumber>
+            <StatLabel>assets protected</StatLabel>
           </Stat>
         </StatsGroup>
       </StatsSection>

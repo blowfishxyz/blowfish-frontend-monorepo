@@ -881,6 +881,7 @@ paths:
                     enum:
                       - PHANTOM
                       - BLOWFISH
+                      - BLOWFISH_AUTOMATED
                       - SOLFARE
                       - PHISHFORT
                       - SCAMSNIFFER
@@ -905,6 +906,7 @@ paths:
                     enum:
                       - PHANTOM
                       - BLOWFISH
+                      - BLOWFISH_AUTOMATED
                       - SOLFARE
                       - PHISHFORT
                       - SCAMSNIFFER
@@ -912,13 +914,20 @@ paths:
                     example: BLOWFISH
                   description: Always block domain if it present on one of these lists, even if
                     it's allow-listed on one of regular allow lists
+                bloomFilterTtl:
+                  type: integer
+                  description: How long a bloom filter and corresponding `hash` should remain
+                    static. By default, 24 hours. Minimum 24 hours, maximum 14
+                    days. During this time, new domains will be added to
+                    `recentlyAdded` and removed from `recentlyRemoved` fields.
+                  example: 86400
       responses:
         "200":
           description: |
             A successful API response will include a link to download the bloom filter, which contains all blocked domains and any domains that were recently added to or removed from the filter.
 
             It's important to note that the recentlyAdded and recentlyRemoved fields take precedence over the bloom filter result.
-            The bloom filter is updated every 24 hours. If new domains are added or removed, they will be listed in the recentlyAdded and recentlyRemoved fields until the bloom filter is updated.
+            The bloom filter is updated every 24 hours by default (can be customized with `bloomFilterTtl` parameter. If new domains are added or removed, they will be listed in the recentlyAdded and recentlyRemoved fields until the bloom filter is updated.
             The bloom filter file, located at bloomFilter.url, is guaranteed to be less than 1 MB
           content:
             application/json:
@@ -1783,6 +1792,7 @@ components:
             - $ref: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
             - $ref: "#/components/schemas/EvmStateChangeErc721LockApproval"
             - $ref: "#/components/schemas/EvmStateChangeErc721LockApprovalForAll"
+            - $ref: "#/components/schemas/EvmStateChangeErc721Lock"
             - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
           discriminator:
@@ -1796,6 +1806,7 @@ components:
               ERC721_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721ApprovalForAll"
               ERC721_LOCK_APPROVAL: "#/components/schemas/EvmStateChangeErc721LockApproval"
               ERC721_LOCK_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc721LockApprovalForAll"
+              ERC721_LOCK: "#/components/schemas/EvmStateChangeErc721Lock"
               ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
               ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
     EvmExpectedStateChanges:
@@ -2456,6 +2467,40 @@ components:
           example: ERC721_APPROVAL
         data:
           $ref: "#/components/schemas/EvmStateChangeErc721ApprovalData"
+    EvmStateChangeErc721LockData:
+      type: object
+      required:
+        - amount
+        - metadata
+        - owner
+        - tokenId
+        - asset
+      properties:
+        amount:
+          $ref: "#/components/schemas/EvmAmount"
+        metadata:
+          $ref: "#/components/schemas/EvmNftMetadata"
+        owner:
+          $ref: "#/components/schemas/EvmAddressInfo"
+        tokenId:
+          $ref: "#/components/schemas/EvmErc721TokenId"
+        asset:
+          $ref: "#/components/schemas/EvmErc721Asset"
+      description: Data associated with the state change
+    EvmStateChangeErc721Lock:
+      type: object
+      description: Lock/unlock request for a specific token in an ERC721 collection
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC721_LOCK ]
+          example: ERC721_LOCK
+        data:
+          $ref: "#/components/schemas/EvmStateChangeErc721LockData"
     EvmStateChangeErc721ApprovalForAllData:
       type: object
       required:

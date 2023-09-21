@@ -1,6 +1,6 @@
 {
   "name": "@blowfishxyz/api-client",
-  "version": "0.0.2-beta.1",
+  "version": "0.1.0-beta.1",
   "license": "MIT",
   "main": "./build/index.js",
   "module": "./build/index.mjs",
@@ -51,6 +51,26 @@
       "types": "./build/fixtures.d.ts",
       "import": "./build/fixtures.mjs",
       "require": "./build/fixtures.js"
+    },
+    "./v20230605": {
+      "types": "./build/v20230605.d.ts",
+      "import": "./build/v20230605.mjs",
+      "require": "./build/v20230605.js"
+    },
+    "./v20230517": {
+      "types": "./build/v20230517.d.ts",
+      "import": "./build/v20230517.mjs",
+      "require": "./build/v20230517.js"
+    },
+    "./v20230308": {
+      "types": "./build/v20230308.d.ts",
+      "import": "./build/v20230308.mjs",
+      "require": "./build/v20230308.js"
+    },
+    "./v20220601": {
+      "types": "./build/v20220601.d.ts",
+      "import": "./build/v20220601.mjs",
+      "require": "./build/v20220601.js"
     }
   },
   "typesVersions": {
@@ -60,6 +80,18 @@
       ],
       "fixtures": [
         "build/fixtures.d.ts"
+      ],
+      "v20230605": [
+        "build/v20230605.d.ts"
+      ],
+      "v20230517": [
+        "build/v20230517.d.ts"
+      ],
+      "v20230308": [
+        "build/v20230308.d.ts"
+      ],
+      "v20220601": [
+        "build/v20220601.d.ts"
       ]
     }
   }

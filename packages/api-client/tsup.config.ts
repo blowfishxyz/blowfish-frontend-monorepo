@@ -11,5 +11,9 @@ export default defineConfig((options) => ({
   entry: {
     index: "./src/index.ts",
     fixtures: "./src/fixtures/index.ts",
+    v20230605: "./src/clients/v20230605/index.ts",
+    v20230517: "./src/clients/v20230517/index.ts",
+    v20230308: "./src/clients/v20230308/index.ts",
+    v20220601: "./src/clients/v20220601/index.ts",
   },
 }));
