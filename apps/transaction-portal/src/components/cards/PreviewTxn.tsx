@@ -248,8 +248,8 @@ export interface PreviewTxnProps {
   simulationError: string | undefined;
   warnings: UIWarning[];
   severity: Severity | undefined;
-  chainNetwork: ChainNetwork | undefined;
-  chainFamily: ChainFamily | undefined;
+  chainNetwork: ChainNetwork;
+  chainFamily: ChainFamily;
   advancedDetails: ReactElement;
   onContinue: () => Promise<SendTransactionResult | void>;
   onCancel: () => void;

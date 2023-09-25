@@ -20,14 +20,12 @@ import { useRef } from "react";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
-const DEFAULT_CHAIN_FAMILY = "ethereum";
-const DEFAULT_CHAIN_NETWORK = "mainnet";
 
 const SCAN_REFRESH_INTERVAL_MS = 15_000;
 
 export const getCacheKey = (
-  chainFamily: ChainFamily | undefined = DEFAULT_CHAIN_FAMILY,
-  chainNetwork: ChainNetwork | undefined = DEFAULT_CHAIN_NETWORK,
+  chainFamily: ChainFamily | undefined,
+  chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
   origin: string | undefined
 ): [ChainFamily, ChainNetwork, DappRequest, string] | null => {
@@ -39,8 +37,8 @@ export const getCacheKey = (
 };
 
 const fetcher = async (
-  chainFamily: ChainFamily = DEFAULT_CHAIN_FAMILY,
-  chainNetwork: ChainNetwork = DEFAULT_CHAIN_NETWORK,
+  chainFamily: ChainFamily,
+  chainNetwork: ChainNetwork,
   request: DappRequest,
   origin: string
 ): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {

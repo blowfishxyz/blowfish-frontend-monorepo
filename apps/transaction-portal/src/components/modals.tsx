@@ -120,20 +120,14 @@ export const WrongAccountModal: React.FC<{ correctAddress: string }> = ({
 };
 
 export const WrongNetworkModal: React.FC<{
-  targetChainId: number | undefined;
+  targetChainId: number;
   connectedChainId: number;
   switchNetwork: (chainId: number) => Promise<void>;
 }> = ({ targetChainId, connectedChainId, switchNetwork }) => {
-  const targetChain = targetChainId
-    ? chainIdToSupportedChainMapping[targetChainId]
-    : undefined;
+  const targetChain = chainIdToSupportedChainMapping[targetChainId];
   const connectedChain = chainIdToSupportedChainMapping[connectedChainId];
 
   const description = useMemo(() => {
-    if (!targetChain) {
-      return "The target network is not supported.";
-    }
-
     if (!connectedChain) {
       return (
         <>
@@ -171,10 +165,6 @@ export const WrongNetworkModal: React.FC<{
   }, [connectedChain, targetChain]);
 
   const actionText = useMemo(() => {
-    if (!targetChain) {
-      return "No Supported Action";
-    }
-
     if (!connectedChain) {
       return "Connect";
     }
@@ -187,10 +177,6 @@ export const WrongNetworkModal: React.FC<{
   }, [connectedChain, targetChain]);
 
   const action = useCallback(() => {
-    if (!targetChainId) {
-      console.warn("Trying to switch to an unsupported network.");
-      return;
-    }
     return switchNetwork(targetChainId);
   }, [switchNetwork, targetChainId]);
 

@@ -40,11 +40,12 @@ export type UIWarning = {
 interface ScanResultsV2Props {
   request: DappRequest;
   scanResults: EvmMessageScanResult | EvmTransactionsScanResult;
-  chainNetwork: ChainNetwork | undefined;
-  chainFamily: ChainFamily | undefined;
+  chainNetwork: ChainNetwork;
+  chainFamily: ChainFamily;
   dappUrl: string;
   message: Message<DappRequest["type"], DappRequest>;
   impersonatingAddress: string | undefined;
+  isRequestParams?: boolean;
 }
 
 const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
@@ -52,6 +53,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   scanResults,
   message,
   impersonatingAddress,
+  isRequestParams,
   ...props
 }) => {
   const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
@@ -212,7 +214,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           rejectTxn={() => reject()}
         />
       )}
-      {impersonatingAddress === address && (
+      {impersonatingAddress === address && !isRequestParams && (
         <ImpersonationErrorModal closeWindow={reject} />
       )}
       <PreviewTxn

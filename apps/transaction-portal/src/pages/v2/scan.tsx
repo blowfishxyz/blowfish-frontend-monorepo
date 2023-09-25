@@ -9,7 +9,7 @@ const ScanPage = dynamic(() => import("~components/ScanPageV2"), {
 const Page: React.FC = () => {
   const data = useScanParams();
 
-  return <ScanPage data={data} isRequestParam={false} />;
+  return <ScanPage data={data} />;
 };
 
 export default Page;

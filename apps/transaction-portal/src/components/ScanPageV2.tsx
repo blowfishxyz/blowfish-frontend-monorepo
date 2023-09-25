@@ -9,7 +9,7 @@ import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { ScanParams, ScanParamsSuccess } from "~hooks/useScanParams";
-import { MessageError, normalizeData } from "~utils/utils";
+import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
   BlockedTransactionModal,
@@ -32,38 +32,33 @@ import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
-  isRequestParam: boolean;
-}> = ({ data, isRequestParam }) => {
-  const normalizedData = normalizeData(data);
-
-  if (!normalizedData) {
+  isRequestParams?: boolean;
+}> = ({ data, isRequestParams }) => {
+  if (!data) {
     return <ProtectLoadingScreen key="loading" />;
   }
 
-  if ("error" in normalizedData) {
-    if (normalizedData.error === MessageError.PARAMS_NOT_OK) {
+  if ("error" in data) {
+    if (data.error === MessageError.PARAMS_NOT_OK) {
       return <TransactionNotFoundModal />;
     }
-    if (normalizedData.error === MessageError.OUTDATED_EXTENSION) {
+    if (data.error === MessageError.OUTDATED_EXTENSION) {
       return <OutdatedExtensionModal />;
     }
 
     return <TransactionNotFoundModal />;
   }
 
-  return (
-    <FullfieldView data={normalizedData} isRequestParam={isRequestParam} />
-  );
+  return <FullfieldView data={data} isRequestParams={isRequestParams} />;
 };
 
 const FullfieldView: React.FC<{
   data: ScanParamsSuccess;
-  isRequestParam: boolean;
-}> = ({ data, isRequestParam }) => {
+  isRequestParams?: boolean;
+}> = ({ data, isRequestParams }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
-
   const { reject } = useUserDecision({
-    chainId: isRequestParam ? undefined : chain?.chainId,
+    chainId: chain?.chainId,
     message,
     request,
   });
@@ -74,7 +69,7 @@ const FullfieldView: React.FC<{
     );
   }
 
-  if (!isRequestParam && !chain?.chainInfo) {
+  if (!chain?.chainInfo) {
     return <UnsupportedChainModal closeWindow={reject} />;
   }
 
@@ -82,12 +77,12 @@ const FullfieldView: React.FC<{
     <ResultsView
       message={message}
       request={request}
-      chainInfo={chain?.chainInfo}
-      chainId={chain?.chainId}
+      chainInfo={chain.chainInfo}
+      chainId={chain.chainId}
       isImpersonating={isImpersonating}
       userAccount={userAccount}
       reject={reject}
-      isRequestParam={isRequestParam}
+      isRequestParams={isRequestParams}
     />
   );
 };
@@ -95,12 +90,12 @@ const FullfieldView: React.FC<{
 const ResultsView: React.FC<{
   message: Message<DappRequest["type"], DappRequest>;
   request: DappRequest;
-  chainInfo: ChainInfo | undefined;
-  chainId: number | undefined;
+  chainInfo: ChainInfo;
+  chainId: number;
   userAccount: string;
   isImpersonating: boolean;
-  isRequestParam: boolean;
   reject?: () => Promise<void>;
+  isRequestParams?: boolean;
 }> = ({
   chainInfo,
   chainId,
@@ -109,7 +104,7 @@ const ResultsView: React.FC<{
   message,
   reject,
   request,
-  isRequestParam,
+  isRequestParams,
 }) => {
   const { address, isConnected } = useAccount();
   const connectedChainId = useConnectedChainId();
@@ -117,10 +112,7 @@ const ResultsView: React.FC<{
   const { switchNetworkAsync } = useSwitchNetwork({
     throwForSwitchChainNotSupported: true,
   });
-  let chainFamily, chainNetwork;
-  if (chainInfo) {
-    ({ chainFamily, chainNetwork } = chainInfo);
-  }
+  const { chainFamily, chainNetwork } = chainInfo;
   const {
     data: scanResults,
     error: scanError,
@@ -168,24 +160,26 @@ const ResultsView: React.FC<{
     isUnsupportedDangerousRequest,
   ]);
 
-  if (!isConnected || !connectedChainId) {
-    return <AccountNotConnectedModal />;
-  }
+  if (!isRequestParams) {
+    if (!isConnected || !connectedChainId) {
+      return <AccountNotConnectedModal />;
+    }
 
-  if (address !== userAccount && !isImpersonating) {
-    return <WrongAccountModal correctAddress={userAccount} />;
-  }
+    if (address !== userAccount && !isImpersonating) {
+      return <WrongAccountModal correctAddress={userAccount} />;
+    }
 
-  if (!isRequestParam && chainId !== connectedChainId) {
-    return (
-      <WrongNetworkModal
-        targetChainId={chainId}
-        connectedChainId={connectedChainId}
-        switchNetwork={async (chainId) => {
-          await switchNetworkAsync?.(chainId);
-        }}
-      />
-    );
+    if (chainId !== connectedChainId) {
+      return (
+        <WrongNetworkModal
+          targetChainId={chainId}
+          connectedChainId={connectedChainId}
+          switchNetwork={async (chainId) => {
+            await switchNetworkAsync?.(chainId);
+          }}
+        />
+      );
+    }
   }
 
   if (scanError) {
@@ -213,18 +207,19 @@ const ResultsView: React.FC<{
         chainFamily={chainFamily}
         chainNetwork={chainNetwork}
         impersonatingAddress={isImpersonating ? userAccount : undefined}
+        isRequestParams
       />
     </>
   );
 };
 
 export const ScanPageV2: React.FC<{
-  data: ScanParams;
-  isRequestParam: boolean;
-}> = ({ data, isRequestParam }) => {
+  data: ScanParams | any;
+  isRequestParams?: boolean;
+}> = ({ data, isRequestParams }) => {
   return (
     <Layout>
-      <ScanPageV2Inner data={data} isRequestParam={isRequestParam} />
+      <ScanPageV2Inner data={data} isRequestParams={isRequestParams} />
     </Layout>
   );
 };
