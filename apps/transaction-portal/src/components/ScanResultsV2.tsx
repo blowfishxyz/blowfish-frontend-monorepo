@@ -188,12 +188,20 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   useEffect(() => {
     if (error) {
-      setLayoutConfig({ severity: "WARNING", impersonatingAddress });
+      setLayoutConfig((prev) => ({
+        ...prev,
+        severity: "WARNING",
+        impersonatingAddress,
+      }));
     } else {
       setLayoutConfig((prev) => ({ ...prev, severity, impersonatingAddress }));
     }
     return () => {
-      setLayoutConfig({ severity: "INFO", impersonatingAddress });
+      setLayoutConfig((prev) => ({
+        ...prev,
+        severity: "INFO",
+        impersonatingAddress,
+      }));
     };
   }, [severity, impersonatingAddress, setLayoutConfig, error]);
 

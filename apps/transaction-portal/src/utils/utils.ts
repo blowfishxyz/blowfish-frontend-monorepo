@@ -3,9 +3,6 @@ import {
   EvmProtocol,
   ScanMessageEvm200ResponseSimulationResults,
   EvmSimulationResults,
-  ScanTransactionsEvmRequest,
-  ScanMessageEvmRequest,
-  EvmSignMessage,
 } from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -14,7 +11,6 @@ import {
   MINIMUM_SUPPORTED_EXTENSION_VERSION,
 } from "~config";
 import { logger } from "~utils/logger";
-import { ChainMetadata } from "~hooks/useChainMetadata";
 
 // NOTE: the require statement below is to ensure we are using the punycode userland modules and not the deprecated core modules.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -193,97 +189,4 @@ export const getProtocol = (
     return simulationResults.protocol;
   }
   return null;
-};
-
-type ExtendedData = (
-  | ScanTransactionsEvmRequest
-  | ScanMessageEvmRequest
-  | EvmSignMessage
-) & { chain: ChainMetadata };
-
-export const normalizeData = (
-  data: ScanTransactionsEvmRequest | ScanMessageEvmRequest | EvmSignMessage
-) => {
-  if (!data) return;
-
-  const extendedData = data as ExtendedData;
-
-  if ("txObjects" in data) {
-    const transaction = data.txObjects[0];
-
-    return {
-      message: {
-        data: {
-          type: "TRANSACTION",
-          payload: {
-            data: transaction.data,
-            from: transaction.from,
-            to: transaction.to,
-          },
-          userAccount: data.userAccount,
-        },
-        origin: data.metadata.origin,
-        type: "TRANSACTION",
-      },
-      userAccount: data.userAccount,
-      request: {
-        type: "TRANSACTION",
-        payload: {
-          data: transaction.data,
-          from: transaction.from,
-          to: transaction.to,
-        },
-        userAccount: data.userAccount,
-      },
-      chain: extendedData.chain,
-    };
-  }
-
-  if ("message" in data) {
-    if (data.message && data.message.kind === "SIGN_TYPED_DATA") {
-      return {
-        message: {
-          data: {
-            type: "SIGN_TYPED_DATA",
-            payload: data.message.data,
-            userAccount: data.userAccount,
-          },
-          origin: data.metadata.origin,
-        },
-        userAccount: data.userAccount,
-        request: {
-          type: "SIGN_TYPED_DATA",
-          payload: data.message.data,
-          userAccount: data.userAccount,
-        },
-        chain: extendedData.chain,
-      };
-    }
-
-    if (data.message && data.message.kind === "SIGN_MESSAGE") {
-      return {
-        message: {
-          data: {
-            type: "SIGN_MESSAGE",
-            payload: {
-              message: data.message.rawMessage,
-            },
-            userAccount: data.userAccount,
-          },
-          origin: data.metadata.origin,
-        },
-        userAccount: data.userAccount,
-        request: {
-          type: "SIGN_MESSAGE",
-          payload: {
-            message: data.message.rawMessage,
-          },
-          userAccount: data.userAccount,
-        },
-        chain: extendedData.chain,
-      };
-    }
-  }
-
-  return data;
 };

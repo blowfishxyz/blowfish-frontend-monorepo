@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { useLayoutEffect } from "react";
+import { useLayoutConfig } from "~components/layout/Layout";
 import { useURLRequestParams } from "~hooks/useURLRequestParams";
-import { normalizeData } from "~utils/utils";
 
 const ScanPage = dynamic(() => import("~components/ScanPageV2"), {
   ssr: false,
@@ -9,9 +9,13 @@ const ScanPage = dynamic(() => import("~components/ScanPageV2"), {
 
 const Page: React.FC = () => {
   const data = useURLRequestParams();
-  const normalizedData = normalizeData(data);
+  const [, setLayoutConfig] = useLayoutConfig();
 
-  return <ScanPage data={normalizedData} isRequestParams />;
+  useLayoutEffect(() => {
+    setLayoutConfig((prev) => ({ ...prev, hideConnectBtn: true }));
+  }, [setLayoutConfig]);
+
+  return <ScanPage data={data} isRequestParams />;
 };
 
 export default Page;
