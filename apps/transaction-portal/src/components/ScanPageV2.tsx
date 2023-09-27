@@ -214,7 +214,7 @@ const ResultsView: React.FC<{
 };
 
 export const ScanPageV2: React.FC<{
-  data: ScanParams | any;
+  data: ScanParams;
   isRequestParams?: boolean;
 }> = ({ data, isRequestParams }) => {
   return (

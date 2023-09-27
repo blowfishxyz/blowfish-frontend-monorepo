@@ -53,8 +53,6 @@ const fetcher = async (
     // For smart contract wallets like Gnosis Safe we need to
     // scan from the POV of the contract rather the the user's ExpandIcon
     // TODO(kimpers): In the future we want to support multiple userAccounts
-    console.log("transaction", request);
-
     const userAccount = isSmartContractWallet(origin)
       ? request.payload.to
       : request.userAccount;
@@ -66,8 +64,6 @@ const fetcher = async (
         return response;
       });
   } else if (isSignTypedDataRequest(request)) {
-    console.log("signed typed data", request);
-
     const payload =
       request.signTypedDataVersion === SignTypedDataVersion.V1
         ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
@@ -92,8 +88,6 @@ const fetcher = async (
       }
     );
   } else if (isSignMessageRequest(request)) {
-    console.log("signed message", request);
-
     return client.scanMessage(request.payload.message, request.userAccount, {
       origin,
     });

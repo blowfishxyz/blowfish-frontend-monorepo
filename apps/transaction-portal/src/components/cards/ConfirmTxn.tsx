@@ -104,16 +104,20 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
             severity={severity}
             warnings={warnings}
             onContinue={
-              layoutConfig.impersonatingAddress
+              layoutConfig.hideConnectBtn || layoutConfig.impersonatingAddress
                 ? undefined
                 : handleContinueClick
             }
-            onCancel={onCancel}
+            onCancel={layoutConfig.hideConnectBtn ? undefined : onCancel}
             onReport={onReport}
           />
         );
       case ViewState.CONFIRMING:
-        return <ConfirmingView onCancel={onCancel} />;
+        return (
+          <ConfirmingView
+            onCancel={layoutConfig.hideConnectBtn ? undefined : onCancel}
+          />
+        );
       case ViewState.PENDING:
         return <PendingView onReport={onReport} txHash={txHash || ""} />;
       case ViewState.SUCCESS:

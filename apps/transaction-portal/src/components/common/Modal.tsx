@@ -14,6 +14,7 @@ import { Column, Text, Button } from "@blowfishxyz/ui";
 import { styled } from "styled-components";
 import { useMemo, useState } from "react";
 import { logger } from "~utils/logger";
+import { useLayoutConfig } from "~components/layout/Layout";
 
 interface ModalOptions {
   blocking?: boolean;
@@ -113,6 +114,7 @@ export function Modal({
 }: ModalProps) {
   const modal = useModal({ ...options, onClose: onCancel || options?.onClose });
   const priority = typeof action !== "function" ? action?.priority : undefined;
+  const [layout] = useLayoutConfig();
 
   return (
     <ModalContext.Provider value={modal}>
@@ -146,6 +148,7 @@ export function Modal({
                 stretch
                 design={action && !priority ? "tertiary" : "primary"}
                 size={action && !priority ? "sm" : "md"}
+                disabled={layout.hideConnectBtn}
                 onClick={() => {
                   onCancel?.();
                   modal.hide();

@@ -9,7 +9,7 @@ const CardConfirmIcon = styled(ConfirmIcon)`
 
 export const ConfirmingView: React.FC<{
   className?: string;
-  onCancel: () => void;
+  onCancel: (() => void) | undefined;
 }> = ({ className, onCancel }) => {
   return (
     <Wrapper
@@ -37,7 +37,7 @@ export const ConfirmingView: React.FC<{
         <Button design="secondary" stretch loading>
           Try again
         </Button>
-        <Button design="danger" stretch onClick={onCancel}>
+        <Button design="danger" stretch onClick={onCancel} disabled={!onCancel}>
           Cancel
         </Button>
       </Column>
