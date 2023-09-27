@@ -23,7 +23,7 @@ import {
   WrongAccountModal,
   WrongNetworkModal,
 } from "./modals";
-import { Layout } from "~components/layout/Layout";
+import { Layout, useLayoutConfig } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
@@ -33,7 +33,7 @@ import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
   isRequestParams?: boolean;
-}> = ({ data, isRequestParams }) => {
+}> = ({ data }) => {
   if (!data) {
     return <ProtectLoadingScreen key="loading" />;
   }
@@ -49,13 +49,12 @@ export const ScanPageV2Inner: React.FC<{
     return <TransactionNotFoundModal />;
   }
 
-  return <FullfieldView data={data} isRequestParams={isRequestParams} />;
+  return <FullfieldView data={data} />;
 };
 
 const FullfieldView: React.FC<{
   data: ScanParamsSuccess;
-  isRequestParams?: boolean;
-}> = ({ data, isRequestParams }) => {
+}> = ({ data }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
   const { reject } = useUserDecision({
     chainId: chain?.chainId,
@@ -82,7 +81,6 @@ const FullfieldView: React.FC<{
       isImpersonating={isImpersonating}
       userAccount={userAccount}
       reject={reject}
-      isRequestParams={isRequestParams}
     />
   );
 };
@@ -95,7 +93,6 @@ const ResultsView: React.FC<{
   userAccount: string;
   isImpersonating: boolean;
   reject?: () => Promise<void>;
-  isRequestParams?: boolean;
 }> = ({
   chainInfo,
   chainId,
@@ -104,7 +101,6 @@ const ResultsView: React.FC<{
   message,
   reject,
   request,
-  isRequestParams,
 }) => {
   const { address, isConnected } = useAccount();
   const connectedChainId = useConnectedChainId();
@@ -119,6 +115,7 @@ const ResultsView: React.FC<{
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
   const error = getErrorFromScanResponse(scanResults?.simulationResults);
+  const [{ hasRequestParams }] = useLayoutConfig();
 
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
@@ -160,7 +157,7 @@ const ResultsView: React.FC<{
     isUnsupportedDangerousRequest,
   ]);
 
-  if (!isRequestParams) {
+  if (!hasRequestParams) {
     if (!isConnected || !connectedChainId) {
       return <AccountNotConnectedModal />;
     }
@@ -207,7 +204,6 @@ const ResultsView: React.FC<{
         chainFamily={chainFamily}
         chainNetwork={chainNetwork}
         impersonatingAddress={isImpersonating ? userAccount : undefined}
-        isRequestParams
       />
     </>
   );
@@ -216,10 +212,10 @@ const ResultsView: React.FC<{
 export const ScanPageV2: React.FC<{
   data: ScanParams;
   isRequestParams?: boolean;
-}> = ({ data, isRequestParams }) => {
+}> = ({ data }) => {
   return (
     <Layout>
-      <ScanPageV2Inner data={data} isRequestParams={isRequestParams} />
+      <ScanPageV2Inner data={data} />
     </Layout>
   );
 };

@@ -8,10 +8,10 @@ import { ProtectHeader } from "~components/ProtectHeader";
 export const useLayoutConfig = createGlobalState<{
   severity: Severity;
   impersonatingAddress?: string | undefined;
-  hideConnectBtn?: boolean | undefined;
+  hasRequestParams?: boolean | undefined;
 }>({
   severity: "INFO",
-  hideConnectBtn: false,
+  hasRequestParams: false,
 });
 
 export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {

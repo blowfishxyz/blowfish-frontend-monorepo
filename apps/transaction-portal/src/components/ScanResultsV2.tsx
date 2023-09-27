@@ -45,7 +45,6 @@ interface ScanResultsV2Props {
   dappUrl: string;
   message: Message<DappRequest["type"], DappRequest>;
   impersonatingAddress: string | undefined;
-  isRequestParams?: boolean;
 }
 
 const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
@@ -53,12 +52,11 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   scanResults,
   message,
   impersonatingAddress,
-  isRequestParams,
   ...props
 }) => {
   const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
   const [canceledTxn, setCancelledTxn] = useState(false);
-  const [, setLayoutConfig] = useLayoutConfig();
+  const [layout, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
   const error = getErrorFromScanResponse(scanResults.simulationResults);
@@ -222,7 +220,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           rejectTxn={() => reject()}
         />
       )}
-      {impersonatingAddress === address && !isRequestParams && (
+      {impersonatingAddress === address && !layout.hasRequestParams && (
         <ImpersonationErrorModal closeWindow={reject} />
       )}
       <PreviewTxn

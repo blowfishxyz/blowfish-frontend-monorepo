@@ -12,10 +12,10 @@ const Page: React.FC = () => {
   const [, setLayoutConfig] = useLayoutConfig();
 
   useLayoutEffect(() => {
-    setLayoutConfig((prev) => ({ ...prev, hideConnectBtn: true }));
+    setLayoutConfig((prev) => ({ ...prev, hasRequestParams: true }));
   }, [setLayoutConfig]);
 
-  return <ScanPage data={data} isRequestParams />;
+  return <ScanPage data={data} />;
 };
 
 export default Page;

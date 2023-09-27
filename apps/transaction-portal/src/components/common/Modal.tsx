@@ -148,7 +148,7 @@ export function Modal({
                 stretch
                 design={action && !priority ? "tertiary" : "primary"}
                 size={action && !priority ? "sm" : "md"}
-                disabled={layout.hideConnectBtn}
+                disabled={layout.hasRequestParams}
                 onClick={() => {
                   onCancel?.();
                   modal.hide();

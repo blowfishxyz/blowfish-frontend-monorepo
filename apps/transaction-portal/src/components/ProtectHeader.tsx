@@ -43,7 +43,7 @@ export const ProtectHeader: React.FC<{
           <ImpersonatorWallet address={shortenHex(impersonatingAddress)} />
         ) : null}
         {pathname !== "/v2"
-          ? !layoutConfig.hideConnectBtn && <UserWalletConnectKitWrapper />
+          ? !layoutConfig.hasRequestParams && <UserWalletConnectKitWrapper />
           : null}
         <Menu />
       </RightContentWrapper>
