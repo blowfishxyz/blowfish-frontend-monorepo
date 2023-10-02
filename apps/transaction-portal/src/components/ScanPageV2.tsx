@@ -32,7 +32,6 @@ import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
-  isRequestParams?: boolean;
 }> = ({ data }) => {
   if (!data) {
     return <ProtectLoadingScreen key="loading" />;
@@ -124,7 +123,7 @@ const ResultsView: React.FC<{
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
-    if (scanResults?.action === "BLOCK") {
+    if (!hasRequestParams && scanResults?.action === "BLOCK") {
       return <BlockedTransactionModal closeWindow={reject} />;
     }
 
@@ -155,6 +154,7 @@ const ResultsView: React.FC<{
     reject,
     mutate,
     isUnsupportedDangerousRequest,
+    hasRequestParams,
   ]);
 
   if (!hasRequestParams) {
@@ -211,7 +211,6 @@ const ResultsView: React.FC<{
 
 export const ScanPageV2: React.FC<{
   data: ScanParams;
-  isRequestParams?: boolean;
 }> = ({ data }) => {
   return (
     <Layout>

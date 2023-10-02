@@ -16,8 +16,13 @@ export function useURLRequestParams(): ScanParams {
   }>();
 
   let parsedRequest;
-  if (requestParam) {
-    parsedRequest = JSON.parse(decodeURIComponent(requestParam));
+
+  try {
+    if (requestParam) {
+      parsedRequest = JSON.parse(decodeURIComponent(requestParam));
+    }
+  } catch {
+    return { error: MessageError.PARAMS_NOT_OK, id: undefined };
   }
 
   if (!parsedRequest) {
@@ -27,18 +32,11 @@ export function useURLRequestParams(): ScanParams {
     };
   }
 
-  const data:
-    | ScanTransactionsEvmRequest
-    | ScanMessageEvmRequest
-    | EvmSignMessage = { ...parsedRequest, chain };
-
-  type ExtendedData = (
+  const data: (
     | ScanTransactionsEvmRequest
     | ScanMessageEvmRequest
     | EvmSignMessage
-  ) & { chain: ChainMetadata };
-
-  const extendedData = data as ExtendedData;
+  ) & { chain: ChainMetadata } = { ...parsedRequest, chain };
 
   if ("txObjects" in data) {
     const transaction = data.txObjects[0];
@@ -67,7 +65,7 @@ export function useURLRequestParams(): ScanParams {
         },
         userAccount: data.userAccount,
       } as DappRequest,
-      chain: extendedData.chain,
+      chain: data.chain,
       isImpersonating: false,
     };
   }
@@ -89,7 +87,7 @@ export function useURLRequestParams(): ScanParams {
           payload: data.message.data,
           userAccount: data.userAccount,
         } as DappRequest,
-        chain: extendedData.chain,
+        chain: data.chain,
         isImpersonating: false,
       };
     }
@@ -114,7 +112,7 @@ export function useURLRequestParams(): ScanParams {
           },
           userAccount: data.userAccount,
         } as DappRequest,
-        chain: extendedData.chain,
+        chain: data.chain,
         isImpersonating: false,
       };
     }
