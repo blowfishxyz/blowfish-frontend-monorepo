@@ -2215,6 +2215,53 @@ export interface ObjectWithDomainsPropertyOfTypeArray {
 /**
  *
  * @export
+ * @interface Report200Response
+ */
+export interface Report200Response {
+  /**
+   * The Request ID of the successfully reported transaction/message scan.
+   * @type {string}
+   * @memberof Report200Response
+   */
+  requestId?: string;
+}
+/**
+ *
+ * @export
+ * @interface ReportRequest
+ */
+export interface ReportRequest {
+  /**
+   * Request ID of transaction/message scan to report. This can be found in both the headers
+   * and the returned objects of our requests as `X-Request-Id`.
+   * @type {string}
+   * @memberof ReportRequest
+   */
+  requestId?: string;
+  /**
+   * What event occurred to cause the report. "PROCEEDED" means the user proceeded with signing
+   * the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported
+   * Malicious" means the user explicitly reported the transaction as malicious.
+   * @type {string}
+   * @memberof ReportRequest
+   */
+  event?: ReportRequestEventEnum;
+}
+
+/**
+ * @export
+ */
+export const ReportRequestEventEnum = {
+  Proceeded: "PROCEEDED",
+  Rejected: "REJECTED",
+  ReportedMalicious: "REPORTED_MALICIOUS",
+} as const;
+export type ReportRequestEventEnum =
+  (typeof ReportRequestEventEnum)[keyof typeof ReportRequestEventEnum];
+
+/**
+ *
+ * @export
  * @interface RequestMetadata
  */
 export interface RequestMetadata {
@@ -3554,36 +3601,43 @@ export type WarningInnerSeverityEnum =
  * @export
  */
 export const WarningInnerKindEnum = {
-  SuspectedMalicious: "SUSPECTED_MALICIOUS",
-  KnownMalicious: "KNOWN_MALICIOUS",
-  TransferringErc20ToOwnContract: "TRANSFERRING_ERC20_TO_OWN_CONTRACT",
-  UnlimitedAllowanceToNfts: "UNLIMITED_ALLOWANCE_TO_NFTS",
-  BulkApprovalsRequest: "BULK_APPROVALS_REQUEST",
-  SetOwnerAuthority: "SET_OWNER_AUTHORITY",
-  TrustedBlocklistDomain: "TRUSTED_BLOCKLIST_DOMAIN",
-  SemiTrustedBlocklistDomain: "SEMI_TRUSTED_BLOCKLIST_DOMAIN",
-  DanglingApproval: "DANGLING_APPROVAL",
-  TradeForNothing: "TRADE_FOR_NOTHING",
-  PermitUnlimitedAllowance: "PERMIT_UNLIMITED_ALLOWANCE",
-  PermitNoExpiration: "PERMIT_NO_EXPIRATION",
-  EthSignTxHash: "ETH_SIGN_TX_HASH",
-  ObfuscatedCode: "OBFUSCATED_CODE",
-  DevtoolsDisabled: "DEVTOOLS_DISABLED",
+  ApprovalToEoa: "APPROVAL_TO_EOA",
   BlocklistedDomainCrossOrigin: "BLOCKLISTED_DOMAIN_CROSS_ORIGIN",
-  WhitelistedDomainCrossOrigin: "WHITELISTED_DOMAIN_CROSS_ORIGIN",
-  TooManyTransactions: "TOO_MANY_TRANSACTIONS",
-  NonAsciiUrl: "NON_ASCII_URL",
+  BlurBulkOrderNotOnBlur: "BLUR_BULK_ORDER_NOT_ON_BLUR",
+  BlurV2OrderNotOnBlur: "BLUR_V2_ORDER_NOT_ON_BLUR",
+  BulkApprovalsRequest: "BULK_APPROVALS_REQUEST",
   CompromisedAuthorityUpgrade: "COMPROMISED_AUTHORITY_UPGRADE",
-  PoisonedAddress: "POISONED_ADDRESS",
-  ApprovalToEOA: "APPROVAL_TO_E_O_A",
   CopyCatDomain: "COPY_CAT_DOMAIN",
   CopyCatImageUnresponsiveDomain: "COPY_CAT_IMAGE_UNRESPONSIVE_DOMAIN",
+  DanglingApproval: "DANGLING_APPROVAL",
+  DebuggerPaused: "DEBUGGER_PAUSED",
+  DurableNonce: "DURABLE_NONCE",
+  EthSignTxHash: "ETH_SIGN_TX_HASH",
+  Forta: "FORTA",
+  ImbalancedDollarValue: "IMBALANCED_DOLLAR_VALUE",
+  KnownMalicious: "KNOWN_MALICIOUS",
+  MaliciousPackages: "MALICIOUS_PACKAGES",
   MultiCopyCatDomain: "MULTI_COPY_CAT_DOMAIN",
-  UserAccountOwnerChange: "USER_ACCOUNT_OWNER_CHANGE",
   NewDomain: "NEW_DOMAIN",
-  UnusualGasConsumption: "UNUSUAL_GAS_CONSUMPTION",
+  PermitNoExpiration: "PERMIT_NO_EXPIRATION",
+  PermitUnlimitedAllowance: "PERMIT_UNLIMITED_ALLOWANCE",
+  PoisonedAddress: "POISONED_ADDRESS",
   ReferencedOfacAddress: "REFERENCED_OFAC_ADDRESS",
-  MainnetReplayPossible: "MAINNET_REPLAY_POSSIBLE",
+  SemiTrustedBlocklistDomain: "SEMI_TRUSTED_BLOCKLIST_DOMAIN",
+  SetOwnerAuthority: "SET_OWNER_AUTHORITY",
+  SuspectedMalicious: "SUSPECTED_MALICIOUS",
+  TooManyTransactions: "TOO_MANY_TRANSACTIONS",
+  TradeForNothing: "TRADE_FOR_NOTHING",
+  TradeForUnverifiedNft: "TRADE_FOR_UNVERIFIED_NFT",
+  TransferringErc20ToOwnContract: "TRANSFERRING_ERC20_TO_OWN_CONTRACT",
+  TransferringTooMuchSol: "TRANSFERRING_TOO_MUCH_SOL",
+  TransfersMajorityOfYourSol: "TRANSFERS_MAJORITY_OF_YOUR_SOL",
+  TrustedBlocklistDomain: "TRUSTED_BLOCKLIST_DOMAIN",
+  UnlimitedAllowanceToNfts: "UNLIMITED_ALLOWANCE_TO_NFTS",
+  UnusualGasConsumption: "UNUSUAL_GAS_CONSUMPTION",
+  UserAccountOwnerChange: "USER_ACCOUNT_OWNER_CHANGE",
+  WhitelistedDomainCrossOrigin: "WHITELISTED_DOMAIN_CROSS_ORIGIN",
+  YakoaNftIpInfringement: "YAKOA_NFT_IP_INFRINGEMENT",
 } as const;
 export type WarningInnerKindEnum =
   (typeof WarningInnerKindEnum)[keyof typeof WarningInnerKindEnum];

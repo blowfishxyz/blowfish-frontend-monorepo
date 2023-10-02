@@ -16,34 +16,48 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
 }) => {
   const kindText = useMemo(() => {
     switch (warning.kind) {
-      case WarningInnerKindEnum.ApprovalToEOA:
+      case WarningInnerKindEnum.ApprovalToEoa:
         return "Approval to EOA";
+      case WarningInnerKindEnum.BlurBulkOrderNotOnBlur:
+        return "Blur bulk order on a non-Blur domain";
+      case WarningInnerKindEnum.BlurV2OrderNotOnBlur:
+        return "Blur v2 order on a non-Blur domain";
       case WarningInnerKindEnum.BlocklistedDomainCrossOrigin:
         return "Blocklisted domain cross-origin";
       case WarningInnerKindEnum.BulkApprovalsRequest:
-        return "Bulk approvals request";
+        return "Bulk approval request";
       case WarningInnerKindEnum.CompromisedAuthorityUpgrade:
         return "Compromised authority upgrade";
       case WarningInnerKindEnum.CopyCatDomain:
         return "Copycat domain";
+      case WarningInnerKindEnum.CopyCatImageUnresponsiveDomain:
+        return "Copycat unresponsive domain";
       case WarningInnerKindEnum.DanglingApproval:
         return "Dangling approval";
-      case WarningInnerKindEnum.DevtoolsDisabled:
-        return "Devtools disabled";
+      case WarningInnerKindEnum.DebuggerPaused:
+        return "Debugger paused";
+      case WarningInnerKindEnum.DurableNonce:
+        return "Durable nonce";
       case WarningInnerKindEnum.EthSignTxHash:
         return "Eth sign transaction hash";
+      case WarningInnerKindEnum.Forta:
+        return "Potentially malicious on the Forta Network";
       case WarningInnerKindEnum.KnownMalicious:
         return "Known malicious";
-      case WarningInnerKindEnum.NonAsciiUrl:
-        return "Non-ASCII URL";
-      case WarningInnerKindEnum.ObfuscatedCode:
-        return "Obfuscated code";
+      case WarningInnerKindEnum.MaliciousPackages:
+        return "Malicious packages detected";
+      case WarningInnerKindEnum.MultiCopyCatDomain:
+        return "Multi copycat domain";
+      case WarningInnerKindEnum.NewDomain:
+        return "New Domain";
       case WarningInnerKindEnum.PermitNoExpiration:
         return "Permit without expiration";
       case WarningInnerKindEnum.PermitUnlimitedAllowance:
         return "Permit with unlimited allowance";
       case WarningInnerKindEnum.PoisonedAddress:
         return "Poisoned address";
+      case WarningInnerKindEnum.ReferencedOfacAddress:
+        return "Referenced OFAC Sanctioned Address";
       case WarningInnerKindEnum.SemiTrustedBlocklistDomain:
         return "Semi-trusted blocklist domain";
       case WarningInnerKindEnum.SetOwnerAuthority:
@@ -56,26 +70,22 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
         return "Trade for nothing";
       case WarningInnerKindEnum.TransferringErc20ToOwnContract:
         return "Transferring ERC20 to own contract";
+      case WarningInnerKindEnum.TransferringTooMuchSol:
+        return "Transferring too much SOL";
+      case WarningInnerKindEnum.TransfersMajorityOfYourSol:
+        return "Transfers majority of your SOL";
       case WarningInnerKindEnum.TrustedBlocklistDomain:
         return "Trusted blocklist domain";
       case WarningInnerKindEnum.UnlimitedAllowanceToNfts:
         return "Unlimited allowance to NFTs";
-      case WarningInnerKindEnum.WhitelistedDomainCrossOrigin:
-        return "Whitelisted domain cross-origin";
-      case WarningInnerKindEnum.NewDomain:
-        return "New Domain";
-      case WarningInnerKindEnum.CopyCatImageUnresponsiveDomain:
-        return "Copycat unresponsive domain";
-      case WarningInnerKindEnum.MultiCopyCatDomain:
-        return "Multi copycat domain";
-      case WarningInnerKindEnum.UserAccountOwnerChange:
-        return "User account owner change";
       case WarningInnerKindEnum.UnusualGasConsumption:
         return "Unusual gas consumption";
-      case WarningInnerKindEnum.ReferencedOfacAddress:
-        return "Referenced OFAC Sanctioned Address";
-      case WarningInnerKindEnum.MainnetReplayPossible:
-        return "Mainnet replay possible";
+      case WarningInnerKindEnum.UserAccountOwnerChange:
+        return "User account owner change";
+      case WarningInnerKindEnum.WhitelistedDomainCrossOrigin:
+        return "Whitelisted domain cross-origin";
+      case WarningInnerKindEnum.YakoaNftIpInfringement:
+        return "Possible IP infringement";
     }
   }, [warning.kind]);
   const defaultKindText =
@@ -85,7 +95,7 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
 
   const kindIcon: IconVariant = useMemo(() => {
     switch (warning.kind) {
-      case WarningInnerKindEnum.ApprovalToEOA:
+      case WarningInnerKindEnum.ApprovalToEoa:
       case WarningInnerKindEnum.CompromisedAuthorityUpgrade:
       case WarningInnerKindEnum.SetOwnerAuthority:
       case WarningInnerKindEnum.UserAccountOwnerChange:
@@ -94,11 +104,8 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.MultiCopyCatDomain:
       case WarningInnerKindEnum.CopyCatImageUnresponsiveDomain:
         return "identification";
-      case WarningInnerKindEnum.DevtoolsDisabled:
+      case WarningInnerKindEnum.DebuggerPaused:
         return "dev-tools";
-      case WarningInnerKindEnum.NonAsciiUrl:
-      case WarningInnerKindEnum.ObfuscatedCode:
-        return "multi-text";
       case WarningInnerKindEnum.PermitNoExpiration:
       case WarningInnerKindEnum.PermitUnlimitedAllowance:
       case WarningInnerKindEnum.UnlimitedAllowanceToNfts:
@@ -120,7 +127,8 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.WhitelistedDomainCrossOrigin:
       case WarningInnerKindEnum.ReferencedOfacAddress:
       case WarningInnerKindEnum.UnusualGasConsumption:
-      case WarningInnerKindEnum.MainnetReplayPossible:
+      case WarningInnerKindEnum.PoisonedAddress:
+      case WarningInnerKindEnum.DurableNonce:
       default:
         return "exclamation";
     }
