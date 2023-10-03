@@ -1,6 +1,6 @@
 import { MessageError } from "~utils/utils";
 import { useQueryParams } from "./useQueryParams";
-import { ChainMetadata, useChainMetadata } from "./useChainMetadata";
+import { useChainMetadata } from "./useChainMetadata";
 import {
   EvmSignMessage,
   ScanMessageEvmRequest,
@@ -32,11 +32,10 @@ export function useURLRequestParams(): ScanParams {
     };
   }
 
-  const data: (
+  const data:
     | ScanTransactionsEvmRequest
     | ScanMessageEvmRequest
-    | EvmSignMessage
-  ) & { chain: ChainMetadata } = { ...parsedRequest, chain };
+    | EvmSignMessage = { ...parsedRequest };
 
   if ("txObjects" in data) {
     const transaction = data.txObjects[0];
@@ -65,7 +64,7 @@ export function useURLRequestParams(): ScanParams {
         },
         userAccount: data.userAccount,
       } as DappRequest,
-      chain: data.chain,
+      chain: chain,
       isImpersonating: false,
     };
   }
@@ -87,7 +86,7 @@ export function useURLRequestParams(): ScanParams {
           payload: data.message.data,
           userAccount: data.userAccount,
         } as DappRequest,
-        chain: data.chain,
+        chain: chain,
         isImpersonating: false,
       };
     }
@@ -112,7 +111,7 @@ export function useURLRequestParams(): ScanParams {
           },
           userAccount: data.userAccount,
         } as DappRequest,
-        chain: data.chain,
+        chain: chain,
         isImpersonating: false,
       };
     }
