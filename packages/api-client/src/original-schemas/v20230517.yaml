@@ -24,6 +24,8 @@ tags:
     description: Endpoints related to scanning a blockchain transaction
   - name: Scan transactions
     description: Endpoints related to scanning multiple blockchain transactions
+  - name: Report request
+    description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
 
 paths:
   /ethereum/v0/mainnet/scan/transactions:
@@ -40,10 +42,13 @@ paths:
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
+        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transactions |
+        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transactions |
+        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transactions |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
@@ -259,10 +264,13 @@ paths:
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
+        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
+        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
+        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       deprecated: true
       security:
@@ -733,10 +741,13 @@ paths:
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message |
+        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
+        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
+        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/message |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
@@ -1785,6 +1796,83 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+  /v0/report:
+    post:
+      tags:
+        - Report request
+      summary: Report
+      operationId: Report
+      description: |
+        This endpoint allows to send additional data about user's behaviour after viewing a scanning result from Blowfish. For each scan, you can send events like `PROCEEDED` (when user decided to sign the transaction), `REJECTED` (when user decided to abort the transaction flow) and `REPORTED_MALICIOUS` (when user explicitly marked the submitted transaction as malicious).
+
+        We review and analyze reports to improve the accuracy of our security engine.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestId:
+                  type: string
+                  description: |
+                    Request ID of transaction/message scan to report. This can be found in both the headers
+                    and the returned objects of our requests as `X-Request-Id`.
+                  example: "eafdae18039f531b5a586310cfbd654e"
+                event:
+                  type: string
+                  description: |
+                    What event occurred to cause the report. "PROCEEDED" means the user proceeded with signing
+                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported 
+                    Malicious" means the user explicitly reported the transaction as malicious.
+                  enum:
+                    - PROCEEDED
+                    - REJECTED
+                    - REPORTED_MALICIOUS
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  requestId:
+                    type: string
+                    description: The Request ID of the successfully reported transaction/message scan.
+                    example: "eafdae18039f531b5a586310cfbd654e"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
 
 components:
   securitySchemes:
@@ -1855,36 +1943,43 @@ components:
             type: string
             description: Warning kind. Can be used to override specific warnings with your own custom versions. We reserve the right to add new warnings as the need arises, so your UI should likewise defer to the supplied message if the kind isn't recognized by your code.
             enum:
-              - SUSPECTED_MALICIOUS
-              - KNOWN_MALICIOUS
-              - TRANSFERRING_ERC20_TO_OWN_CONTRACT
-              - UNLIMITED_ALLOWANCE_TO_NFTS
-              - BULK_APPROVALS_REQUEST
-              - SET_OWNER_AUTHORITY
-              - TRUSTED_BLOCKLIST_DOMAIN
-              - SEMI_TRUSTED_BLOCKLIST_DOMAIN
-              - DANGLING_APPROVAL
-              - TRADE_FOR_NOTHING
-              - PERMIT_UNLIMITED_ALLOWANCE
-              - PERMIT_NO_EXPIRATION
-              - ETH_SIGN_TX_HASH
-              - OBFUSCATED_CODE
-              - DEVTOOLS_DISABLED
+              - APPROVAL_TO_EOA
               - BLOCKLISTED_DOMAIN_CROSS_ORIGIN
-              - WHITELISTED_DOMAIN_CROSS_ORIGIN
-              - TOO_MANY_TRANSACTIONS
-              - NON_ASCII_URL
+              - BLUR_BULK_ORDER_NOT_ON_BLUR
+              - BLUR_V2_ORDER_NOT_ON_BLUR
+              - BULK_APPROVALS_REQUEST
               - COMPROMISED_AUTHORITY_UPGRADE
-              - POISONED_ADDRESS
-              - APPROVAL_TO_E_O_A
               - COPY_CAT_DOMAIN
               - COPY_CAT_IMAGE_UNRESPONSIVE_DOMAIN
+              - DANGLING_APPROVAL
+              - DEBUGGER_PAUSED
+              - DURABLE_NONCE
+              - ETH_SIGN_TX_HASH
+              - FORTA
+              - IMBALANCED_DOLLAR_VALUE
+              - KNOWN_MALICIOUS
+              - MALICIOUS_PACKAGES
               - MULTI_COPY_CAT_DOMAIN
-              - USER_ACCOUNT_OWNER_CHANGE
               - NEW_DOMAIN
-              - UNUSUAL_GAS_CONSUMPTION
+              - PERMIT_NO_EXPIRATION
+              - PERMIT_UNLIMITED_ALLOWANCE
+              - POISONED_ADDRESS
               - REFERENCED_OFAC_ADDRESS
-              - MAINNET_REPLAY_POSSIBLE
+              - SEMI_TRUSTED_BLOCKLIST_DOMAIN
+              - SET_OWNER_AUTHORITY
+              - SUSPECTED_MALICIOUS
+              - TOO_MANY_TRANSACTIONS
+              - TRADE_FOR_NOTHING
+              - TRADE_FOR_UNVERIFIED_NFT
+              - TRANSFERRING_ERC20_TO_OWN_CONTRACT
+              - TRANSFERRING_TOO_MUCH_SOL
+              - TRANSFERS_MAJORITY_OF_YOUR_SOL
+              - TRUSTED_BLOCKLIST_DOMAIN
+              - UNLIMITED_ALLOWANCE_TO_NFTS
+              - UNUSUAL_GAS_CONSUMPTION
+              - USER_ACCOUNT_OWNER_CHANGE
+              - WHITELISTED_DOMAIN_CROSS_ORIGIN
+              - YAKOA_NFT_IP_INFRINGEMENT
             example: SUSPECTED_MALICIOUS
           message:
             type: string
@@ -3513,7 +3608,7 @@ components:
       properties:
         kind:
           type: string
-          description: "The error that caused us to be unable to run transaction simulation for this request. `SIMULATION_TIMED_OUT` is returned if the simulation took too long and timed out. `BAD_REQUEST` is returned if the transaction(s) or `user_account` submitted were invalid (this is similar to a 400 bad request). `TOO_MANY_TRANSACTIONS` us returned if a request includes too many transactions (current max: 100 txns). `SIMULATION_FAILED` is returned if simulation failed because of a dependent RPC failure or internal server error during simulation execution."
+          description: "The error that caused us to be unable to run transaction simulation for this request. `SIMULATION_TIMED_OUT` is returned if the simulation took too long and timed out. `BAD_REQUEST` is returned if the transaction(s) or `user_account` submitted were invalid (this is similar to a 400 bad request). `TOO_MANY_TRANSACTIONS` is returned if a request includes too many transactions (current max: 100 txns). `SIMULATION_FAILED` is returned if simulation failed because of a dependent RPC failure or internal server error during simulation execution."
           example: BAD_REQUEST
           enum:
             - SIMULATION_FAILED

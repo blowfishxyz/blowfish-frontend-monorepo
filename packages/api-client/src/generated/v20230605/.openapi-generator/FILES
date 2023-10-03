@@ -1,4 +1,5 @@
 apis/DownloadBlocklistApi.ts
+apis/ReportRequestApi.ts
 apis/ScanDomainApi.ts
 apis/ScanMessageApi.ts
 apis/ScanTransactionApi.ts
