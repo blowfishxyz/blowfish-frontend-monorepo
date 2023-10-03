@@ -169,7 +169,7 @@ export class BlowfishMultiChainApiClient {
     requestId: string,
     eventType: ReportRequestEventEnum
   ) {
-    this.apis.reporting.report({
+    return this.apis.reporting.report({
       reportRequest: { requestId, event: eventType },
       xApiVersion: this.apiVersion,
     });

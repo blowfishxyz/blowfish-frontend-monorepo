@@ -25,25 +25,35 @@ export function createEvmClient({
   chainFamily,
   chainNetwork,
   apiKey,
+  language,
 }: {
   basePath: string;
   chainFamily: EvmChainFamily;
   chainNetwork: EvmChainNetwork;
   apiKey?: string;
+  language?: Languages;
 }): BlowfishEvmApiClient {
-  return new BlowfishEvmApiClient(basePath, chainFamily, chainNetwork, apiKey);
+  return new BlowfishEvmApiClient(
+    basePath,
+    chainFamily,
+    chainNetwork,
+    apiKey,
+    language
+  );
 }
 
 export function createSolanaClient({
   basePath,
   apiKey,
   chainNetwork,
+  language,
 }: {
   basePath: string;
   apiKey?: string;
   chainNetwork: SolanaChainNetwork;
+  language?: Languages;
 }): BlowfishSolanaApiClient {
-  return new BlowfishSolanaApiClient(basePath, chainNetwork, apiKey);
+  return new BlowfishSolanaApiClient(basePath, chainNetwork, apiKey, language);
 }
 
 export {
