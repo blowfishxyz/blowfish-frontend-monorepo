@@ -1,11 +1,6 @@
 import { MessageError } from "~utils/utils";
 import { useQueryParams } from "./useQueryParams";
 import { useChainMetadata } from "./useChainMetadata";
-import {
-  EvmSignMessage,
-  ScanMessageEvmRequest,
-  ScanTransactionsEvmRequest,
-} from "@blowfishxyz/api-client/.";
 import { ScanParams } from "./useScanParams";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -32,29 +27,24 @@ export function useURLRequestParams(): ScanParams {
     };
   }
 
-  const data:
-    | ScanTransactionsEvmRequest
-    | ScanMessageEvmRequest
-    | EvmSignMessage = { ...parsedRequest };
-
-  if ("txObjects" in data) {
-    const transaction = data.txObjects[0];
+  if ("txObjects" in parsedRequest) {
+    const transaction = parsedRequest.txObjects[0];
 
     return {
       message: {
         data: {
           type: "TRANSACTION",
           payload: {
-            data: transaction.data,
+            data: transaction.parsedRequest,
             from: transaction.from,
             to: transaction.to,
           },
-          userAccount: data.userAccount,
+          userAccount: parsedRequest.userAccount,
         },
-        origin: data.metadata.origin,
+        origin: parsedRequest.metadata.origin,
         type: "TRANSACTION",
       } as Message<DappRequest["type"], DappRequest>,
-      userAccount: data.userAccount as `0x${string}`,
+      userAccount: parsedRequest.userAccount as `0x${string}`,
       request: {
         type: "TRANSACTION",
         payload: {
@@ -62,54 +52,60 @@ export function useURLRequestParams(): ScanParams {
           from: transaction.from,
           to: transaction.to,
         },
-        userAccount: data.userAccount,
+        userAccount: parsedRequest.userAccount,
       } as DappRequest,
       chain: chain,
       isImpersonating: false,
     };
   }
 
-  if ("message" in data) {
-    if (data.message && data.message.kind === "SIGN_TYPED_DATA") {
+  if ("message" in parsedRequest) {
+    if (
+      parsedRequest.message &&
+      parsedRequest.message.kind === "SIGN_TYPED_DATA"
+    ) {
       return {
         message: {
           data: {
             type: "SIGN_TYPED_DATA",
-            payload: data.message.data,
-            userAccount: data.userAccount,
+            payload: parsedRequest.message.data,
+            userAccount: parsedRequest.userAccount,
           },
-          origin: data.metadata.origin,
+          origin: parsedRequest.metadata.origin,
         } as Message<DappRequest["type"], DappRequest>,
-        userAccount: data.userAccount as `0x${string}`,
+        userAccount: parsedRequest.userAccount as `0x${string}`,
         request: {
           type: "SIGN_TYPED_DATA",
-          payload: data.message.data,
-          userAccount: data.userAccount,
+          payload: parsedRequest.message.data,
+          userAccount: parsedRequest.userAccount,
         } as DappRequest,
         chain: chain,
         isImpersonating: false,
       };
     }
 
-    if (data.message && data.message.kind === "SIGN_MESSAGE") {
+    if (
+      parsedRequest.message &&
+      parsedRequest.message.kind === "SIGN_MESSAGE"
+    ) {
       return {
         message: {
           data: {
             type: "SIGN_MESSAGE",
             payload: {
-              message: data.message.rawMessage,
+              message: parsedRequest.message.rawMessage,
             },
-            userAccount: data.userAccount,
+            userAccount: parsedRequest.userAccount,
           },
-          origin: data.metadata.origin,
+          origin: parsedRequest.metadata.origin,
         } as Message<DappRequest["type"], DappRequest>,
-        userAccount: data.userAccount as `0x${string}`,
+        userAccount: parsedRequest.userAccount as `0x${string}`,
         request: {
           type: "SIGN_MESSAGE",
           payload: {
-            message: data.message.rawMessage,
+            message: parsedRequest.message.rawMessage,
           },
-          userAccount: data.userAccount,
+          userAccount: parsedRequest.userAccount,
         } as DappRequest,
         chain: chain,
         isImpersonating: false,
