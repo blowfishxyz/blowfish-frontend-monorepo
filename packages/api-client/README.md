@@ -5,6 +5,7 @@
 ## API Documentation
 
 See [https://docs.blowfish.xyz](https://docs.blowfish.xyz/v2023-06-05)
+
 Latest API version: **v2023-06-05**
 
 ## Transactions and Message Scanning
@@ -74,7 +75,10 @@ const domainsScan = await client.scanDomains([
 ## Solana Client
 
 ```ts
-import { createSolanaClient } from "@blowfishxyz/api-client/v20230605";
+import {
+  createSolanaClient,
+  Languages,
+} from "@blowfishxyz/api-client/v20230605";
 
 const client = createSolanaClient({
   basePath: API_BASE_URL,
@@ -151,8 +155,11 @@ Send additional data about user's behaviour after viewing a scanning result from
 
 We review and analyze reports to improve the accuracy of our security engine.
 
+Request ID of transaction/message scan can be found in both the headers and the returned objects of our requests as X-Request-Id.
+
 ```tsx
 const { requestId } = await client.reportTransaction(
+  // Scan request ID
   "eafdae18039f531b5a586310cfbd654e",
   ReportRequestEventEnum.ReportedMalicious
 );

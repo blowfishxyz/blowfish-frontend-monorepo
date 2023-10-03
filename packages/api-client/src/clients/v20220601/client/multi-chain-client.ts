@@ -23,7 +23,7 @@ import {
 } from "../types";
 
 export class BlowfishMultiChainApiClient {
-  protected apiVersion = "2023-03-08";
+  protected apiVersion = "2022-06-01";
   private readonly config: Configuration;
 
   private getConfig(apiKey?: string): ConfigurationParameters {
