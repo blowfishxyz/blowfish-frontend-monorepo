@@ -39,10 +39,12 @@ function EvmApp() {
   const scanTransactions = () => {
     return createEvmClient({
       basePath: API_BASE_URL,
-      // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
-      apiKey: API_KEY,
       chainFamily: "ethereum",
       chainNetwork: "mainnet",
+      // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+      apiKey: API_KEY,
+      // Optional
+      language: Languages.En,
     }).scanTransactions([tx], userAccount, {
       origin,
     });
@@ -95,9 +97,11 @@ function SolanaApp() {
   const scanTransactions = () => {
     return createSolanaClient({
       basePath: API_BASE_URL,
+      chainNetwork: "mainnet",
       // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
       apiKey: API_KEY,
-      chainNetwork: "mainnet",
+      // Optional
+      language: Languages.En,
     }).scanTransactions([tx1, tx2], userAccount, {
       origin,
     });

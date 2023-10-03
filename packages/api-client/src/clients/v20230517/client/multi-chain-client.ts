@@ -4,22 +4,25 @@ import type {
   HTTPHeaders,
   RequestMetadata,
   EvmTxData,
-} from "../../generated/v20230517";
+  ReportRequestEventEnum,
+  Languages,
+} from "../../../generated/v20230517";
 import {
   ScanTransactionsApi,
   ScanDomainApi,
   DownloadBlocklistApi,
   ScanMessageApi,
-} from "../../generated/v20230517/apis";
-import { Configuration } from "../../generated/v20230517/runtime";
+  ReportRequestApi,
+} from "../../../generated/v20230517/apis";
+import { Configuration } from "../../../generated/v20230517/runtime";
 import {
   EvmChainFamily,
   EvmChainNetwork,
   DownloadBlocklistRequest,
   SolanaChainNetwork,
-} from "./types";
+} from "../types";
 
-class BaseApiClient {
+export class BlowfishMultiChainApiClient {
   protected apiVersion = "2023-05-17";
   private readonly config: Configuration;
 
@@ -43,11 +46,13 @@ class BaseApiClient {
     transactions: ScanTransactionsApi;
     domain: ScanDomainApi;
     blocklist: DownloadBlocklistApi;
+    reporting: ReportRequestApi;
   };
 
   constructor(
     private readonly basePath: string,
-    apiKey?: string
+    apiKey?: string,
+    private readonly language?: Languages
   ) {
     this.config = new Configuration(this.getConfig(apiKey));
     this.apis = {
@@ -55,28 +60,20 @@ class BaseApiClient {
       transactions: new ScanTransactionsApi(this.config),
       domain: new ScanDomainApi(this.config),
       blocklist: new DownloadBlocklistApi(this.config),
+      reporting: new ReportRequestApi(this.config),
     };
   }
-}
 
-export class BlowfishEvmApiClient extends BaseApiClient {
-  constructor(
-    basePath: string,
-    private readonly chainFamily: EvmChainFamily,
-    private readonly chainNetwork: EvmChainNetwork,
-    apiKey?: string
-  ) {
-    super(basePath, apiKey);
-  }
-
-  scanMessage(
+  async scanMessageEvm(
     rawMessage: string,
     userAccount: string,
-    metadata: RequestMetadata
+    metadata: RequestMetadata,
+    chainFamily: EvmChainFamily,
+    chainNetwork: EvmChainNetwork
   ) {
     return this.apis.message.scanMessageEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
+      chainFamily: chainFamily,
+      chainNetwork: chainNetwork,
       scanMessageEvmRequest: {
         message: {
           kind: "SIGN_MESSAGE",
@@ -85,18 +82,21 @@ export class BlowfishEvmApiClient extends BaseApiClient {
         userAccount,
         metadata,
       },
+      language: this.language,
       xApiVersion: this.apiVersion,
     });
   }
 
-  scanSignTypedData(
+  async scanSignTypedDataEvm(
     typedData: EvmSignTypedDataData,
     userAccount: string,
-    metadata: RequestMetadata
+    metadata: RequestMetadata,
+    chainFamily: EvmChainFamily,
+    chainNetwork: EvmChainNetwork
   ) {
     return this.apis.message.scanMessageEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
+      chainFamily: chainFamily,
+      chainNetwork: chainNetwork,
       scanMessageEvmRequest: {
         message: {
           kind: "SIGN_TYPED_DATA",
@@ -105,108 +105,72 @@ export class BlowfishEvmApiClient extends BaseApiClient {
         userAccount,
         metadata,
       },
+      language: this.language,
       xApiVersion: this.apiVersion,
     });
   }
 
-  scanTransactions(
+  async scanTransactionsEvm(
     txObjects: EvmTxData[],
     userAccount: string,
-    metadata: RequestMetadata
+    metadata: RequestMetadata,
+    chainFamily: EvmChainFamily,
+    chainNetwork: EvmChainNetwork
   ) {
     return this.apis.transactions.scanTransactionsEvm({
-      chainFamily: this.chainFamily,
-      chainNetwork: this.chainNetwork,
+      chainFamily: chainFamily,
+      chainNetwork: chainNetwork,
       scanTransactionsEvmRequest: {
         txObjects,
         userAccount,
         metadata,
       },
+      language: this.language,
       xApiVersion: this.apiVersion,
     });
   }
 
-  scanDomains(domains: string[]) {
-    return this.apis.domain.scanDomain({
-      objectWithDomainsPropertyOfTypeArray: {
-        domains,
-      },
-      xApiVersion: this.apiVersion,
-    });
-  }
-
-  downloadBlocklist(request: DownloadBlocklistRequest = {}) {
-    return this.apis.blocklist.downloadBlocklist({
-      xApiVersion: this.apiVersion,
-      downloadBlocklistRequest: request,
-    });
-  }
-}
-
-export class BlowfishSolanaApiClient extends BaseApiClient {
-  constructor(
-    basePath: string,
-    private readonly chainNetwork: SolanaChainNetwork,
-    apiKey?: string
-  ) {
-    super(basePath, apiKey);
-  }
-
-  scanTransactions(
+  async scanTransactionsSolana(
     transactions: string[],
     userAccount: string,
-    metadata: RequestMetadata
+    metadata: RequestMetadata,
+    chainNetwork: SolanaChainNetwork
   ) {
     return this.apis.transactions.scanTransactionsSolana({
-      chainNetwork: this.chainNetwork,
+      chainNetwork: chainNetwork,
       scanTransactionsSolanaRequest: {
         transactions,
         userAccount,
         metadata,
       },
+      language: this.language,
       xApiVersion: this.apiVersion,
     });
   }
 
-  scanDomains = (domains: string[]) => {
+  async scanDomains(domains: string[]) {
     return this.apis.domain.scanDomain({
       objectWithDomainsPropertyOfTypeArray: {
         domains,
       },
       xApiVersion: this.apiVersion,
     });
-  };
+  }
 
-  downloadBlocklist(request: DownloadBlocklistRequest = {}) {
+  async downloadBlocklist(request: DownloadBlocklistRequest = {}) {
     return this.apis.blocklist.downloadBlocklist({
       xApiVersion: this.apiVersion,
       downloadBlocklistRequest: request,
     });
   }
-}
 
-export function createEvmClient({
-  basePath,
-  chainFamily,
-  chainNetwork,
-  apiKey,
-}: {
-  basePath: string;
-  chainFamily: EvmChainFamily;
-  chainNetwork: EvmChainNetwork;
-  apiKey?: string;
-}): BlowfishEvmApiClient {
-  return new BlowfishEvmApiClient(basePath, chainFamily, chainNetwork, apiKey);
-}
-
-export function createSolanaClient({
-  basePath,
-  apiKey,
-  chainNetwork,
-}: {
-  basePath: string;
-  apiKey?: string;
-  chainNetwork: SolanaChainNetwork;
-}): BlowfishSolanaApiClient {
-  return new BlowfishSolanaApiClient(basePath, chainNetwork, apiKey);
+  async reportTransaction(
+    requestId: string,
+    eventType: ReportRequestEventEnum
+  ) {
+    return this.apis.reporting.report({
+      reportRequest: { requestId, event: eventType },
+      xApiVersion: this.apiVersion,
+    });
+  }
 }
