@@ -28,7 +28,7 @@ You can also use `SimulationWarning` to display Blowfish warnings.
 
 ```tsx
 import useSWR from "swr";
-import { createClient } from "@blowfishxyz/api-client";
+import { createEvmClient } from "@blowfishxyz/api-client";
 import { SimulationWarning, StateChangePreviewEvm } from "@blowfishxyz/ui";
 
 function EvmApp() {
