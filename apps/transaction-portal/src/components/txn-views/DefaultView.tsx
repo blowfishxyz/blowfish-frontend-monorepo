@@ -13,7 +13,7 @@ export const DefaultView: React.FC<{
   severity: Severity | undefined;
   warnings: UIWarning[] | undefined;
   onContinue: (() => void) | undefined;
-  onCancel: () => void;
+  onCancel: (() => void) | undefined;
   onReport: () => void;
 }> = ({ severity = "INFO", warnings, onContinue, onCancel, onReport }) => {
   const title = useMemo(() => {
@@ -77,7 +77,13 @@ export const DefaultView: React.FC<{
             </Button>
           </Row>
           <Row gap="md">
-            <Button size="sm" stretch design="secondary" onClick={onCancel}>
+            <Button
+              size="sm"
+              stretch
+              design="secondary"
+              onClick={onCancel}
+              disabled={!onCancel}
+            >
               Cancel
             </Button>
             <Button
@@ -110,7 +116,13 @@ export const DefaultView: React.FC<{
           </Button>
         </Row>
         <Row gap="md">
-          <Button size="sm" stretch design="danger" onClick={onCancel}>
+          <Button
+            size="sm"
+            stretch
+            design="danger"
+            onClick={onCancel}
+            disabled={!onCancel}
+          >
             Cancel
           </Button>
           <Button size="sm" stretch design="secondary" onClick={onReport}>

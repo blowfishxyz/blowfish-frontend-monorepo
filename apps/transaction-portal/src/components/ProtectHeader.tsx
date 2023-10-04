@@ -32,6 +32,7 @@ export const ProtectHeader: React.FC<{
 }> = ({ impersonatingAddress }) => {
   const [layoutConfig] = useLayoutConfig();
   const { pathname } = useRouter();
+
   return (
     <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull
@@ -41,7 +42,9 @@ export const ProtectHeader: React.FC<{
         {impersonatingAddress ? (
           <ImpersonatorWallet address={shortenHex(impersonatingAddress)} />
         ) : null}
-        {pathname !== "/v2" ? <UserWalletConnectKitWrapper /> : null}
+        {pathname !== "/v2"
+          ? !layoutConfig.hasRequestParams && <UserWalletConnectKitWrapper />
+          : null}
         <Menu />
       </RightContentWrapper>
     </ProtectScreenContent>
