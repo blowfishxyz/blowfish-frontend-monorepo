@@ -45,6 +45,9 @@ export const isNftStateChange = (
   return (
     rawInfo.kind === "ERC721_TRANSFER" ||
     rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "ERC721_LOCK" ||
+    rawInfo.kind === "ERC721_LOCK_APPROVAL" ||
+    rawInfo.kind === "ERC721_LOCK_APPROVAL_FOR_ALL" ||
     rawInfo.kind === "ERC721_APPROVAL" ||
     rawInfo.kind === "ERC721_APPROVAL_FOR_ALL" ||
     rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER" ||
@@ -163,6 +166,8 @@ export const isNftStateChangeWithMetadata = (
     case "ERC1155_TRANSFER":
     case "ERC721_APPROVAL":
     case "ERC721_TRANSFER":
+    case "ERC721_LOCK":
+    case "ERC721_LOCK_APPROVAL":
       return true;
   }
   return false;

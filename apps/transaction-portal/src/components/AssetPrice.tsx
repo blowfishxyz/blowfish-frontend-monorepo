@@ -67,7 +67,9 @@ const AssetPrice = ({ stateChange }: AssetPriceProps) => {
   if (
     rawInfo.kind === "ERC721_TRANSFER" ||
     rawInfo.kind === "ERC1155_TRANSFER" ||
-    rawInfo.kind === "ERC721_APPROVAL"
+    rawInfo.kind === "ERC721_APPROVAL" ||
+    rawInfo.kind === "ERC721_LOCK" ||
+    rawInfo.kind === "ERC721_LOCK_APPROVAL"
   ) {
     totalValue = pricePerToken;
     withInfoTooltip = true;

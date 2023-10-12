@@ -12,6 +12,9 @@ import {
   EvmStateChangeErc20Approval,
   EvmStateChangeErc1155Transfer,
   SolanaExpectedStateChange,
+  EvmStateChangeErc721Lock,
+  EvmStateChangeErc721LockApproval,
+  EvmStateChangeErc721LockApprovalForAll,
 } from "../clients/v20230605";
 
 export const sendNativeToken: EvmTransactionExpectedStateChange = {
@@ -249,6 +252,34 @@ export const receiveErc721: EvmTransactionExpectedStateChange = {
   } as EvmStateChangeErc721Transfer,
 };
 
+export const receiveErc721Lock: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Receive BoredApeYachtClub #1726",
+  rawInfo: {
+    data: {
+      amount: {
+        after: "1",
+        before: "0",
+      },
+      metadata: {
+        rawImageUrl:
+          "https://ipfs.io/ipfs/QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
+      },
+      tokenId: "1726",
+      asset: {
+        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+        name: "BoredApeYachtClub",
+        symbol: "BAYC",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+    },
+    kind: "ERC721_LOCK",
+  } as EvmStateChangeErc721Lock,
+};
+
 export const approveErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
   rawInfo: {
@@ -281,6 +312,38 @@ export const approveErc721: EvmTransactionExpectedStateChange = {
   } as EvmStateChangeErc721Approval,
 };
 
+export const approveErc721Lock: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
+  rawInfo: {
+    data: {
+      amount: {
+        after:
+          "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        before: "0",
+      },
+      owner: {
+        address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+        kind: "ACCOUNT",
+      },
+      spender: {
+        address: "0x00000000006c3852cbef3e08e8df289169ede581",
+        kind: "ACCOUNT",
+      },
+      asset: {
+        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+        name: "BoredApeYachtClub",
+        symbol: "BAYC",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+    },
+    kind: "ERC721_LOCK_APPROVAL",
+  } as EvmStateChangeErc721LockApproval,
+};
+
 export const approveAllErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
   rawInfo: {
@@ -311,6 +374,38 @@ export const approveAllErc721: EvmTransactionExpectedStateChange = {
     },
     kind: "ERC721_APPROVAL_FOR_ALL",
   } as EvmStateChangeErc721ApprovalForAll,
+};
+
+export const approveAllErc721Lock: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
+  rawInfo: {
+    data: {
+      amount: {
+        after:
+          "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+        before: "0",
+      },
+      owner: {
+        address: "0xed2ab4948ba6a909a7751dec4f34f303eb8c7236",
+        kind: "ACCOUNT",
+      },
+      spender: {
+        address: "0x00000000006c3852cbef3e08e8df289169ede581",
+        kind: "ACCOUNT",
+      },
+      asset: {
+        address: "0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d",
+        name: "BoredApeYachtClub",
+        symbol: "BAYC",
+        price: {
+          source: "Coingecko",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+    },
+    kind: "ERC721_LOCK_APPROVAL_FOR_ALL",
+  } as EvmStateChangeErc721LockApprovalForAll,
 };
 
 export const sendErc1155: EvmTransactionExpectedStateChange = {

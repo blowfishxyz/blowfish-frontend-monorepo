@@ -33,6 +33,11 @@ ApproveAllErc721.args = {
   stateChange: stateChangesMap.approveAllErc721,
 };
 
+export const ApproveAllErc721Lock = SimulationResultEvmComponent.bind({});
+ApproveAllErc721Lock.args = {
+  stateChange: stateChangesMap.approveAllErc721Lock,
+};
+
 export const PermitErc20NoExpiration = SimulationResultEvmComponent.bind({});
 PermitErc20NoExpiration.args = {
   stateChange: stateChangesMap.permitErc20NoExpiration,
@@ -41,6 +46,11 @@ PermitErc20NoExpiration.args = {
 export const ReceiveErc721 = SimulationResultEvmComponent.bind({});
 ReceiveErc721.args = {
   stateChange: stateChangesMap.receiveErc721,
+};
+
+export const ReceiveErc721Lock = SimulationResultEvmComponent.bind({});
+ReceiveErc721Lock.args = {
+  stateChange: stateChangesMap.receiveErc721Lock,
 };
 
 export const SendNativeToken = SimulationResultEvmComponent.bind({});
