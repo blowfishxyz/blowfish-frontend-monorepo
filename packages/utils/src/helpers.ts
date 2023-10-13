@@ -1,14 +1,17 @@
 export const sleep = (timeMs: number) =>
   new Promise((resolve) => setTimeout(resolve, timeMs));
 
-export const withRetry = async <T>(action: () => Promise<T>, times = 3) => {
+export const withRetry = async <T>(
+  action: () => Promise<T>,
+  times = 3
+): Promise<T> => {
   try {
     return action();
   } catch (e) {
     if (times <= 0) {
       throw e;
     }
-    withRetry(action, times - 1);
+    return withRetry(action, times - 1);
   }
 };
 
