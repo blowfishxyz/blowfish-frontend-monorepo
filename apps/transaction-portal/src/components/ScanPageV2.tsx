@@ -8,7 +8,7 @@ import {
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
-import { ScanParamsSuccess, useScanParams } from "~hooks/useScanParams";
+import { ScanParams, ScanParamsSuccess } from "~hooks/useScanParams";
 import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
@@ -23,16 +23,16 @@ import {
   WrongAccountModal,
   WrongNetworkModal,
 } from "./modals";
-import { Layout } from "~components/layout/Layout";
+import { Layout, useLayoutConfig } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
 import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
-export const ScanPageV2Inner: React.FC = () => {
-  const data = useScanParams();
-
+export const ScanPageV2Inner: React.FC<{
+  data: ScanParams;
+}> = ({ data }) => {
   if (!data) {
     return <ProtectLoadingScreen key="loading" />;
   }
@@ -51,7 +51,9 @@ export const ScanPageV2Inner: React.FC = () => {
   return <FullfieldView data={data} />;
 };
 
-const FullfieldView: React.FC<{ data: ScanParamsSuccess }> = ({ data }) => {
+const FullfieldView: React.FC<{
+  data: ScanParamsSuccess;
+}> = ({ data }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
   const { reject } = useUserDecision({
     chainId: chain?.chainId,
@@ -112,6 +114,7 @@ const ResultsView: React.FC<{
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
   const error = getErrorFromScanResponse(scanResults?.simulationResults);
+  const [{ hasRequestParams }] = useLayoutConfig();
 
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
@@ -120,7 +123,7 @@ const ResultsView: React.FC<{
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const overlay = useMemo(() => {
-    if (scanResults?.action === "BLOCK") {
+    if (!hasRequestParams && scanResults?.action === "BLOCK") {
       return <BlockedTransactionModal closeWindow={reject} />;
     }
 
@@ -151,26 +154,29 @@ const ResultsView: React.FC<{
     reject,
     mutate,
     isUnsupportedDangerousRequest,
+    hasRequestParams,
   ]);
 
-  if (!isConnected || !connectedChainId) {
-    return <AccountNotConnectedModal />;
-  }
+  if (!hasRequestParams) {
+    if (!isConnected || !connectedChainId) {
+      return <AccountNotConnectedModal />;
+    }
 
-  if (address !== userAccount && !isImpersonating) {
-    return <WrongAccountModal correctAddress={userAccount} />;
-  }
+    if (address !== userAccount && !isImpersonating) {
+      return <WrongAccountModal correctAddress={userAccount} />;
+    }
 
-  if (chainId !== connectedChainId) {
-    return (
-      <WrongNetworkModal
-        targetChainId={chainId}
-        connectedChainId={connectedChainId}
-        switchNetwork={async (chainId) => {
-          await switchNetworkAsync?.(chainId);
-        }}
-      />
-    );
+    if (chainId !== connectedChainId) {
+      return (
+        <WrongNetworkModal
+          targetChainId={chainId}
+          connectedChainId={connectedChainId}
+          switchNetwork={async (chainId) => {
+            await switchNetworkAsync?.(chainId);
+          }}
+        />
+      );
+    }
   }
 
   if (scanError) {
@@ -203,10 +209,12 @@ const ResultsView: React.FC<{
   );
 };
 
-export const ScanPageV2: React.FC = () => {
+export const ScanPageV2: React.FC<{
+  data: ScanParams;
+}> = ({ data }) => {
   return (
     <Layout>
-      <ScanPageV2Inner />
+      <ScanPageV2Inner data={data} />
     </Layout>
   );
 };

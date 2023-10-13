@@ -149,22 +149,6 @@ const domainsScan = await client.scanDomains([
 ]);
 ```
 
-## Report transaction
-
-Send additional data about user's behaviour after viewing a scanning result from Blowfish. For each scan, you can send events like PROCEEDED (when user decided to sign the transaction), REJECTED (when user decided to abort the transaction flow) and REPORTED_MALICIOUS (when user explicitly marked the submitted transaction as malicious).
-
-We review and analyze reports to improve the accuracy of our security engine.
-
-Request ID of transaction/message scan can be found in both the headers and the returned objects of our requests as X-Request-Id.
-
-```tsx
-const { requestId } = await client.reportTransaction(
-  // Scan request ID
-  "eafdae18039f531b5a586310cfbd654e",
-  ReportRequestEventEnum.ReportedMalicious
-);
-```
-
 ## Historical Simulations
 
 Simulates historical transaction to get the actual state changes it produced.

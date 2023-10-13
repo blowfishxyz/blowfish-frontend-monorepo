@@ -56,7 +56,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 }) => {
   const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
   const [canceledTxn, setCancelledTxn] = useState(false);
-  const [, setLayoutConfig] = useLayoutConfig();
+  const [layout, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
   const error = getErrorFromScanResponse(scanResults.simulationResults);
@@ -186,12 +186,20 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 
   useEffect(() => {
     if (error) {
-      setLayoutConfig({ severity: "WARNING", impersonatingAddress });
+      setLayoutConfig((prev) => ({
+        ...prev,
+        severity: "WARNING",
+        impersonatingAddress,
+      }));
     } else {
       setLayoutConfig((prev) => ({ ...prev, severity, impersonatingAddress }));
     }
     return () => {
-      setLayoutConfig({ severity: "INFO", impersonatingAddress });
+      setLayoutConfig((prev) => ({
+        ...prev,
+        severity: "INFO",
+        impersonatingAddress,
+      }));
     };
   }, [severity, impersonatingAddress, setLayoutConfig, error]);
 
@@ -212,7 +220,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           rejectTxn={() => reject()}
         />
       )}
-      {impersonatingAddress === address && (
+      {impersonatingAddress === address && !layout.hasRequestParams && (
         <ImpersonationErrorModal closeWindow={reject} />
       )}
       <PreviewTxn
