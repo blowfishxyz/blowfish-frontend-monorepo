@@ -1,5 +1,5 @@
 import { SolanaChainNetwork, RequestMetadata, Languages } from "../types";
-import { BlowfishMultiChainApiClient } from "./multi-chain-client";
+import { BlowfishMultiChainApiClient, FetchAPI } from "./multi-chain-client";
 
 export class BlowfishSolanaApiClient {
   private readonly multiChainClient: BlowfishMultiChainApiClient;
@@ -11,12 +11,14 @@ export class BlowfishSolanaApiClient {
     basePath: string,
     private readonly chainNetwork: SolanaChainNetwork,
     apiKey?: string,
-    language?: Languages
+    language?: Languages,
+    fetchApi?: FetchAPI
   ) {
     this.multiChainClient = new BlowfishMultiChainApiClient(
       basePath,
       apiKey,
-      language
+      language,
+      fetchApi
     );
     this.scanDomains = this.multiChainClient.scanDomains;
     this.downloadBlocklist = this.multiChainClient.downloadBlocklist;

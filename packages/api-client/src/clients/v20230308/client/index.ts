@@ -1,23 +1,19 @@
-import {
-  Languages,
-  EvmChainFamily,
-  EvmChainNetwork,
-  SolanaChainNetwork,
-} from "../types";
 import { BlowfishMultiChainApiClient } from "./multi-chain-client";
 import { BlowfishEvmApiClient } from "./evm-client";
 import { BlowfishSolanaApiClient } from "./solana-client";
+import {
+  EvmClientConfig,
+  MultiChainClientConfig,
+  SolanaClientConfig,
+} from "../../common/types";
 
 export function createMultiChainClient({
   basePath,
   apiKey,
   language,
-}: {
-  basePath: string;
-  apiKey?: string;
-  language?: Languages;
-}): BlowfishMultiChainApiClient {
-  return new BlowfishMultiChainApiClient(basePath, apiKey, language);
+  fetchApi,
+}: MultiChainClientConfig): BlowfishMultiChainApiClient {
+  return new BlowfishMultiChainApiClient(basePath, apiKey, language, fetchApi);
 }
 
 export function createEvmClient({
@@ -26,19 +22,15 @@ export function createEvmClient({
   chainNetwork,
   apiKey,
   language,
-}: {
-  basePath: string;
-  chainFamily: EvmChainFamily;
-  chainNetwork: EvmChainNetwork;
-  apiKey?: string;
-  language?: Languages;
-}): BlowfishEvmApiClient {
+  fetchApi,
+}: EvmClientConfig): BlowfishEvmApiClient {
   return new BlowfishEvmApiClient(
     basePath,
     chainFamily,
     chainNetwork,
     apiKey,
-    language
+    language,
+    fetchApi
   );
 }
 
@@ -47,13 +39,15 @@ export function createSolanaClient({
   apiKey,
   chainNetwork,
   language,
-}: {
-  basePath: string;
-  apiKey?: string;
-  chainNetwork: SolanaChainNetwork;
-  language?: Languages;
-}): BlowfishSolanaApiClient {
-  return new BlowfishSolanaApiClient(basePath, chainNetwork, apiKey, language);
+  fetchApi,
+}: SolanaClientConfig): BlowfishSolanaApiClient {
+  return new BlowfishSolanaApiClient(
+    basePath,
+    chainNetwork,
+    apiKey,
+    language,
+    fetchApi
+  );
 }
 
 export {
