@@ -48,9 +48,9 @@ ReceiveErc721.args = {
   stateChange: stateChangesMap.receiveErc721,
 };
 
-export const ReceiveErc721Lock = SimulationResultEvmComponent.bind({});
-ReceiveErc721Lock.args = {
-  stateChange: stateChangesMap.receiveErc721Lock,
+export const UnlockErc721 = SimulationResultEvmComponent.bind({});
+UnlockErc721.args = {
+  stateChange: stateChangesMap.unlockErc721,
 };
 
 export const SendNativeToken = SimulationResultEvmComponent.bind({});

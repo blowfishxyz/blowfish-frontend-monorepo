@@ -252,8 +252,8 @@ export const receiveErc721: EvmTransactionExpectedStateChange = {
   } as EvmStateChangeErc721Transfer,
 };
 
-export const receiveErc721Lock: EvmTransactionExpectedStateChange = {
-  humanReadableDiff: "Receive BoredApeYachtClub #1726",
+export const unlockErc721: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Unlock BoredApeYachtClub #1726",
   rawInfo: {
     data: {
       amount: {
@@ -313,7 +313,7 @@ export const approveErc721: EvmTransactionExpectedStateChange = {
 };
 
 export const approveErc721Lock: EvmTransactionExpectedStateChange = {
-  humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
+  humanReadableDiff: "Approve to lock all your BoredApeYachtClub",
   rawInfo: {
     data: {
       amount: {
@@ -377,7 +377,7 @@ export const approveAllErc721: EvmTransactionExpectedStateChange = {
 };
 
 export const approveAllErc721Lock: EvmTransactionExpectedStateChange = {
-  humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
+  humanReadableDiff: "Approve to lock all your BoredApeYachtClub",
   rawInfo: {
     data: {
       amount: {
