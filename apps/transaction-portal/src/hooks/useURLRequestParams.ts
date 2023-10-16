@@ -52,6 +52,7 @@ export function useURLRequestParams(): ScanParams {
           from: transaction.from,
           to: transaction.to,
         },
+        simulatorConfig: parsedRequest.simulatorConfig,
         userAccount: parsedRequest.userAccount,
       } as DappRequest,
       chain: chain,

@@ -5,6 +5,7 @@ import {
   RequestMetadata,
   EvmSignTypedDataData,
   EvmTxData,
+  EvmSimulatorConfig,
 } from "../types";
 import { BlowfishMultiChainApiClient } from "./multi-chain-client";
 
@@ -65,14 +66,16 @@ export class BlowfishEvmApiClient {
   async scanTransactions(
     txObjects: EvmTxData[],
     userAccount: string,
-    metadata: RequestMetadata
+    metadata: RequestMetadata,
+    simulatorConfig?: EvmSimulatorConfig
   ) {
     return this.multiChainClient.scanTransactionsEvm(
       txObjects,
       userAccount,
       metadata,
       this.chainFamily,
-      this.chainNetwork
+      this.chainNetwork,
+      simulatorConfig
     );
   }
 }

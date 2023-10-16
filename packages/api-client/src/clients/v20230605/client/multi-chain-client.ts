@@ -7,6 +7,7 @@ import type {
   EvmTxData,
   ReportRequestEventEnum,
   Languages,
+  EvmSimulatorConfig,
 } from "../../../generated/v20230605";
 import {
   ScanTransactionsApi,
@@ -124,7 +125,8 @@ export class BlowfishMultiChainApiClient {
     userAccount: string,
     metadata: RequestMetadata,
     chainFamily: EvmChainFamily,
-    chainNetwork: EvmChainNetwork
+    chainNetwork: EvmChainNetwork,
+    simulatorConfig?: EvmSimulatorConfig
   ) {
     return this.apis.transactions.scanTransactionsEvm({
       chainFamily: chainFamily,
@@ -133,6 +135,7 @@ export class BlowfishMultiChainApiClient {
         txObjects,
         userAccount,
         metadata,
+        simulatorConfig,
       },
       language: this.language,
       xApiVersion: this.apiVersion,

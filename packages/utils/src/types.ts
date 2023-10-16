@@ -3,6 +3,7 @@ import type {
   EvmStateChangeErc721TransferData,
   EvmStateChangeErc1155TransferData,
   SignTypedDataPayload,
+  EvmSimulatorConfig,
 } from "@blowfishxyz/api-client";
 import { ActionEnum } from "@blowfishxyz/api-client";
 
@@ -98,6 +99,7 @@ export interface TransactionRequest extends BaseRequest {
   payload: TransactionPayload;
   isImpersonatingWallet?: boolean;
   extensionVersion: string;
+  simulatorConfig?: EvmSimulatorConfig;
 }
 
 export const isTransactionRequest = (
