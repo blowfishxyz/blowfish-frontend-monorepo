@@ -53,6 +53,11 @@ UnlockErc721.args = {
   stateChange: stateChangesMap.unlockErc721,
 };
 
+export const LockErc721 = SimulationResultEvmComponent.bind({});
+LockErc721.args = {
+  stateChange: stateChangesMap.lockErc721,
+};
+
 export const SendNativeToken = SimulationResultEvmComponent.bind({});
 SendNativeToken.args = {
   stateChange: stateChangesMap.sendNativeToken,

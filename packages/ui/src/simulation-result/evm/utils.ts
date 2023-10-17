@@ -10,6 +10,9 @@ import {
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
   EvmNftStateChange,
+  EvmStateChangeErc721LockApproval,
+  EvmStateChangeErc721LockApprovalForAll,
+  EvmStateChangeErc721Lock,
 } from "@blowfishxyz/api-client";
 import Decimal from "decimal.js";
 
@@ -72,8 +75,19 @@ const isApprovalStateChange = (
   | EvmStateChangeErc20Approval
   | EvmStateChangeErc1155ApprovalForAll
   | EvmStateChangeErc721Approval
-  | EvmStateChangeErc721ApprovalForAll => {
+  | EvmStateChangeErc721ApprovalForAll
+  | EvmStateChangeErc721LockApproval
+  | EvmStateChangeErc721LockApprovalForAll => {
   return rawInfo.kind.includes("APPROVAL");
+};
+
+const isLockStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is
+  | EvmStateChangeErc721Lock
+  | EvmStateChangeErc721LockApproval
+  | EvmStateChangeErc721LockApprovalForAll => {
+  return rawInfo.kind.includes("LOCK");
 };
 
 export const hasCounterparty = (
@@ -86,7 +100,8 @@ export const isApprovalForAllStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is
   | EvmStateChangeErc1155ApprovalForAll
-  | EvmStateChangeErc721ApprovalForAll => {
+  | EvmStateChangeErc721ApprovalForAll
+  | EvmStateChangeErc721LockApprovalForAll => {
   return rawInfo.kind.includes("APPROVAL_FOR_ALL");
 };
 
@@ -107,10 +122,18 @@ const getSimulationDiff = (rawInfo: EvmExpectedStateChange["rawInfo"]) => {
 export const isPositiveStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ) => {
+  const isLockState = isLockStateChange(rawInfo);
   const isApproval = isApprovalStateChange(rawInfo);
   const diff = getSimulationDiff(rawInfo);
 
-  return (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
+  const isPositiveState =
+    (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
+
+  if (isLockState) {
+    return !isPositiveState;
+  } else {
+    return isPositiveState;
+  }
 };
 
 export const getAssetPriceInUsd = (
