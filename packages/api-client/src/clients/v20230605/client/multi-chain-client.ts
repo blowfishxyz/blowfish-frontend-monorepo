@@ -8,6 +8,7 @@ import type {
   ReportRequestEventEnum,
   Languages,
   EvmSimulatorConfig,
+  FetchAPI,
 } from "../../../generated/v20230605";
 import {
   ScanTransactionsApi,
@@ -26,6 +27,8 @@ import {
 } from "../types";
 import { mapMessageResponse } from "../utils";
 
+export { FetchAPI };
+
 export class BlowfishMultiChainApiClient {
   protected apiVersion = "2023-06-05";
   private readonly config: Configuration;
@@ -35,6 +38,7 @@ export class BlowfishMultiChainApiClient {
       basePath: this.basePath,
       headers: this.getHeaders(),
       apiKey,
+      fetchApi: this.fetchApi,
     };
   }
 
@@ -57,7 +61,8 @@ export class BlowfishMultiChainApiClient {
   constructor(
     private readonly basePath: string,
     apiKey?: string,
-    private readonly language?: Languages
+    private readonly language?: Languages,
+    private readonly fetchApi?: FetchAPI
   ) {
     this.config = new Configuration(this.getConfig(apiKey));
     this.apis = {

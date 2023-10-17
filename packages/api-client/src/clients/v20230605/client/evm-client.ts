@@ -7,7 +7,7 @@ import {
   EvmTxData,
   EvmSimulatorConfig,
 } from "../types";
-import { BlowfishMultiChainApiClient } from "./multi-chain-client";
+import { BlowfishMultiChainApiClient, FetchAPI } from "./multi-chain-client";
 
 export class BlowfishEvmApiClient {
   private readonly multiChainClient: BlowfishMultiChainApiClient;
@@ -21,12 +21,14 @@ export class BlowfishEvmApiClient {
     private readonly chainFamily: EvmChainFamily,
     private readonly chainNetwork: EvmChainNetwork,
     apiKey?: string,
-    language?: Languages
+    language?: Languages,
+    fetchApi?: FetchAPI
   ) {
     this.multiChainClient = new BlowfishMultiChainApiClient(
       basePath,
       apiKey,
-      language
+      language,
+      fetchApi
     );
     this.scanDomains = this.multiChainClient.scanDomains;
     this.downloadBlocklist = this.multiChainClient.downloadBlocklist;
