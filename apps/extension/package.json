@@ -23,7 +23,7 @@
     "@blowfishxyz/ui": "workspace:*",
     "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
-    "@blowfishxyz/blocklist": "^0.0.5",
+    "@blowfishxyz/blocklist": "^0.0.7",
     "@ethersproject/address": "^5.7.0",
     "@metamask/post-message-stream": "^6.1.0",
     "@plasmohq/storage": "^1.2.0",
