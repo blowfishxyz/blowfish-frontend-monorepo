@@ -2,7 +2,36 @@ import { MessageError } from "~utils/utils";
 import { useQueryParams } from "./useQueryParams";
 import { useChainMetadata } from "./useChainMetadata";
 import { ScanParams } from "./useScanParams";
-import { DappRequest, Message } from "@blowfish/utils/types";
+import { DappRequest, Message, RequestType } from "@blowfish/utils/types";
+
+export type UrlParsedRequest = {
+  metadata: {
+    origin: string;
+  };
+  userAccount: string;
+} & (
+  | {
+      txObjects: [
+        {
+          from: string;
+          to: string | undefined;
+          data: string;
+        }
+      ];
+    }
+  | {
+      message?: {
+        kind: RequestType.SignTypedData;
+        data: unknown;
+      };
+    }
+  | {
+      message?: {
+        kind: RequestType.SignMessage;
+        rawMessage: string;
+      };
+    }
+);
 
 export function useURLRequestParams(): ScanParams {
   const chain = useChainMetadata();
@@ -10,11 +39,13 @@ export function useURLRequestParams(): ScanParams {
     request?: string;
   }>();
 
-  let parsedRequest;
+  let parsedRequest: UrlParsedRequest | undefined;
 
   try {
     if (requestParam) {
-      parsedRequest = JSON.parse(decodeURIComponent(requestParam));
+      parsedRequest = JSON.parse(
+        decodeURIComponent(requestParam)
+      ) as UrlParsedRequest;
     }
   } catch {
     return { error: MessageError.PARAMS_NOT_OK, id: undefined };
@@ -35,7 +66,7 @@ export function useURLRequestParams(): ScanParams {
         data: {
           type: "TRANSACTION",
           payload: {
-            data: transaction.parsedRequest,
+            data: transaction.data,
             from: transaction.from,
             to: transaction.to,
           },
