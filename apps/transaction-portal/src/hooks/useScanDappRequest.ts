@@ -57,9 +57,14 @@ const fetcher = async (
       ? request.payload.to
       : request.userAccount;
     return client
-      .scanTransactions([request.payload], userAccount, {
-        origin,
-      })
+      .scanTransactions(
+        [request.payload],
+        userAccount,
+        {
+          origin,
+        },
+        request.simulatorConfig
+      )
       .then((response: ScanTransactionsEvm200Response) => {
         return response;
       });

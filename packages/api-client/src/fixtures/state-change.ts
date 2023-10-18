@@ -12,6 +12,9 @@ import {
   EvmStateChangeErc20Approval,
   EvmStateChangeErc1155Transfer,
   SolanaExpectedStateChange,
+  EvmStateChangeErc721Lock,
+  EvmStateChangeErc721LockApproval,
+  EvmStateChangeErc721LockApprovalForAll,
 } from "../clients/v20230605";
 
 export const sendNativeToken: EvmTransactionExpectedStateChange = {
@@ -249,6 +252,70 @@ export const receiveErc721: EvmTransactionExpectedStateChange = {
   } as EvmStateChangeErc721Transfer,
 };
 
+export const unlockErc721: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Unlock DeGods #1364",
+  rawInfo: {
+    data: {
+      amount: {
+        after: "0",
+        before: "1",
+      },
+      metadata: {
+        rawImageUrl:
+          "https://cdn.simplehash.com/assets/650f9feb029953d015931c62c0f1e1428b55b08a9e94dff5795239b272e6c9a1.png",
+      },
+      tokenId: "1364",
+      asset: {
+        address: "0x8821bee2ba0df28761afff119d66390d594cd280",
+        collection: "DeGods",
+        name: "DeGod #1365",
+        price: {
+          source: "Simplehash",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+      owner: {
+        address: "0x83988265eb9dfac380575fb2c37f72422aac3df6",
+        kind: "ACCOUNT",
+      },
+    },
+    kind: "ERC721_LOCK",
+  } as EvmStateChangeErc721Lock,
+};
+
+export const lockErc721: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Lock DeGods #6927",
+  rawInfo: {
+    data: {
+      amount: {
+        before: "0",
+        after: "1",
+      },
+      metadata: {
+        rawImageUrl:
+          "https://cdn.simplehash.com/assets/d4a95f61e3e494131e349a15750cafbdc3dae4d9717a64e6354d9a04cb9cb20a.png",
+      },
+      tokenId: "1364",
+      asset: {
+        address: "0x8821bee2ba0df28761afff119d66390d594cd280",
+        collection: "DeGods",
+        name: "DeGod #6928",
+        price: {
+          source: "Simplehash",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+      owner: {
+        address: "0x83988265eb9dfac380575fb2c37f72422aac3df6",
+        kind: "ACCOUNT",
+      },
+    },
+    kind: "ERC721_LOCK",
+  } as EvmStateChangeErc721Lock,
+};
+
 export const approveErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
   rawInfo: {
@@ -281,6 +348,39 @@ export const approveErc721: EvmTransactionExpectedStateChange = {
   } as EvmStateChangeErc721Approval,
 };
 
+export const approveErc721Lock: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Approve to lock any amount of your y00ts",
+  rawInfo: {
+    data: {
+      amount: {
+        before: "0",
+        after:
+          "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+      },
+      owner: {
+        address: "0xe8b574b4bc261351c85f369c5fe84cfcc0f3095b",
+        kind: "ACCOUNT",
+      },
+      spender: {
+        address: "0xfa3ce71036dd4564d7d8de19d2b90fb856c5be82",
+        kind: "ACCOUNT",
+      },
+      asset: {
+        address: "0x670fd103b1a08628e9557cd66b87ded841115190",
+        symbol: "y00t",
+        name: "y00ts",
+        collection: "y00ts",
+        price: {
+          source: "Simplehash",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+    },
+    kind: "ERC721_LOCK_APPROVAL",
+  } as EvmStateChangeErc721LockApproval,
+};
+
 export const approveAllErc721: EvmTransactionExpectedStateChange = {
   humanReadableDiff: "Approve to transfer all your BoredApeYachtClub",
   rawInfo: {
@@ -311,6 +411,39 @@ export const approveAllErc721: EvmTransactionExpectedStateChange = {
     },
     kind: "ERC721_APPROVAL_FOR_ALL",
   } as EvmStateChangeErc721ApprovalForAll,
+};
+
+export const approveAllErc721Lock: EvmTransactionExpectedStateChange = {
+  humanReadableDiff: "Approve to lock any amount of your y00ts",
+  rawInfo: {
+    data: {
+      amount: {
+        before: "0",
+        after:
+          "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+      },
+      owner: {
+        address: "0xe8b574b4bc261351c85f369c5fe84cfcc0f3095b",
+        kind: "ACCOUNT",
+      },
+      spender: {
+        address: "0xfa3ce71036dd4564d7d8de19d2b90fb856c5be82",
+        kind: "ACCOUNT",
+      },
+      asset: {
+        address: "0x670fd103b1a08628e9557cd66b87ded841115190",
+        symbol: "y00t",
+        name: "y00ts",
+        collection: "y00ts",
+        price: {
+          source: "Simplehash",
+          updatedAt: 1681958792,
+          dollarValuePerToken: 1945.92,
+        },
+      },
+    },
+    kind: "ERC721_LOCK_APPROVAL_FOR_ALL",
+  } as EvmStateChangeErc721LockApprovalForAll,
 };
 
 export const sendErc1155: EvmTransactionExpectedStateChange = {

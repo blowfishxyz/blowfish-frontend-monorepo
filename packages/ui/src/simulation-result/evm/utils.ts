@@ -10,6 +10,9 @@ import {
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
   EvmNftStateChange,
+  EvmStateChangeErc721LockApproval,
+  EvmStateChangeErc721LockApprovalForAll,
+  EvmStateChangeErc721Lock,
 } from "@blowfishxyz/api-client";
 import Decimal from "decimal.js";
 
@@ -45,6 +48,9 @@ export const isNftStateChange = (
   return (
     rawInfo.kind === "ERC721_TRANSFER" ||
     rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "ERC721_LOCK" ||
+    rawInfo.kind === "ERC721_LOCK_APPROVAL" ||
+    rawInfo.kind === "ERC721_LOCK_APPROVAL_FOR_ALL" ||
     rawInfo.kind === "ERC721_APPROVAL" ||
     rawInfo.kind === "ERC721_APPROVAL_FOR_ALL" ||
     rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER" ||
@@ -69,8 +75,19 @@ const isApprovalStateChange = (
   | EvmStateChangeErc20Approval
   | EvmStateChangeErc1155ApprovalForAll
   | EvmStateChangeErc721Approval
-  | EvmStateChangeErc721ApprovalForAll => {
+  | EvmStateChangeErc721ApprovalForAll
+  | EvmStateChangeErc721LockApproval
+  | EvmStateChangeErc721LockApprovalForAll => {
   return rawInfo.kind.includes("APPROVAL");
+};
+
+const isLockStateChange = (
+  rawInfo: EvmExpectedStateChange["rawInfo"]
+): rawInfo is
+  | EvmStateChangeErc721Lock
+  | EvmStateChangeErc721LockApproval
+  | EvmStateChangeErc721LockApprovalForAll => {
+  return rawInfo.kind.includes("LOCK");
 };
 
 export const hasCounterparty = (
@@ -83,7 +100,8 @@ export const isApprovalForAllStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ): rawInfo is
   | EvmStateChangeErc1155ApprovalForAll
-  | EvmStateChangeErc721ApprovalForAll => {
+  | EvmStateChangeErc721ApprovalForAll
+  | EvmStateChangeErc721LockApprovalForAll => {
   return rawInfo.kind.includes("APPROVAL_FOR_ALL");
 };
 
@@ -104,10 +122,14 @@ const getSimulationDiff = (rawInfo: EvmExpectedStateChange["rawInfo"]) => {
 export const isPositiveStateChange = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
 ) => {
+  const isLockState = isLockStateChange(rawInfo);
   const isApproval = isApprovalStateChange(rawInfo);
   const diff = getSimulationDiff(rawInfo);
 
-  return (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
+  if (isLockState || isApproval) {
+    return diff.gt(0);
+  }
+  return diff.lt(0);
 };
 
 export const getAssetPriceInUsd = (
@@ -163,6 +185,8 @@ export const isNftStateChangeWithMetadata = (
     case "ERC1155_TRANSFER":
     case "ERC721_APPROVAL":
     case "ERC721_TRANSFER":
+    case "ERC721_LOCK":
+    case "ERC721_LOCK_APPROVAL":
       return true;
   }
   return false;

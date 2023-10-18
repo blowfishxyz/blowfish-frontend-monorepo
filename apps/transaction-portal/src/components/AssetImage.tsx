@@ -94,7 +94,9 @@ const AssetImage = ({
   if (
     rawInfo.kind === "ERC721_TRANSFER" ||
     rawInfo.kind === "ERC721_APPROVAL" ||
-    rawInfo.kind === "ERC1155_TRANSFER"
+    rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "ERC721_LOCK" ||
+    rawInfo.kind === "ERC721_LOCK_APPROVAL"
   ) {
     imageSrc = rawInfo.data?.metadata?.rawImageUrl;
     showPlaceholderImage = !imageSrc;
