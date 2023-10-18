@@ -3,6 +3,7 @@ import { useQueryParams } from "./useQueryParams";
 import { useChainMetadata } from "./useChainMetadata";
 import { ScanParams } from "./useScanParams";
 import { DappRequest, Message, RequestType } from "@blowfish/utils/types";
+import { EvmSimulatorConfig } from "@blowfishxyz/api-client";
 
 export type UrlParsedRequest = {
   metadata: {
@@ -18,6 +19,7 @@ export type UrlParsedRequest = {
           data: string;
         }
       ];
+      simulatorConfig: EvmSimulatorConfig;
     }
   | {
       message?: {
