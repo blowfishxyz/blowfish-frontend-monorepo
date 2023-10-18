@@ -126,14 +126,10 @@ export const isPositiveStateChange = (
   const isApproval = isApprovalStateChange(rawInfo);
   const diff = getSimulationDiff(rawInfo);
 
-  const isPositiveState =
-    (isApproval && diff.gt(0)) || (!isApproval && diff.lt(0));
-
-  if (isLockState) {
-    return !isPositiveState;
-  } else {
-    return isPositiveState;
+  if (isLockState || isApproval) {
+    return diff.gt(0);
   }
+  return diff.lt(0);
 };
 
 export const getAssetPriceInUsd = (
