@@ -12,6 +12,11 @@ export function useSimulateByTxnHash() {
     if (!data.blockNumber) {
       return;
     }
+
+    const simulatorConfig: EvmSimulatorConfig = {
+      blockNumber: (data.blockNumber - 1).toString(),
+    };
+
     const dataToSend: UrlParsedRequest = {
       metadata: { origin: domain },
       userAccount: data.from,
@@ -22,10 +27,9 @@ export function useSimulateByTxnHash() {
           data: data.data,
         },
       ],
+      simulatorConfig: simulatorConfig,
     };
-    const simulatorConfig: EvmSimulatorConfig = {
-      blockNumber: (data.blockNumber - 1).toString(),
-    };
+
     router.push(
       `/v2/simulate?request=${encodeURIComponent(
         JSON.stringify(dataToSend)
