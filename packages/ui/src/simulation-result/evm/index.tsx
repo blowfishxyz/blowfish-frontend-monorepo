@@ -214,6 +214,23 @@ const TokenFooter: React.FC<{
             {rawInfo.data.asset.name}
           </Text>
         </Text>
+        {hasCounterparty(rawInfo) && rawInfo.data.counterparty ? (
+          <LinkWrapper
+            href={counterpartyLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Row gap="xs" alignItems="center">
+              <Text size="sm" design="secondary">
+                {isPositiveEffect ? "From" : "To"}:
+                <Text size="sm" design="primary">
+                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 4)}`}
+                </Text>
+              </Text>
+              <Icon variant="arrow" size={10} />
+            </Row>
+          </LinkWrapper>
+        ) : null}
       </Row>
     );
   } else if (isNftStateChange(rawInfo)) {
@@ -251,7 +268,7 @@ const TokenFooter: React.FC<{
               <Text size="sm" design="secondary">
                 {isPositiveEffect ? "From" : "To"}:
                 <Text size="sm" design="primary">
-                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 3)}`}
+                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 4)}`}
                 </Text>
               </Text>
               <Icon variant="arrow" size={10} />

@@ -40,9 +40,7 @@ const StyledText = styled(StyledBaseText)<TextProps>`
   ${colors}
 `;
 
-StyledText.defaultProps = {
-  color: "foregroundPrimary",
-};
+StyledText.defaultProps = {};
 
 export const Text = React.memo(
   React.forwardRef<
@@ -139,14 +137,14 @@ function getDesignStyles({ design }: TextProps) {
       color: ${(p) => p.theme.severityColors.WARNING.backgroundV2};
     `;
   }
-  if (design === "secondary") {
-    return css`
-      color: ${(p) => p.theme.colors.foregroundSecondary};
-    `;
-  }
   if (design === "primary") {
     return css`
       color: ${(p) => p.theme.colors.foregroundPrimary};
+    `;
+  }
+  if (design === "secondary") {
+    return css`
+      color: ${(p) => p.theme.colors.foregroundSecondary};
     `;
   }
   if (design === "tertiary") {
