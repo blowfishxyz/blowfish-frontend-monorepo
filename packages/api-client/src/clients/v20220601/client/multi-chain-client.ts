@@ -1,7 +1,6 @@
 import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
-  HTTPHeaders,
   RequestMetadata,
   ScanTransactionEvmRequestTxObject,
   ReportRequestEventEnum,
@@ -17,6 +16,7 @@ import {
   ReportRequestApi,
 } from "../../../generated/v20220601/apis";
 import { Configuration } from "../../../generated/v20220601/runtime";
+import { BASE_HEADERS } from "../../common/constants";
 import {
   EvmChainFamily,
   EvmChainNetwork,
@@ -40,10 +40,7 @@ export class BlowfishMultiChainApiClient {
   }
 
   private getHeaders() {
-    const headers: HTTPHeaders = {
-      ["Content-Type"]: "application/json",
-    };
-    return headers;
+    return BASE_HEADERS;
   }
 
   protected readonly apis: {
@@ -123,7 +120,7 @@ export class BlowfishMultiChainApiClient {
     metadata: RequestMetadata,
     chainFamily: EvmChainFamily,
     chainNetwork: EvmChainNetwork,
-    simulatorConfig?: EvmSimulatorConfig,
+    simulatorConfig?: EvmSimulatorConfig
   ) {
     return this.apis.transaction.scanTransactionEvm({
       chainFamily: chainFamily,
