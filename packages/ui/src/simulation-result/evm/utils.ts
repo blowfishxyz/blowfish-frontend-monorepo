@@ -6,6 +6,7 @@ import {
   EvmStateChangeErc1155ApprovalForAll,
   EvmStateChangeErc1155Transfer,
   EvmStateChangeErc20Approval,
+  EvmStateChangeErc20Transfer,
   EvmStateChangeErc721Approval,
   EvmStateChangeErc721ApprovalForAll,
   EvmStateChangeErc721Transfer,
@@ -13,6 +14,7 @@ import {
   EvmStateChangeErc721LockApproval,
   EvmStateChangeErc721LockApprovalForAll,
   EvmStateChangeErc721Lock,
+  EvmStateChangeNativeAssetTransfer,
 } from "@blowfishxyz/api-client";
 import Decimal from "decimal.js";
 
@@ -92,8 +94,17 @@ const isLockStateChange = (
 
 export const hasCounterparty = (
   rawInfo: EvmExpectedStateChange["rawInfo"]
-): rawInfo is EvmStateChangeErc721Transfer => {
-  return rawInfo.kind === "ERC721_TRANSFER";
+): rawInfo is
+  | EvmStateChangeErc721Transfer
+  | EvmStateChangeErc20Transfer
+  | EvmStateChangeErc1155Transfer
+  | EvmStateChangeNativeAssetTransfer => {
+  return (
+    rawInfo.kind === "ERC721_TRANSFER" ||
+    rawInfo.kind === "ERC20_TRANSFER" ||
+    rawInfo.kind === "ERC1155_TRANSFER" ||
+    rawInfo.kind === "NATIVE_ASSET_TRANSFER"
+  );
 };
 
 export const isApprovalForAllStateChange = (
