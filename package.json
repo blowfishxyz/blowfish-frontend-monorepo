@@ -5,6 +5,7 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
+    "build:storybook": "pnpm --filter @blowfishxyz/ui build:storybook",
     "dev:extension": "pnpm --filter @blowfish/extension dev",
     "dev:portal": "pnpm --filter @blowfish/transaction-portal dev"
   },
