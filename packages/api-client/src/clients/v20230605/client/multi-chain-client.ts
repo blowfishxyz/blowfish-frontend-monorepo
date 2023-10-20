@@ -2,7 +2,6 @@ import type { ScanMessageEvm200Response as ScanMessageEvm200ResponseLegacy } fro
 import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
-  HTTPHeaders,
   RequestMetadata,
   EvmTxData,
   ReportRequestEventEnum,
@@ -19,6 +18,7 @@ import {
   SimulateHistoricalTransactionApi,
 } from "../../../generated/v20230605/apis";
 import { Configuration } from "../../../generated/v20230605/runtime";
+import { BASE_HEADERS } from "../../common/constants";
 import {
   EvmChainFamily,
   EvmChainNetwork,
@@ -43,10 +43,7 @@ export class BlowfishMultiChainApiClient {
   }
 
   private getHeaders() {
-    const headers: HTTPHeaders = {
-      ["Content-Type"]: "application/json",
-    };
-    return headers;
+    return BASE_HEADERS;
   }
 
   protected readonly apis: {

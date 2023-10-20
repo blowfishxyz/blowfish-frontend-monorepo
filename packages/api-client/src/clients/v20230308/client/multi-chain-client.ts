@@ -1,7 +1,6 @@
 import type {
   ConfigurationParameters,
   EvmSignTypedDataData,
-  HTTPHeaders,
   RequestMetadata,
   EvmTxData,
   ReportRequestEventEnum,
@@ -17,6 +16,7 @@ import {
   ReportRequestApi,
 } from "../../../generated/v20230308/apis";
 import { Configuration } from "../../../generated/v20230308/runtime";
+import { BASE_HEADERS } from "../../common/constants";
 import {
   EvmChainFamily,
   EvmChainNetwork,
@@ -40,10 +40,7 @@ export class BlowfishMultiChainApiClient {
   }
 
   private getHeaders() {
-    const headers: HTTPHeaders = {
-      ["Content-Type"]: "application/json",
-    };
-    return headers;
+    return BASE_HEADERS;
   }
 
   protected readonly apis: {
