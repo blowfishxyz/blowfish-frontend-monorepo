@@ -1,5 +1,7 @@
 sync_storybook:
   image: "registry.blowfish.tools:443/blowfish/infra/dockerfiles/blowfish-ci:da37c0f7"
+  variables:
+    SHELL: "bash"
   script:
     - curl -fsSL https://get.pnpm.io/install.sh | sh -
     - pnpm build:storybook
