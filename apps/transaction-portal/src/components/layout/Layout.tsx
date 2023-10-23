@@ -9,9 +9,11 @@ export const useLayoutConfig = createGlobalState<{
   severity: Severity;
   impersonatingAddress?: string | undefined;
   hasRequestParams?: boolean | undefined;
+  isHistoricalScan?: boolean | undefined;
 }>({
   severity: "INFO",
   hasRequestParams: false,
+  isHistoricalScan: false,
 });
 
 export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {

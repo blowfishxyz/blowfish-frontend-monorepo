@@ -10,7 +10,7 @@ export function useSimulateByTxnHash() {
   return async (txnHash: string, domain: string) => {
     const data = await client.getProvider().getTransaction(txnHash);
     if (!data.blockNumber) {
-      return;
+      throw new Error("Block number missing");
     }
 
     const simulatorConfig: EvmSimulatorConfig = {
@@ -25,6 +25,7 @@ export function useSimulateByTxnHash() {
           from: data.from,
           to: data.to,
           data: data.data,
+          value: data.value.toString(),
         },
       ],
       simulatorConfig: simulatorConfig,

@@ -114,7 +114,7 @@ const ResultsView: React.FC<{
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
   const error = getErrorFromScanResponse(scanResults?.simulationResults);
-  const [{ hasRequestParams }] = useLayoutConfig();
+  const [{ hasRequestParams, isHistoricalScan }] = useLayoutConfig();
 
   const isUnsupportedDangerousRequest =
     message && isSignMessageRequest(message.data)
@@ -162,7 +162,7 @@ const ResultsView: React.FC<{
       return <AccountNotConnectedModal />;
     }
 
-    if (address !== userAccount && !isImpersonating) {
+    if (address !== userAccount && !isImpersonating && !isHistoricalScan) {
       return <WrongAccountModal correctAddress={userAccount} />;
     }
 
