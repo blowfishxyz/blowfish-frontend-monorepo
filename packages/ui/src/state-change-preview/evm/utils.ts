@@ -25,7 +25,7 @@ export const getErrorFromScanResponse = (
   if ("aggregated" in simulationResults) {
     return (
       simulationResults.aggregated?.error ||
-      simulationResults.perTransaction[0].error
+      simulationResults.perTransaction[0]?.error
     );
   } else {
     return simulationResults.error;
