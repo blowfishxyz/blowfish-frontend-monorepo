@@ -10,4 +10,4 @@ sync_storybook:
     - source /root/.bashrc
     - pnpm install
     - pnpm build:storybook
-    - aws s3 cp --recursive ./packages/ui/storybook-static/ s3://blowfish-storybook/static/ 
+    - aws s3 cp --recursive ./packages/ui/storybook-static/ s3://blowfish-storybook/
