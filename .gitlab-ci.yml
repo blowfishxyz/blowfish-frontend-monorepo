@@ -1,4 +1,7 @@
 sync_storybook:
+  only:
+    refs:
+      - main-v2
   image: "registry.blowfish.tools:443/blowfish/infra/dockerfiles/blowfish-ci:da37c0f7"
   variables:
     SHELL: "bash"
