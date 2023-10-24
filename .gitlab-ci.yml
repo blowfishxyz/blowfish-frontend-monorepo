@@ -1,0 +1,13 @@
+sync_storybook:
+  only:
+    refs:
+      - main-v2
+  image: "registry.blowfish.tools:443/blowfish/infra/dockerfiles/blowfish-ci:da37c0f7"
+  variables:
+    SHELL: "bash"
+  script:
+    - curl -fsSL https://get.pnpm.io/install.sh | sh -
+    - source /root/.bashrc
+    - pnpm install
+    - pnpm build:storybook
+    - aws s3 cp --recursive ./packages/ui/storybook-static/ s3://blowfish-storybook/static/ 
