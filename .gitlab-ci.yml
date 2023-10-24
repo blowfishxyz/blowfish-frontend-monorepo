@@ -5,5 +5,6 @@ sync_storybook:
   script:
     - curl -fsSL https://get.pnpm.io/install.sh | sh -
     - source /root/.bashrc
+    - pnpm install
     - pnpm build:storybook
     - aws s3 cp --recursive ./packages/ui/storybook-static/ s3://blowfish-storybook/static/ 
