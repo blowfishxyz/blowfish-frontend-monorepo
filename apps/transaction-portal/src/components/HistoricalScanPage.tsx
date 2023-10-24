@@ -6,7 +6,7 @@ import { Layout, useLayoutConfig } from "~components/layout/Layout";
 import { AccountNotConnectedModal } from "~components/modals";
 import { useSimulateByTxnHash } from "~hooks/useSimulateByTxnHash";
 
-const HistoricalDataPage: React.FC = () => {
+const HistoricalScanPage: React.FC = () => {
   const [txnHash, setTxnHash] = useState<string>("");
   const [dappDomain, setDappDomain] = useState<string>("");
   const [error, setError] = useState<{
@@ -44,11 +44,26 @@ const HistoricalDataPage: React.FC = () => {
   const simulateByTxnHash = useSimulateByTxnHash();
 
   const handleSimulateClick = async () => {
+    let dappDomainValidationError = undefined;
+    let txnHashValidationError = undefined;
+
     try {
       new URL(dappDomain);
     } catch (_) {
-      setError({ ...error, dappDomainError: "Invalid Dapp Domain URL." });
-      setDappDomain("");
+      dappDomainValidationError =
+        "Invalid URL. Make sure it's a full URL (ex: https://protect.blowfish.xyz)";
+    }
+
+    if (!txnHash) {
+      txnHashValidationError = "Txn Hash cannot be empty.";
+    }
+
+    if (dappDomainValidationError || txnHashValidationError) {
+      setError({
+        dappDomainError: dappDomainValidationError,
+        txnHashError: txnHashValidationError,
+      });
+      if (dappDomainValidationError) setDappDomain("");
       return;
     }
 
@@ -57,9 +72,7 @@ const HistoricalDataPage: React.FC = () => {
       setError({});
     } catch (_) {
       setError({
-        ...error,
-        genericError:
-          "An error occurred while simulating. Check your input and try again.",
+        txnHashError: "An error occurred while fetching the transaction",
       });
     }
   };
@@ -79,6 +92,11 @@ const HistoricalDataPage: React.FC = () => {
                 value={txnHash}
                 onChange={handleTxnHashChange}
               />
+              {error.txnHashError && (
+                <HistoricalInputErrorMessage>
+                  {error.txnHashError}
+                </HistoricalInputErrorMessage>
+              )}
             </Column>
             <Column gap="sm">
               <label htmlFor="dappDomain">Dapp Domain: </label>
@@ -91,11 +109,6 @@ const HistoricalDataPage: React.FC = () => {
               {error.dappDomainError && (
                 <HistoricalInputErrorMessage>
                   {error.dappDomainError}
-                </HistoricalInputErrorMessage>
-              )}
-              {error.genericError && (
-                <HistoricalInputErrorMessage>
-                  {error.genericError}
                 </HistoricalInputErrorMessage>
               )}
             </Column>
@@ -138,4 +151,4 @@ const HistoricalInputErrorMessage = styled(Text).attrs({
   color: ${({ theme }) => theme.colors.foregroundDanger};
 `;
 
-export default HistoricalDataPage;
+export default HistoricalScanPage;

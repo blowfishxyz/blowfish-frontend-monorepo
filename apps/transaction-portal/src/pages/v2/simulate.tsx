@@ -1,11 +1,11 @@
 import dynamic from "next/dynamic";
 import React, { useLayoutEffect } from "react";
 import { useLayoutConfig } from "~components/layout/Layout";
+import { useQueryParams } from "~hooks/useQueryParams";
 import { useURLRequestParams } from "~hooks/useURLRequestParams";
-import { MessageError } from "~utils/utils";
 
-const HistoricalDataPage = dynamic(
-  () => import("~components/HistoricalDataPage"),
+const HistoricalScanPage = dynamic(
+  () => import("~components/HistoricalScanPage"),
   {
     ssr: false,
   }
@@ -15,7 +15,7 @@ const ScanPage = dynamic(() => import("~components/ScanPageV2"), {
   ssr: false,
 });
 
-const Page: React.FC = () => {
+const ScanPageWrapper: React.FC = () => {
   const data = useURLRequestParams();
   const [, setLayoutConfig] = useLayoutConfig();
 
@@ -23,14 +23,18 @@ const Page: React.FC = () => {
     setLayoutConfig((prev) => ({ ...prev, hasRequestParams: true }));
   }, [setLayoutConfig]);
 
-  if (data) {
-    if ("error" in data) {
-      if (data.error === MessageError.PARAMS_NOT_OK) {
-        return <HistoricalDataPage />;
-      }
-    }
-  }
   return <ScanPage data={data} />;
+};
+
+const Page: React.FC = () => {
+  const queryParams = useQueryParams<{ id: string; active: boolean }>();
+  const hasQueryParams = Object.keys(queryParams).length > 0;
+
+  if (hasQueryParams) {
+    return <ScanPageWrapper />;
+  }
+
+  return <HistoricalScanPage />;
 };
 
 export default Page;
