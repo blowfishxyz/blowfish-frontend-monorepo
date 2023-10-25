@@ -1,7 +1,7 @@
 {
   "name": "@blowfish/extension",
   "displayName": "Blowfish Wallet Protect V2 BETA",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Blowfish API protection for injected web3 wallets",
   "author": "Kim Persson",
   "scripts": {
