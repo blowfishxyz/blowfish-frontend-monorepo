@@ -28,6 +28,11 @@ const Wrapper = styled.div`
   max-width: 392px;
 `;
 
+export const ApproveErc20 = SimulationResultEvmComponent.bind({});
+ApproveErc20.args = {
+  stateChange: stateChangesMap.approveErc20,
+};
+
 export const ApproveAllErc721 = SimulationResultEvmComponent.bind({});
 ApproveAllErc721.args = {
   stateChange: stateChangesMap.approveAllErc721,
