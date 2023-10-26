@@ -13,7 +13,7 @@ export { StyledBaseDiv, StyledBaseText } from "./common/base";
 // External
 export * from "./simulation-result/evm";
 export * from "./simulation-result/solana";
-export * from "./simulation-warning";
+export * from "./warnings";
 export * from "./state-change-preview/evm";
 export * from "./state-change-preview/solana";
 export { light, dark, BlowfishUIProvider, useTheme } from "./theme";

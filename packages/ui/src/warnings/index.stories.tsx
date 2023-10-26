@@ -1,11 +1,11 @@
 import { ComponentMeta, StoryObj } from "@storybook/react";
 import { styled } from "styled-components";
 
-import { SimulationWarning } from "~/simulation-warning";
+import { SimulationWarning } from "~/warnings";
 import { WarningInnerKindEnum } from "@blowfishxyz/api-client/v20230605";
 
 export default {
-  title: "SimulationWarning",
+  title: "Warnings",
   component: SimulationWarning,
   args: {},
 } as ComponentMeta<typeof SimulationWarningStory>;
