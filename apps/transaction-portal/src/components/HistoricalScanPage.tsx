@@ -21,7 +21,6 @@ const HistoricalScanPage: React.FC = () => {
     setLayoutConfig((prev) => ({
       ...prev,
       hasRequestParams: false,
-      isHistoricalScan: true,
     }));
   }, [setLayoutConfig]);
 
