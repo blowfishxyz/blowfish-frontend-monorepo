@@ -27,7 +27,7 @@ export function useSimulateByTxnHash() {
       blockNumber: (data.blockNumber - 1).toString(),
     };
     router.push(
-      `/v2/simulate?request=${encodeURIComponent(
+      `/simulate?request=${encodeURIComponent(
         JSON.stringify(dataToSend)
       )}&chainId=${data.chainId}&simulatorConfig=${encodeURIComponent(
         JSON.stringify(simulatorConfig)

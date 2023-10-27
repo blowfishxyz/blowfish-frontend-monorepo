@@ -34,7 +34,7 @@ export const TransactionNotFoundModal: React.FC = () => {
       description="Please close the window and try again"
       content={<InvertedWarningIcon />}
       onCancel={() => {
-        router.push("/v2");
+        router.push("/");
       }}
     />
   );
@@ -277,9 +277,7 @@ export const AccountNotConnectedModal: React.FC = () => {
     if (!connector) {
       return {
         cb: async () => {
-          router.push(
-            `/v2/start?redirect=${encodeURIComponent(router.asPath)}`
-          );
+          router.push(`/start?redirect=${encodeURIComponent(router.asPath)}`);
         },
         title: "Continue",
         closeOnComplete: true,
