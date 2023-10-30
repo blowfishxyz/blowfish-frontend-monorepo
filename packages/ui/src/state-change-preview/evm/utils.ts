@@ -6,6 +6,7 @@ import {
   ScanMessageEvm200ResponseSimulationResultsError,
   EvmSimulationResults,
   EvmAggregatedSimulationError,
+  EvmPerTransactionError,
 } from "@blowfishxyz/api-client";
 
 export const getErrorFromScanResponse = (
@@ -16,12 +17,15 @@ export const getErrorFromScanResponse = (
     | undefined
 ):
   | EvmAggregatedSimulationError
+  | EvmPerTransactionError
   | ScanMessageEvm200ResponseSimulationResultsError
   | null => {
   if (!simulationResults) return null;
-
   if ("aggregated" in simulationResults) {
-    return simulationResults.aggregated?.error;
+    return (
+      simulationResults.aggregated?.error ||
+      simulationResults.perTransaction[0]?.error
+    );
   } else {
     return simulationResults.error;
   }
