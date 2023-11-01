@@ -167,13 +167,6 @@ export const getAssetPriceInUsd = (
       return null;
     }
 
-    console.log(
-      "@@ HERE",
-      new Decimal(pricePerToken)
-        .times(difference)
-        .dividedBy(new Decimal(10).pow(rawInfo.data.asset.decimals))
-        .toNumber()
-    );
     return new Decimal(pricePerToken)
       .times(difference)
       .dividedBy(new Decimal(10).pow(rawInfo.data.asset.decimals))
