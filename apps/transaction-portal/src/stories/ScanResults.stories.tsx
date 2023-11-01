@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   exampleEthSignScanResult,
   messageNoActionScanResult,
-  messageWarnResultScanResult,
   transactionsBlockScanResult,
   transactionsNoActionScanResult,
   transactionsWarningScanResult,
@@ -148,10 +147,4 @@ export const MessageNoAction = TransactionNoAction.bind({});
 MessageNoAction.args = {
   request: exampleNftSignTypedDataRequest,
   scanResults: messageNoActionScanResult,
-};
-
-export const MessageWarn = TransactionNoAction.bind({});
-MessageWarn.args = {
-  request: examplePermitSignTypeDataRequest,
-  scanResults: messageWarnResultScanResult,
 };

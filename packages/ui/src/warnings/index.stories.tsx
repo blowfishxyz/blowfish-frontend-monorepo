@@ -1,11 +1,11 @@
 import { ComponentMeta, StoryObj } from "@storybook/react";
 import { styled } from "styled-components";
 
-import { SimulationWarning } from "~/simulation-warning";
+import { SimulationWarning } from "~/warnings";
 import { WarningInnerKindEnum } from "@blowfishxyz/api-client/v20230605";
 
 export default {
-  title: "SimulationWarning",
+  title: "Warnings",
   component: SimulationWarning,
   args: {},
 } as ComponentMeta<typeof SimulationWarningStory>;
@@ -71,7 +71,7 @@ const supportedWarnings = [
   WarningInnerKindEnum.YakoaNftIpInfringement,
 ];
 
-export const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
+const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
   [WarningInnerKindEnum.BulkApprovalsRequest]:
     "This is a bulk approval request. Approvals allow someone else to move your assets on your behalf.",
   [WarningInnerKindEnum.CompromisedAuthorityUpgrade]:

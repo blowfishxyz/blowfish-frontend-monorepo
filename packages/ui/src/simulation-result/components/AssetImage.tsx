@@ -9,7 +9,7 @@ import { Row } from "~/common/layout";
 
 type AssetImageProps = {
   isPositiveEffect: boolean;
-  imageUrl: string | null;
+  imageUrl: string | null | undefined;
   name: string;
   placeholder?: "solana-logo" | "missing-image";
 } & (

@@ -58,6 +58,10 @@ const TxnSimulationImage = styled.div`
 
 const TxnSimulationText = styled(Text).attrs({ size: "md" })``;
 
+const TokenFooterText = styled(Text).attrs({ size: "sm", design: "secondary" })`
+  white-space: nowrap;
+`;
+
 export interface SimulationResultEvmProps {
   stateChange: EvmExpectedStateChange;
   chainFamily: EvmChainFamily | undefined;
@@ -139,6 +143,16 @@ const SimulationImage: React.FC<{
       <AssetImage
         type="nft"
         imageUrl={rawInfo.data.metadata.rawImageUrl}
+        name={rawInfo.data.asset.name}
+        isPositiveEffect={isPositive}
+      />
+    );
+  }
+  if (rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER") {
+    return (
+      <AssetImage
+        type="nft"
+        imageUrl={rawInfo.data.asset.imageUrl}
         name={rawInfo.data.asset.name}
         isPositiveEffect={isPositive}
       />
@@ -246,17 +260,17 @@ const TokenFooter: React.FC<{
     return (
       <Row gap="md">
         {typeStr ? (
-          <Text size="sm" design="secondary">
+          <TokenFooterText>
             Type:{" "}
             <Text size="sm" design="primary">
               {typeStr}
             </Text>
-          </Text>
+          </TokenFooterText>
         ) : null}
         {price ? (
-          <Text size="sm" design="secondary">
+          <TokenFooterText>
             Floor price: <AssetPrice totalValue={price} />
-          </Text>
+          </TokenFooterText>
         ) : null}
         {hasCounterparty(rawInfo) && rawInfo.data.counterparty ? (
           <LinkWrapper
@@ -265,12 +279,12 @@ const TokenFooter: React.FC<{
             rel="noopener noreferrer"
           >
             <Row gap="xs" alignItems="center">
-              <Text size="sm" design="secondary">
+              <TokenFooterText>
                 {isPositiveEffect ? "From" : "To"}:
                 <Text size="sm" design="primary">
                   {` ${shortenHex(rawInfo.data.counterparty.address || "", 4)}`}
                 </Text>
-              </Text>
+              </TokenFooterText>
               <Icon variant="arrow" size={10} />
             </Row>
           </LinkWrapper>
@@ -294,6 +308,7 @@ function useAssetLinkFromRawInfo(
   if (!chainFamily || !chainNetwork) {
     return undefined;
   }
+
   if (isCurrencyStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,
