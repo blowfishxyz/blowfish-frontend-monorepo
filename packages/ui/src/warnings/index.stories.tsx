@@ -71,7 +71,7 @@ const supportedWarnings = [
   WarningInnerKindEnum.YakoaNftIpInfringement,
 ];
 
-export const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
+const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
   [WarningInnerKindEnum.BulkApprovalsRequest]:
     "This is a bulk approval request. Approvals allow someone else to move your assets on your behalf.",
   [WarningInnerKindEnum.CompromisedAuthorityUpgrade]:

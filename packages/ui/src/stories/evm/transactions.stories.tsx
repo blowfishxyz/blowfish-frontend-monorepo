@@ -6,29 +6,56 @@ import {
   approveAllErc721ScanResult,
   approveErc20ScanResult,
   erc20SwapWethforUsdc,
-  exampleEthSignScanResult,
   buyErc1155WithEth,
   approveAllErc1155ScanResult,
 } from "@blowfishxyz/api-client/fixtures";
 
 import { StateChangePreviewEvm } from "~/state-change-preview/evm";
+import { SimulationWarning } from "~/warnings";
+import { Text } from "~/common/text";
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+`;
+
+const Half = styled.div`
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+`;
 
 export const BuyErc721: ComponentStory<typeof StateChangePreviewEvm> = (
   props
 ) => {
+  const warnings = props.scanResult.warnings || [];
   return (
-    <Wrapper>
-      <StateChangePreviewEvm {...props} />
+    <Wrapper
+      style={{
+        justifyContent: warnings.length > 0 ? "space-between" : undefined,
+      }}
+    >
+      <Half>
+        <StateChangePreviewEvm {...props} />
+      </Half>
+      {warnings.length > 0 && (
+        <Half>
+          <Text size="sm" color="foregroundSecondary">
+            Warnings
+          </Text>
+          {warnings.map((warning) => (
+            <SimulationWarning key={warning.kind} warning={warning} />
+          ))}
+        </Half>
+      )}
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
-  max-width: 500px;
-`;
-
 export default {
-  title: "StateChangePreviewEvm",
+  title: "Transactions (EVM)",
   component: BuyErc721,
   args: {
     scanResult: buyErc721WithEth,
@@ -44,8 +71,8 @@ BuyErc1155WithEth.args = {
   chainNetwork: "mainnet",
 };
 
-export const Erc20SwapWETHforUSDC = BuyErc721.bind({});
-Erc20SwapWETHforUSDC.args = {
+export const Erc20SwapWETHForUSDC = BuyErc721.bind({});
+Erc20SwapWETHForUSDC.args = {
   scanResult: erc20SwapWethforUsdc,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
@@ -75,33 +102,6 @@ ApproveAllErc721.args = {
 export const ApproveAllErc1155 = BuyErc721.bind({});
 ApproveAllErc1155.args = {
   scanResult: approveAllErc1155ScanResult,
-  chainFamily: "ethereum",
-  chainNetwork: "mainnet",
-};
-
-export const NoStateChange = BuyErc721.bind({});
-NoStateChange.args = {
-  scanResult: exampleEthSignScanResult,
-  chainFamily: "ethereum",
-  chainNetwork: "mainnet",
-};
-NoStateChange.storyName = "StateChangePreviewEvm/Warnings/NoStateChange";
-
-export const SimulationError = BuyErc721.bind({});
-SimulationError.args = {
-  scanResult: {
-    action: "NONE",
-    warnings: [],
-    simulationResults: {
-      expectedStateChanges: [],
-      error: {
-        humanReadableError:
-          "Simulation failed due to an unsupported order type",
-        kind: "UNSUPPORTED_ORDER_TYPE",
-      },
-      protocol: null,
-    },
-  },
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
