@@ -29,9 +29,10 @@ const Half = styled.div`
   display: flex;
   flex-direction: column;
 `;
-export const ETHSignTransactionHash: ComponentStory<
-  typeof StateChangePreviewEvm
-> = (props) => {
+
+export const ERC20Permit: ComponentStory<typeof StateChangePreviewEvm> = (
+  props
+) => {
   const warnings = props.scanResult.warnings || [];
   return (
     <Wrapper
@@ -58,73 +59,71 @@ export const ETHSignTransactionHash: ComponentStory<
 
 export default {
   title: "Messages (EVM)",
-  component: ETHSignTransactionHash,
+  component: ERC20Permit,
   args: {
-    scanResult: exampleEthSignScanResult,
+    scanResult: erc20PermitScanResult,
     chainFamily: "ethereum",
     chainNetwork: "mainnet",
   },
 } as ComponentMeta<typeof StateChangePreviewEvm>;
 
-export const ERC20Permit = ETHSignTransactionHash.bind({});
-ERC20Permit.args = {
-  scanResult: erc20PermitScanResult,
+export const ETHSignTransactionHash = ERC20Permit.bind({});
+ETHSignTransactionHash.args = {
+  scanResult: exampleEthSignScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const OpenseaSeaportOrderSellingNFTForETH = ETHSignTransactionHash.bind(
-  {}
-);
+export const OpenseaSeaportOrderSellingNFTForETH = ERC20Permit.bind({});
 OpenseaSeaportOrderSellingNFTForETH.args = {
   scanResult: openseaOrderScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const SellingTwoNftsForOneEthEach = ETHSignTransactionHash.bind({});
+export const SellingTwoNftsForOneEthEach = ERC20Permit.bind({});
 SellingTwoNftsForOneEthEach.args = {
   scanResult: twoNftsForOneEthEachScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const SubmittingWETHOfferForAnyNft = ETHSignTransactionHash.bind({});
+export const SubmittingWETHOfferForAnyNft = ERC20Permit.bind({});
 SubmittingWETHOfferForAnyNft.args = {
   scanResult: anyNftForWethOfferScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const TradingUSDCForPEPE = ETHSignTransactionHash.bind({});
+export const TradingUSDCForPEPE = ERC20Permit.bind({});
 TradingUSDCForPEPE.args = {
   scanResult: usdcForPepeScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const TradingUSDCForETH = ETHSignTransactionHash.bind({});
+export const TradingUSDCForETH = ERC20Permit.bind({});
 TradingUSDCForETH.args = {
   scanResult: usdcForEthScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const TransferNFTFromGnosisSafe = ETHSignTransactionHash.bind({});
+export const TransferNFTFromGnosisSafe = ERC20Permit.bind({});
 TransferNFTFromGnosisSafe.args = {
   scanResult: transferNftFromTwoOutOfThreeGnosisSafeScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const UnlimitedAmountPermit2 = ETHSignTransactionHash.bind({});
+export const UnlimitedAmountPermit2 = ERC20Permit.bind({});
 UnlimitedAmountPermit2.args = {
   scanResult: unlimitedAmountPermit2ScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const UnlimitedAmountPermit = ETHSignTransactionHash.bind({});
+export const UnlimitedAmountPermit = ERC20Permit.bind({});
 UnlimitedAmountPermit.args = {
   scanResult: unlimitedAmountPermitScanResult,
   chainFamily: "ethereum",

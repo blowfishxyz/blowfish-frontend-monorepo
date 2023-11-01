@@ -34,7 +34,8 @@ export const splTransfer: SolanaExpectedStateChange = {
         mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         supply: 5034943397677802,
         decimals: 6,
-        imageUrl: null,
+        imageUrl:
+          "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
         price: {
           source: "Coingecko",
           updatedAt: 1691479249,
@@ -59,7 +60,8 @@ export const splApproval: SolanaExpectedStateChange = {
       asset: {
         symbol: "USDC",
         name: "USD Coin",
-        imageUrl: null,
+        imageUrl:
+          "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
         metaplexTokenStandard: "unknown",
         mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         supply: 5034943397677802,
