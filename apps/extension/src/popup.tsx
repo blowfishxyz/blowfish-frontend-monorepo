@@ -24,13 +24,11 @@ import { ClearStorage } from "~components/Popup/ClearStorage";
 import { CustomPortalUrl } from "~components/Popup/CustomPortalUrl";
 import PopupFooter from "~components/Popup/IconRow";
 import Impersonator from "~components/Popup/Impersonator";
-import { V2Toggle } from "~components/Popup/V2Toggle";
 import {
   BLOWFISH_EXTENSION_VERSION,
   CLEAR_STORAGE_ENABLED,
   CUSTOM_PORTAL_URL_ENABLED,
   IS_IMPERSONATION_AVAILABLE,
-  V2_TOGGLE_ENABLED,
 } from "~config";
 
 import { PopupContainer } from "./components/PopupContainer";
@@ -331,7 +329,6 @@ const Popup: React.FC = () => {
         </Column>
         {IS_IMPERSONATION_AVAILABLE && <Impersonator />}
         {CUSTOM_PORTAL_URL_ENABLED && <CustomPortalUrl />}
-        {V2_TOGGLE_ENABLED && <V2Toggle />}
         {CLEAR_STORAGE_ENABLED && <ClearStorage />}
         <PopupFooter />
       </Content>

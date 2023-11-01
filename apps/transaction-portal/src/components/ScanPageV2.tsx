@@ -133,26 +133,10 @@ const ResultsView: React.FC<{
       );
     }
 
-    if (error) {
-      if (error.kind === "SIMULATION_FAILED") {
-        return <TransactionRevertedModal error={error.humanReadableError} />;
-      }
-
-      return (
-        <SimulationErrorModal
-          onRetry={async () => {
-            await mutate();
-          }}
-        />
-      );
-    }
-
     return null;
   }, [
     scanResults?.action,
-    error,
     reject,
-    mutate,
     isUnsupportedDangerousRequest,
     hasRequestParams,
   ]);

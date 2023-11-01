@@ -32,7 +32,7 @@ export function useSimulateByTxnHash() {
     };
 
     router.push(
-      `/v2/simulate?request=${encodeURIComponent(
+      `/simulate?request=${encodeURIComponent(
         JSON.stringify(dataToSend)
       )}&chainId=${data.chainId}&simulatorConfig=${encodeURIComponent(
         JSON.stringify(simulatorConfig)

@@ -7,7 +7,6 @@ import { ThemeProvider } from "styled-components";
 import { BlowfishUIProvider, light } from "@blowfishxyz/ui";
 import { useRequestChainId } from "~hooks/useRequestChainId";
 import { useChainMetadataProvider } from "~hooks/useChainMetadata";
-import { useV2Enabled } from "~hooks/useV2Enabled";
 
 export const GlobalProviders = memo(function GlobalProviders({
   children,
@@ -15,8 +14,7 @@ export const GlobalProviders = memo(function GlobalProviders({
   children: React.ReactNode;
 }) {
   const requestChainId = useRequestChainId();
-  const [v2Enabled] = useV2Enabled();
-  const wagmiClient = useMemo(() => createWagmiClient(v2Enabled), [v2Enabled]);
+  const wagmiClient = useMemo(() => createWagmiClient(), []);
   useChainMetadataProvider();
 
   return (
@@ -26,7 +24,7 @@ export const GlobalProviders = memo(function GlobalProviders({
           <ConnectKitProvider
             options={{
               initialChainId: requestChainId,
-              enforceSupportedChains: !v2Enabled,
+              enforceSupportedChains: false,
             }}
             mode="light"
           >

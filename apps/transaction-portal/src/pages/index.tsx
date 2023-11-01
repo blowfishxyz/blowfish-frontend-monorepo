@@ -1,22 +1,10 @@
-import React, { useEffect } from "react";
-import { useRouter } from "next/router";
-import { useV2Enabled } from "~hooks/useV2Enabled";
+import dynamic from "next/dynamic";
+import React from "react";
 
-const Home = () => {
-  const router = useRouter();
-  const [v2Enabled, loading] = useV2Enabled();
-  useEffect(() => {
-    if (loading) {
-      return;
-    }
-    if (v2Enabled) {
-      router.replace("/v2");
-    } else {
-      router.replace("https://extension.blowfish.xyz");
-    }
-  }, [router, v2Enabled, loading]);
+const StartPage = dynamic(() => import("~components/client/StartPage"), {
+  ssr: false,
+});
 
-  return <></>;
-};
+const Page: React.FC = () => <StartPage />;
 
-export default Home;
+export default Page;

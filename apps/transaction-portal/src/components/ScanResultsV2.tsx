@@ -185,7 +185,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   }, [request]);
 
   useEffect(() => {
-    if (error) {
+    if (error && severity === "INFO") {
       setLayoutConfig((prev) => ({
         ...prev,
         severity: "WARNING",
