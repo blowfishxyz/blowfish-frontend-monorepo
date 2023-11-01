@@ -56,7 +56,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
 }) => {
   const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
   const [canceledTxn, setCancelledTxn] = useState(false);
-  const [layout, setLayoutConfig] = useLayoutConfig();
+  const [layoutConfig, setLayoutConfig] = useLayoutConfig();
   const chain = useChainMetadata();
   const dappUrl = useMemo(() => createValidURL(props.dappUrl), [props.dappUrl]);
   const error = getErrorFromScanResponse(scanResults.simulationResults);
@@ -220,7 +220,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           rejectTxn={() => reject()}
         />
       )}
-      {impersonatingAddress === address && !layout.hasRequestParams && (
+      {impersonatingAddress === address && !layoutConfig.hasRequestParams && (
         <ImpersonationErrorModal closeWindow={reject} />
       )}
       <PreviewTxn
@@ -238,6 +238,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         }
         onContinue={confirm}
         onCancel={() => {
+          if (layoutConfig.hasRequestParams) {
+            window.history.back();
+            return;
+          }
           if (severity === "INFO") {
             reject();
             return;

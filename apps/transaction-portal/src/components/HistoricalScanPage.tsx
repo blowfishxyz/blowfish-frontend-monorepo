@@ -9,10 +9,10 @@ import { useSimulateByTxnHash } from "~hooks/useSimulateByTxnHash";
 const HistoricalScanPage: React.FC = () => {
   const [txnHash, setTxnHash] = useState<string>("");
   const [dappDomain, setDappDomain] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<{
     txnHashError?: string;
     dappDomainError?: string;
-    genericError?: string;
   }>({});
   const { isConnected } = useAccount();
   const [, setLayoutConfig] = useLayoutConfig();
@@ -27,7 +27,6 @@ const HistoricalScanPage: React.FC = () => {
   const handleTxnHashChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError({
       txnHashError: "",
-      genericError: "",
     });
     setTxnHash(e.target.value);
   };
@@ -35,7 +34,6 @@ const HistoricalScanPage: React.FC = () => {
   const handleDappDomainChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError({
       dappDomainError: "",
-      genericError: "",
     });
     setDappDomain(e.target.value);
   };
@@ -62,11 +60,11 @@ const HistoricalScanPage: React.FC = () => {
         dappDomainError: dappDomainValidationError,
         txnHashError: txnHashValidationError,
       });
-      if (dappDomainValidationError) setDappDomain("");
       return;
     }
 
     try {
+      setLoading(true);
       await simulateByTxnHash(txnHash, dappDomain);
       setError({});
     } catch (_) {
@@ -74,6 +72,7 @@ const HistoricalScanPage: React.FC = () => {
         txnHashError: "An error occurred while fetching the transaction",
       });
     }
+    setLoading(false);
   };
 
   if (!isConnected) {
@@ -111,7 +110,12 @@ const HistoricalScanPage: React.FC = () => {
                 </HistoricalInputErrorMessage>
               )}
             </Column>
-            <Button stretch onClick={handleSimulateClick}>
+            <Button
+              stretch
+              disabled={loading}
+              loading={loading}
+              onClick={handleSimulateClick}
+            >
               Simulate
             </Button>
           </Column>
