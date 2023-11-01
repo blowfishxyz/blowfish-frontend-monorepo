@@ -19,6 +19,7 @@ export const getErrorFromScanResponse = (
   | EvmAggregatedSimulationError
   | EvmPerTransactionError
   | ScanMessageEvm200ResponseSimulationResultsError
+  | EvmPerTransactionError
   | null => {
   if (!simulationResults) return null;
   if ("aggregated" in simulationResults) {

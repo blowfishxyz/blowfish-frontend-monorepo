@@ -17,6 +17,7 @@ export type UrlParsedRequest = {
           from: string;
           to: string | undefined;
           data: string;
+          value: string;
         }
       ];
       simulatorConfig: EvmSimulatorConfig;
@@ -71,6 +72,7 @@ export function useURLRequestParams(): ScanParams {
             data: transaction.data,
             from: transaction.from,
             to: transaction.to,
+            value: transaction.value,
           },
           userAccount: parsedRequest.userAccount,
         },
@@ -84,6 +86,7 @@ export function useURLRequestParams(): ScanParams {
           data: transaction.data,
           from: transaction.from,
           to: transaction.to,
+          value: transaction.value,
         },
         simulatorConfig: parsedRequest.simulatorConfig,
         userAccount: parsedRequest.userAccount,
