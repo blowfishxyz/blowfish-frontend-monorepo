@@ -83,15 +83,3 @@ export const setBlowfishPortalUrl = async (url: string | undefined) => {
     url
   );
 };
-
-export const getBlowfishV2Enabled = async () => {
-  try {
-    return storage.get<boolean>(BlowfishOption.PREFERENCES_BLOWFISH_V2_ENABLED);
-  } catch (err) {
-    return false;
-  }
-};
-
-export const setBlowfishV2Enabled = async (flag: boolean) => {
-  return storage.set(BlowfishOption.PREFERENCES_BLOWFISH_V2_ENABLED, flag);
-};

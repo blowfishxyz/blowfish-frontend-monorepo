@@ -10,8 +10,13 @@ export function useSimulateByTxnHash() {
   return async (txnHash: string, domain: string) => {
     const data = await client.getProvider().getTransaction(txnHash);
     if (!data.blockNumber) {
-      return;
+      throw new Error("Block number missing");
     }
+
+    const simulatorConfig: EvmSimulatorConfig = {
+      blockNumber: (data.blockNumber - 1).toString(),
+    };
+
     const dataToSend: UrlParsedRequest = {
       metadata: { origin: domain },
       userAccount: data.from,
@@ -20,14 +25,14 @@ export function useSimulateByTxnHash() {
           from: data.from,
           to: data.to,
           data: data.data,
+          value: data.value.toString(),
         },
       ],
+      simulatorConfig: simulatorConfig,
     };
-    const simulatorConfig: EvmSimulatorConfig = {
-      blockNumber: (data.blockNumber - 1).toString(),
-    };
+
     router.push(
-      `/v2/simulate?request=${encodeURIComponent(
+      `/simulate?request=${encodeURIComponent(
         JSON.stringify(dataToSend)
       )}&chainId=${data.chainId}&simulatorConfig=${encodeURIComponent(
         JSON.stringify(simulatorConfig)

@@ -9,9 +9,8 @@ import React from "react";
 import styled from "styled-components";
 import { BLOWFISH_PORTAL_API_BASE_URL } from "~config";
 
-import { BLOWFISH_PROTECT_WEBSITE_URL, BLOWFISH_WEBSITE_URL } from "~constants";
+import { BLOWFISH_PROTECT_WEBSITE_URL } from "~constants";
 import { useQueryParams } from "~hooks/useQueryParams";
-import { useV2Enabled } from "~hooks/useV2Enabled";
 import { logger } from "~utils/logger";
 import { sendAllowlistedDomain } from "~utils/messages";
 
@@ -35,7 +34,6 @@ async function report(domain: string) {
 
 export function BlockedPage() {
   const router = useRouter();
-  const [v2Enabled] = useV2Enabled();
   const { href, host } = useQueryParams<{
     href: string;
     host: string;
@@ -52,11 +50,7 @@ export function BlockedPage() {
   };
 
   const handleBack = () => {
-    if (v2Enabled) {
-      window.location.replace(`${BLOWFISH_PROTECT_WEBSITE_URL}/v2`);
-      return;
-    }
-    window.location.replace(BLOWFISH_WEBSITE_URL);
+    window.location.replace(BLOWFISH_PROTECT_WEBSITE_URL);
   };
 
   return (

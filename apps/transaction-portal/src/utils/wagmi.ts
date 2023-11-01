@@ -99,7 +99,7 @@ const getRpcUrl = (chainId: number, protocol: "https" | "wss") => {
   }
 };
 
-export const createWagmiClient = (v2Enabled: boolean) => {
+export const createWagmiClient = () => {
   const { chains, provider } = configureChains(
     [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism],
     [
@@ -121,37 +121,25 @@ export const createWagmiClient = (v2Enabled: boolean) => {
     ]
   );
 
-  const connectors = v2Enabled
-    ? [
-        new MetaMaskConnector({
-          chains,
-          options: {
-            shimDisconnect: true,
-            UNSTABLE_shimOnConnectSelectAccount: true,
-          },
-        }),
-        new CoinbaseWalletConnector({
-          chains,
-          options: {
-            appName: "Blowfish Protect",
-          },
-        }),
-        new InjectedConnector({
-          chains,
-          options: { shimDisconnect: true },
-        }),
-      ]
-    : [
-        new MetaMaskConnector({
-          chains,
-          options: {
-            shimDisconnect: true,
-            UNSTABLE_shimOnConnectSelectAccount: true,
-          },
-        }),
-        new InjectedConnector({ chains, options: { shimDisconnect: true } }),
-      ];
-
+  const connectors = [
+    new MetaMaskConnector({
+      chains,
+      options: {
+        shimDisconnect: true,
+        UNSTABLE_shimOnConnectSelectAccount: true,
+      },
+    }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: "Blowfish Protect",
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: { shimDisconnect: true },
+    }),
+  ];
   return createClient({
     autoConnect: true,
     connectors,
