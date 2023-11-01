@@ -148,6 +148,16 @@ const SimulationImage: React.FC<{
       />
     );
   }
+  if (rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER") {
+    return (
+      <AssetImage
+        type="nft"
+        imageUrl={rawInfo.data.asset.imageUrl}
+        name={rawInfo.data.asset.name}
+        isPositiveEffect={isPositive}
+      />
+    );
+  }
 
   return (
     <AssetImage
@@ -298,6 +308,7 @@ function useAssetLinkFromRawInfo(
   if (!chainFamily || !chainNetwork) {
     return undefined;
   }
+
   if (isCurrencyStateChange(rawInfo)) {
     return chainToBlockExplorerUrl({
       chainFamily,

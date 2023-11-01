@@ -17,13 +17,16 @@ export const ImageBase: React.FC<{
   borderRadius?: CSSProperties["borderRadius"];
   alt: string;
 }> = memo(function ImageBase({
-  src,
+  src: originalSrc,
   width,
   height,
   borderRadius,
   isSolanaLogo,
   alt,
 }) {
+  const src = originalSrc?.startsWith("ipfs://")
+    ? "https://ipfs.io/ipfs/" + originalSrc.slice(7)
+    : originalSrc;
   const [hasPlaceholder, setHasPlaceholder] = useState(!src);
   const handleImageError = useCallback(() => {
     setHasPlaceholder(true);

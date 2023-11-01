@@ -27,7 +27,7 @@ const Half = styled.div`
   flex-direction: column;
 `;
 
-export const BuyErc721: ComponentStory<typeof StateChangePreviewEvm> = (
+export const BuyERC721: ComponentStory<typeof StateChangePreviewEvm> = (
   props
 ) => {
   const warnings = props.scanResult.warnings || [];
@@ -56,7 +56,7 @@ export const BuyErc721: ComponentStory<typeof StateChangePreviewEvm> = (
 
 export default {
   title: "Transactions (EVM)",
-  component: BuyErc721,
+  component: BuyERC721,
   args: {
     scanResult: buyErc721WithEth,
     chainFamily: "ethereum",
@@ -64,43 +64,43 @@ export default {
   },
 } as ComponentMeta<typeof StateChangePreviewEvm>;
 
-export const BuyErc1155WithEth = BuyErc721.bind({});
-BuyErc1155WithEth.args = {
+export const BuyERC1155WithEth = BuyERC721.bind({});
+BuyERC1155WithEth.args = {
   scanResult: buyErc1155WithEth,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const Erc20SwapWETHForUSDC = BuyErc721.bind({});
-Erc20SwapWETHForUSDC.args = {
+export const ERC20SwapWETHForUSDC = BuyERC721.bind({});
+ERC20SwapWETHForUSDC.args = {
   scanResult: erc20SwapWethforUsdc,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const ApproveErc721 = BuyErc721.bind({});
-ApproveErc721.args = {
+export const ApproveERC721 = BuyERC721.bind({});
+ApproveERC721.args = {
   scanResult: approveErc721ScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const ApproveErc20 = BuyErc721.bind({});
-ApproveErc20.args = {
+export const ApproveERC20 = BuyERC721.bind({});
+ApproveERC20.args = {
   scanResult: approveErc20ScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const ApproveAllErc721 = BuyErc721.bind({});
-ApproveAllErc721.args = {
+export const ApproveAllERC721 = BuyERC721.bind({});
+ApproveAllERC721.args = {
   scanResult: approveAllErc721ScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
 
-export const ApproveAllErc1155 = BuyErc721.bind({});
-ApproveAllErc1155.args = {
+export const ApproveAllERC1155 = BuyERC721.bind({});
+ApproveAllERC1155.args = {
   scanResult: approveAllErc1155ScanResult,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",

@@ -11,11 +11,21 @@ interface AssetPriceProps {
 
 export const AssetPrice = ({ totalValue }: AssetPriceProps) => {
   return totalValue ? (
-    <AssetPriceWrapper size="sm">
-      $
-      {totalValue.toLocaleString(undefined, {
-        maximumFractionDigits: 2,
-      })}
-    </AssetPriceWrapper>
+    <AssetPriceWrapper size="sm">{formatPrice(totalValue)}</AssetPriceWrapper>
   ) : null;
 };
+
+function formatPrice(price: number | null) {
+  if (price === null) {
+    return null;
+  }
+  if (price < 0.01) {
+    return "< $0.01";
+  }
+  return (
+    "$" +
+    price.toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    })
+  );
+}
