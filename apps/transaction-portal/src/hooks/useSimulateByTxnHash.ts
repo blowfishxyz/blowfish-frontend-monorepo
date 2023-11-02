@@ -1,7 +1,8 @@
 import { EvmSimulatorConfig } from "@blowfishxyz/api-client/v20230605";
 import { useRouter } from "next/router";
 import { useProvider } from "wagmi";
-import { UrlParsedRequest } from "./useURLRequestParams";
+import { toUrlParam } from "~utils/url";
+import type { UrlParsedRequest } from "~/hooks/useURLRequestParams";
 
 export function useSimulateByTxnHash() {
   const router = useRouter();
@@ -32,11 +33,7 @@ export function useSimulateByTxnHash() {
     };
 
     router.push(
-      `/simulate?request=${encodeURIComponent(
-        JSON.stringify(dataToSend)
-      )}&chainId=${data.chainId}&simulatorConfig=${encodeURIComponent(
-        JSON.stringify(simulatorConfig)
-      )}`
+      `/simulate?request=${toUrlParam(dataToSend)}&chainId=${data.chainId}`
     );
   };
 }
