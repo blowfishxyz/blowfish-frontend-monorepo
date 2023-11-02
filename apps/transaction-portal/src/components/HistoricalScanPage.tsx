@@ -1,9 +1,7 @@
 import { Button, Column, Row, Text } from "@blowfishxyz/ui";
 import React, { useLayoutEffect, useState } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
 import { Layout, useLayoutConfig } from "~components/layout/Layout";
-import { AccountNotConnectedModal } from "~components/modals";
 import { useSimulateByTxnHash } from "~hooks/useSimulateByTxnHash";
 
 const HistoricalScanPage: React.FC = () => {
@@ -14,7 +12,6 @@ const HistoricalScanPage: React.FC = () => {
     txnHashError?: string;
     dappDomainError?: string;
   }>({});
-  const { isConnected } = useAccount();
   const [, setLayoutConfig] = useLayoutConfig();
 
   useLayoutEffect(() => {
@@ -75,54 +72,50 @@ const HistoricalScanPage: React.FC = () => {
     setLoading(false);
   };
 
-  if (!isConnected) {
-    return <AccountNotConnectedModal />;
-  } else {
-    return (
-      <Layout>
-        <HistoricalFormWrapper>
-          <Column gap="lg">
-            <Column gap="sm">
-              <label htmlFor="txnHash">Txn Hash: </label>
-              <StyledHistoricalInput
-                type="text"
-                id="txnHash"
-                value={txnHash}
-                onChange={handleTxnHashChange}
-              />
-              {error.txnHashError && (
-                <HistoricalInputErrorMessage>
-                  {error.txnHashError}
-                </HistoricalInputErrorMessage>
-              )}
-            </Column>
-            <Column gap="sm">
-              <label htmlFor="dappDomain">Dapp Domain: </label>
-              <StyledHistoricalInput
-                type="text"
-                id="dappDomain"
-                value={dappDomain}
-                onChange={handleDappDomainChange}
-              />
-              {error.dappDomainError && (
-                <HistoricalInputErrorMessage>
-                  {error.dappDomainError}
-                </HistoricalInputErrorMessage>
-              )}
-            </Column>
-            <Button
-              stretch
-              disabled={loading}
-              loading={loading}
-              onClick={handleSimulateClick}
-            >
-              Simulate
-            </Button>
+  return (
+    <Layout>
+      <HistoricalFormWrapper>
+        <Column gap="lg">
+          <Column gap="sm">
+            <label htmlFor="txnHash">Txn Hash: </label>
+            <StyledHistoricalInput
+              type="text"
+              id="txnHash"
+              value={txnHash}
+              onChange={handleTxnHashChange}
+            />
+            {error.txnHashError && (
+              <HistoricalInputErrorMessage>
+                {error.txnHashError}
+              </HistoricalInputErrorMessage>
+            )}
           </Column>
-        </HistoricalFormWrapper>
-      </Layout>
-    );
-  }
+          <Column gap="sm">
+            <label htmlFor="dappDomain">Dapp Domain: </label>
+            <StyledHistoricalInput
+              type="text"
+              id="dappDomain"
+              value={dappDomain}
+              onChange={handleDappDomainChange}
+            />
+            {error.dappDomainError && (
+              <HistoricalInputErrorMessage>
+                {error.dappDomainError}
+              </HistoricalInputErrorMessage>
+            )}
+          </Column>
+          <Button
+            stretch
+            disabled={loading}
+            loading={loading}
+            onClick={handleSimulateClick}
+          >
+            Simulate
+          </Button>
+        </Column>
+      </HistoricalFormWrapper>
+    </Layout>
+  );
 };
 
 const HistoricalFormWrapper = styled(Row).attrs({
