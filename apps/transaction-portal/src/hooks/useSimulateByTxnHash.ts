@@ -1,14 +1,15 @@
 import { EvmSimulatorConfig } from "@blowfishxyz/api-client/v20230605";
 import { useRouter } from "next/router";
-import { useClient } from "wagmi";
-import { UrlParsedRequest } from "./useURLRequestParams";
+import { useProvider } from "wagmi";
+import { toUrlParam } from "~utils/url";
+import type { UrlParsedRequest } from "~/hooks/useURLRequestParams";
 
 export function useSimulateByTxnHash() {
   const router = useRouter();
-  const client = useClient();
+  const provider = useProvider();
 
   return async (txnHash: string, domain: string) => {
-    const data = await client.getProvider().getTransaction(txnHash);
+    const data = await provider.getTransaction(txnHash);
     if (!data.blockNumber) {
       throw new Error("Block number missing");
     }
@@ -32,11 +33,7 @@ export function useSimulateByTxnHash() {
     };
 
     router.push(
-      `/simulate?request=${encodeURIComponent(
-        JSON.stringify(dataToSend)
-      )}&chainId=${data.chainId}&simulatorConfig=${encodeURIComponent(
-        JSON.stringify(simulatorConfig)
-      )}`
+      `/simulate?request=${toUrlParam(dataToSend)}&chainId=${data.chainId}`
     );
   };
 }

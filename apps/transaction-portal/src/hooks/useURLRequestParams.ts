@@ -4,6 +4,7 @@ import { useChainMetadata } from "./useChainMetadata";
 import { ScanParams } from "./useScanParams";
 import { DappRequest, Message, RequestType } from "@blowfish/utils/types";
 import { EvmSimulatorConfig } from "@blowfishxyz/api-client";
+import { fromUrlParam } from "~utils/url";
 
 export type UrlParsedRequest = {
   metadata: {
@@ -46,9 +47,7 @@ export function useURLRequestParams(): ScanParams {
 
   try {
     if (requestParam) {
-      parsedRequest = JSON.parse(
-        decodeURIComponent(requestParam)
-      ) as UrlParsedRequest;
+      parsedRequest = fromUrlParam<UrlParsedRequest>(requestParam);
     }
   } catch {
     return { error: MessageError.PARAMS_NOT_OK, id: undefined };

@@ -14,9 +14,7 @@ import {
   AccountNotConnectedModal,
   BlockedTransactionModal,
   OutdatedExtensionModal,
-  SimulationErrorModal,
   TransactionNotFoundModal,
-  TransactionRevertedModal,
   UnknownErrorModal,
   UnsupportedChainModal,
   UnsupportedTransactionModal,
@@ -28,7 +26,6 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
-import { getErrorFromScanResponse } from "@blowfishxyz/ui";
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
@@ -113,7 +110,6 @@ const ResultsView: React.FC<{
     error: scanError,
     mutate,
   } = useScanDappRequest(chainFamily, chainNetwork, request, message.origin);
-  const error = getErrorFromScanResponse(scanResults?.simulationResults);
   const [{ hasRequestParams }] = useLayoutConfig();
 
   const isUnsupportedDangerousRequest =

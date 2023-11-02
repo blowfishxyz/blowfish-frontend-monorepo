@@ -30,6 +30,7 @@ import ShareToTwitterModal from "./ShareToTwitterModal";
 import { useLocalStorage } from "react-use";
 import { useAccount } from "wagmi";
 import { ImpersonationErrorModal } from "./modals";
+import { useRouter } from "next/router";
 
 export type UIWarning = {
   message: string;
@@ -54,6 +55,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
   impersonatingAddress,
   ...props
 }) => {
+  const router = useRouter();
   const [shouldNotShowModal] = useLocalStorage("shouldNotShowModal");
   const [canceledTxn, setCancelledTxn] = useState(false);
   const [layoutConfig, setLayoutConfig] = useLayoutConfig();
@@ -239,7 +241,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         onContinue={confirm}
         onCancel={() => {
           if (layoutConfig.hasRequestParams) {
-            window.history.back();
+            router.replace("/simulate");
             return;
           }
           if (severity === "INFO") {
