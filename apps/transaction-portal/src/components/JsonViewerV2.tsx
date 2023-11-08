@@ -4,6 +4,7 @@ import ReactJson from "react-json-view";
 import styled, { css } from "styled-components";
 
 import { Text } from "@blowfishxyz/ui";
+import { useLayoutConfig } from "./layout/Layout";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -93,6 +94,8 @@ interface JsonViewerProps {
 }
 
 export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
+  const [{ hasRequestParams }] = useLayoutConfig();
+
   const FlattenedData = useMemo(() => {
     if (isFlatObject(data)) {
       return <FlatSection data={data} />;
@@ -122,7 +125,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         style={{ wordBreak: "break-all", fontSize: "12px" }}
         src={data}
         indentWidth={2}
-        enableClipboard={false}
+        enableClipboard={hasRequestParams}
         displayObjectSize={false}
         displayDataTypes={false}
         quotesOnKeys={false}
@@ -147,7 +150,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         }}
       />
     );
-  }, [data]);
+  }, [data, hasRequestParams]);
 
   return (
     <Wrapper>

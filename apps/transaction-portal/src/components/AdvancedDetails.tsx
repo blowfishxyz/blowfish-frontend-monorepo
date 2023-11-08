@@ -5,21 +5,31 @@ import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ArrowDownIcon } from "@blowfish/protect-ui/icons";
 import styled, { keyframes } from "styled-components";
 import { DappRequest } from "@blowfish/utils/types";
-import { EvmDecodedLog } from "@blowfishxyz/api-client";
+import {
+  EvmDecodedLog,
+  ScanMessageEvm200Response,
+  ScanTransactionsEvm200Response,
+} from "@blowfishxyz/api-client";
+import { useLayoutConfig } from "./layout/Layout";
 
 export const AdvancedDetails = memo<{
   request: DappRequest;
+  scanResults: ScanMessageEvm200Response | ScanTransactionsEvm200Response;
   decodedLogs: EvmDecodedLog[] | undefined;
-}>(function AdvancedDetails({ request, decodedLogs }) {
+}>(function AdvancedDetails({ request, decodedLogs, scanResults }) {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  const [{ hasRequestParams }] = useLayoutConfig();
 
   return (
     <Column width="100%">
       {showAdvancedDetails && (
         <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
           <CardContent>
-            {showAdvancedDetails && <RequestJsonViewer request={request} />}
-            {decodedLogs &&
+            {showAdvancedDetails && (
+              <RequestJsonViewer request={request} scanResults={scanResults} />
+            )}
+            {!hasRequestParams &&
+              decodedLogs &&
               decodedLogs.filter((decodedLog) => decodedLog !== null).length >
                 0 && (
                 <Column marginTop={16} gap="sm">
@@ -70,7 +80,13 @@ export const AdvancedDetails = memo<{
           }}
         >
           <Text design="secondary" size="sm">
-            {showAdvancedDetails ? "View less details" : "View more details"}
+            {hasRequestParams
+              ? showAdvancedDetails
+                ? "Hide raw response"
+                : "View raw response"
+              : showAdvancedDetails
+              ? "View less details"
+              : "View more details"}
           </Text>
           <StyledArrowDownIcon expanded={showAdvancedDetails} />
         </ViewDetailsWrapper>

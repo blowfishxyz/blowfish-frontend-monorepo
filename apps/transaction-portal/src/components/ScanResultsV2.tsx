@@ -235,6 +235,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         advancedDetails={
           <AdvancedDetails
             request={request}
+            scanResults={scanResults}
             decodedLogs={result?.decodedLogs}
           />
         }
