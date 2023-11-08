@@ -65,6 +65,12 @@ export interface BadRequest {
    * @memberof BadRequest
    */
   error: string;
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof BadRequest
+   */
+  requestId?: string;
 }
 /**
  * An error object describing why we were unable to simulate the transactions in the request. Can be `null`.
@@ -133,6 +139,12 @@ export type DiffSignEnum = (typeof DiffSignEnum)[keyof typeof DiffSignEnum];
  * @interface DownloadBlocklist200Response
  */
 export interface DownloadBlocklist200Response {
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof DownloadBlocklist200Response
+   */
+  requestId: string;
   /**
    *
    * @type {DownloadBlocklist200ResponseBloomFilter}
@@ -716,7 +728,42 @@ export interface EvmNftMetadata {
    * @memberof EvmNftMetadata
    */
   rawImageUrl: string;
+  /**
+   *
+   * @type {NftPreviews}
+   * @memberof EvmNftMetadata
+   */
+  previews: NftPreviews;
 }
+/**
+ *
+ * @export
+ * @interface EvmPersonalSign
+ */
+export interface EvmPersonalSign {
+  /**
+   *
+   * @type {string}
+   * @memberof EvmPersonalSign
+   */
+  kind: EvmPersonalSignKindEnum;
+  /**
+   * The unprefixed personal sign message that the dapp is proposing the user to sign.
+   * @type {string}
+   * @memberof EvmPersonalSign
+   */
+  rawMessage: string;
+}
+
+/**
+ * @export
+ */
+export const EvmPersonalSignKindEnum = {
+  PersonalSign: "PERSONAL_SIGN",
+} as const;
+export type EvmPersonalSignKindEnum =
+  (typeof EvmPersonalSignKindEnum)[keyof typeof EvmPersonalSignKindEnum];
+
 /**
  * Human-readable protocol information. Note that a single protocol can consist of multiple contracts.
  * @export
@@ -972,7 +1019,19 @@ export interface EvmSimulatorConfig {
    * @memberof EvmSimulatorConfig
    */
   stateOverrides?: EvmSimulatorConfigStateOverrides;
+  /**
+   * Apply a preset configuration for common simulator override scenarios like simulating a Gnosis Safe transaction
+   * @type {Array<EvmSimulatorConfigPresetsInner>}
+   * @memberof EvmSimulatorConfig
+   */
+  presets?: Array<EvmSimulatorConfigPresetsInner>;
 }
+/**
+ * @type EvmSimulatorConfigPresetsInner
+ *
+ * @export
+ */
+export type EvmSimulatorConfigPresetsInner = GnosisSafePreset;
 /**
  *
  * @export
@@ -2052,6 +2111,35 @@ export type EvmUnknownErrorKindEnum =
   (typeof EvmUnknownErrorKindEnum)[keyof typeof EvmUnknownErrorKindEnum];
 
 /**
+ * Override a Gnosis Safe multi-signature wallet during simulation to change the signature threshold 1 of N. Allowing simulation of unsigned transactions. NOTE: The transaction sender needs to be one of the signers of the Safe.
+ * @export
+ * @interface GnosisSafePreset
+ */
+export interface GnosisSafePreset {
+  /**
+   * The kind of simulator preset configuration to apply
+   * @type {string}
+   * @memberof GnosisSafePreset
+   */
+  kind: GnosisSafePresetKindEnum;
+  /**
+   * The address of the Gnosis safe to override
+   * @type {string}
+   * @memberof GnosisSafePreset
+   */
+  walletAddress: string;
+}
+
+/**
+ * @export
+ */
+export const GnosisSafePresetKindEnum = {
+  GnosisSafe: "GNOSIS_SAFE",
+} as const;
+export type GnosisSafePresetKindEnum =
+  (typeof GnosisSafePresetKindEnum)[keyof typeof GnosisSafePresetKindEnum];
+
+/**
  *
  * @export
  * @interface InternalServerError
@@ -2063,6 +2151,12 @@ export interface InternalServerError {
    * @memberof InternalServerError
    */
   error: InternalServerErrorErrorEnum;
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof InternalServerError
+   */
+  requestId?: string;
 }
 
 /**
@@ -2195,6 +2289,31 @@ export type MetaplexTokenStandard =
   (typeof MetaplexTokenStandard)[keyof typeof MetaplexTokenStandard];
 
 /**
+ * Thumbnails of different sizes for NFTs
+ * @export
+ * @interface NftPreviews
+ */
+export interface NftPreviews {
+  /**
+   * 250x250px
+   * @type {string}
+   * @memberof NftPreviews
+   */
+  small: string | null;
+  /**
+   * 512x512px
+   * @type {string}
+   * @memberof NftPreviews
+   */
+  medium: string | null;
+  /**
+   * 1000x1000px
+   * @type {string}
+   * @memberof NftPreviews
+   */
+  large: string | null;
+}
+/**
  *
  * @export
  * @interface ObjectWithDomainsPropertyOfTypeArray
@@ -2218,7 +2337,7 @@ export interface Report200Response {
    * @type {string}
    * @memberof Report200Response
    */
-  requestId?: string;
+  reportedRequestId?: string;
 }
 /**
  *
@@ -2227,8 +2346,8 @@ export interface Report200Response {
  */
 export interface ReportRequest {
   /**
-   * Request ID of transaction/message scan to report. This can be found in both the headers
-   * and the returned objects of our requests as `X-Request-Id`.
+   * Request ID of transaction/message scan to report. This can be found in both the headers as `X-Request-Id`
+   * and the returned objects as the `requestId` field.
    * @type {string}
    * @memberof ReportRequest
    */
@@ -2283,7 +2402,7 @@ export interface ScanDomain200ResponseInner {
    * The status of our domain analysis. Since our analysis can take some time, rather than block the API request until we've finished, we schedule the evaluation and return a response immediately.
    *
    * PROCESSING -> The analysis is under way
-   * UNPROCESSABLE -> We were unable to analyze the domain. This usually means that the website was unreachable or did not include valid HTML
+   * UNPROCESSABLE -> The URL submitted is invalid
    * PROCESSED -> Our analysis completed successfully
    * @type {string}
    * @memberof ScanDomain200ResponseInner
@@ -2376,6 +2495,12 @@ export type ScanDomain200ResponseInnerLabelsEnum =
  * @interface ScanMessageEvm200Response
  */
 export interface ScanMessageEvm200Response {
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof ScanMessageEvm200Response
+   */
+  requestId: string;
   /**
    *
    * @type {ActionEnum}
@@ -2523,6 +2648,7 @@ export interface ScanMessageEvmRequest {
  * @export
  */
 export type ScanMessageEvmRequestMessage =
+  | ({ kind: "PERSONAL_SIGN" } & EvmPersonalSign)
   | ({ kind: "SIGN_MESSAGE" } & EvmSignMessage)
   | ({ kind: "SIGN_TYPED_DATA" } & EvmSignTypedData);
 /**
@@ -2531,6 +2657,12 @@ export type ScanMessageEvmRequestMessage =
  * @interface ScanTransactionEvm200Response
  */
 export interface ScanTransactionEvm200Response {
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof ScanTransactionEvm200Response
+   */
+  requestId: string;
   /**
    *
    * @type {ActionEnum}
@@ -2618,6 +2750,12 @@ export interface ScanTransactionEvmRequest {
  * @interface ScanTransactionsEvm200Response
  */
 export interface ScanTransactionsEvm200Response {
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof ScanTransactionsEvm200Response
+   */
+  requestId: string;
   /**
    *
    * @type {ActionEnum}
@@ -2788,6 +2926,12 @@ export interface ScanTransactionsEvmRequest {
  */
 export interface ScanTransactionsSolana200Response {
   /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof ScanTransactionsSolana200Response
+   */
+  requestId: string;
+  /**
    *
    * @type {ScanTransactionsSolana200ResponseAggregated}
    * @memberof ScanTransactionsSolana200Response
@@ -2884,7 +3028,7 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
       } & SolanaStateChangeSolStakeAuthorityChange)
     | ({ kind: "SOL_TRANSFER" } & SolanaStateChangeSolTransfer)
     | ({ kind: "SPL_APPROVAL" } & SolanaStateChangeSplApproval)
-    | ({ kind: "SPL_TRANSFER" } & SolanaStageChangeSplTransfer)
+    | ({ kind: "SPL_TRANSFER" } & SolanaStateChangeSplTransfer)
     | ({
         kind: "USER_ACCOUNT_OWNER_CHANGE";
       } & SolanaStateChangeUserAccountOwnerChange);
@@ -3172,54 +3316,6 @@ export type SolanaSimulationTransactionErrorKindEnum =
   (typeof SolanaSimulationTransactionErrorKindEnum)[keyof typeof SolanaSimulationTransactionErrorKindEnum];
 
 /**
- * SPL token transfer
- * @export
- * @interface SolanaStageChangeSplTransfer
- */
-export interface SolanaStageChangeSplTransfer {
-  /**
-   * What kind of state change this object is
-   * @type {string}
-   * @memberof SolanaStageChangeSplTransfer
-   */
-  kind: SolanaStageChangeSplTransferKindEnum;
-  /**
-   *
-   * @type {SolanaStageChangeSplTransferData}
-   * @memberof SolanaStageChangeSplTransfer
-   */
-  data: SolanaStageChangeSplTransferData;
-}
-
-/**
- * @export
- */
-export const SolanaStageChangeSplTransferKindEnum = {
-  SplTransfer: "SPL_TRANSFER",
-} as const;
-export type SolanaStageChangeSplTransferKindEnum =
-  (typeof SolanaStageChangeSplTransferKindEnum)[keyof typeof SolanaStageChangeSplTransferKindEnum];
-
-/**
- *
- * @export
- * @interface SolanaStageChangeSplTransferData
- */
-export interface SolanaStageChangeSplTransferData {
-  /**
-   *
-   * @type {SplAsset}
-   * @memberof SolanaStageChangeSplTransferData
-   */
-  asset: SplAsset;
-  /**
-   *
-   * @type {Diff}
-   * @memberof SolanaStageChangeSplTransferData
-   */
-  diff: Diff;
-}
-/**
  * Transferring control over a user's SOL staking account
  * @export
  * @interface SolanaStateChangeSolStakeAuthorityChange
@@ -3426,6 +3522,60 @@ export interface SolanaStateChangeSplApprovalData {
   diff: Diff;
 }
 /**
+ * SPL token transfer
+ * @export
+ * @interface SolanaStateChangeSplTransfer
+ */
+export interface SolanaStateChangeSplTransfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof SolanaStateChangeSplTransfer
+   */
+  kind: SolanaStateChangeSplTransferKindEnum;
+  /**
+   *
+   * @type {SolanaStateChangeSplTransferData}
+   * @memberof SolanaStateChangeSplTransfer
+   */
+  data: SolanaStateChangeSplTransferData;
+}
+
+/**
+ * @export
+ */
+export const SolanaStateChangeSplTransferKindEnum = {
+  SplTransfer: "SPL_TRANSFER",
+} as const;
+export type SolanaStateChangeSplTransferKindEnum =
+  (typeof SolanaStateChangeSplTransferKindEnum)[keyof typeof SolanaStateChangeSplTransferKindEnum];
+
+/**
+ *
+ * @export
+ * @interface SolanaStateChangeSplTransferData
+ */
+export interface SolanaStateChangeSplTransferData {
+  /**
+   *
+   * @type {SplAsset}
+   * @memberof SolanaStateChangeSplTransferData
+   */
+  asset: SplAsset;
+  /**
+   *
+   * @type {Diff}
+   * @memberof SolanaStateChangeSplTransferData
+   */
+  diff: Diff;
+  /**
+   * Contains counterparty address if known. To whom the transfer was made for Send or from whom was it made for Receive
+   * @type {string}
+   * @memberof SolanaStateChangeSplTransferData
+   */
+  counterparty: string | null;
+}
+/**
  * Transferring control over a user's Solana account to a different program (defaults to Solana system program)
  * @export
  * @interface SolanaStateChangeUserAccountOwnerChange
@@ -3539,6 +3689,12 @@ export interface SplAsset {
    * @memberof SplAsset
    */
   imageUrl: string | null;
+  /**
+   *
+   * @type {NftPreviews}
+   * @memberof SplAsset
+   */
+  previews: NftPreviews;
 }
 /**
  *
@@ -3552,6 +3708,12 @@ export interface Unauthorized {
    * @memberof Unauthorized
    */
   error: string;
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof Unauthorized
+   */
+  requestId?: string;
 }
 /**
  *
