@@ -501,6 +501,11 @@ export const sendErc1155: EvmTransactionExpectedStateChange = {
         before: "1",
       },
       metadata: {
+        previews: {
+          small: null,
+          medium: null,
+          large: null,
+        },
         rawImageUrl:
           "https://lh3.googleusercontent.com/K0NLPpwmnDLG07FIxVrQuvGBR31azDTwx3VPy-GS0waeg5ORsZ_eZSZVpkZ-YHHt6eggoF_SUW5pNcm0yJ7XPJjymRDW0YqK37NQQQ=w650",
       },

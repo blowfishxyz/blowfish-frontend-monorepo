@@ -2055,12 +2055,6 @@ export interface ScanDomain200ResponseInner {
    */
   riskScore: number | null;
   /**
-   * A risk score from 0.0 to 1.0. The higher the score, the higher our certainty that this domain is hosting a crypto-native scam.
-   * @type {number}
-   * @memberof ScanDomain200ResponseInner
-   */
-  riskScore: number | null;
-  /**
    * Additional metadata about the domain and our evaluation. Possible labels include
    *
    * Blockchain -> Which blockchain this domain attempts to interact with
