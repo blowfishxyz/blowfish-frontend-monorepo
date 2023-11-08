@@ -2,7 +2,7 @@ import {
   MetaplexTokenStandard,
   SolanaChainNetwork,
   SolanaExpectedStateChange,
-  SolanaStageChangeSplTransfer,
+  SolanaStateChangeSplTransfer,
   SolanaStateChangeSolTransfer,
   SolanaStateChangeSplApproval,
 } from "@blowfishxyz/api-client";
@@ -24,13 +24,13 @@ export const isNftMetaplexStandard = (metaplexStadard: MetaplexTokenStandard) =>
 
 export const isSplStateChange = (
   rawInfo: SolanaExpectedStateChange["rawInfo"]
-): rawInfo is SolanaStateChangeSplApproval | SolanaStageChangeSplTransfer => {
+): rawInfo is SolanaStateChangeSplApproval | SolanaStateChangeSplTransfer => {
   return rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER";
 };
 
 export const isNftStateChange = (
   rawInfo: SolanaExpectedStateChange["rawInfo"]
-): rawInfo is SolanaStateChangeSplApproval | SolanaStageChangeSplTransfer => {
+): rawInfo is SolanaStateChangeSplApproval | SolanaStateChangeSplTransfer => {
   return (
     isSplStateChange(rawInfo) &&
     isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)
@@ -42,7 +42,7 @@ export const isCurrencyStateChange = (
 ): rawInfo is
   | SolanaStateChangeSolTransfer
   | SolanaStateChangeSplApproval
-  | SolanaStageChangeSplTransfer => {
+  | SolanaStateChangeSplTransfer => {
   return (
     rawInfo.kind === "SOL_TRANSFER" ||
     ((rawInfo.kind === "SPL_APPROVAL" || rawInfo.kind === "SPL_TRANSFER") &&
