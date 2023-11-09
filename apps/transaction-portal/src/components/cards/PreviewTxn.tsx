@@ -103,7 +103,7 @@ interface PreviewCardProps {
   severity: Severity | undefined;
   children: ReactNode;
   onContinue: () => Promise<SendTransactionResult | void>;
-  onReport: () => void;
+  onReport: () => Promise<void>;
   onCancel: () => void;
   advancedDetails: ReactElement;
 }
@@ -253,7 +253,7 @@ export interface PreviewTxnProps {
   advancedDetails: ReactElement;
   onContinue: () => Promise<SendTransactionResult | void>;
   onCancel: () => void;
-  onReport: () => void;
+  onReport: () => Promise<void>;
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({

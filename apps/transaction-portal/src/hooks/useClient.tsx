@@ -1,4 +1,4 @@
-import { createContext, memo, useContext, useState } from "react";
+import { createContext, memo, useContext, useEffect, useState } from "react";
 import { createEvmClient, BlowfishEvmApiClient } from "@blowfishxyz/api-client";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 
@@ -15,13 +15,22 @@ export const ApiClientProvider = memo(function ApiClientProvider({
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }>) {
-  const [value] = useState(() =>
+  const [value, setValue] = useState(() =>
     createEvmClient({
       basePath: BLOWFISH_API_BASE_URL,
       chainFamily,
       chainNetwork,
     })
   );
+  useEffect(() => {
+    setValue(
+      createEvmClient({
+        basePath: BLOWFISH_API_BASE_URL,
+        chainFamily,
+        chainNetwork,
+      })
+    );
+  }, [chainFamily, chainNetwork]);
   return (
     <ApiClientContext.Provider value={value}>
       {children}

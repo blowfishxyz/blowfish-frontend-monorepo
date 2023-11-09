@@ -50,7 +50,7 @@ const WrapperInner = styled(Row)`
 
 export interface ConfirmTxnProps {
   onContinue: () => Promise<SendTransactionResult | void>;
-  onReport: () => void;
+  onReport: () => Promise<void>;
   onCancel: () => void;
   warnings: UIWarning[] | undefined;
   severity: Severity | undefined;

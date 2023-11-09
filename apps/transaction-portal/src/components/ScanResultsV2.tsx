@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useEffect, useState } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import {
   Row,
   getErrorFromScanResponse,
@@ -24,7 +24,7 @@ import { containsPunycode, createValidURL, getProtocol } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useChainMetadata } from "~hooks/useChainMetadata";
-import { useReportTransactionUrl } from "~hooks/useReportTransactionUrl";
+import { useReportTransaction } from "~hooks/useReportTransaction";
 import { AdvancedDetails } from "./AdvancedDetails";
 import ShareToTwitterModal from "./ShareToTwitterModal";
 import { useLocalStorage } from "react-use";
@@ -83,13 +83,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     request,
   });
 
-  const reportUrl = useReportTransactionUrl(request);
+  const reportTransaction = useReportTransaction();
 
   const { address } = useAccount();
-
-  const onReport = useCallback(() => {
-    window.open(reportUrl, "_blank", "noopener,noreferrer");
-  }, [reportUrl]);
 
   const requestTypeStr = useMemo(() => {
     if (isTransactionRequest(request)) {
@@ -253,7 +249,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
             reject();
           }
         }}
-        onReport={onReport}
+        onReport={() => reportTransaction(txnData.scanResult.requestId)}
       />
     </Row>
   );

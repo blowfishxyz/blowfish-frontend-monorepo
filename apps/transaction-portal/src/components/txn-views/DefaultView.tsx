@@ -1,20 +1,17 @@
 import { Row, Button, Column, Text, SimulationWarning } from "@blowfishxyz/ui";
-import {
-  ReportIcon,
-  ContinueIcon,
-  BlowfishWarningIcon,
-} from "@blowfish/protect-ui/icons";
+import { ContinueIcon, BlowfishWarningIcon } from "@blowfish/protect-ui/icons";
 import { Severity } from "@blowfish/utils/types";
 import { useMemo } from "react";
 import { useTheme } from "styled-components";
 import { UIWarning } from "~components/ScanResultsV2";
+import { ReportBtn } from "~components/txn-views/ReportBtn";
 
 export const DefaultView: React.FC<{
   severity: Severity | undefined;
   warnings: UIWarning[] | undefined;
   onContinue: (() => void) | undefined;
   onCancel: (() => void) | undefined;
-  onReport: () => void;
+  onReport: () => Promise<void>;
 }> = ({ severity = "INFO", warnings, onContinue, onCancel, onReport }) => {
   const title = useMemo(() => {
     if (severity === "CRITICAL") {
@@ -71,10 +68,7 @@ export const DefaultView: React.FC<{
       return (
         <>
           <Row gap="md">
-            <Button stretch size="sm" onClick={onReport}>
-              <ReportIcon />
-              Report to Blowfish
-            </Button>
+            <ReportBtn variant="large" onReport={onReport} />
           </Row>
           <Row gap="md">
             <Button
@@ -125,9 +119,7 @@ export const DefaultView: React.FC<{
           >
             Cancel
           </Button>
-          <Button size="sm" stretch design="secondary" onClick={onReport}>
-            Report
-          </Button>
+          <ReportBtn variant="small" onReport={onReport} />
         </Row>
       </>
     );
