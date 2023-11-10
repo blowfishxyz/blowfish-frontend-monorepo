@@ -90,9 +90,13 @@ const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
 
 interface JsonViewerProps {
   data: object;
+  enableClipboard?: boolean;
 }
 
-export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
+export const JsonViewer: React.FC<JsonViewerProps> = ({
+  data,
+  enableClipboard,
+}) => {
   const FlattenedData = useMemo(() => {
     if (isFlatObject(data)) {
       return <FlatSection data={data} />;
@@ -133,7 +137,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         style={{ wordBreak: "break-all", fontSize: "12px" }}
         src={data}
         indentWidth={2}
-        enableClipboard={true}
+        enableClipboard={!!enableClipboard}
         displayObjectSize={false}
         displayDataTypes={false}
         quotesOnKeys={false}
@@ -159,7 +163,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         }}
       />
     );
-  }, [data]);
+  }, [data, enableClipboard]);
 
   return (
     <Wrapper>

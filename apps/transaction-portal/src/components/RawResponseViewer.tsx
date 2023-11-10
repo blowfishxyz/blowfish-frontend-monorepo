@@ -23,7 +23,7 @@ const RawResponseViewer: React.FC<RawResponseViewerProps> = ({
 }) => {
   const content = { request, scanResults };
 
-  return <DynamicJsonViewer data={content} />;
+  return <DynamicJsonViewer data={content} enableClipboard={true} />;
 };
 
 export default RawResponseViewer;
