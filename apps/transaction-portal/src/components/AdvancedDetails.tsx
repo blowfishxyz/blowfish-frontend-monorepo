@@ -10,7 +10,6 @@ import {
   ScanMessageEvm200Response,
   ScanTransactionsEvm200Response,
 } from "@blowfishxyz/api-client";
-import { useLayoutConfig } from "./layout/Layout";
 
 export const AdvancedDetails = memo<{
   request: DappRequest;
@@ -18,7 +17,6 @@ export const AdvancedDetails = memo<{
   decodedLogs: EvmDecodedLog[] | undefined;
 }>(function AdvancedDetails({ request, decodedLogs, scanResults }) {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
-  const [{ hasRequestParams }] = useLayoutConfig();
 
   return (
     <Column width="100%">
@@ -28,7 +26,7 @@ export const AdvancedDetails = memo<{
             {showAdvancedDetails && (
               <RequestJsonViewer request={request} scanResults={scanResults} />
             )}
-            {!hasRequestParams &&
+            {!scanResults &&
               decodedLogs &&
               decodedLogs.filter((decodedLog) => decodedLog !== null).length >
                 0 && (
@@ -80,13 +78,13 @@ export const AdvancedDetails = memo<{
           }}
         >
           <Text design="secondary" size="sm">
-            {hasRequestParams
+            {scanResults
               ? showAdvancedDetails
-                ? "Hide raw response"
-                : "View raw response"
+                ? "View less details"
+                : "View more details"
               : showAdvancedDetails
-              ? "View less details"
-              : "View more details"}
+              ? "Hide raw response"
+              : "View raw response"}
           </Text>
           <StyledArrowDownIcon expanded={showAdvancedDetails} />
         </ViewDetailsWrapper>

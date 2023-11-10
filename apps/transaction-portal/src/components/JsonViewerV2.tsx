@@ -1,10 +1,9 @@
 import { getAddress, isAddress } from "@ethersproject/address";
 import React, { useMemo } from "react";
-import ReactJson from "react-json-view";
+import ReactJson, { CollapsedFieldProps } from "react-json-view";
 import styled, { css } from "styled-components";
 
 import { Text } from "@blowfishxyz/ui";
-import { useLayoutConfig } from "./layout/Layout";
 
 const Wrapper = styled.div`
   width: 100%;
@@ -94,8 +93,6 @@ interface JsonViewerProps {
 }
 
 export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
-  const [{ hasRequestParams }] = useLayoutConfig();
-
   const FlattenedData = useMemo(() => {
     if (isFlatObject(data)) {
       return <FlatSection data={data} />;
@@ -120,16 +117,28 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
       }
     }
 
+    const shouldCollapse = (field: CollapsedFieldProps) => {
+      if (field.namespace.length === 1) return false;
+
+      if (field.namespace.length === 2) {
+        if (field.name === "request") return true;
+        if (field.name === "scanResults") return false;
+      }
+
+      return true;
+    };
+
     return (
       <ReactJson
         style={{ wordBreak: "break-all", fontSize: "12px" }}
         src={data}
         indentWidth={2}
-        enableClipboard={hasRequestParams}
+        enableClipboard={true}
         displayObjectSize={false}
         displayDataTypes={false}
         quotesOnKeys={false}
         name={false}
+        shouldCollapse={shouldCollapse}
         theme={{
           base00: "tranparent",
           base01: "tranparent",
@@ -150,7 +159,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         }}
       />
     );
-  }, [data, hasRequestParams]);
+  }, [data]);
 
   return (
     <Wrapper>
