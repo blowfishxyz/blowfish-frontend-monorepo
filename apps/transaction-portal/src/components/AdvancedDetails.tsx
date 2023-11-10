@@ -22,8 +22,6 @@ export const AdvancedDetails = memo<{
 }>(function AdvancedDetails({ request, decodedLogs, scanResults }) {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
 
-  console.log(scanResults);
-
   return (
     <Column width="100%">
       {showAdvancedDetails && (
