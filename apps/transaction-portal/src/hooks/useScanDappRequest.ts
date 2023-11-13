@@ -1,5 +1,5 @@
-import { createEvmClient } from "@blowfishxyz/api-client";
 import type {
+  BlowfishEvmApiClient,
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
   EvmTransactionsScanResult,
@@ -17,6 +17,7 @@ import {
 import useSWR, { SWRResponse } from "swr";
 import { isSmartContractWallet } from "../utils/wallets";
 import { useRef } from "react";
+import { useClient } from "./useClient";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -24,30 +25,24 @@ export const BLOWFISH_API_BASE_URL = process.env
 const SCAN_REFRESH_INTERVAL_MS = 15_000;
 
 export const getCacheKey = (
-  chainFamily: ChainFamily | undefined,
-  chainNetwork: ChainNetwork | undefined,
   request: DappRequest | undefined,
-  origin: string | undefined
-): [ChainFamily, ChainNetwork, DappRequest, string] | null => {
+  origin: string | undefined,
+  chainFamily: ChainFamily | undefined,
+  chainNetwork: ChainNetwork | undefined
+): [DappRequest, string, ChainFamily, ChainNetwork] | null => {
   if (!chainFamily || !chainNetwork || !request || !origin) {
     return null;
   }
 
-  return [chainFamily, chainNetwork, request, origin];
+  return [request, origin, chainFamily, chainNetwork];
 };
 
 const fetcher = async (
-  chainFamily: ChainFamily,
-  chainNetwork: ChainNetwork,
+  client: BlowfishEvmApiClient,
   request: DappRequest,
   origin: string
 ): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {
   // NOTE: The api key is rewritten on the proxy
-  const client = createEvmClient({
-    basePath: BLOWFISH_API_BASE_URL,
-    chainFamily,
-    chainNetwork,
-  });
 
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to
@@ -110,10 +105,11 @@ export const useScanDappRequest = (
     EvmTransactionsScanResult | EvmMessageScanResult
   > | null>(null);
   const consecutiveErrorCountRef = useRef<number>(0);
+  const client = useClient();
 
   const response = useSWR(
-    getCacheKey(chainFamily, chainNetwork, request, origin),
-    (params) => fetcher(...params),
+    getCacheKey(request, origin, chainFamily, chainNetwork),
+    ([request, origin]) => fetcher(client, request, origin),
     {
       refreshInterval: SCAN_REFRESH_INTERVAL_MS,
     }

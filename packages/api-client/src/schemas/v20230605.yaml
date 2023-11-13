@@ -27,89 +27,13 @@ tags:
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning
       results from other endpoints
+  - name: Simulate historical transaction
+    description: Endpoints related to viewing actual state changes of transactions
+      that are already on-chain
 security:
   - ApiKeyAuth: []
 
 paths:
-  /ethereum/v0/mainnet/historical/transaction:
-    post:
-      tags:
-        - Simulate historical transaction
-      summary: EVM
-      operationId: historical-transaction-evm
-      description: |
-        Simulates historical transaction to get the actual state changes it produced.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/historical/transaction |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/historical/transaction |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/historical/transaction |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/historical/transaction |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/historical/transaction |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/historical/transaction |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/historical/transaction |
-        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/historical/transaction |
-        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/historical/transaction |
-        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/historical/transaction |
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and
-            simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txHash:
-                  $ref: "#/components/schemas/EvmTxHash"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-              required:
-                - txHash
-                - userAccount
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/EvmSimulationResults"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
   "/{chain-family}/v0/{chain-network}/scan/transactions":
     post:
       tags:
@@ -123,6 +47,7 @@ paths:
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transactions |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
@@ -194,6 +119,14 @@ paths:
                 - txObjects
                 - userAccount
                 - metadata
+              default:
+                userAccount: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+                metadata:
+                  origin: https://uniswap.org
+                txObjects:
+                  - from: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+                    to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                    value: "0x10000000000000"
       responses:
         "200":
           description: Successful response
@@ -202,10 +135,13 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - action
                   - warnings
                   - simulationResults
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   action:
                     $ref: "#/components/schemas/ActionEnum"
                   warnings:
@@ -231,331 +167,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
-  "/{chain-family}/v0/{chain-network}/scan/transaction":
-    post:
-      tags:
-        - Scan transaction
-      summary: EVM
-      operationId: scan-transaction-evm
-      description: |
-        [DEPRECATED] Use Scan transactions endpoint instead.
-        https://docs.blowfish.xyz/reference/scan-transactions-evm
-        [Sunset] 31.12.2023
-        Scan an EVM transaction in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
-        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
-        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
-        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
-      deprecated: true
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and
-            simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-        - name: chain-family
-          in: path
-          description: The chain family to use
-          schema:
-            type: string
-            enum:
-              - ethereum
-              - polygon
-              - bnb
-              - arbitrum
-              - optimism
-              - base
-          required: true
-        - name: chain-network
-          in: path
-          description: The chain network to use
-          schema:
-            type: string
-            enum:
-              - mainnet
-              - one
-              - goerli
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txObject:
-                  $ref: "#/components/schemas/EvmTxData"
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-                simulatorConfig:
-                  $ref: "#/components/schemas/EvmSimulatorConfig"
-              required:
-                - txObject
-                - userAccount
-                - metadata
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - action
-                  - warnings
-                  - simulationResults
-                properties:
-                  action:
-                    $ref: "#/components/schemas/ActionEnum"
-                  warnings:
-                    $ref: "#/components/schemas/Warning"
-                  simulationResults:
-                    $ref: "#/components/schemas/EvmSimulationResult"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
-  "/{chain-family}/v0/{chain-network}/scan/message":
-    post:
-      tags:
-        - Scan message
-      summary: EVM
-      operationId: scan-message-evm
-      description: |
-        Scan an EVM message in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what signing the message will do.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
-        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
-        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
-        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/message |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and
-            simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-        - name: chain-family
-          in: path
-          description: The chain family to use
-          schema:
-            type: string
-            enum:
-              - ethereum
-              - polygon
-              - bnb
-              - arbitrum
-              - optimism
-              - base
-          required: true
-        - name: chain-network
-          in: path
-          description: The chain network to use
-          schema:
-            type: string
-            enum:
-              - mainnet
-              - one
-              - goerli
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                message:
-                  description: An object containing the message type and contents
-                  oneOf:
-                    - $ref: "#/components/schemas/EvmSignTypedData"
-                    - $ref: "#/components/schemas/EvmSignMessage"
-                  discriminator:
-                    propertyName: kind
-                    mapping:
-                      SIGN_TYPED_DATA: "#/components/schemas/EvmSignTypedData"
-                      SIGN_MESSAGE: "#/components/schemas/EvmSignMessage"
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-              required:
-                - message
-                - metadata
-                - userAccount
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - action
-                  - warnings
-                  - simulationResults
-                properties:
-                  action:
-                    $ref: "#/components/schemas/ActionEnum"
-                  warnings:
-                    $ref: "#/components/schemas/Warning"
-                  simulationResults:
-                    type: object
-                    description: |
-                      Can be `null`. Message simulation requires in-depth understanding of the contract verifying the message and is not a generalizable solution that works for any message. If we do not support simulating a particular message the simulationResults property will be returned as null and the recommended action is to fallback to showing the raw message data to the user before they sign
-                      Currently supported messages: OpenSea Seaport orders & ERC20 Permit approvals
-                    required:
-                      - expectedStateChanges
-                      - error
-                      - protocol
-                    nullable: true
-                    properties:
-                      expectedStateChanges:
-                        type: array
-                        items:
-                          type: object
-                          required:
-                            - humanReadableDiff
-                            - rawInfo
-                          properties:
-                            humanReadableDiff:
-                              type: string
-                              example: Send 10000 USDT
-                              description: Computed explanation of the state change that can be directly
-                                presented to the end-user. While the API is
-                                still in development, we suggest integrators
-                                expose this in their signing UI if they
-                                encounter a `rawInfo.kind` they don't recognize.
-                            rawInfo:
-                              description: A machine-parsable state change object describing the state change.
-                              oneOf:
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Permit"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
-                                - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
-                              discriminator:
-                                propertyName: kind
-                                mapping:
-                                  ERC20_PERMIT: "#/components/schemas/EvmMessageStateChangeErc20Permit"
-                                  ERC20_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
-                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmMessageStateChangeNativeAssetTr\
-                                    ansfer"
-                                  ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
-                                  ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
-                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAn\
-                                    yNftFromCollectionTransfer"
-                      error:
-                        description: A nullable error object which includes the parsed simulation error
-                          encountered (if any)
-                        nullable: true
-                        type: object
-                        required:
-                          - kind
-                          - humanReadableError
-                        properties:
-                          kind:
-                            type: string
-                            description: |
-                              A unique representation of the error kind
-
-                              UNSUPPORTED_ORDER_TYPE: Opensea order simulation currently supports basic order types for swapping ERC20/721/1155 <-> ERC20/721/1155, advanced order types using attribute criteria are not supported. If the message is a valid OpenSea order but of a type not supported UNSUPPORTED_ORDER_TYPE will be returned
-
-                              UNKNOWN_ERROR: We were not able to simulate the state changes of the message for an unknown reason, however the transaction it self did not revert so the user can proceed with caution
-
-                              UNSUPPORTED_MESSAGE: We do not support decoding this message type.
-                            example: UNSUPPORTED_ORDER_TYPE
-                            enum:
-                              - UNSUPPORTED_ORDER_TYPE
-                              - UNKNOWN_ERROR
-                              - UNSUPPORTED_MESSAGE
-                          humanReadableError:
-                            type: string
-                            description: Human readable & translated string that can be directly exposed to
-                              end-users
-                            example: Unsupported order type, unable to simulate message
-                      protocol:
-                        $ref: "#/components/schemas/EvmProtocol"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
-
   "/solana/v0/{chain-network}/scan/transactions":
     post:
       tags:
@@ -668,6 +279,12 @@ paths:
                 - transactions
                 - userAccount
                 - metadata
+              default:
+                transactions:
+                  - GfoPPvWL5eSJssAoemjqUpE9nMVt5kWTNznPz1F1CKi5kcBY8tDBgLzpbdBnTQjHJgyutdXEHmkkmE3iM3y94LE5s3zZ8wq2sjMkgjpddAnTwY1TrGSk6yZNykT2Un1PKqwo2XMXBa5FR3BpKStBV4krbiFzT9UySLSysTBzw31caBCuvcsetdE7yYWXGXEGbRiCf3BCWFkrooKAHrzW7bSHmGdUuB2sip9wEcb7r3SjhzkkAK2tySVkrbvVB5c11oF6zDYVys7wpaGbjn2DsVPYo9gbGVQXHi4qgCBXTzCT8v8pZV9gh4FeMRWw5yzfuWtxw44aQ6EKz55cTUhBAVMUCEZQUrfJbx1NzEYod41n7GFHzEXTZyPCo5CnGmX8u2UhuLhx2n8ZNg6Mj1dH6PGRQnKtxAzwicfPJ9KahGjoNLNcki9gfdxURy56DY3YH3DDviLrKKjiEoTmZs8UiaSBwRjsLA5dhJ6G6LyC9bjertH1cpcDWSQhRfwBXHAvHNirLX8927WcCHoTAUWXKqB34YJu4cLPwTn5kUr4FMQgQBhvyaMDDzrH76bwSFS4oRmMqXtscyWXbdXJC1k8iiRHftqmZhg3bP3UydcXKBUQJi15A64kjpkGY7ChxdcuwgLzKnVNJGG897nUPsVmsVfZNwiVqVZ6QKv1z7yv4EGvbkhWStx9NFvv8JkHjUhL4vNo8o7TPNib21WeFLgmiAu7nrn25kkJLZ3XE6ZVceUEbywJCMdwMomPx2maxauRehuxSorkE3ngcj7mC88HEgPTBQiP2JRJxcFvQp1CsfErCs3F3uG79kEKJLzNoFbCL58s6JsH3rE69wcb5e47JztFmrmGp4p3mb2jYoUfj6AfCctky9MnB6jWTdyg2o7zUcr5f35Qwahgcsce95RgH9mcWKFLqu49RxpFUgnHiNaDG67YEGdDgu2YABYxv6tv7PEtCJqZH4VVbpu9TRQCCXkQv4Xj7j6ALmhbNoJBEHJHqTGhiNQvV5aibesnGG62epoPz36uNJZrt6GV53AeLig22HVtBRr1NE2wB6h9Ax6VX7KKrekKBMzUxeAjWbGERkCWuXdRjTrpDG3bbDCDgep8k9ZnDDQtNqSKJbbxZ1VJvMKgcgty5P4n4YTXTSFNQ9kE8VCikb9tpN6iRnUwD9GFRQfiR76QNZs5hU2hn8asGYFnRcEgjZV9cSwC6foKrV47uq9X2dPWZg56TpNhPb85fzbkN13LdFHcua3MTvWmSD4LZAFMF8QWqpb7b2YZZpc1sQvYc5gN856JwehDybMsB2EFepiBFQXTxwB2c9xbHjEf3RcWwe3LZiD8vvWLfGF2t7PzwDKbEREpsX8piN76GkCGiRjgkdehiXaLzjQ5nW3Fi8F2HjALRRjHJxfNQq4vH4B6Nwp7rruzqdY1j6cm3QagrgeXCmfSmRV6kaCMRRQYbVW6Ju4rMbLTWa7FAWCmR2rvmevmi1PmV8zhApVFbV9VHd2hTazrddBWXRAmTRBZEjyRqSkr3y45ecph1ae87Pi3quaEEhjFP9oSWTUs3ufHCW2XjLj
+                userAccount: 5ufzDEwP2jKrvx78inuWNPrXRmR9AcXySqc2B3CRqR3G
+                metadata:
+                  origin: https://magiceden.io/
       responses:
         "200":
           description: Successful response
@@ -682,11 +299,14 @@ paths:
                   aggregated:
                     type: object
                     required:
+                      - requestId
                       - action
                       - warnings
                       - error
                       - expectedStateChanges
                     properties:
+                      requestId:
+                        $ref: "#/components/schemas/RequestId"
                       action:
                         $ref: "#/components/schemas/ActionEnum"
                       warnings:
@@ -732,7 +352,7 @@ paths:
                                 description: A machine-parsable state change object describing the state change.
                                 oneOf:
                                   - $ref: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                  - $ref: "#/components/schemas/SolanaStageChangeSplTransfer"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSplTransfer"
                                   - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
                                   - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
@@ -740,7 +360,7 @@ paths:
                                   propertyName: kind
                                   mapping:
                                     SOL_TRANSFER: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                    SPL_TRANSFER: "#/components/schemas/SolanaStageChangeSplTransfer"
+                                    SPL_TRANSFER: "#/components/schemas/SolanaStateChangeSplTransfer"
                                     SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
                                     SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuth\
                                       orityChange"
@@ -786,6 +406,361 @@ paths:
               schema:
                 $ref: "#/components/schemas/Unauthorized"
 
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  "/{chain-family}/v0/{chain-network}/scan/message":
+    post:
+      tags:
+        - Scan message
+      summary: EVM
+      operationId: scan-message-evm
+      description: |
+        Scan an EVM message in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what signing the message will do.
+
+        Click on Request → Examples to see example requests for different message types.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message |
+        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/message |
+        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message |
+        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
+        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
+        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
+        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
+        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
+        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
+        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/message |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and
+            simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+        - name: chain-family
+          in: path
+          description: The chain family to use
+          schema:
+            type: string
+            enum:
+              - ethereum
+              - polygon
+              - bnb
+              - arbitrum
+              - optimism
+              - base
+          required: true
+        - name: chain-network
+          in: path
+          description: The chain network to use
+          schema:
+            type: string
+            enum:
+              - mainnet
+              - one
+              - goerli
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  description: An object containing the message type and contents
+                  oneOf:
+                    - $ref: "#/components/schemas/EvmSignTypedData"
+                    - $ref: "#/components/schemas/EvmSignMessage"
+                    - $ref: "#/components/schemas/EvmPersonalSign"
+                  discriminator:
+                    propertyName: kind
+                    mapping:
+                      SIGN_TYPED_DATA: "#/components/schemas/EvmSignTypedData"
+                      SIGN_MESSAGE: "#/components/schemas/EvmSignMessage"
+                      PERSONAL_SIGN: "#/components/schemas/EvmPersonalSign"
+                metadata:
+                  $ref: "#/components/schemas/RequestMetadata"
+                userAccount:
+                  $ref: "#/components/schemas/EvmUserAccount"
+              required:
+                - message
+                - metadata
+                - userAccount
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - requestId
+                  - action
+                  - warnings
+                  - simulationResults
+                properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
+                  action:
+                    $ref: "#/components/schemas/ActionEnum"
+                  warnings:
+                    $ref: "#/components/schemas/Warning"
+                  simulationResults:
+                    type: object
+                    description: |
+                      Can be `null`. Message simulation requires in-depth understanding of the contract verifying the message and is not a generalizable solution that works for any message. If we do not support simulating a particular message the simulationResults property will be returned as null and the recommended action is to fallback to showing the raw message data to the user before they sign
+                      Currently supported messages: OpenSea Seaport orders & ERC20 Permit approvals
+                    required:
+                      - expectedStateChanges
+                      - error
+                      - protocol
+                    nullable: true
+                    properties:
+                      expectedStateChanges:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - humanReadableDiff
+                            - rawInfo
+                          properties:
+                            humanReadableDiff:
+                              type: string
+                              example: Send 10000 USDT
+                              description: Computed explanation of the state change that can be directly
+                                presented to the end-user. While the API is
+                                still in development, we suggest integrators
+                                expose this in their signing UI if they
+                                encounter a `rawInfo.kind` they don't recognize.
+                            rawInfo:
+                              description: A machine-parsable state change object describing the state change.
+                              oneOf:
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
+                              discriminator:
+                                propertyName: kind
+                                mapping:
+                                  ERC20_PERMIT: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                  ERC20_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmMessageStateChangeNativeAssetTr\
+                                    ansfer"
+                                  ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                  ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAn\
+                                    yNftFromCollectionTransfer"
+                      error:
+                        description: A nullable error object which includes the parsed simulation error
+                          encountered (if any)
+                        nullable: true
+                        type: object
+                        required:
+                          - kind
+                          - humanReadableError
+                        properties:
+                          kind:
+                            type: string
+                            description: |
+                              A unique representation of the error kind
+
+                              UNSUPPORTED_ORDER_TYPE: Opensea order simulation currently supports basic order types for swapping ERC20/721/1155 <-> ERC20/721/1155, advanced order types using attribute criteria are not supported. If the message is a valid OpenSea order but of a type not supported UNSUPPORTED_ORDER_TYPE will be returned
+
+                              UNKNOWN_ERROR: We were not able to simulate the state changes of the message for an unknown reason, however the transaction it self did not revert so the user can proceed with caution
+
+                              UNSUPPORTED_MESSAGE: We do not support decoding this message type.
+                            example: UNSUPPORTED_ORDER_TYPE
+                            enum:
+                              - UNSUPPORTED_ORDER_TYPE
+                              - UNKNOWN_ERROR
+                              - UNSUPPORTED_MESSAGE
+                          humanReadableError:
+                            type: string
+                            description: Human readable & translated string that can be directly exposed to
+                              end-users
+                            example: Unsupported order type, unable to simulate message
+                      protocol:
+                        $ref: "#/components/schemas/EvmProtocol"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /v0/domains:
+    post:
+      tags:
+        - Scan domain
+      summary: Domain
+      operationId: scan-domain
+      description: |
+        This endpoint allows customers to analyze dApp domains to determine if they are safe for users to interact with
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Object with domains property of type array
+              properties:
+                domains:
+                  type: array
+                  items:
+                    type: string
+                    description: Domains to check. Be sure to submit fully-qualified urls (with
+                      protocol prefix -- e.g., http)
+                    example: "https://iaunchmynft.io"
+              default:
+                domains:
+                  - "https://magicedennss.it"
+                  - "https://1nich.com"
+                  - "https://opensea.io"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - domain
+                    - status
+                    - riskScore
+                    - labels
+                    - warnings
+                  properties:
+                    domain:
+                      type: string
+                      description: A sanitized, registerable representation of the URL submitted. By
+                        registerable, we mean either the domain registerable
+                        with a domain registrar (e.g., example.com) or a
+                        sub-domain registerable on a hosting providers domain
+                        (e.g., my-project.vercel.app).
+                      example: dustprotocol.dev
+                    status:
+                      type: string
+                      description: |
+                        The status of our domain analysis. Since our analysis can take some time, rather than block the API request until we've finished, we schedule the evaluation and return a response immediately.
+
+                        PROCESSING -> The analysis is under way
+                        UNPROCESSABLE -> The URL submitted is invalid
+                        PROCESSED -> Our analysis completed successfully
+                      enum: [ PROCESSED, PROCESSING, UNPROCESSABLE ]
+                      example: PROCESSED
+                    riskScore:
+                      type: number
+                      description: A risk score from 0.0 to 1.0. The higher the score, the higher our
+                        certainty that this domain is hosting a crypto-native
+                        scam.
+                      format: float
+                      nullable: true
+                      example: 1.0
+                    labels:
+                      type: array
+                      description: |
+                        Additional metadata about the domain and our evaluation. Possible labels include
+
+                        Blockchain -> Which blockchain this domain attempts to interact with
+                        Warning -> If we've detected scam-like behavior, a warning label describing what was found will be included. If we know which blockchain the scam dApp is built for, this information is also included. We reserve the right to add new warnings at any time so handle new additions gracefully.
+                        Copy-cat -> If this dApp is a copy-cat of a well-known brand, we include a copy-cat label with information of the brand it is impersonating and it's official domain
+                      items:
+                        type: string
+                        enum:
+                          - blockchain=solana
+                          - blockchain=ethereum
+                          - blockchain=polygon
+                          - warning[all]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
+                          - warning[all]=OBFUSCATED_CODE
+                          - warning[all]=DEVTOOLS_DISABLED
+                          - warning[all]=WHITELISTED_DOMAIN_CROSS_ORIGIN
+                          - warning[all]=TRUSTED_BLOCKLIST_DOMAIN
+                          - warning[all]=NON_ASCII_URL
+                          - warning[evm]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
+                          - warning[evm]=OBFUSCATED_CODE
+                          - warning[evm]=DEVTOOLS_DISABLED
+                          - warning[evm]=WHITELISTED_DOMAIN_CROSS_ORIGIN
+                          - warning[evm]=TRUSTED_BLOCKLIST_DOMAIN
+                          - warning[solana]=NON_ASCII_URL
+                          - warning[solana]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
+                          - warning[solana]=OBFUSCATED_CODE
+                          - warning[solana]=DEVTOOLS_DISABLED
+                          - warning[solana]=WHITELISTED_DOMAIN_CROSS_ORIGIN
+                          - warning[solana]=TRUSTED_BLOCKLIST_DOMAIN
+                          - source=blowfish_blocklist
+                          - source=blowfish_whitelist
+                          - source=metamask_blocklist
+                          - source=metamask_whitelist
+                          - source=phishfort_blocklist
+                          - source=scamsniffer_blocklist
+                          - source=phantom_blocklist
+                          - source=solflare_blocklist
+                          - source=defi_llama_whitelist
+                          - source=brand_whitelist
+                          - copy_cat=brand_name:domain
+                        example: blockchain=solana
+                    warnings:
+                      $ref: "#/components/schemas/Warning"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
         "500":
           description: Internal server error
           content:
@@ -937,6 +912,13 @@ paths:
                     days. During this time, new domains will be added to
                     `recentlyAdded` and removed from `recentlyRemoved` fields.
                   example: 86400
+              default:
+                allowLists:
+                  - BLOWFISH
+                blockLists:
+                  - BLOWFISH
+                  - BLOWFISH_AUTOMATED
+
       responses:
         "200":
           description: |
@@ -950,10 +932,13 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - bloomFilter
                   - recentlyAdded
                   - recentlyRemoved
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   bloomFilter:
                     type: object
                     required:
@@ -979,147 +964,6 @@ paths:
                       type: string
                       example: notscammer.com
 
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
-  /v0/domains:
-    post:
-      tags:
-        - Scan domain
-      summary: Domain
-      operationId: scan-domain
-      description: |
-        This endpoint allows customers to analyze dApp domains to determine if they are safe for users to interact with
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              title: Object with domains property of type array
-              properties:
-                domains:
-                  type: array
-                  items:
-                    type: string
-                    description: Domains to check. Be sure to submit fully-qualified urls (with
-                      protocol prefix -- e.g., http)
-                    example: "https://iaunchmynft.io"
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - domain
-                    - status
-                    - riskScore
-                    - labels
-                    - warnings
-                  properties:
-                    domain:
-                      type: string
-                      description: A sanitized, registerable representation of the URL submitted. By
-                        registerable, we mean either the domain registerable
-                        with a domain registrar (e.g., example.com) or a
-                        sub-domain registerable on a hosting providers domain
-                        (e.g., my-project.vercel.app).
-                      example: dustprotocol.dev
-                    status:
-                      type: string
-                      description: |
-                        The status of our domain analysis. Since our analysis can take some time, rather than block the API request until we've finished, we schedule the evaluation and return a response immediately.
-
-                        PROCESSING -> The analysis is under way
-                        UNPROCESSABLE -> We were unable to analyze the domain. This usually means that the website was unreachable or did not include valid HTML
-                        PROCESSED -> Our analysis completed successfully
-                      enum: [ PROCESSED, PROCESSING, UNPROCESSABLE ]
-                      example: PROCESSED
-                    riskScore:
-                      type: number
-                      description: A risk score from 0.0 to 1.0. The higher the score, the higher our
-                        certainty that this domain is hosting a crypto-native
-                        scam.
-                      format: float
-                      nullable: true
-                      example: 1.0
-                    labels:
-                      type: array
-                      description: |
-                        Additional metadata about the domain and our evaluation. Possible labels include
-
-                        Blockchain -> Which blockchain this domain attempts to interact with
-                        Warning -> If we've detected scam-like behavior, a warning label describing what was found will be included. If we know which blockchain the scam dApp is built for, this information is also included. We reserve the right to add new warnings at any time so handle new additions gracefully.
-                        Copy-cat -> If this dApp is a copy-cat of a well-known brand, we include a copy-cat label with information of the brand it is impersonating and it's official domain
-                      items:
-                        type: string
-                        enum:
-                          - blockchain=solana
-                          - blockchain=ethereum
-                          - blockchain=polygon
-                          - warning[all]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
-                          - warning[all]=OBFUSCATED_CODE
-                          - warning[all]=DEVTOOLS_DISABLED
-                          - warning[all]=WHITELISTED_DOMAIN_CROSS_ORIGIN
-                          - warning[all]=TRUSTED_BLOCKLIST_DOMAIN
-                          - warning[all]=NON_ASCII_URL
-                          - warning[evm]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
-                          - warning[evm]=OBFUSCATED_CODE
-                          - warning[evm]=DEVTOOLS_DISABLED
-                          - warning[evm]=WHITELISTED_DOMAIN_CROSS_ORIGIN
-                          - warning[evm]=TRUSTED_BLOCKLIST_DOMAIN
-                          - warning[solana]=NON_ASCII_URL
-                          - warning[solana]=BLOCKLISTED_DOMAIN_CROSS_ORIGIN
-                          - warning[solana]=OBFUSCATED_CODE
-                          - warning[solana]=DEVTOOLS_DISABLED
-                          - warning[solana]=WHITELISTED_DOMAIN_CROSS_ORIGIN
-                          - warning[solana]=TRUSTED_BLOCKLIST_DOMAIN
-                          - source=blowfish_blocklist
-                          - source=blowfish_whitelist
-                          - source=metamask_blocklist
-                          - source=metamask_whitelist
-                          - source=phishfort_blocklist
-                          - source=scamsniffer_blocklist
-                          - source=phantom_blocklist
-                          - source=solflare_blocklist
-                          - source=defi_llama_whitelist
-                          - source=brand_whitelist
-                          - copy_cat=brand_name:domain
-                        example: blockchain=solana
-                    warnings:
-                      $ref: "#/components/schemas/Warning"
         "400":
           description: Bad request
           content:
@@ -1172,8 +1016,8 @@ paths:
                 requestId:
                   type: string
                   description: |
-                    Request ID of transaction/message scan to report. This can be found in both the headers
-                    and the returned objects of our requests as `X-Request-Id`.
+                    Request ID of transaction/message scan to report. This can be found in both the headers as `X-Request-Id`
+                    and the returned objects as the `requestId` field.
                   example: "eafdae18039f531b5a586310cfbd654e"
                 event:
                   type: string
@@ -1185,6 +1029,9 @@ paths:
                     - PROCEEDED
                     - REJECTED
                     - REPORTED_MALICIOUS
+              default:
+                requestId: "eafdae18039f531b5a586310cfbd654e"
+                event: PROCEEDED
       responses:
         "200":
           description: Successful response
@@ -1193,11 +1040,229 @@ paths:
               schema:
                 type: object
                 properties:
-                  requestId:
+                  reportedRequestId:
                     type: string
                     description: The Request ID of the successfully reported transaction/message
                       scan.
                     example: "eafdae18039f531b5a586310cfbd654e"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  /ethereum/v0/mainnet/historical/transaction:
+    post:
+      tags:
+        - Simulate historical transaction
+      summary: EVM
+      operationId: historical-transaction-evm
+      description: |
+        Simulates historical transaction to get the actual state changes it produced.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/historical/transaction |
+        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/historical/transaction |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/historical/transaction |
+        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/historical/transaction |
+        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/historical/transaction |
+        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/historical/transaction |
+        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/historical/transaction |
+        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/historical/transaction |
+        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/historical/transaction |
+        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/historical/transaction |
+        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/historical/transaction |
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and
+            simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                txHash:
+                  $ref: "#/components/schemas/EvmTxHash"
+                userAccount:
+                  $ref: "#/components/schemas/EvmUserAccount"
+              required:
+                - txHash
+                - userAccount
+              default:
+                txHash: "0x8010da429a651ca117e5c087497cdd8d62e2b7ac1d4095358897817a4d1aa477"
+                userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EvmSimulationResults"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+  "/{chain-family}/v0/{chain-network}/scan/transaction":
+    post:
+      tags:
+        - Scan transaction
+      summary: EVM
+      operationId: scan-transaction-evm
+      description: |
+        [DEPRECATED] Use Scan transactions endpoint instead.
+        https://docs.blowfish.xyz/reference/scan-transactions-evm
+        [Sunset] 31.12.2023
+        Scan an EVM transaction in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
+        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transaction |
+        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
+        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
+        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
+        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
+        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
+        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
+        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
+        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+      deprecated: true
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and
+            simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+        - name: chain-family
+          in: path
+          description: The chain family to use
+          schema:
+            type: string
+            enum:
+              - ethereum
+              - polygon
+              - bnb
+              - arbitrum
+              - optimism
+              - base
+          required: true
+        - name: chain-network
+          in: path
+          description: The chain network to use
+          schema:
+            type: string
+            enum:
+              - mainnet
+              - one
+              - goerli
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                txObject:
+                  $ref: "#/components/schemas/EvmTxData"
+                metadata:
+                  $ref: "#/components/schemas/RequestMetadata"
+                userAccount:
+                  $ref: "#/components/schemas/EvmUserAccount"
+                simulatorConfig:
+                  $ref: "#/components/schemas/EvmSimulatorConfig"
+              default:
+                userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                metadata:
+                  origin: https://uniswap.org
+                txObject:
+                  from: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
+                  to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+                  value: "0x10000000000000"
+              required:
+                - txObject
+                - userAccount
+                - metadata
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - requestId
+                  - action
+                  - warnings
+                  - simulationResults
+                properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
+                  action:
+                    $ref: "#/components/schemas/ActionEnum"
+                  warnings:
+                    $ref: "#/components/schemas/Warning"
+                  simulationResults:
+                    $ref: "#/components/schemas/EvmSimulationResult"
         "400":
           description: Bad request
           content:
@@ -1225,6 +1290,9 @@ components:
       name: X-Api-Key
       x-default: "4daa1e3b-87e6-40b2-8883-758feb6a8e46"
   schemas:
+    RequestId:
+      type: string
+      description: Request ID uniquely identifies the HTTP request sent to our service
     Unauthorized:
       type: object
       required:
@@ -1234,6 +1302,8 @@ components:
           type: string
           description: The error that caused the 401
           example: "Unauthorized: invalid X-API-KEY header value"
+        requestId:
+          $ref: "#/components/schemas/RequestId"
     BadRequest:
       type: object
       required:
@@ -1243,6 +1313,8 @@ components:
           type: string
           description: The error that caused the 400
           example: No transactions to simulate
+        requestId:
+          $ref: "#/components/schemas/RequestId"
     InternalServerError:
       type: object
       required:
@@ -1252,6 +1324,8 @@ components:
           type: string
           enum: [ "Internal Server Error" ]
           example: "Internal Server Error"
+        requestId:
+          $ref: "#/components/schemas/RequestId"
     ActionEnum:
       type: string
       enum:
@@ -1480,6 +1554,29 @@ components:
           type: number
           format: float
           example: 0.2784
+    NftPreviews:
+      type: object
+      required:
+        - small
+        - medium
+        - large
+      properties:
+        small:
+          type: string
+          example: https://lh3.googleusercontent.com/rs-xotBPO677WYr1vJ2uHiVe0pfzhnIRDssFvxJkhcJtqz9woyeku8AyIHCDVnKqW2tfQWIhOMPgthWvkJ3MoWYlzX7jC1A9STY=s250
+          description: 250x250px
+          nullable: true
+        medium:
+          type: string
+          example: https://lh3.googleusercontent.com/r1hdj4cQHJCFxbYVXgg-Jm1YuJ6oNCGk6IDOzeYmb1cIGuLR87laDIRabpuLFz-nkqEbAQlqOjpRTosOeDEnoWd2Z6D9YQU638s
+          description: 512x512px
+          nullable: true
+        large:
+          type: string
+          example: https://lh3.googleusercontent.com/r1hdj4cQHJCFxbYVXgg-Jm1YuJ6oNCGk6IDOzeYmb1cIGuLR87laDIRabpuLFz-nkqEbAQlqOjpRTosOeDEnoWd2Z6D9YQU638s=s1000
+          description: 1000x1000px
+          nullable: true
+      description: Thumbnails of different sizes for NFTs
     EvmDecodedLogs:
       type: array
       description: Decoded events emmited by this transaction
@@ -1720,11 +1817,13 @@ components:
       description: A error object which includes the parsed simulation error
         encountered (if any). Can be `null`.
       oneOf:
+        - $ref: "#/components/schemas/EvmSimulationTimedOut"
         - $ref: "#/components/schemas/EvmSimulationFailedError"
         - $ref: "#/components/schemas/EvmUnknownError"
       discriminator:
         propertyName: kind
         mapping:
+          SIMULATION_TIMED_OUT: "#/components/schemas/EvmSimulationTimedOut"
           SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
           UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
       nullable: true
@@ -1734,15 +1833,11 @@ components:
       oneOf:
         - $ref: "#/components/schemas/EvmTransactionRevertedError"
         - $ref: "#/components/schemas/EvmTransactionError"
-        - $ref: "#/components/schemas/EvmSimulationFailedError"
-        - $ref: "#/components/schemas/EvmUnknownError"
       discriminator:
         propertyName: kind
         mapping:
           TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
           TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-          SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-          UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
       nullable: true
     EvmSimulationResult:
       type: object
@@ -1989,6 +2084,36 @@ components:
                     type: string
                     description: "The numerical value to set the storage slot to. This value can be
                       passed in either decimal or 0x prefixed hexadecimal form"
+        presets:
+          type: array
+          description: "Apply a preset configuration for common simulator override
+            scenarios like simulating a Gnosis Safe transaction"
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/GnosisSafePreset"
+
+    GnosisSafePreset:
+      type: object
+      description: "Override a Gnosis Safe multi-signature wallet during simulation to
+        change the signature threshold 1 of N. Allowing simulation of unsigned
+        transactions. NOTE: The transaction sender needs to be one of the
+        signers of the Safe."
+      required:
+        - kind
+        - walletAddress
+      properties:
+        kind:
+          type: string
+          enum: [ GNOSIS_SAFE ]
+          example: GNOSIS_SAFE
+          description: "The kind of simulator preset configuration to apply"
+          default: GNOSIS_SAFE
+        walletAddress:
+          type: string
+          example: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
+          default: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
+          description: "The address of the Gnosis safe to override"
+
     EvmAddressInfo:
       type: object
       required:
@@ -2017,12 +2142,15 @@ components:
       type: object
       required:
         - rawImageUrl
+        - previews
       properties:
         rawImageUrl:
           type: string
           format: uri
           example: "https://cdn.simplehash.com/assets/6c5f6c40f8de4c54c8af25c5dd7b352dd7f\
             8f6cf0acfa548494da24c9b194f44.png"
+        previews:
+          $ref: "#/components/schemas/NftPreviews"
       description: Metadata associated with the NFT
     EvmErc721TokenId:
       type: string
@@ -2323,6 +2451,21 @@ components:
       required:
         - kind
         - rawMessage
+    EvmPersonalSign:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum: [ PERSONAL_SIGN ]
+          example: PERSONAL_SIGN
+        rawMessage:
+          type: string
+          example: "Signing into blowfish.xyz"
+          description: The unprefixed personal sign message that the dapp is proposing the
+            user to sign.
+      required:
+        - kind
+        - rawMessage
     EvmTransactionRevertedError:
       type: object
       required:
@@ -2362,6 +2505,20 @@ components:
           example: "LackOfFundForGasLimit"
           description: For all the errors during the execution that do not have a revert
             reason. Like InvalidOpcode or LackOfFundForGasLimit.
+    EvmSimulationTimedOut:
+      type: object
+      required:
+        - kind
+        - humanReadableError
+      properties:
+        kind:
+          type: string
+          enum: [ SIMULATION_FAILED ]
+          example: SIMULATION_FAILED
+        humanReadableError:
+          type: string
+          description: Human readable explanation of the error
+          example: Transaction simulation failed
     EvmSimulationFailedError:
       type: object
       required:
@@ -2397,7 +2554,7 @@ components:
           description: Human readable explanation of the error
     EvmTransferCounterparty:
       nullable: true
-      description: Contains counterparty adress if known. To whom the transfer was
+      description: Contains counterparty address if known. To whom the transfer was
         made for Send or from whom was it made for Receive
       $ref: "#/components/schemas/EvmAddressInfo"
     EvmStateChangeErc20Transfer:
@@ -3062,7 +3219,14 @@ components:
           nullable: true
           example: "https://cdn.simplehash.com/assets/2b6b37a30a85f4d7f3727574afc296026d3\
             453cc813f982a7c4c358668060ea9.png"
-    SolanaStageChangeSplTransfer:
+        previews:
+          $ref: "#/components/schemas/NftPreviews"
+    SolanaTransferCounterparty:
+      nullable: true
+      description: Contains counterparty address if known. To whom the transfer was
+        made for Send or from whom was it made for Receive
+      type: string
+    SolanaStateChangeSplTransfer:
       type: object
       description: SPL token transfer
       required:
@@ -3079,11 +3243,14 @@ components:
           required:
             - asset
             - diff
+            - counterparty
           properties:
             asset:
               $ref: "#/components/schemas/SplAsset"
             diff:
               $ref: "#/components/schemas/Diff"
+            counterparty:
+              $ref: "#/components/schemas/SolanaTransferCounterparty"
     SolanaStateChangeSplApproval:
       type: object
       description: Approval request to transfer user's tokens

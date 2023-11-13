@@ -12,6 +12,7 @@ import {
 } from "../state-change";
 
 export const buyErc721WithEth: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -41,6 +42,7 @@ export const buyErc721WithEth: EvmTransactionsScanResult = {
 };
 
 export const buyErc1155WithEth: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   simulationResults: {
     aggregated: {
@@ -70,6 +72,7 @@ export const buyErc1155WithEth: EvmTransactionsScanResult = {
 };
 
 export const erc20SwapWethforUsdc: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -109,6 +112,7 @@ export const erc20SwapWethforUsdc: EvmTransactionsScanResult = {
 };
 
 export const approveErc20ScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -135,6 +139,7 @@ export const approveErc20ScanResult: EvmTransactionsScanResult = {
 };
 
 export const approveErc721ScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -161,6 +166,7 @@ export const approveErc721ScanResult: EvmTransactionsScanResult = {
 };
 
 export const approveAllErc721ScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "WARN",
   warnings: [
     {
@@ -194,6 +200,7 @@ export const approveAllErc721ScanResult: EvmTransactionsScanResult = {
 };
 
 export const approveAllErc1155ScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "WARN",
   warnings: [
     {
@@ -227,6 +234,7 @@ export const approveAllErc1155ScanResult: EvmTransactionsScanResult = {
 };
 
 export const transactionsNoActionScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   simulationResults: {
     perTransaction: [],
@@ -245,6 +253,7 @@ export const transactionsNoActionScanResult: EvmTransactionsScanResult = {
 };
 
 export const transactionWarningScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "WARN",
   simulationResults: {
     perTransaction: [],
@@ -267,6 +276,7 @@ export const transactionWarningScanResult: EvmTransactionsScanResult = {
 };
 
 export const transactionsWarningScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "WARN",
   simulationResults: {
     aggregated: {
@@ -310,6 +320,7 @@ export const transactionsWarningScanResult: EvmTransactionsScanResult = {
 };
 
 export const transactionBlockScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "BLOCK",
   simulationResults: {
     perTransaction: [],
@@ -332,6 +343,7 @@ export const transactionBlockScanResult: EvmTransactionsScanResult = {
 };
 
 export const transactionsBlockScanResult: EvmTransactionsScanResult = {
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "BLOCK",
   simulationResults: {
     aggregated: {

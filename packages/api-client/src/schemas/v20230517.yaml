@@ -42,6 +42,7 @@ paths:
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transactions |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
@@ -122,10 +123,13 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - action
                   - warnings
                   - simulationResults
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   action:
                     $ref: "#/components/schemas/ActionEnum"
                   warnings:
@@ -247,6 +251,7 @@ paths:
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transaction |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
@@ -326,10 +331,13 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - action
                   - warnings
                   - simulationResults
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   action:
                     $ref: "#/components/schemas/ActionEnum"
                   warnings:
@@ -412,6 +420,7 @@ paths:
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message |
         | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
+        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/message |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
@@ -475,11 +484,13 @@ paths:
                   oneOf:
                     - $ref: "#/components/schemas/EvmSignTypedData"
                     - $ref: "#/components/schemas/EvmSignMessage"
+                    - $ref: "#/components/schemas/EvmPersonalSign"
                   discriminator:
                     propertyName: kind
                     mapping:
                       SIGN_TYPED_DATA: "#/components/schemas/EvmSignTypedData"
                       SIGN_MESSAGE: "#/components/schemas/EvmSignMessage"
+                      PERSONAL_SIGN: "#/components/schemas/EvmPersonalSign"
                 metadata:
                   $ref: "#/components/schemas/RequestMetadata"
                 userAccount:
@@ -496,10 +507,13 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - action
                   - warnings
                   - simulationResults
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   action:
                     $ref: "#/components/schemas/ActionEnum"
                   warnings:
@@ -719,9 +733,12 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - aggregated
                   - perTransaction
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   aggregated:
                     type: object
                     required:
@@ -775,7 +792,7 @@ paths:
                                 description: A machine-parsable state change object describing the state change.
                                 oneOf:
                                   - $ref: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                  - $ref: "#/components/schemas/SolanaStageChangeSplTransfer"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSplTransfer"
                                   - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
                                   - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
@@ -783,7 +800,7 @@ paths:
                                   propertyName: kind
                                   mapping:
                                     SOL_TRANSFER: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                    SPL_TRANSFER: "#/components/schemas/SolanaStageChangeSplTransfer"
+                                    SPL_TRANSFER: "#/components/schemas/SolanaStateChangeSplTransfer"
                                     SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
                                     SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuth\
                                       orityChange"
@@ -993,10 +1010,13 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - bloomFilter
                   - recentlyAdded
                   - recentlyRemoved
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   bloomFilter:
                     type: object
                     required:
@@ -1106,7 +1126,7 @@ paths:
                         The status of our domain analysis. Since our analysis can take some time, rather than block the API request until we've finished, we schedule the evaluation and return a response immediately.
 
                         PROCESSING -> The analysis is under way
-                        UNPROCESSABLE -> We were unable to analyze the domain. This usually means that the website was unreachable or did not include valid HTML
+                        UNPROCESSABLE -> The URL submitted is invalid
                         PROCESSED -> Our analysis completed successfully
                       enum: [ PROCESSED, PROCESSING, UNPROCESSABLE ]
                       example: PROCESSED
@@ -1215,8 +1235,8 @@ paths:
                 requestId:
                   type: string
                   description: |
-                    Request ID of transaction/message scan to report. This can be found in both the headers
-                    and the returned objects of our requests as `X-Request-Id`.
+                    Request ID of transaction/message scan to report. This can be found in both the headers as `X-Request-Id`
+                    and the returned objects as the `requestId` field.
                   example: "eafdae18039f531b5a586310cfbd654e"
                 event:
                   type: string
@@ -1236,7 +1256,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  requestId:
+                  reportedRequestId:
                     type: string
                     description: The Request ID of the successfully reported transaction/message
                       scan.
@@ -1268,6 +1288,9 @@ components:
       name: X-Api-Key
       x-default: "4daa1e3b-87e6-40b2-8883-758feb6a8e46"
   schemas:
+    RequestId:
+      type: string
+      description: Request ID uniquely identifies the HTTP request sent to our service
     Unauthorized:
       type: object
       required:
@@ -1277,6 +1300,8 @@ components:
           type: string
           description: The error that caused the 401
           example: "Unauthorized: invalid X-API-KEY header value"
+        requestId:
+          $ref: "#/components/schemas/RequestId"
     BadRequest:
       type: object
       required:
@@ -1286,6 +1311,8 @@ components:
           type: string
           description: The error that caused the 400
           example: No transactions to simulate
+        requestId:
+          $ref: "#/components/schemas/RequestId"
     InternalServerError:
       type: object
       required:
@@ -1295,6 +1322,8 @@ components:
           type: string
           enum: [ "Internal Server Error" ]
           example: "Internal Server Error"
+        requestId:
+          $ref: "#/components/schemas/RequestId"
     ActionEnum:
       type: string
       enum:
@@ -1523,6 +1552,29 @@ components:
           type: number
           format: float
           example: 0.2784
+    NftPreviews:
+      type: object
+      required:
+        - small
+        - medium
+        - large
+      properties:
+        small:
+          type: string
+          example: https://lh3.googleusercontent.com/rs-xotBPO677WYr1vJ2uHiVe0pfzhnIRDssFvxJkhcJtqz9woyeku8AyIHCDVnKqW2tfQWIhOMPgthWvkJ3MoWYlzX7jC1A9STY=s250
+          description: 250x250px
+          nullable: true
+        medium:
+          type: string
+          example: https://lh3.googleusercontent.com/r1hdj4cQHJCFxbYVXgg-Jm1YuJ6oNCGk6IDOzeYmb1cIGuLR87laDIRabpuLFz-nkqEbAQlqOjpRTosOeDEnoWd2Z6D9YQU638s
+          description: 512x512px
+          nullable: true
+        large:
+          type: string
+          example: https://lh3.googleusercontent.com/r1hdj4cQHJCFxbYVXgg-Jm1YuJ6oNCGk6IDOzeYmb1cIGuLR87laDIRabpuLFz-nkqEbAQlqOjpRTosOeDEnoWd2Z6D9YQU638s=s1000
+          description: 1000x1000px
+          nullable: true
+      description: Thumbnails of different sizes for NFTs
     EvmDecodedLogs:
       type: array
       description: Decoded events emmited by this transaction
@@ -1915,6 +1967,36 @@ components:
                     type: string
                     description: "The numerical value to set the storage slot to. This value can be
                       passed in either decimal or 0x prefixed hexadecimal form"
+        presets:
+          type: array
+          description: "Apply a preset configuration for common simulator override
+            scenarios like simulating a Gnosis Safe transaction"
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/GnosisSafePreset"
+
+    GnosisSafePreset:
+      type: object
+      description: "Override a Gnosis Safe multi-signature wallet during simulation to
+        change the signature threshold 1 of N. Allowing simulation of unsigned
+        transactions. NOTE: The transaction sender needs to be one of the
+        signers of the Safe."
+      required:
+        - kind
+        - walletAddress
+      properties:
+        kind:
+          type: string
+          enum: [ GNOSIS_SAFE ]
+          example: GNOSIS_SAFE
+          description: "The kind of simulator preset configuration to apply"
+          default: GNOSIS_SAFE
+        walletAddress:
+          type: string
+          example: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
+          default: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
+          description: "The address of the Gnosis safe to override"
+
     EvmAddressInfo:
       type: object
       required:
@@ -1940,12 +2022,15 @@ components:
       type: object
       required:
         - rawImageUrl
+        - previews
       properties:
         rawImageUrl:
           type: string
           format: uri
           example: "https://cdn.simplehash.com/assets/6c5f6c40f8de4c54c8af25c5dd7b352dd7f\
             8f6cf0acfa548494da24c9b194f44.png"
+        previews:
+          $ref: "#/components/schemas/NftPreviews"
       description: Metadata associated with the NFT
     EvmErc721TokenId:
       type: string
@@ -2139,6 +2224,21 @@ components:
       required:
         - kind
         - rawMessage
+    EvmPersonalSign:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum: [ PERSONAL_SIGN ]
+          example: PERSONAL_SIGN
+        rawMessage:
+          type: string
+          example: "Signing into blowfish.xyz"
+          description: The unprefixed personal sign message that the dapp is proposing the
+            user to sign.
+      required:
+        - kind
+        - rawMessage
     EvmTransactionRevertedError:
       type: object
       required:
@@ -2212,7 +2312,8 @@ components:
           example: Unable to simulate transaction
           description: Human readable explanation of the error
     EvmTransferCounterparty:
-      description: Contains counterparty adress if known. To whom the transfer was
+      nullable: true
+      description: Contains counterparty address if known. To whom the transfer was
         made for Send or from whom was it made for Receive
       $ref: "#/components/schemas/EvmAddressInfo"
     EvmStateChangeErc20Permit:
@@ -2753,6 +2854,7 @@ components:
         - metaplexTokenStandard
         - price
         - imageUrl
+        - previews
       properties:
         symbol:
           type: string
@@ -2787,7 +2889,14 @@ components:
           nullable: true
           example: "https://cdn.simplehash.com/assets/2b6b37a30a85f4d7f3727574afc296026d3\
             453cc813f982a7c4c358668060ea9.png"
-    SolanaStageChangeSplTransfer:
+        previews:
+          $ref: "#/components/schemas/NftPreviews"
+    SolanaTransferCounterparty:
+      nullable: true
+      description: Contains counterparty address if known. To whom the transfer was
+        made for Send or from whom was it made for Receive
+      type: string
+    SolanaStateChangeSplTransfer:
       type: object
       description: SPL token transfer
       required:
@@ -2804,11 +2913,14 @@ components:
           required:
             - asset
             - diff
+            - counterparty
           properties:
             asset:
               $ref: "#/components/schemas/SplAsset"
             diff:
               $ref: "#/components/schemas/Diff"
+            counterparty:
+              $ref: "#/components/schemas/SolanaTransferCounterparty"
     SolanaStateChangeSplApproval:
       type: object
       description: Approval request to transfer user's tokens

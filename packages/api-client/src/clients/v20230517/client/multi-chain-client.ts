@@ -67,13 +67,13 @@ export class BlowfishMultiChainApiClient {
     };
   }
 
-  async scanMessageEvm(
+  scanMessageEvm = async (
     rawMessage: string,
     userAccount: string,
     metadata: RequestMetadata,
     chainFamily: EvmChainFamily,
     chainNetwork: EvmChainNetwork
-  ) {
+  ) => {
     return this.apis.message.scanMessageEvm({
       chainFamily: chainFamily,
       chainNetwork: chainNetwork,
@@ -88,15 +88,15 @@ export class BlowfishMultiChainApiClient {
       language: this.language,
       xApiVersion: this.apiVersion,
     });
-  }
+  };
 
-  async scanSignTypedDataEvm(
+  scanSignTypedDataEvm = async (
     typedData: EvmSignTypedDataData,
     userAccount: string,
     metadata: RequestMetadata,
     chainFamily: EvmChainFamily,
     chainNetwork: EvmChainNetwork
-  ) {
+  ) => {
     return this.apis.message.scanMessageEvm({
       chainFamily: chainFamily,
       chainNetwork: chainNetwork,
@@ -111,16 +111,16 @@ export class BlowfishMultiChainApiClient {
       language: this.language,
       xApiVersion: this.apiVersion,
     });
-  }
+  };
 
-  async scanTransactionsEvm(
+  scanTransactionsEvm = async (
     txObjects: EvmTxData[],
     userAccount: string,
     metadata: RequestMetadata,
     chainFamily: EvmChainFamily,
     chainNetwork: EvmChainNetwork,
     simulatorConfig?: EvmSimulatorConfig
-  ) {
+  ) => {
     return this.apis.transactions.scanTransactionsEvm({
       chainFamily: chainFamily,
       chainNetwork: chainNetwork,
@@ -133,14 +133,14 @@ export class BlowfishMultiChainApiClient {
       language: this.language,
       xApiVersion: this.apiVersion,
     });
-  }
+  };
 
-  async scanTransactionsSolana(
+  scanTransactionsSolana = async (
     transactions: string[],
     userAccount: string,
     metadata: RequestMetadata,
     chainNetwork: SolanaChainNetwork
-  ) {
+  ) => {
     return this.apis.transactions.scanTransactionsSolana({
       chainNetwork: chainNetwork,
       scanTransactionsSolanaRequest: {
@@ -151,31 +151,31 @@ export class BlowfishMultiChainApiClient {
       language: this.language,
       xApiVersion: this.apiVersion,
     });
-  }
+  };
 
-  async scanDomains(domains: string[]) {
+  scanDomains = async (domains: string[]) => {
     return this.apis.domain.scanDomain({
       objectWithDomainsPropertyOfTypeArray: {
         domains,
       },
       xApiVersion: this.apiVersion,
     });
-  }
+  };
 
-  async downloadBlocklist(request: DownloadBlocklistRequest = {}) {
+  downloadBlocklist = async (request: DownloadBlocklistRequest = {}) => {
     return this.apis.blocklist.downloadBlocklist({
       xApiVersion: this.apiVersion,
       downloadBlocklistRequest: request,
     });
-  }
+  };
 
-  async reportTransaction(
+  reportTransaction = async (
     requestId: string,
     eventType: ReportRequestEventEnum
-  ) {
+  ) => {
     return this.apis.reporting.report({
       reportRequest: { requestId, event: eventType },
       xApiVersion: this.apiVersion,
     });
-  }
+  };
 }

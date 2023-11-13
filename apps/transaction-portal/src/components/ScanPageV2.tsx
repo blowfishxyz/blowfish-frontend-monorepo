@@ -26,6 +26,7 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
+import { ApiClientProvider } from "~hooks/useClient";
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
@@ -69,15 +70,20 @@ const FullfieldView: React.FC<{
   }
 
   return (
-    <ResultsView
-      message={message}
-      request={request}
-      chainInfo={chain.chainInfo}
-      chainId={chain.chainId}
-      isImpersonating={isImpersonating}
-      userAccount={userAccount}
-      reject={reject}
-    />
+    <ApiClientProvider
+      chainFamily={chain.chainInfo.chainFamily}
+      chainNetwork={chain.chainInfo.chainNetwork}
+    >
+      <ResultsView
+        message={message}
+        request={request}
+        chainInfo={chain.chainInfo}
+        chainId={chain.chainId}
+        isImpersonating={isImpersonating}
+        userAccount={userAccount}
+        reject={reject}
+      />
+    </ApiClientProvider>
   );
 };
 

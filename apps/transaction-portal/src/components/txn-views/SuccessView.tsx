@@ -5,6 +5,7 @@ import { useBlockExplorerUrl, useChainMetadata } from "~hooks/useChainMetadata";
 import { capitalize } from "~utils/utils";
 import { VerifiedCheckIcon } from "@blowfish/protect-ui/icons";
 import { chainToBlockExplorerTitle } from "@blowfish/utils/chains";
+import { ReportBtn } from "~components/txn-views/ReportBtn";
 
 const SuccessIcon = styled(VerifiedCheckIcon)`
   width: 28px;
@@ -14,7 +15,7 @@ const SuccessIcon = styled(VerifiedCheckIcon)`
 export const SuccessView: React.FC<{
   className?: string;
   txHash: string;
-  onReport: () => void;
+  onReport: () => Promise<void>;
 }> = ({ className, txHash, onReport }) => {
   const chain = useChainMetadata();
   const url = useBlockExplorerUrl(txHash);
@@ -96,9 +97,7 @@ export const SuccessView: React.FC<{
           >
             Close
           </Button>
-          <Button size="sm" design="secondary" stretch onClick={onReport}>
-            Report
-          </Button>
+          <ReportBtn variant="small" onReport={onReport} />
         </Row>
       </Column>
     </Wrapper>

@@ -5,6 +5,7 @@ export const SOLANA_TEST_ACCOUNT =
 
 export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
   aggregated: {
+    requestId: "a532f37d3505ca43816e4b834288edb5",
     action: "BLOCK",
     warnings: [
       {
@@ -38,6 +39,7 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
                 imageUrl:
                   "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
               },
+              counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
               diff: {
                 sign: "MINUS",
                 digits: 981129,
@@ -84,6 +86,7 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
 
 export const solanaNftTransfer: SolanaTransactionsResult = {
   aggregated: {
+    requestId: "a532f37d3505ca43816e4b834288edb5",
     action: "NONE",
     warnings: [],
     error: null,
@@ -105,6 +108,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
                 price: null,
                 imageUrl: null,
               },
+              counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
               diff: {
                 sign: "MINUS",
                 digits: 1,
@@ -133,6 +137,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
                 imageUrl:
                   "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s.png",
               },
+              counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
               diff: {
                 sign: "MINUS",
                 digits: 1,
@@ -161,6 +166,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
                 imageUrl:
                   "https://cdn.simplehash.com/assets/20c007a2b4e01a94b31f2e5badceef86c281b553eb1af8dffdbd10f4becdeb44.jpg",
               },
+              counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
               diff: {
                 sign: "MINUS",
                 digits: 1,

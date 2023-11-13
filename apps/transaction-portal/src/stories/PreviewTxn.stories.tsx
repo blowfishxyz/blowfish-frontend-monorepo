@@ -54,6 +54,7 @@ TransactionPreview.args = {
   },
   onReport: () => {
     console.log("Cancel clicked");
+    return Promise.resolve();
   },
 };
 
@@ -73,6 +74,7 @@ SignaturePreview.args = {
   },
   onReport: () => {
     console.log("Cancel clicked");
+    return Promise.resolve();
   },
   advancedDetails: (
     <>

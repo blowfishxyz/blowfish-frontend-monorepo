@@ -4,6 +4,7 @@ import { permitErc20NoExpiration } from "../state-change";
 
 export const messageNoActionScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "NONE",
     simulationResults: {
       error: null,
@@ -15,6 +16,7 @@ export const messageNoActionScanResult: EvmMessageScanResult =
 
 export const exampleEthSignScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "WARN",
     warnings: [
       {
@@ -28,6 +30,7 @@ export const exampleEthSignScanResult: EvmMessageScanResult =
   });
 
 export const erc20PermitScanResult: EvmMessageScanResult = mapMessageResponse({
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -92,6 +95,7 @@ export const erc20PermitScanResult: EvmMessageScanResult = mapMessageResponse({
 });
 
 export const openseaOrderScanResult: EvmMessageScanResult = mapMessageResponse({
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   simulationResults: {
     error: null,
@@ -139,6 +143,11 @@ export const openseaOrderScanResult: EvmMessageScanResult = mapMessageResponse({
               kind: "ACCOUNT",
             },
             metadata: {
+              previews: {
+                small: null,
+                medium: null,
+                large: null,
+              },
               rawImageUrl:
                 "ipfs://QmYqXQb3xFNWDkNno34GNL435yMbjt4B8b89LvBA75A9VP",
             },
@@ -169,6 +178,7 @@ export const openseaOrderScanResult: EvmMessageScanResult = mapMessageResponse({
 
 export const twoNftsForOneEthEachScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "NONE",
     warnings: [],
     simulationResults: {
@@ -221,6 +231,11 @@ export const twoNftsForOneEthEachScanResult: EvmMessageScanResult =
                 address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb",
               },
               metadata: {
+                previews: {
+                  small: null,
+                  medium: null,
+                  large: null,
+                },
                 rawImageUrl:
                   "https://cdn.simplehash.com/assets/71ccb5607035b2afdf9a17d05a76ae643d1197d21282967690f303f122d215d8.png",
               },
@@ -280,6 +295,11 @@ export const twoNftsForOneEthEachScanResult: EvmMessageScanResult =
                 address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb",
               },
               metadata: {
+                previews: {
+                  small: null,
+                  medium: null,
+                  large: null,
+                },
                 rawImageUrl:
                   "https://cdn.simplehash.com/assets/d6cadf475256eb6d9fac570671e6947133a2a53ce27fed2a3bfe222fd2cfe334.png",
               },
@@ -299,6 +319,7 @@ export const twoNftsForOneEthEachScanResult: EvmMessageScanResult =
 
 export const anyNftForWethOfferScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "NONE",
     warnings: [],
     simulationResults: {
@@ -375,6 +396,7 @@ export const anyNftForWethOfferScanResult: EvmMessageScanResult =
   });
 
 export const usdcForPepeScanResult: EvmMessageScanResult = mapMessageResponse({
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -461,6 +483,7 @@ export const usdcForPepeScanResult: EvmMessageScanResult = mapMessageResponse({
 });
 
 export const usdcForEthScanResult: EvmMessageScanResult = mapMessageResponse({
+  requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
   action: "NONE",
   warnings: [],
   simulationResults: {
@@ -547,6 +570,7 @@ export const usdcForEthScanResult: EvmMessageScanResult = mapMessageResponse({
 
 export const transferNftFromTwoOutOfThreeGnosisSafeScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "NONE",
     warnings: [],
     simulationResults: {
@@ -572,6 +596,11 @@ export const transferNftFromTwoOutOfThreeGnosisSafeScanResult: EvmMessageScanRes
                 address: "0x0000000006bc8d9e5e9d436217b88de704a9f307",
               },
               metadata: {
+                previews: {
+                  small: null,
+                  medium: null,
+                  large: null,
+                },
                 rawImageUrl:
                   "https://cdn.simplehash.com/assets/618ae6278d159aefbff7489f030fcff96537df5fede1a6e8c8a0803b92a70ea4.svg",
               },
@@ -587,6 +616,7 @@ export const transferNftFromTwoOutOfThreeGnosisSafeScanResult: EvmMessageScanRes
 
 export const unlimitedAmountPermit2ScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "WARN",
     warnings: [
       {
@@ -658,6 +688,7 @@ export const unlimitedAmountPermit2ScanResult: EvmMessageScanResult =
 
 export const unlimitedAmountPermitScanResult: EvmMessageScanResult =
   mapMessageResponse({
+    requestId: "e8cd35ce-f743-4ef2-8e94-f26857744db7",
     action: "WARN",
     simulationResults: {
       error: null,

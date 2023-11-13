@@ -69,6 +69,10 @@ const secondaryDesign = css`
     0px 1.4945px 3.62304px rgba(0, 0, 0, 0.0731663); */
   border-radius: 12px;
   color: #010101;
+
+  &:disabled {
+    opacity: 0.3;
+  }
 `;
 
 const primaryDesign = css`

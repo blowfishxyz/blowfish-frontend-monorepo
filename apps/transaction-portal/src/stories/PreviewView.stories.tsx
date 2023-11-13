@@ -8,7 +8,7 @@ export default {
 } as Meta;
 
 const Template: Story = () => (
-  <PendingView onReport={() => undefined} txHash="" />
+  <PendingView onReport={() => Promise.resolve()} txHash="" />
 );
 
 export const Default = Template.bind({});

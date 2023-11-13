@@ -4,6 +4,7 @@ import { Row, Text, Column, Button } from "@blowfishxyz/ui";
 import { LoadingAnimation } from "~components/LoadingAnimation";
 import { useBlockExplorerUrl, useChainMetadata } from "~hooks/useChainMetadata";
 import { capitalize } from "~utils/utils";
+import { ReportBtn } from "~components/txn-views/ReportBtn";
 
 const LoadingIcon = styled(LoadingAnimation)`
   width: 48px;
@@ -13,7 +14,7 @@ const LoadingIcon = styled(LoadingAnimation)`
 export const PendingView: React.FC<{
   className?: string;
   txHash: string;
-  onReport: () => void;
+  onReport: () => Promise<void>;
 }> = ({ className, txHash, onReport }) => {
   const chain = useChainMetadata();
   const url = useBlockExplorerUrl(txHash);
@@ -64,9 +65,7 @@ export const PendingView: React.FC<{
         <Button design="primary" stretch onClick={handleEtherscanClick}>
           {explorerText}
         </Button>
-        <Button design="secondary" stretch onClick={onReport}>
-          Report
-        </Button>
+        <ReportBtn variant="small" onReport={onReport} />
       </Column>
     </Wrapper>
   );
