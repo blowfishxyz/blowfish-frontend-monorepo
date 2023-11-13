@@ -8,11 +8,15 @@ This package offers a set of customizable React UI components designed to simpli
 
 See https://docs.blowfish.xyz
 
+# Examples
+
+See https://storybook.blowfish.xyz
+
 # Key Features
 
 - **Zero-overhead Integration:** You need to just pass the API response to the component.
 - **TypeScript Support:** All components are using [`@blowfishxyz/api-client`](https://www.npmjs.com/package/@blowfishxyz/api-client) that relies on the latest Blowfish API version.
-- **Customizable theme:** `BlowfishUIProvider` comes with a `light` and `dark` theme built-in. You can still override the theme with a `themeOverride`, it will deeply merge it with the default theme.
+- **Customizable theme:** `BlowfishUIProvider` comes with a `light` and `dark` theme built-in. You can still override the theme with a `themeOverride`, it will deeply merge it with the selected theme.
 
 # Components
 
