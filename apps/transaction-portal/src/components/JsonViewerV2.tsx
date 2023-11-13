@@ -1,6 +1,6 @@
 import { getAddress, isAddress } from "@ethersproject/address";
 import React, { useMemo } from "react";
-import ReactJson from "react-json-view";
+import ReactJson, { CollapsedFieldProps } from "react-json-view";
 import styled, { css } from "styled-components";
 
 import { Text } from "@blowfishxyz/ui";
@@ -90,9 +90,13 @@ const FlatSection: React.FC<FlatSectionProps> = ({ title, data }) => {
 
 interface JsonViewerProps {
   data: object;
+  enableClipboard?: boolean;
 }
 
-export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
+export const JsonViewer: React.FC<JsonViewerProps> = ({
+  data,
+  enableClipboard,
+}) => {
   const FlattenedData = useMemo(() => {
     if (isFlatObject(data)) {
       return <FlatSection data={data} />;
@@ -117,16 +121,28 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
       }
     }
 
+    const shouldCollapse = (field: CollapsedFieldProps) => {
+      if (field.namespace.length === 1) return false;
+
+      if (field.namespace.length === 2) {
+        if (field.name === "request") return true;
+        if (field.name === "scanResults") return false;
+      }
+
+      return true;
+    };
+
     return (
       <ReactJson
         style={{ wordBreak: "break-all", fontSize: "12px" }}
         src={data}
         indentWidth={2}
-        enableClipboard={false}
+        enableClipboard={!!enableClipboard}
         displayObjectSize={false}
         displayDataTypes={false}
         quotesOnKeys={false}
         name={false}
+        shouldCollapse={shouldCollapse}
         theme={{
           base00: "tranparent",
           base01: "tranparent",
@@ -147,7 +163,7 @@ export const JsonViewer: React.FC<JsonViewerProps> = ({ data }) => {
         }}
       />
     );
-  }, [data]);
+  }, [data, enableClipboard]);
 
   return (
     <Wrapper>

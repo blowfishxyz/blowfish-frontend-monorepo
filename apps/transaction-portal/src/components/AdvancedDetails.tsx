@@ -5,12 +5,21 @@ import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ArrowDownIcon } from "@blowfish/protect-ui/icons";
 import styled, { keyframes } from "styled-components";
 import { DappRequest } from "@blowfish/utils/types";
-import { EvmDecodedLog } from "@blowfishxyz/api-client";
+import {
+  EvmDecodedLog,
+  ScanMessageEvm200Response,
+  ScanTransactionsEvm200Response,
+} from "@blowfishxyz/api-client";
+import RawResponseViewer from "./RawResponseViewer";
 
 export const AdvancedDetails = memo<{
   request: DappRequest;
+  scanResults:
+    | ScanMessageEvm200Response
+    | ScanTransactionsEvm200Response
+    | undefined;
   decodedLogs: EvmDecodedLog[] | undefined;
-}>(function AdvancedDetails({ request, decodedLogs }) {
+}>(function AdvancedDetails({ request, decodedLogs, scanResults }) {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
 
   return (
@@ -18,8 +27,18 @@ export const AdvancedDetails = memo<{
       {showAdvancedDetails && (
         <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
           <CardContent>
-            {showAdvancedDetails && <RequestJsonViewer request={request} />}
-            {decodedLogs &&
+            {showAdvancedDetails &&
+              (scanResults ? (
+                <RawResponseViewer
+                  request={request}
+                  scanResults={scanResults}
+                />
+              ) : (
+                <RequestJsonViewer request={request} />
+              ))}
+
+            {!scanResults &&
+              decodedLogs &&
               decodedLogs.filter((decodedLog) => decodedLog !== null).length >
                 0 && (
                 <Column marginTop={16} gap="sm">
@@ -70,7 +89,13 @@ export const AdvancedDetails = memo<{
           }}
         >
           <Text design="secondary" size="sm">
-            {showAdvancedDetails ? "View less details" : "View more details"}
+            {scanResults
+              ? showAdvancedDetails
+                ? "Hide raw response"
+                : "View raw response"
+              : showAdvancedDetails
+              ? "View less details"
+              : "View more details"}
           </Text>
           <StyledArrowDownIcon expanded={showAdvancedDetails} />
         </ViewDetailsWrapper>
@@ -93,7 +118,6 @@ const ViewDetailsWrapper = styled(Row)`
 const DynamicJsonViewerWrapper = styled.div<{ $show: boolean }>`
   animation: ${({ $show }) => ($show ? fadeIn : fadeOut)} 1s ease forwards;
   opacity: ${({ $show }) => ($show ? "1" : "0")};
-  max-width: 550px;
   width: 100%;
   overflow: auto;
   -ms-overflow-style: none;

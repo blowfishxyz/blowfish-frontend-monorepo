@@ -231,6 +231,9 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         advancedDetails={
           <AdvancedDetails
             request={request}
+            scanResults={
+              layoutConfig.hasRequestParams ? scanResults : undefined
+            }
             decodedLogs={result?.decodedLogs}
           />
         }
