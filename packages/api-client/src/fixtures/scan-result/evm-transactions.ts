@@ -40,6 +40,22 @@ export const buyErc721WithEth: EvmTransactionsScanResult = {
   },
 };
 
+export const error: EvmTransactionsScanResult = {
+  action: "NONE",
+  warnings: [],
+  simulationResults: {
+    aggregated: {
+      expectedStateChanges: {},
+      userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+      error: {
+        kind: "UNKNOWN_ERROR",
+        humanReadableError: "Some human readable error",
+      },
+    },
+    perTransaction: [],
+  },
+};
+
 export const buyErc1155WithEth: EvmTransactionsScanResult = {
   action: "NONE",
   simulationResults: {

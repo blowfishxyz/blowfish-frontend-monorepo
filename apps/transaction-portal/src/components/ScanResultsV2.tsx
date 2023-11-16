@@ -130,6 +130,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
                 "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
             };
           // TODO: Add more specific messages for these errors
+          case "UNKNOWN_ERROR":
           case "UNSUPPORTED_MESSAGE":
           default:
             return {
@@ -169,8 +170,13 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
     ) {
       return actionToSeverity("BLOCK");
     }
+
+    if (scanResults?.action === "NONE" && error?.kind === "UNKNOWN_ERROR") {
+      return "WARNING";
+    }
+
     return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
-  }, [request?.payload, scanResults?.action]);
+  }, [request?.payload, scanResults?.action, error?.kind]);
 
   const scammerAddress = useMemo(() => {
     if (isTransactionRequest(request)) {

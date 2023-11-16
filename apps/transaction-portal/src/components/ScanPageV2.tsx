@@ -26,6 +26,8 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
+import { error } from "@blowfishxyz/api-client/fixtures";
+
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
@@ -178,7 +180,7 @@ const ResultsView: React.FC<{
       {overlay}
       <ScanResultsV2
         request={request}
-        scanResults={scanResults}
+        scanResults={error}
         message={message}
         dappUrl={message.origin || ""}
         chainFamily={chainFamily}
