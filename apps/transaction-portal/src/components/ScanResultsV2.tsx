@@ -171,12 +171,21 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
       return actionToSeverity("BLOCK");
     }
 
-    if (scanResults?.action === "NONE" && error?.kind === "UNKNOWN_ERROR") {
+    if (
+      scanResults?.action === "NONE" &&
+      !result?.expectedStateChanges &&
+      error
+    ) {
       return "WARNING";
     }
 
     return scanResults?.action ? actionToSeverity(scanResults?.action) : "INFO";
-  }, [request?.payload, scanResults?.action, error?.kind]);
+  }, [
+    request?.payload,
+    scanResults?.action,
+    error,
+    result?.expectedStateChanges,
+  ]);
 
   const scammerAddress = useMemo(() => {
     if (isTransactionRequest(request)) {

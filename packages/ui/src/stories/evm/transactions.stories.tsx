@@ -1,7 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { styled } from "styled-components";
 import {
-  error,
   buyErc721WithEth,
   approveErc721ScanResult,
   approveAllErc721ScanResult,
@@ -103,13 +102,6 @@ ApproveAllERC721.args = {
 export const ApproveAllERC1155 = BuyERC721.bind({});
 ApproveAllERC1155.args = {
   scanResult: approveAllErc1155ScanResult,
-  chainFamily: "ethereum",
-  chainNetwork: "mainnet",
-};
-
-export const Error = BuyERC721.bind({});
-Error.args = {
-  scanResult: error,
   chainFamily: "ethereum",
   chainNetwork: "mainnet",
 };
