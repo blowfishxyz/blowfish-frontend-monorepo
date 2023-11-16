@@ -130,7 +130,6 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
                 "This Seaport order type is not supported and cannot be simulated. Proceed with caution",
             };
           // TODO: Add more specific messages for these errors
-          case "UNKNOWN_ERROR":
           case "UNSUPPORTED_MESSAGE":
           default:
             return {
