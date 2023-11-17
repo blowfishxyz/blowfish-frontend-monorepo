@@ -91,7 +91,7 @@ export function useURLRequestParams(): ScanParams {
         userAccount: parsedRequest.userAccount,
       } as DappRequest,
       chain: chain,
-      isImpersonating: false,
+      isImpersonating: true,
     };
   }
 
@@ -116,7 +116,7 @@ export function useURLRequestParams(): ScanParams {
           userAccount: parsedRequest.userAccount,
         } as DappRequest,
         chain: chain,
-        isImpersonating: false,
+        isImpersonating: true,
       };
     }
 
@@ -144,7 +144,7 @@ export function useURLRequestParams(): ScanParams {
           userAccount: parsedRequest.userAccount,
         } as DappRequest,
         chain: chain,
-        isImpersonating: false,
+        isImpersonating: true,
       };
     }
   }

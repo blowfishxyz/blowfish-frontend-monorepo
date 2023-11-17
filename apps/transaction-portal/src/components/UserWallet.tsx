@@ -6,6 +6,8 @@ import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
+import { useLayoutConfig } from "./layout/Layout";
+import { useQueryParams } from "~hooks/useQueryParams";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -111,6 +113,11 @@ export const UserWallet = ({
 };
 
 export const ImpersonatorWallet = ({ address }: { address: string }) => {
+  const [{ hasRequestParams }] = useLayoutConfig();
+  const { chainId } = useQueryParams<{
+    chainId?: number | undefined;
+  }>();
+
   return (
     <StyledContainer>
       <ChainContainer>
@@ -119,7 +126,13 @@ export const ImpersonatorWallet = ({ address }: { address: string }) => {
       <AddressColumn>
         <Text>{shortenHex(address)}</Text>
       </AddressColumn>
-      <Row width={5} />
+      {hasRequestParams ? (
+        <ChainContainer>
+          <ChainIcon id={Number(chainId)} size={30} />
+        </ChainContainer>
+      ) : (
+        <Row width={5} />
+      )}
     </StyledContainer>
   );
 };
