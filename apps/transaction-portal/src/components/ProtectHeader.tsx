@@ -7,7 +7,6 @@ import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { useLayoutConfig } from "./layout/Layout";
 import { useRouter } from "next/router";
 import { ImpersonatorWallet } from "./UserWallet";
-import { shortenHex } from "~utils/hex";
 
 const ProtectScreenContent = styled(Row)`
   width: 100%;
@@ -30,17 +29,18 @@ const RightContentWrapper = styled(Row)`
 export const ProtectHeader: React.FC<{
   impersonatingAddress?: string | undefined;
 }> = ({ impersonatingAddress }) => {
-  const [layoutConfig] = useLayoutConfig();
-  const { pathname } = useRouter();
+  const [{ severity, hasRequestParams }] = useLayoutConfig();
+  const { pathname, query } = useRouter();
 
   return (
     <ProtectScreenContent justifyContent="space-between">
-      <StyledBlowfishIconFull
-        $contrast={layoutConfig.severity === "CRITICAL"}
-      />
+      <StyledBlowfishIconFull $contrast={severity === "CRITICAL"} />
       <RightContentWrapper gap="md">
         {impersonatingAddress ? (
-          <ImpersonatorWallet address={shortenHex(impersonatingAddress)} />
+          <ImpersonatorWallet
+            address={impersonatingAddress}
+            chainId={hasRequestParams ? Number(query.chainId) : undefined}
+          />
         ) : null}
         {pathname !== "/" && !pathname.startsWith("/simulate") ? (
           <UserWalletConnectKitWrapper />

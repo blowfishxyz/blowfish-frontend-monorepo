@@ -6,8 +6,7 @@ import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
-import { useLayoutConfig } from "./layout/Layout";
-import { useQueryParams } from "~hooks/useQueryParams";
+import { useState } from "react";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -112,11 +111,24 @@ export const UserWallet = ({
   );
 };
 
-export const ImpersonatorWallet = ({ address }: { address: string }) => {
-  const [{ hasRequestParams }] = useLayoutConfig();
-  const { chainId } = useQueryParams<{
-    chainId?: number | undefined;
-  }>();
+export const ImpersonatorWallet = ({
+  address,
+  chainId,
+}: {
+  address: string;
+  chainId?: number | undefined;
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy!", err);
+    }
+  };
 
   return (
     <StyledContainer>
@@ -124,11 +136,15 @@ export const ImpersonatorWallet = ({ address }: { address: string }) => {
         <MaskIcon />
       </ChainContainer>
       <AddressColumn>
-        <Text>{shortenHex(address)}</Text>
+        {copied ? (
+          <Text>Copied!</Text>
+        ) : (
+          <Text onClick={copyToClipboard}>{shortenHex(address)}</Text>
+        )}
       </AddressColumn>
-      {hasRequestParams ? (
+      {chainId ? (
         <ChainContainer>
-          <ChainIcon id={Number(chainId)} size={30} />
+          <ChainIcon id={chainId} size={30} />
         </ChainContainer>
       ) : (
         <Row width={5} />
