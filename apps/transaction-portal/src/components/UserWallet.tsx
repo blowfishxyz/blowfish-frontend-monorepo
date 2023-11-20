@@ -6,6 +6,7 @@ import { Column, Row, Text } from "@blowfishxyz/ui";
 import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
+import { useState } from "react";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -110,16 +111,44 @@ export const UserWallet = ({
   );
 };
 
-export const ImpersonatorWallet = ({ address }: { address: string }) => {
+export const ImpersonatorWallet = ({
+  address,
+  chainId,
+}: {
+  address: string;
+  chainId?: number | undefined;
+}) => {
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(address);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy!", err);
+    }
+  };
+
   return (
     <StyledContainer>
       <ChainContainer>
         <MaskIcon />
       </ChainContainer>
       <AddressColumn>
-        <Text>{shortenHex(address)}</Text>
+        {copied ? (
+          <Text>Copied!</Text>
+        ) : (
+          <Text onClick={copyToClipboard}>{shortenHex(address)}</Text>
+        )}
       </AddressColumn>
-      <Row width={5} />
+      {chainId ? (
+        <ChainContainer>
+          <ChainIcon id={chainId} size={30} />
+        </ChainContainer>
+      ) : (
+        <Row width={5} />
+      )}
     </StyledContainer>
   );
 };
