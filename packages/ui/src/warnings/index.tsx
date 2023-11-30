@@ -103,7 +103,7 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.CompromisedAuthorityUpgrade:
       case WarningInnerKindEnum.SetOwnerAuthority:
       case WarningInnerKindEnum.UserAccountOwnerChange:
-      case WarningInnerKindEnum.ImbalancedDollarValue:
+
       case WarningInnerKindEnum.BlurBulkOrderNotOnBlur:
       case WarningInnerKindEnum.BlurV2OrderNotOnBlur:
         return "user";
@@ -141,6 +141,7 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.TransferringTooMuchSol:
       case WarningInnerKindEnum.TransfersMajorityOfYourSol:
       case WarningInnerKindEnum.YakoaNftIpInfringement:
+      case WarningInnerKindEnum.ImbalancedDollarValue:
       default:
         return "exclamation";
     }
