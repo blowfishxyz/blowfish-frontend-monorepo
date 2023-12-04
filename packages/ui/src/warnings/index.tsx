@@ -90,6 +90,8 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
         return "Whitelisted domain cross-origin";
       case WarningInnerKindEnum.YakoaNftIpInfringement:
         return "Possible IP infringement";
+      case WarningInnerKindEnum.TransferToMintAccount:
+        return "Transfer to mint account";
     }
   }, [warning.kind]);
   const defaultKindText =
@@ -140,6 +142,7 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.MaliciousPackages:
       case WarningInnerKindEnum.TransferringTooMuchSol:
       case WarningInnerKindEnum.TransfersMajorityOfYourSol:
+      case WarningInnerKindEnum.TransferToMintAccount:
       case WarningInnerKindEnum.YakoaNftIpInfringement:
       case WarningInnerKindEnum.ImbalancedDollarValue:
       default:

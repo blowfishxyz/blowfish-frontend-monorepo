@@ -3024,6 +3024,9 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
 export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInnerRawInfo =
 
     | ({
+        kind: "BFP_LOADER_AUTHORITY_CHANGE";
+      } & SolanaStateChangeBfpLoaderAuthorityChange)
+    | ({
         kind: "SOL_STAKE_AUTHORITY_CHANGE";
       } & SolanaStateChangeSolStakeAuthorityChange)
     | ({ kind: "SOL_TRANSFER" } & SolanaStateChangeSolTransfer)
@@ -3315,6 +3318,60 @@ export const SolanaSimulationTransactionErrorKindEnum = {
 export type SolanaSimulationTransactionErrorKindEnum =
   (typeof SolanaSimulationTransactionErrorKindEnum)[keyof typeof SolanaSimulationTransactionErrorKindEnum];
 
+/**
+ * Changing the authority on the BFP loader. It allows the new authority to change the deployed program at any time
+ * @export
+ * @interface SolanaStateChangeBfpLoaderAuthorityChange
+ */
+export interface SolanaStateChangeBfpLoaderAuthorityChange {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof SolanaStateChangeBfpLoaderAuthorityChange
+   */
+  kind: SolanaStateChangeBfpLoaderAuthorityChangeKindEnum;
+  /**
+   *
+   * @type {SolanaStateChangeBfpLoaderAuthorityChangeData}
+   * @memberof SolanaStateChangeBfpLoaderAuthorityChange
+   */
+  data: SolanaStateChangeBfpLoaderAuthorityChangeData;
+}
+
+/**
+ * @export
+ */
+export const SolanaStateChangeBfpLoaderAuthorityChangeKindEnum = {
+  BfpLoaderAuthorityChange: "BFP_LOADER_AUTHORITY_CHANGE",
+} as const;
+export type SolanaStateChangeBfpLoaderAuthorityChangeKindEnum =
+  (typeof SolanaStateChangeBfpLoaderAuthorityChangeKindEnum)[keyof typeof SolanaStateChangeBfpLoaderAuthorityChangeKindEnum];
+
+/**
+ *
+ * @export
+ * @interface SolanaStateChangeBfpLoaderAuthorityChangeData
+ */
+export interface SolanaStateChangeBfpLoaderAuthorityChangeData {
+  /**
+   * The program account address
+   * @type {string}
+   * @memberof SolanaStateChangeBfpLoaderAuthorityChangeData
+   */
+  account: string;
+  /**
+   * Current authority with control over the loader
+   * @type {string}
+   * @memberof SolanaStateChangeBfpLoaderAuthorityChangeData
+   */
+  currentAuthority: string | null;
+  /**
+   * Future authority with control over the loader
+   * @type {string}
+   * @memberof SolanaStateChangeBfpLoaderAuthorityChangeData
+   */
+  futureAuthority: string | null;
+}
 /**
  * Transferring control over a user's SOL staking account
  * @export
@@ -3790,6 +3847,7 @@ export const WarningInnerKindEnum = {
   UnlimitedAllowanceToNfts: "UNLIMITED_ALLOWANCE_TO_NFTS",
   UnusualGasConsumption: "UNUSUAL_GAS_CONSUMPTION",
   UserAccountOwnerChange: "USER_ACCOUNT_OWNER_CHANGE",
+  TransferToMintAccount: "TRANSFER_TO_MINT_ACCOUNT",
   WhitelistedDomainCrossOrigin: "WHITELISTED_DOMAIN_CROSS_ORIGIN",
   YakoaNftIpInfringement: "YAKOA_NFT_IP_INFRINGEMENT",
 } as const;
