@@ -16,6 +16,7 @@ import {
   ScanMessageApi,
   ReportRequestApi,
   SimulateHistoricalTransactionApi,
+  ScanTransactionsSolanaOperationSimulateExpiredEnum,
 } from "../../../generated/v20230605/apis";
 import { Configuration } from "../../../generated/v20230605/runtime";
 import { BASE_HEADERS } from "../../common/constants";
@@ -162,8 +163,16 @@ export class BlowfishMultiChainApiClient {
     transactions: string[],
     userAccount: string,
     metadata: RequestMetadata,
-    chainNetwork: SolanaChainNetwork
+    chainNetwork: SolanaChainNetwork,
+    simulateExpired?: boolean,
+    simulationTimeoutMs?: number
   ) => {
+    const expired =
+      typeof simulateExpired === "boolean"
+        ? simulateExpired
+          ? ScanTransactionsSolanaOperationSimulateExpiredEnum.True
+          : ScanTransactionsSolanaOperationSimulateExpiredEnum.False
+        : undefined;
     return this.apis.transactions.scanTransactionsSolana({
       chainNetwork: chainNetwork,
       scanTransactionsSolanaRequest: {
@@ -171,6 +180,8 @@ export class BlowfishMultiChainApiClient {
         userAccount,
         metadata,
       },
+      simulationTimeoutMs,
+      simulateExpired: expired,
       language: this.language,
       xApiVersion: this.apiVersion,
     });
