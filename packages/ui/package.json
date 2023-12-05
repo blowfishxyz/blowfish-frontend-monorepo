@@ -24,6 +24,7 @@
     "@floating-ui/react": "^0.23.1",
     "decimal.js": "^10.4.3",
     "deepmerge": "^4.3.1",
+    "react-query": "^3.39.3",
     "styled-components": "6.0.4"
   },
   "peerDependencies": {
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@blowfish/tsconfig": "workspace:*",
     "@blowfishxyz/api-client": "workspace:*",
+    "@blowfish/utils": "workspace:*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "6.5.16",
     "@storybook/addon-interactions": "6.5.16",
