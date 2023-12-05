@@ -34,9 +34,9 @@ Sentry.init({
   ignoreErrors: [
     // Random plugins/extensions
     "top.GLOBALS",
-    "connector not found",
-    // This error comes from extension that interact with window.ethereum
+    /connector not found/i,
     "Cannot read properties of undefined (reading 'id')",
     "Cannot redefine property: ethereum",
   ],
+  denyUrls: [/extensions\//i, /^chrome:\/\//i, /^chrome-extension:\/\//i],
 });
