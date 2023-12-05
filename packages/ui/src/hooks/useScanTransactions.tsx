@@ -4,17 +4,18 @@ import {
   RequestMetadata,
   EvmSimulatorConfig,
   ScanTransactionsEvm200Response,
-  BlowfishEvmApiClient,
 } from "@blowfishxyz/api-client";
+import { useClient } from "./useClient";
 
 export const useScanTransactions = (
   txObjects: EvmTxData[],
   userAccount: string,
   metadata: RequestMetadata,
-  client: BlowfishEvmApiClient,
   simulatorConfig?: EvmSimulatorConfig,
   queryOptions = {}
 ) => {
+  const client = useClient();
+
   const fetchTransactions = async () => {
     return await client.scanTransactions(
       txObjects,

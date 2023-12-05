@@ -1,17 +1,18 @@
 import { UseQueryResult, useQuery } from "react-query";
 import {
-  BlowfishEvmApiClient,
   EvmMessageScanResult,
   RequestMetadata,
 } from "@blowfishxyz/api-client";
+import { useClient } from "./useClient";
 
 export const useScanMessage = (
   message: string,
   userAccount: string,
   metadata: RequestMetadata,
-  client: BlowfishEvmApiClient,
   queryOptions = {}
 ): UseQueryResult<EvmMessageScanResult, Error> => {
+  const client = useClient();
+
   const fetchMessage = async () => {
     return await client.scanMessage(message, userAccount, { origin });
   };
