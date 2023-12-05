@@ -106,7 +106,7 @@ export function useUserDecision({
       } else {
         // TODO(kimpers): This should never happen
         logger.error("Unsupported operation ", request);
-        alert("UNSUPPORTED OPERATION");
+        throw new Error("UNSUPPORTED OPERATION");
       }
 
       window.close();
