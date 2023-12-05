@@ -15,16 +15,14 @@ export const ApiClientProvider = memo(function ApiClientProvider({
   chainFamily: ChainFamily;
   chainNetwork: ChainNetwork;
 }>) {
-  // console.log(BLOWFISH_API_BASE_URL)
-  
   const [value, setValue] = useState(() =>
-  createEvmClient({
-    basePath: BLOWFISH_API_BASE_URL,
-    chainFamily,
-    chainNetwork,
-  })
+    createEvmClient({
+      basePath: BLOWFISH_API_BASE_URL,
+      chainFamily,
+      chainNetwork,
+    })
   );
-  console.log('ui1', BLOWFISH_API_BASE_URL, value)
+  console.log("ui1", BLOWFISH_API_BASE_URL, value);
   useEffect(() => {
     setValue(
       createEvmClient({
@@ -34,7 +32,6 @@ export const ApiClientProvider = memo(function ApiClientProvider({
       })
     );
   }, [chainFamily, chainNetwork]);
-  console.log('ui', BLOWFISH_API_BASE_URL, value)
   return (
     <ApiClientContext.Provider value={value}>
       {children}
@@ -44,7 +41,6 @@ export const ApiClientProvider = memo(function ApiClientProvider({
 
 export function useClient() {
   const client = useContext(ApiClientContext);
-  console.log('ui', BLOWFISH_API_BASE_URL, client)
   if (!client) {
     throw new Error("useClient must be used within a ApiClientProvider");
   }
