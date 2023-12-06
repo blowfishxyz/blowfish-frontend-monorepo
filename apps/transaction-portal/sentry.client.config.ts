@@ -28,4 +28,15 @@ Sentry.init({
     //blockAllMedia: true,
     //}),
   ],
+
+  // Since web is cursed and there is no way of a good error detection Sentry recommends ignoring errors that are not relevant
+  // https://docs.sentry.io/platforms/javascript/legacy-sdk/tips/#decluttering-sentry
+  ignoreErrors: [
+    // Random plugins/extensions
+    "top.GLOBALS",
+    /connector not found/i,
+    "Cannot read properties of undefined (reading 'id')",
+    "Cannot redefine property: ethereum",
+  ],
+  denyUrls: [/extensions\//i, /^chrome:\/\//i, /^chrome-extension:\/\//i],
 });
