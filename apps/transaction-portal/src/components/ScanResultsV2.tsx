@@ -38,7 +38,7 @@ export type UIWarning = {
   severity: "WARNING" | "CRITICAL" | "INFO";
 };
 
-interface ScanResultsV2Props {
+export interface ScanResultsV2Props {
   request: DappRequest;
   scanResults: EvmMessageScanResult | EvmTransactionsScanResult;
   chainNetwork: ChainNetwork;

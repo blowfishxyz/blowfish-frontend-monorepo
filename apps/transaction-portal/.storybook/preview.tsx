@@ -7,7 +7,8 @@ import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
 import { useChainMetadataContext } from "../src/hooks/useChainMetadata";
-import { BlowfishUIProvider, light } from "@blowfishxyz/ui";
+import { ApiClientProvider, BlowfishUIProvider, light } from "@blowfishxyz/ui";
+import { QueryClientProvider, QueryClient } from "react-query";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
 import { ThemeProvider } from "styled-components";
@@ -61,6 +62,7 @@ export const decorators = [
   }),
   (Story: StoryType) => {
     const [, setChainMetadata] = useChainMetadataContext();
+    const queryClient = new QueryClient();
 
     useEffect(() => {
       setChainMetadata({
@@ -75,16 +77,20 @@ export const decorators = [
     return (
       <ThemeProvider theme={light}>
         <BlowfishUIProvider mode="light">
-          <WagmiConfig client={mockWagmiClient}>
-            <ConnectKitProvider
-              options={{
-                initialChainId: 1,
-              }}
-              mode="light"
-            >
-              <Story />
-            </ConnectKitProvider>
-          </WagmiConfig>
+          <QueryClientProvider client={queryClient}>
+            <ApiClientProvider chainFamily="ethereum" chainNetwork="mainnet">
+              <WagmiConfig client={mockWagmiClient}>
+                <ConnectKitProvider
+                  options={{
+                    initialChainId: 1,
+                  }}
+                  mode="light"
+                >
+                  <Story />
+                </ConnectKitProvider>
+              </WagmiConfig>
+            </ApiClientProvider>
+          </QueryClientProvider>
         </BlowfishUIProvider>
       </ThemeProvider>
     );

@@ -22,7 +22,7 @@ export const ApiClientProvider = memo(function ApiClientProvider({
       chainNetwork,
     })
   );
-  console.log("ui1", BLOWFISH_API_BASE_URL, value);
+
   useEffect(() => {
     setValue(
       createEvmClient({
