@@ -15,7 +15,7 @@
 import * as runtime from "../runtime";
 import type {
   BadRequest,
-  EvmSimulationResults,
+  HistoricalTransactionEvm200Response,
   HistoricalTransactionEvmRequest,
   InternalServerError,
   Languages,
@@ -40,7 +40,7 @@ export class SimulateHistoricalTransactionApi extends runtime.BaseAPI {
   async historicalTransactionEvmRaw(
     requestParameters: HistoricalTransactionEvmOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<runtime.ApiResponse<EvmSimulationResults>> {
+  ): Promise<runtime.ApiResponse<HistoricalTransactionEvm200Response>> {
     if (
       requestParameters.xApiVersion === null ||
       requestParameters.xApiVersion === undefined
@@ -100,7 +100,7 @@ export class SimulateHistoricalTransactionApi extends runtime.BaseAPI {
   async historicalTransactionEvm(
     requestParameters: HistoricalTransactionEvmOperationRequest,
     initOverrides?: RequestInit | runtime.InitOverrideFunction
-  ): Promise<EvmSimulationResults> {
+  ): Promise<HistoricalTransactionEvm200Response> {
     const response = await this.historicalTransactionEvmRaw(
       requestParameters,
       initOverrides

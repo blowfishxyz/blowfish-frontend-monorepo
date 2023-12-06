@@ -778,6 +778,7 @@ paths:
                                 - $ref: "#/components/schemas/SolanaStateChangeSplTransfer"
                                 - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
                                 - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
+                                - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                 - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
                               discriminator:
                                 propertyName: kind
@@ -787,6 +788,8 @@ paths:
                                   SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
                                   SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuth\
                                     orityChange"
+                                  BFP_LOADER_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeBfpLoaderAu\
+                                    thorityChange"
                                   USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOw\
                                     nerChange"
                       error:
@@ -1508,6 +1511,7 @@ components:
               - UNLIMITED_ALLOWANCE_TO_NFTS
               - UNUSUAL_GAS_CONSUMPTION
               - USER_ACCOUNT_OWNER_CHANGE
+              - TRANSFER_TO_MINT_ACCOUNT
               - WHITELISTED_DOMAIN_CROSS_ORIGIN
               - YAKOA_NFT_IP_INFRINGEMENT
             example: SUSPECTED_MALICIOUS
@@ -3158,3 +3162,40 @@ components:
               type: integer
               description: Amount of SOL staked by this account
               example: 1000000000000
+    SolanaStateChangeBfpLoaderAuthorityChange:
+      type: object
+      description: Changing the authority on the BFP loader. It allows the new
+        authority to change the deployed program at any time
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ BFP_LOADER_AUTHORITY_CHANGE ]
+          example: BFP_LOADER_AUTHORITY_CHANGE
+        data:
+          type: object
+          required:
+            - account
+            - currentAuthority
+            - futureAuthority
+          properties:
+            account:
+              type: string
+              description: The program account address
+              example: 2AG3beWwvyvEMLfwJcQS9DKMV62C3UWTTf8d7gp2vFQS
+              default: 2AG3beWwvyvEMLfwJcQS9DKMV62C3UWTTf8d7gp2vFQS
+            currentAuthority:
+              type: string
+              description: Current authority with control over the loader
+              nullable: true
+              example: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
+              default: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
+            futureAuthority:
+              type: string
+              description: Future authority with control over the loader
+              nullable: true
+              example: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
+              default: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48

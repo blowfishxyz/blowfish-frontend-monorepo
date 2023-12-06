@@ -10,12 +10,16 @@ export default {
   args: {},
 } as ComponentMeta<typeof SimulationWarningStory>;
 
-const SimulationWarningStory = ({ kind }: { kind: WarningInnerKindEnum }) => {
+const SimulationWarningStory = ({
+  kind,
+  message,
+}: {
+  kind: WarningInnerKindEnum;
+  message: string | undefined;
+}) => {
   const warning = {
     kind,
-    message:
-      WARNING_MESSAGES[kind] ||
-      "Human-readable warning that comes from Blowfish API",
+    message: message || "Human-readable warning that comes from Blowfish API",
     severity: "WARNING" as const,
   };
   return (
@@ -30,46 +34,6 @@ const Wrapper = styled.div`
 `;
 
 export const AllWarnings = () => <>{warnings}</>;
-
-const supportedWarnings = [
-  WarningInnerKindEnum.ApprovalToEoa,
-  WarningInnerKindEnum.BlocklistedDomainCrossOrigin,
-  WarningInnerKindEnum.BlurBulkOrderNotOnBlur,
-  WarningInnerKindEnum.BlurV2OrderNotOnBlur,
-  WarningInnerKindEnum.BulkApprovalsRequest,
-  WarningInnerKindEnum.CompromisedAuthorityUpgrade,
-  WarningInnerKindEnum.CopyCatDomain,
-  WarningInnerKindEnum.CopyCatImageUnresponsiveDomain,
-  WarningInnerKindEnum.DanglingApproval,
-  WarningInnerKindEnum.DebuggerPaused,
-  WarningInnerKindEnum.DurableNonce,
-  WarningInnerKindEnum.EthSignTxHash,
-  WarningInnerKindEnum.Forta,
-  WarningInnerKindEnum.ImbalancedDollarValue,
-  WarningInnerKindEnum.KnownMalicious,
-  WarningInnerKindEnum.MaliciousPackages,
-  WarningInnerKindEnum.MultiCopyCatDomain,
-  WarningInnerKindEnum.NewDomain,
-  WarningInnerKindEnum.PermitNoExpiration,
-  WarningInnerKindEnum.PermitUnlimitedAllowance,
-  WarningInnerKindEnum.PoisonedAddress,
-  WarningInnerKindEnum.ReferencedOfacAddress,
-  WarningInnerKindEnum.SemiTrustedBlocklistDomain,
-  WarningInnerKindEnum.SetOwnerAuthority,
-  WarningInnerKindEnum.SuspectedMalicious,
-  WarningInnerKindEnum.TooManyTransactions,
-  WarningInnerKindEnum.TradeForNothing,
-  WarningInnerKindEnum.TradeForUnverifiedNft,
-  WarningInnerKindEnum.TransferringErc20ToOwnContract,
-  WarningInnerKindEnum.TransferringTooMuchSol,
-  WarningInnerKindEnum.TransfersMajorityOfYourSol,
-  WarningInnerKindEnum.TrustedBlocklistDomain,
-  WarningInnerKindEnum.UnlimitedAllowanceToNfts,
-  WarningInnerKindEnum.UnusualGasConsumption,
-  WarningInnerKindEnum.UserAccountOwnerChange,
-  WarningInnerKindEnum.WhitelistedDomainCrossOrigin,
-  WarningInnerKindEnum.YakoaNftIpInfringement,
-];
 
 const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
   [WarningInnerKindEnum.BulkApprovalsRequest]:
@@ -141,13 +105,21 @@ const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
     "You are trading for NFTs which have not been verified by major NFT marketplaces.",
   [WarningInnerKindEnum.MaliciousPackages]:
     "We believe this transaction is malicious and unsafe to sign. Approving may lead to loss of funds.",
+  [WarningInnerKindEnum.TransferToMintAccount]:
+    "This transaction is trying to send the token to its own mint account. This will lead to the loss of funds",
   [WarningInnerKindEnum.DebuggerPaused]: "",
   [WarningInnerKindEnum.BlocklistedDomainCrossOrigin]: "",
   [WarningInnerKindEnum.WhitelistedDomainCrossOrigin]: "",
 };
 
-const warnings = supportedWarnings.map((kind) => {
-  return <SimulationWarningStory kind={kind} />;
+type Entries<T> = {
+  [K in keyof T]: [K, T[K]];
+}[keyof T][];
+
+const warnings = (
+  Object.entries(WARNING_MESSAGES) as Entries<typeof WARNING_MESSAGES>
+).map(([kind, message]) => {
+  return <SimulationWarningStory kind={kind} message={message} />;
 });
 
 export const SingleWarning: StoryObj<{ kind: WarningInnerKindEnum }> = {
@@ -169,7 +141,7 @@ export const SingleWarning: StoryObj<{ kind: WarningInnerKindEnum }> = {
     kind: {
       control: {
         type: "select",
-        options: supportedWarnings,
+        options: Object.keys(WARNING_MESSAGES),
       },
       defaultValue: WarningInnerKindEnum.ApprovalToEoa,
     },
