@@ -142,8 +142,15 @@ export const splTransferChange: SolanaExpectedStateChange = {
           updatedAt: 1692001350,
           dollarValuePerToken: 0.00001449,
         },
-        imageUrl:
-          "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s.png",
+        imageUrl: "",
+        previews: {
+          small:
+            "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s.png",
+          medium:
+            "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s.png",
+          large:
+            "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__8ymi88q5DtmdNTn2sPRNFkvMkszMHuLJ1e3RVdWjPa3s.png",
+        },
       },
       counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
       diff: {
