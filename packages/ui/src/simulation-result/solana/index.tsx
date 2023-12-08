@@ -99,10 +99,13 @@ const SimulationImage: React.FC<{
 
   if (isSplStateChange(rawInfo)) {
     if (isNftMetaplexStandard(rawInfo.data.asset.metaplexTokenStandard)) {
+      const { asset } = rawInfo.data;
+      const imageUrl = asset.previews?.small || asset.imageUrl;
+
       return (
         <AssetImage
           type="nft"
-          imageUrl={rawInfo.data.asset.imageUrl}
+          imageUrl={imageUrl}
           name={rawInfo.data.asset.name}
           isPositiveEffect={isPositive}
         />

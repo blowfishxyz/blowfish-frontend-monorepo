@@ -139,15 +139,19 @@ const SimulationImage: React.FC<{
     );
   }
   if (isNftStateChangeWithMetadata(rawInfo)) {
+    const { metadata, asset } = rawInfo.data;
+    const imageUrl = metadata.previews?.small || metadata.rawImageUrl;
+
     return (
       <AssetImage
         type="nft"
-        imageUrl={rawInfo.data.metadata.rawImageUrl}
-        name={rawInfo.data.asset.name}
+        imageUrl={imageUrl}
+        name={asset.name}
         isPositiveEffect={isPositive}
       />
     );
   }
+
   if (rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER") {
     return (
       <AssetImage
@@ -189,10 +193,13 @@ const TokenTooltipContent: React.FC<{
     );
   }
   if (isNftStateChangeWithMetadata(rawInfo)) {
+    const { metadata } = rawInfo.data;
+    const imageUrl = metadata.previews.large || metadata.rawImageUrl;
+
     if (rawInfo.kind === "ERC1155_TRANSFER") {
       return (
         <PreviewNfts
-          imageUrl={rawInfo.data.metadata.rawImageUrl}
+          imageUrl={imageUrl}
           type="ERC-1155"
           name={undefined}
           tokenId={rawInfo.data.tokenId}
