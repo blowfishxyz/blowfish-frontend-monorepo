@@ -5,6 +5,7 @@ import { RequestType } from "@blowfish/utils/types";
 import ScanResultsV2, { ScanResultsV2Props } from "~components/ScanResultsV2";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { TransactionNotFoundModal } from "~components/modals";
+import { EvmTxData } from "@blowfishxyz/api-client/.";
 
 export default {
   title: "Hooks/useScanTransaction",
@@ -12,15 +13,9 @@ export default {
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
   const { data, isLoading } = useScanTransactions(
-    [
-      {
-        data: "0xa9059cbb000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000002386f26fc10000",
-        from: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-        to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-      },
-    ],
-    "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
-    { origin: "https://examples.blowfish.tools/" },
+    [args.request.payload as EvmTxData],
+    args.request.userAccount,
+    { origin: args.message.origin as string },
     {}
   );
 
