@@ -269,8 +269,15 @@ export const receiveErc721: EvmTransactionExpectedStateChange = {
         before: "0",
       },
       metadata: {
-        rawImageUrl:
-          "https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png",
+        rawImageUrl: "",
+        previews: {
+          small:
+            "https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png",
+          medium:
+            "https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png",
+          large:
+            "https://cdn.simplehash.com/assets/97e1c9e3e9eb21a1114351f9c5c14fe611c94916f360c4eb3aa9263afd8b837b.png",
+        },
       },
       tokenId: "7238",
       asset: {
