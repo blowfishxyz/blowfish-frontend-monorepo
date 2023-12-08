@@ -140,7 +140,7 @@ const SimulationImage: React.FC<{
   }
   if (isNftStateChangeWithMetadata(rawInfo)) {
     const { metadata, asset } = rawInfo.data;
-    const imageUrl = metadata.previews.small || metadata.rawImageUrl;
+    const imageUrl = metadata.previews?.small || metadata.rawImageUrl;
 
     return (
       <AssetImage
