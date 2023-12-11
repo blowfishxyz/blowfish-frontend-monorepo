@@ -78,7 +78,9 @@ export const decorators = [
       <ThemeProvider theme={light}>
         <BlowfishUIProvider mode="light">
           <QueryClientProvider client={queryClient}>
-            <ApiClientProvider chainFamily="ethereum" chainNetwork="mainnet">
+            <ApiClientProvider
+              basePath={process.env.NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string}
+            >
               <WagmiConfig client={mockWagmiClient}>
                 <ConnectKitProvider
                   options={{

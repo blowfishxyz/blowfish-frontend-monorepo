@@ -1,37 +1,30 @@
 import { createContext, memo, useContext, useEffect, useState } from "react";
-import { createEvmClient, BlowfishEvmApiClient } from "@blowfishxyz/api-client";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+import {
+  createMultiChainClient,
+  BlowfishMultiChainApiClient,
+} from "@blowfishxyz/api-client";
 
-export const BLOWFISH_API_BASE_URL = process.env
-  .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
-
-const ApiClientContext = createContext<BlowfishEvmApiClient | null>(null);
+const ApiClientContext = createContext<BlowfishMultiChainApiClient | null>(
+  null
+);
 
 export const ApiClientProvider = memo(function ApiClientProvider({
-  chainFamily,
-  chainNetwork,
+  basePath,
   children,
-}: React.PropsWithChildren<{
-  chainFamily: ChainFamily;
-  chainNetwork: ChainNetwork;
-}>) {
+}: React.PropsWithChildren<{ basePath: string }>) {
   const [value, setValue] = useState(() =>
-    createEvmClient({
-      basePath: BLOWFISH_API_BASE_URL,
-      chainFamily,
-      chainNetwork,
+    createMultiChainClient({
+      basePath,
     })
   );
 
   useEffect(() => {
     setValue(
-      createEvmClient({
-        basePath: BLOWFISH_API_BASE_URL,
-        chainFamily,
-        chainNetwork,
+      createMultiChainClient({
+        basePath,
       })
     );
-  }, [chainFamily, chainNetwork]);
+  }, []);
   return (
     <ApiClientContext.Provider value={value}>
       {children}

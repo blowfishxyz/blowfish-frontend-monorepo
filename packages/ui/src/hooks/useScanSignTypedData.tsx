@@ -1,4 +1,4 @@
-import { UseQueryResult, useQuery } from "react-query";
+import useSWR from "swr";
 import {
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
@@ -10,12 +10,20 @@ import {
   SignTypedDataRequest,
   SignTypedDataVersion,
 } from "@blowfish/utils/types";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+
+interface UseScanSignedTypedDataResult {
+  data: EvmMessageScanResult | undefined;
+  isLoading: boolean;
+  isError: undefined | Error;
+}
 
 export const useScanSignedTypedData = (
   request: SignTypedDataRequest,
   metadata: RequestMetadata,
-  queryOptions = {}
-): UseQueryResult<EvmMessageScanResult, Error> => {
+  chainFamily: ChainFamily,
+  chainNetwork: ChainNetwork
+): UseScanSignedTypedDataResult => {
   const client = useClient();
 
   const fetchSignedTypedData = async () => {
@@ -31,16 +39,29 @@ export const useScanSignedTypedData = (
       }),
     } as EvmSignTypedDataDataDomain;
 
-    return await client.scanSignTypedData(
+    return client.scanSignTypedDataEvm(
       { ...payload, domain },
       request.userAccount,
-      metadata
+      metadata,
+      chainFamily,
+      chainNetwork
     );
   };
 
-  return useQuery<EvmMessageScanResult, Error>(
-    ["scanSignedTypedData", request, metadata],
-    fetchSignedTypedData,
-    queryOptions
+  const { data, error } = useSWR<EvmMessageScanResult, Error>(
+    [
+      "scanSignedTypedData",
+      request,
+      JSON.stringify(metadata),
+      chainFamily,
+      chainNetwork,
+    ],
+    fetchSignedTypedData
   );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
 };

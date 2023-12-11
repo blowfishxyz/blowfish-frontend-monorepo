@@ -16,6 +16,8 @@ const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
     [args.request.payload as EvmTxData],
     args.request.userAccount,
     { origin: args.message.origin as string },
+    args.chainFamily,
+    args.chainNetwork,
     {}
   );
 

@@ -27,7 +27,7 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
-import { ApiClientProvider } from "@blowfishxyz/ui";
+import { ApiClientProvider } from "../hooks/useClient";
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;

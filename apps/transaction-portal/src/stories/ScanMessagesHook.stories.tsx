@@ -1,7 +1,7 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
 import { useScanMessage } from "@blowfishxyz/ui";
-import { RequestType } from "@blowfish/utils/types";
+import { RequestType, SignMessagePayload } from "@blowfish/utils/types";
 import ScanResultsV2, { ScanResultsV2Props } from "~components/ScanResultsV2";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { TransactionNotFoundModal } from "~components/modals";
@@ -11,11 +11,13 @@ export default {
   component: ScanResultsV2,
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
+  const reqPayload = args.request.payload as SignMessagePayload;
   const { data, isLoading } = useScanMessage(
-    "0x40ac14ef28d35fb4540e0cd0950123b378224d3585ec887c26f7a510da544552",
-    "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+    reqPayload.message,
+    args.request.userAccount,
     { origin: "https://examples.blowfish.tools/" },
-    {}
+    args.chainFamily,
+    args.chainNetwork
   );
 
   if (isLoading) {

@@ -17,7 +17,7 @@ import {
 import useSWR, { SWRResponse } from "swr";
 import { isSmartContractWallet } from "../utils/wallets";
 import { useRef } from "react";
-import { useClient } from "@blowfishxyz/ui";
+import { useClient } from "./useClient";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;

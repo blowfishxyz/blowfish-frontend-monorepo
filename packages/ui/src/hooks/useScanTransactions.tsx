@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import useSWR from "swr";
 import {
   EvmTxData,
   RequestMetadata,
@@ -6,28 +6,45 @@ import {
   ScanTransactionsEvm200Response,
 } from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
+import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 
 export const useScanTransactions = (
   txObjects: EvmTxData[],
   userAccount: string,
   metadata: RequestMetadata,
-  simulatorConfig?: EvmSimulatorConfig,
-  queryOptions = {}
+  chainFamily: ChainFamily,
+  chainNetwork: ChainNetwork,
+  simulatorConfig?: EvmSimulatorConfig
 ) => {
   const client = useClient();
 
   const fetchTransactions = async () => {
-    return await client.scanTransactions(
+    return client.scanTransactionsEvm(
       txObjects,
       userAccount,
       metadata,
+      chainFamily,
+      chainNetwork,
       simulatorConfig
     );
   };
 
-  return useQuery<ScanTransactionsEvm200Response, Error>(
-    ["scanTransactions", txObjects, userAccount, metadata, simulatorConfig],
-    fetchTransactions,
-    queryOptions
+  const { data, error } = useSWR<ScanTransactionsEvm200Response, Error>(
+    [
+      "scanTransactions",
+      txObjects,
+      userAccount,
+      JSON.stringify(metadata),
+      chainFamily,
+      chainNetwork,
+      simulatorConfig,
+    ],
+    fetchTransactions
   );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
 };

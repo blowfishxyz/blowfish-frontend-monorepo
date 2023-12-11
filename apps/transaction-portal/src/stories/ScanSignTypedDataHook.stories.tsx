@@ -17,7 +17,9 @@ export default {
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
   const { data, isLoading } = useScanSignedTypedData(
     args.request as SignTypedDataRequest,
-    { origin: "https://examples.blowfish.tools/" }
+    { origin: "https://examples.blowfish.tools/" },
+    args.chainFamily,
+    args.chainNetwork
   );
 
   if (isLoading) {

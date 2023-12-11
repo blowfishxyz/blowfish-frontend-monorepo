@@ -1,22 +1,22 @@
-import { useQuery, UseQueryResult } from "react-query";
-import {
-  ScanDomain200ResponseInner,
-} from "@blowfishxyz/api-client";
+import useSWR from "swr";
+import { ScanDomain200ResponseInner } from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
 
-export const useScanDomain = (
-  domains: string[],
-  queryOptions = {}
-): UseQueryResult<ScanDomain200ResponseInner[], Error> => {
+export const useScanDomain = (domains: string[]) => {
   const client = useClient();
 
-  const fetchDomains = async (): Promise<ScanDomain200ResponseInner[]> => {
-    return await client.scanDomains(domains);
+  const fetchDomains = async () => {
+    return client.scanDomains(domains);
   };
 
-  return useQuery<ScanDomain200ResponseInner[], Error>(
-    ["scanDomains", ...domains],
-    fetchDomains,
-    queryOptions
+  const { data, error } = useSWR<ScanDomain200ResponseInner[], Error>(
+    domains.length > 0 ? ["scanDomains", ...domains] : null,
+    fetchDomains
   );
+
+  return {
+    data,
+    isLoading: !error && !data,
+    isError: error,
+  };
 };
