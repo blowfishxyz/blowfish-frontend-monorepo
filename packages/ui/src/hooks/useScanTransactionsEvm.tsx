@@ -8,7 +8,7 @@ import {
 import { useClient } from "./useClient";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 
-export const useScanTransactions = (
+export const useScanTransactionsEvm = (
   txObjects: EvmTxData[],
   userAccount: string,
   metadata: RequestMetadata,

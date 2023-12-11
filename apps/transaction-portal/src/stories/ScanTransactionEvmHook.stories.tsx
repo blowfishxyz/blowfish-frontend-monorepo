@@ -1,6 +1,6 @@
 import React from "react";
 import { Meta, Story } from "@storybook/react";
-import { useScanTransactions } from "@blowfishxyz/ui";
+import { useScanTransactionsEvm } from "@blowfishxyz/ui";
 import { RequestType } from "@blowfish/utils/types";
 import ScanResultsV2, { ScanResultsV2Props } from "~components/ScanResultsV2";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
@@ -8,11 +8,11 @@ import { TransactionNotFoundModal } from "~components/modals";
 import { EvmTxData } from "@blowfishxyz/api-client/.";
 
 export default {
-  title: "Hooks/useScanTransaction",
+  title: "Hooks/useScanTransactionEvm",
   component: ScanResultsV2,
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
-  const { data, isLoading } = useScanTransactions(
+  const { data, isLoading } = useScanTransactionsEvm(
     [args.request.payload as EvmTxData],
     args.request.userAccount,
     { origin: args.message.origin as string },
@@ -32,8 +32,8 @@ const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
   return <ScanResultsV2 {...args} scanResults={data} />;
 };
 
-export const ScanTransaction = Template.bind({});
-ScanTransaction.args = {
+export const ScanTransactionEvm = Template.bind({});
+ScanTransactionEvm.args = {
   request: {
     type: RequestType.Transaction,
     payload: {
