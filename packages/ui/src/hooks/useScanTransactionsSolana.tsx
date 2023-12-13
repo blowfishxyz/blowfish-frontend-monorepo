@@ -13,12 +13,11 @@ interface UseScanTransactionsSolanaParams {
   chainNetwork: SolanaChainNetwork;
 }
 
-export const useScanTransactionsSolana = ({
-  transactions,
-  userAccount,
-  metadata,
-  chainNetwork,
-}: UseScanTransactionsSolanaParams) => {
+export const useScanTransactionsSolana = (
+  params: UseScanTransactionsSolanaParams
+) => {
+  const { transactions, userAccount, metadata, chainNetwork } = params;
+
   const client = useClient();
 
   const fetchTransactions = async () => {
@@ -30,7 +29,10 @@ export const useScanTransactionsSolana = ({
     );
   };
 
-  const { data, error, isLoading } = useSWR<ScanTransactionsSolana200Response, Error>(
+  const { data, error, isLoading } = useSWR<
+    ScanTransactionsSolana200Response,
+    Error
+  >(
     [
       "scanTransactionsSolana",
       transactions,

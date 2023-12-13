@@ -21,13 +21,10 @@ interface UseScanMessageResult {
   error: undefined | Error;
 }
 
-export const useScanMessage = ({
-  message,
-  userAccount,
-  metadata,
-  chainFamily,
-  chainNetwork,
-}: UseScanMessageParams): UseScanMessageResult => {
+export const useScanMessage = (
+  params: UseScanMessageParams
+): UseScanMessageResult => {
+  const { message, userAccount, metadata, chainFamily, chainNetwork } = params;
   const client = useClient();
 
   const fetchMessage = async () => {

@@ -18,14 +18,17 @@ interface UseScanTransactionsEvmParams {
   simulatorConfig?: EvmSimulatorConfig;
 }
 
-export const useScanTransactionsEvm = ({
-  txObjects,
-  userAccount,
-  metadata,
-  chainFamily,
-  chainNetwork,
-  simulatorConfig,
-}: UseScanTransactionsEvmParams) => {
+export const useScanTransactionsEvm = (
+  params: UseScanTransactionsEvmParams
+) => {
+  const {
+    txObjects,
+    userAccount,
+    metadata,
+    chainFamily,
+    chainNetwork,
+    simulatorConfig,
+  } = params;
   const client = useClient();
 
   const fetchTransactions = async () => {
@@ -39,7 +42,10 @@ export const useScanTransactionsEvm = ({
     );
   };
 
-  const { data, error, isLoading } = useSWR<ScanTransactionsEvm200Response, Error>(
+  const { data, error, isLoading } = useSWR<
+    ScanTransactionsEvm200Response,
+    Error
+  >(
     [
       "scanTransactions",
       txObjects,

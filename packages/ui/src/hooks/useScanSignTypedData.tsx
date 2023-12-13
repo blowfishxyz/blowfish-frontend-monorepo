@@ -26,12 +26,10 @@ interface UseScanSignedTypedDataResult {
   error: Error | undefined;
 }
 
-export const useScanSignedTypedData = ({
-  request,
-  metadata,
-  chainFamily,
-  chainNetwork,
-}: UseScanSignedTypedDataParams): UseScanSignedTypedDataResult => {
+export const useScanSignedTypedData = (
+  params: UseScanSignedTypedDataParams
+): UseScanSignedTypedDataResult => {
+  const { request, metadata, chainFamily, chainNetwork } = params;
   const client = useClient();
 
   const fetchSignedTypedData = async () => {
