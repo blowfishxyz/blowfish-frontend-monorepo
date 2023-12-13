@@ -34,7 +34,6 @@
   "devDependencies": {
     "@blowfish/tsconfig": "workspace:*",
     "@blowfishxyz/api-client": "workspace:*",
-    "@blowfish/utils": "workspace:*",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-essentials": "6.5.16",
     "@storybook/addon-interactions": "6.5.16",
