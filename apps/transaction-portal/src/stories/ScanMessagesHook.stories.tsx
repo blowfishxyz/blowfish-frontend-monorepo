@@ -12,13 +12,13 @@ export default {
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
   const reqPayload = args.request.payload as SignMessagePayload;
-  const { data, isLoading } = useScanMessage(
-    reqPayload.message,
-    args.request.userAccount,
-    { origin: "https://examples.blowfish.tools/" },
-    args.chainFamily,
-    args.chainNetwork
-  );
+  const { data, isLoading } = useScanMessage({
+    message: reqPayload.message,
+    userAccount: args.request.userAccount,
+    metadata: { origin: "https://examples.blowfish.tools/" },
+    chainFamily: args.chainFamily,
+    chainNetwork: args.chainNetwork,
+  });
 
   if (isLoading) {
     return <ProtectLoadingScreen key="loading" />;

@@ -4,18 +4,28 @@ import {
   RequestMetadata,
   EvmSimulatorConfig,
   ScanTransactionsEvm200Response,
+  EvmChainFamily,
+  EvmChainNetwork,
 } from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 
-export const useScanTransactionsEvm = (
-  txObjects: EvmTxData[],
-  userAccount: string,
-  metadata: RequestMetadata,
-  chainFamily: ChainFamily,
-  chainNetwork: ChainNetwork,
-  simulatorConfig?: EvmSimulatorConfig
-) => {
+interface UseScanTransactionsEvmParams {
+  txObjects: EvmTxData[];
+  userAccount: string;
+  metadata: RequestMetadata;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
+  simulatorConfig?: EvmSimulatorConfig;
+}
+
+export const useScanTransactionsEvm = ({
+  txObjects,
+  userAccount,
+  metadata,
+  chainFamily,
+  chainNetwork,
+  simulatorConfig,
+}: UseScanTransactionsEvmParams) => {
   const client = useClient();
 
   const fetchTransactions = async () => {
@@ -29,12 +39,12 @@ export const useScanTransactionsEvm = (
     );
   };
 
-  const { data, error } = useSWR<ScanTransactionsEvm200Response, Error>(
+  const { data, error, isLoading } = useSWR<ScanTransactionsEvm200Response, Error>(
     [
       "scanTransactions",
       txObjects,
       userAccount,
-      JSON.stringify(metadata),
+      metadata,
       chainFamily,
       chainNetwork,
       simulatorConfig,
@@ -44,7 +54,7 @@ export const useScanTransactionsEvm = (
 
   return {
     data,
-    isLoading: !error && !data,
-    isError: error,
+    isLoading,
+    error,
   };
 };

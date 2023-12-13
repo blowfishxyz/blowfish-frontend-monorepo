@@ -6,12 +6,19 @@ import {
 } from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
 
-export const useScanTransactionsSolana = (
-  transactions: string[],
-  userAccount: string,
-  metadata: RequestMetadata,
-  chainNetwork: SolanaChainNetwork
-) => {
+interface UseScanTransactionsSolanaParams {
+  transactions: string[];
+  userAccount: string;
+  metadata: RequestMetadata;
+  chainNetwork: SolanaChainNetwork;
+}
+
+export const useScanTransactionsSolana = ({
+  transactions,
+  userAccount,
+  metadata,
+  chainNetwork,
+}: UseScanTransactionsSolanaParams) => {
   const client = useClient();
 
   const fetchTransactions = async () => {
@@ -23,12 +30,12 @@ export const useScanTransactionsSolana = (
     );
   };
 
-  const { data, error } = useSWR<ScanTransactionsSolana200Response, Error>(
+  const { data, error, isLoading } = useSWR<ScanTransactionsSolana200Response, Error>(
     [
       "scanTransactionsSolana",
       transactions,
       userAccount,
-      JSON.stringify(metadata),
+      metadata,
       chainNetwork,
     ],
     fetchTransactions
@@ -36,7 +43,7 @@ export const useScanTransactionsSolana = (
 
   return {
     data,
-    isLoading: !error && !data,
-    isError: error,
+    isLoading,
+    error,
   };
 };

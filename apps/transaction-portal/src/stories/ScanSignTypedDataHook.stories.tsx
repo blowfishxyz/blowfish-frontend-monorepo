@@ -15,12 +15,12 @@ export default {
   component: ScanResultsV2,
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
-  const { data, isLoading } = useScanSignedTypedData(
-    args.request as SignTypedDataRequest,
-    { origin: "https://examples.blowfish.tools/" },
-    args.chainFamily,
-    args.chainNetwork
-  );
+  const { data, isLoading } = useScanSignedTypedData({
+    request: args.request as SignTypedDataRequest,
+    metadata: { origin: "https://examples.blowfish.tools/" },
+    chainFamily: args.chainFamily,
+    chainNetwork: args.chainNetwork,
+  });
 
   if (isLoading) {
     return <ProtectLoadingScreen key="loading" />;

@@ -12,14 +12,13 @@ export default {
   component: ScanResultsV2,
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
-  const { data, isLoading } = useScanTransactionsEvm(
-    [args.request.payload as EvmTxData],
-    args.request.userAccount,
-    { origin: args.message.origin as string },
-    args.chainFamily,
-    args.chainNetwork,
-    {}
-  );
+  const { data, isLoading } = useScanTransactionsEvm({
+    txObjects: [args.request.payload as EvmTxData],
+    userAccount: args.request.userAccount,
+    metadata: { origin: args.message.origin as string },
+    chainFamily: args.chainFamily,
+    chainNetwork: args.chainNetwork,
+  });
 
   if (isLoading) {
     return <ProtectLoadingScreen key="loading" />;

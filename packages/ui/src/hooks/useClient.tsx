@@ -1,4 +1,4 @@
-import { createContext, memo, useContext, useEffect, useState } from "react";
+import { createContext, memo, useContext, useState } from "react";
 import {
   createMultiChainClient,
   BlowfishMultiChainApiClient,
@@ -12,19 +12,12 @@ export const ApiClientProvider = memo(function ApiClientProvider({
   basePath,
   children,
 }: React.PropsWithChildren<{ basePath: string }>) {
-  const [value, setValue] = useState(() =>
+  const [value] = useState(() =>
     createMultiChainClient({
       basePath,
     })
   );
 
-  useEffect(() => {
-    setValue(
-      createMultiChainClient({
-        basePath,
-      })
-    );
-  }, []);
   return (
     <ApiClientContext.Provider value={value}>
       {children}

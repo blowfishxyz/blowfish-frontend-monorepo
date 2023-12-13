@@ -5,18 +5,26 @@ import { useClient } from "./useClient";
 export const useScanDomain = (domains: string[]) => {
   const client = useClient();
 
+  if (domains.length === 0) {
+    return {
+      data: undefined,
+      isLoading: false,
+      error: new Error("No domains provided"),
+    };
+  }
+
   const fetchDomains = async () => {
     return client.scanDomains(domains);
   };
 
-  const { data, error } = useSWR<ScanDomain200ResponseInner[], Error>(
-    domains.length > 0 ? ["scanDomains", ...domains] : null,
+  const { data, error, isLoading } = useSWR<ScanDomain200ResponseInner[], Error>(
+    ["scanDomains", ...domains],
     fetchDomains
   );
 
   return {
     data,
-    isLoading: !error && !data,
-    isError: error,
+    isLoading,
+    error,
   };
 };

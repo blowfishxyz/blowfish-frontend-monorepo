@@ -3,27 +3,35 @@ import {
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
   RequestMetadata,
+  EvmChainFamily,
+  EvmChainNetwork,
 } from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
-import { transformTypedDataV1FieldsToEIP712 } from "@blowfish/utils/messages";
 import {
-  SignTypedDataRequest,
   SignTypedDataVersion,
-} from "@blowfish/utils/types";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+  SupportedSignTypedDataPayloadVersion,
+  transformTypedDataV1FieldsToEIP712,
+} from "../utils/utils";
+
+interface UseScanSignedTypedDataParams {
+  request: SupportedSignTypedDataPayloadVersion;
+  metadata: RequestMetadata;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
+}
 
 interface UseScanSignedTypedDataResult {
   data: EvmMessageScanResult | undefined;
   isLoading: boolean;
-  isError: undefined | Error;
+  error: Error | undefined;
 }
 
-export const useScanSignedTypedData = (
-  request: SignTypedDataRequest,
-  metadata: RequestMetadata,
-  chainFamily: ChainFamily,
-  chainNetwork: ChainNetwork
-): UseScanSignedTypedDataResult => {
+export const useScanSignedTypedData = ({
+  request,
+  metadata,
+  chainFamily,
+  chainNetwork,
+}: UseScanSignedTypedDataParams): UseScanSignedTypedDataResult => {
   const client = useClient();
 
   const fetchSignedTypedData = async () => {
@@ -48,20 +56,14 @@ export const useScanSignedTypedData = (
     );
   };
 
-  const { data, error } = useSWR<EvmMessageScanResult, Error>(
-    [
-      "scanSignedTypedData",
-      request,
-      JSON.stringify(metadata),
-      chainFamily,
-      chainNetwork,
-    ],
+  const { data, error, isLoading } = useSWR<EvmMessageScanResult, Error>(
+    ["scanSignedTypedData", request, metadata, chainFamily, chainNetwork],
     fetchSignedTypedData
   );
 
   return {
     data,
-    isLoading: !error && !data,
-    isError: error,
+    isLoading,
+    error,
   };
 };

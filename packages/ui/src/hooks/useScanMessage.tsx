@@ -1,21 +1,33 @@
 import useSWR from "swr";
-import { EvmMessageScanResult, RequestMetadata } from "@blowfishxyz/api-client";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
+import {
+  EvmMessageScanResult,
+  RequestMetadata,
+  EvmChainFamily,
+  EvmChainNetwork,
+} from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
+
+interface UseScanMessageParams {
+  message: string;
+  userAccount: string;
+  metadata: RequestMetadata;
+  chainFamily: EvmChainFamily;
+  chainNetwork: EvmChainNetwork;
+}
 
 interface UseScanMessageResult {
   data: EvmMessageScanResult | undefined;
   isLoading: boolean;
-  isError: undefined | Error;
+  error: undefined | Error;
 }
 
-export const useScanMessage = (
-  message: string,
-  userAccount: string,
-  metadata: RequestMetadata,
-  chainFamily: ChainFamily,
-  chainNetwork: ChainNetwork
-): UseScanMessageResult => {
+export const useScanMessage = ({
+  message,
+  userAccount,
+  metadata,
+  chainFamily,
+  chainNetwork,
+}: UseScanMessageParams): UseScanMessageResult => {
   const client = useClient();
 
   const fetchMessage = async () => {
@@ -28,21 +40,14 @@ export const useScanMessage = (
     );
   };
 
-  const { data, error } = useSWR<EvmMessageScanResult, Error>(
-    [
-      "scanMessage",
-      message,
-      userAccount,
-      JSON.stringify(metadata),
-      chainFamily,
-      chainNetwork,
-    ],
+  const { data, error, isLoading } = useSWR<EvmMessageScanResult, Error>(
+    ["scanMessage", message, userAccount, metadata, chainFamily, chainNetwork],
     fetchMessage
   );
 
   return {
     data,
-    isLoading: !error && !data,
-    isError: error,
+    isLoading,
+    error,
   };
 };

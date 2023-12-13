@@ -7,7 +7,6 @@ import {
 } from "@blowfish/utils/types";
 import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
-import { QueryClient, QueryClientProvider } from "react-query";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { ScanParams, ScanParamsSuccess } from "~hooks/useScanParams";
 import { MessageError } from "~utils/utils";
@@ -32,7 +31,6 @@ import { ApiClientProvider } from "../hooks/useClient";
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
 }> = ({ data }) => {
-  const queryClient = new QueryClient();
   if (!data) {
     return <ProtectLoadingScreen key="loading" />;
   }
@@ -48,11 +46,7 @@ export const ScanPageV2Inner: React.FC<{
     return <TransactionNotFoundModal />;
   }
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      <FullfieldView data={data} />
-    </QueryClientProvider>
-  );
+  return <FullfieldView data={data} />;
 };
 
 const FullfieldView: React.FC<{
