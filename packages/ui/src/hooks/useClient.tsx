@@ -2,6 +2,7 @@ import { createContext, memo, useContext, useState } from "react";
 import {
   createMultiChainClient,
   BlowfishMultiChainApiClient,
+  MultiChainClientConfig,
 } from "@blowfishxyz/api-client";
 
 const ApiClientContext = createContext<BlowfishMultiChainApiClient | null>(
@@ -9,14 +10,10 @@ const ApiClientContext = createContext<BlowfishMultiChainApiClient | null>(
 );
 
 export const ApiClientProvider = memo(function ApiClientProvider({
-  basePath,
+  config,
   children,
-}: React.PropsWithChildren<{ basePath: string }>) {
-  const [value] = useState(() =>
-    createMultiChainClient({
-      basePath,
-    })
-  );
+}: React.PropsWithChildren<{ config: MultiChainClientConfig }>) {
+  const [value] = useState(() => createMultiChainClient(config));
 
   return (
     <ApiClientContext.Provider value={value}>
