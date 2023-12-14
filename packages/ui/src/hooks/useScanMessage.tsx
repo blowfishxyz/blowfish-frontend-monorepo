@@ -37,14 +37,8 @@ export const useScanMessage = (
     );
   };
 
-  const { data, error, isLoading } = useSWR<EvmMessageScanResult, Error>(
-    ["scanMessage", message, userAccount, metadata, chainFamily, chainNetwork],
+  return useSWR<EvmMessageScanResult, Error>(
+    ["scanMessage", message, userAccount, chainFamily, chainNetwork],
     fetchMessage
   );
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
 };

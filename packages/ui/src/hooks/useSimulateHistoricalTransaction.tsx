@@ -21,16 +21,10 @@ export const useSimulateHistoricalTransaction = (
     return client.simulateHistoricalTransaction(transactionHash, userAccount);
   };
 
-  const { data, error, isLoading } = useSWR(
+  return useSWR(
     transactionHash && userAccount
       ? ["simulateHistoricalTransaction", transactionHash, userAccount]
       : null,
     fetchHistoricalSimulation
   );
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
 };

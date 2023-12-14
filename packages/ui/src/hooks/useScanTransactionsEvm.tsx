@@ -42,25 +42,15 @@ export const useScanTransactionsEvm = (
     );
   };
 
-  const { data, error, isLoading } = useSWR<
-    ScanTransactionsEvm200Response,
-    Error
-  >(
+  return useSWR<ScanTransactionsEvm200Response, Error>(
     [
       "scanTransactions",
       txObjects,
       userAccount,
-      metadata,
       chainFamily,
       chainNetwork,
       simulatorConfig,
     ],
     fetchTransactions
   );
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
 };

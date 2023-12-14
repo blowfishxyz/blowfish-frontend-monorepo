@@ -54,14 +54,8 @@ export const useScanSignedTypedData = (
     );
   };
 
-  const { data, error, isLoading } = useSWR<EvmMessageScanResult, Error>(
-    ["scanSignedTypedData", request, metadata, chainFamily, chainNetwork],
+  return useSWR<EvmMessageScanResult, Error>(
+    ["scanSignedTypedData", request, chainFamily, chainNetwork],
     fetchSignedTypedData
   );
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
 };

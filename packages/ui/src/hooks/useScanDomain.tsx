@@ -17,14 +17,8 @@ export const useScanDomain = (domains: string[]) => {
     return client.scanDomains(domains);
   };
 
-  const { data, error, isLoading } = useSWR<ScanDomain200ResponseInner[], Error>(
+  return useSWR<ScanDomain200ResponseInner[], Error>(
     ["scanDomains", ...domains],
     fetchDomains
   );
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
 };

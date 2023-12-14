@@ -29,23 +29,13 @@ export const useScanTransactionsSolana = (
     );
   };
 
-  const { data, error, isLoading } = useSWR<
-    ScanTransactionsSolana200Response,
-    Error
-  >(
+  return useSWR<ScanTransactionsSolana200Response, Error>(
     [
       "scanTransactionsSolana",
       transactions,
       userAccount,
-      metadata,
       chainNetwork,
     ],
     fetchTransactions
   );
-
-  return {
-    data,
-    isLoading,
-    error,
-  };
 };
