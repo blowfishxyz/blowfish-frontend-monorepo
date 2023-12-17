@@ -17,11 +17,11 @@
     "build-storybook": "TS_NODE_PROJECT=.storybook/tsconfig.json build-storybook"
   },
   "dependencies": {
+    "@blowfishxyz/api-client": "workspace:*",
     "@blowfish/hooks": "workspace:*",
+    "@blowfishxyz/ui": "workspace:*",
     "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
-    "@blowfishxyz/api-client": "workspace:*",
-    "@blowfishxyz/ui": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@floating-ui/react": "^0.23.1",
     "@sentry/nextjs": "^7.52.1",

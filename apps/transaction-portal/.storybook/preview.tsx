@@ -7,7 +7,7 @@ import { MockConnector } from "wagmi/connectors/mock";
 import { mainnet } from "wagmi/chains";
 import { GlobalStyle } from "../src/styles/global";
 import { useChainMetadataContext } from "../src/hooks/useChainMetadata";
-import { ApiClientProvider, BlowfishUIProvider, light } from "@blowfishxyz/ui";
+import { BlowfishUIProvider, light } from "@blowfishxyz/ui";
 import { Wallet } from "ethers";
 import { ConnectKitProvider } from "connectkit";
 import { ThemeProvider } from "styled-components";
@@ -75,22 +75,16 @@ export const decorators = [
     return (
       <ThemeProvider theme={light}>
         <BlowfishUIProvider mode="light">
-          <ApiClientProvider
-            config={{
-              basePath: process.env.NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string,
-            }}
-          >
-            <WagmiConfig client={mockWagmiClient}>
-              <ConnectKitProvider
-                options={{
-                  initialChainId: 1,
-                }}
-                mode="light"
-              >
-                <Story />
-              </ConnectKitProvider>
-            </WagmiConfig>
-          </ApiClientProvider>
+          <WagmiConfig client={mockWagmiClient}>
+            <ConnectKitProvider
+              options={{
+                initialChainId: 1,
+              }}
+              mode="light"
+            >
+              <Story />
+            </ConnectKitProvider>
+          </WagmiConfig>
         </BlowfishUIProvider>
       </ThemeProvider>
     );
