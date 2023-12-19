@@ -12,6 +12,11 @@ import {
 import Decimal from "decimal.js";
 import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
+import {
+  ScanTransactionEvmRequest,
+  ScanTransactionsSolanaRequest,
+} from "@blowfishxyz/api-client";
+import { isSolanaTransaction } from "~utils/utils";
 
 const DynamicJsonViewer = dynamic(
   () => import("../components/JsonViewerV2").then((mod) => mod.JsonViewer),
@@ -22,36 +27,47 @@ const DynamicJsonViewer = dynamic(
 );
 
 interface RequestJsonViewerProps {
-  request: DappRequest;
+  request:
+    | DappRequest
+    | ScanTransactionEvmRequest
+    | ScanTransactionsSolanaRequest;
 }
 
-const RequestJsonViewer = ({ request }: RequestJsonViewerProps) => {
+const RequestJsonViewer: React.FC<RequestJsonViewerProps> = ({ request }) => {
+  const { isSolana, solanaRequest, evmRequest } = isSolanaTransaction(request);
+
   const content = useMemo(() => {
-    if (isTransactionRequest(request)) {
-      // NOTE: For display purposes we want to show 0 when value is null
-      const { to, from, value, data } = request.payload;
-      const displayTransaction: TransactionPayload = {
-        to,
-        from,
-        value: new Decimal(value || 0).toString(),
-        data,
-      };
-      return displayTransaction;
-    } else if (isSignTypedDataRequest(request)) {
-      const { domain, message } =
-        request.signTypedDataVersion === SignTypedDataVersion.V1
-          ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
-          : request.payload;
-      return { domain, message };
-    } else if (isSignMessageRequest(request)) {
-      const { message } = request.payload;
-      return {
-        message,
-      };
-    } else {
-      logger.error("AdvancedDetails: Unhandled request type", request);
+    if (isSolana) {
+      console.log(solanaRequest);
+      return solanaRequest;
     }
-  }, [request]);
+
+    if (evmRequest) {
+      if (isTransactionRequest(evmRequest)) {
+        const { to, from, value, data } = evmRequest.payload;
+        return {
+          to,
+          from,
+          value: new Decimal(value || 0).toFixed(),
+          data,
+        } as TransactionPayload;
+      } else if (isSignTypedDataRequest(evmRequest)) {
+        const transformedPayload =
+          evmRequest.signTypedDataVersion === SignTypedDataVersion.V1
+            ? transformTypedDataV1FieldsToEIP712(
+                evmRequest.payload,
+                evmRequest.chainId
+              )
+            : evmRequest.payload;
+        return transformedPayload;
+      } else if (isSignMessageRequest(evmRequest)) {
+        return { message: evmRequest.payload.message };
+      }
+    }
+
+    logger.error("AdvancedDetails: Unhandled request type", request);
+    return null;
+  }, [evmRequest, isSolana, solanaRequest, request]);
 
   return content ? <DynamicJsonViewer data={content} /> : null;
 };

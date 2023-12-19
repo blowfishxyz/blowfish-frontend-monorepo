@@ -27,9 +27,16 @@ import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
 import { ApiClientProvider } from "~hooks/useClient";
+import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client/.";
+import { useScanTransactionsSolana } from "~hooks/useScanTransactionSolana";
+import ScanResultsSolana from "./ScanResultsSolana";
+import {
+  SolanaScanParams,
+  SolanaSuccessParams,
+} from "~hooks/useURLRequestParams";
 
 export const ScanPageV2Inner: React.FC<{
-  data: ScanParams;
+  data: ScanParams | SolanaScanParams;
 }> = ({ data }) => {
   if (!data) {
     return <ProtectLoadingScreen key="loading" />;
@@ -42,14 +49,37 @@ export const ScanPageV2Inner: React.FC<{
     if (data.error === MessageError.OUTDATED_EXTENSION) {
       return <OutdatedExtensionModal />;
     }
-
     return <TransactionNotFoundModal />;
   }
 
-  return <FullfieldView data={data} />;
+  if ("isSolana" in data && data.isSolana) {
+    return <SolanaFullfieldView data={data} />;
+  } else {
+    return <EvmFullfieldView data={data as ScanParamsSuccess} />;
+  }
 };
 
-const FullfieldView: React.FC<{
+const SolanaFullfieldView: React.FC<{ data: SolanaSuccessParams }> = ({
+  data,
+}) => {
+  const { request, userAccount, isImpersonating } = data;
+
+  return (
+    <ApiClientProvider
+      config={{
+        basePath: process.env.NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string,
+      }}
+    >
+      <SolanaResultsView
+        request={request}
+        userAccount={userAccount}
+        isImpersonating={isImpersonating}
+      />
+    </ApiClientProvider>
+  );
+};
+
+const EvmFullfieldView: React.FC<{
   data: ScanParamsSuccess;
 }> = ({ data }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
@@ -71,10 +101,11 @@ const FullfieldView: React.FC<{
 
   return (
     <ApiClientProvider
-      chainFamily={chain.chainInfo.chainFamily}
-      chainNetwork={chain.chainInfo.chainNetwork}
+      config={{
+        basePath: process.env.NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string,
+      }}
     >
-      <ResultsView
+      <EvmResultsView
         message={message}
         request={request}
         chainInfo={chain.chainInfo}
@@ -87,7 +118,7 @@ const FullfieldView: React.FC<{
   );
 };
 
-const ResultsView: React.FC<{
+const EvmResultsView: React.FC<{
   message: Message<DappRequest["type"], DappRequest>;
   request: DappRequest;
   chainInfo: ChainInfo;
@@ -195,8 +226,50 @@ const ResultsView: React.FC<{
   );
 };
 
+const SolanaResultsView: React.FC<{
+  request: ScanTransactionsSolanaRequest;
+  userAccount: string;
+  isImpersonating: boolean;
+}> = ({ request, userAccount, isImpersonating }) => {
+  const {
+    data: scanResults,
+    error: scanError,
+    mutate,
+  } = useScanTransactionsSolana({
+    transactions: request.transactions,
+    userAccount: userAccount,
+    metadata: request.metadata,
+    chainNetwork: "mainnet",
+  });
+
+  if (scanError) {
+    return (
+      <UnknownErrorModal
+        onRetry={async () => {
+          await mutate();
+        }}
+      />
+    );
+  }
+
+  if (!scanResults) {
+    return <ProtectLoadingScreen key="loading" />;
+  }
+
+  return (
+    <>
+      <ScanResultsSolana
+        request={request}
+        scanResults={scanResults}
+        impersonatingAddress={isImpersonating ? userAccount : undefined}
+        chainNetwork="mainnet"
+      />
+    </>
+  );
+};
+
 export const ScanPageV2: React.FC<{
-  data: ScanParams;
+  data: ScanParams | SolanaScanParams;
 }> = ({ data }) => {
   return (
     <Layout>

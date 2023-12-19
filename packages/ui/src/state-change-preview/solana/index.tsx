@@ -6,6 +6,10 @@ import { styled } from "styled-components";
 import { Column, Row } from "~/common/layout";
 import { Text } from "~/common/text";
 import { SimulationResultSolana } from "~/simulation-result";
+import {
+  getErrorFromSolanaScanResponse,
+  getResultsFromSolanaScanResponse,
+} from "./utils";
 
 export type StateChangePreviewSolanaProps = {
   scanResult: SolanaTransactionsResult;
@@ -109,3 +113,5 @@ const TxnDataWrapper = styled.div`
     scrollbar-width: thin;
   }
 `;
+
+export { getErrorFromSolanaScanResponse, getResultsFromSolanaScanResponse };

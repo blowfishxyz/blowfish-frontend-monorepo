@@ -3,6 +3,8 @@ import {
   EvmProtocol,
   ScanMessageEvm200ResponseSimulationResults,
   EvmSimulationResults,
+  ScanTransactionsSolanaRequest,
+  ScanTransactionEvmRequest,
 } from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -189,4 +191,29 @@ export const getProtocol = (
     return simulationResults.protocol;
   }
   return null;
+};
+
+type RequestData = {
+  isSolana: boolean;
+  solanaRequest?: ScanTransactionsSolanaRequest;
+  evmRequest?: DappRequest;
+};
+
+export const isSolanaTransaction = (
+  request:
+    | ScanTransactionsSolanaRequest
+    | ScanTransactionEvmRequest
+    | DappRequest
+): RequestData => {
+  const isSolana =
+    "transactions" in request && Array.isArray(request.transactions);
+
+  if (isSolana) {
+    return {
+      isSolana: true,
+      solanaRequest: request as ScanTransactionsSolanaRequest,
+    };
+  } else {
+    return { isSolana: false, evmRequest: request as DappRequest };
+  }
 };
