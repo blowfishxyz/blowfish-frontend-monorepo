@@ -26,7 +26,10 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
-import { ApiClientProvider } from "~hooks/useClient";
+import { ApiClientProvider } from "@blowfishxyz/ui";
+
+export const BLOWFISH_API_BASE_URL = process.env
+  .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
@@ -70,10 +73,7 @@ const FullfieldView: React.FC<{
   }
 
   return (
-    <ApiClientProvider
-      chainFamily={chain.chainInfo.chainFamily}
-      chainNetwork={chain.chainInfo.chainNetwork}
-    >
+    <ApiClientProvider config={{ basePath: BLOWFISH_API_BASE_URL }}>
       <ResultsView
         message={message}
         request={request}

@@ -1,5 +1,5 @@
 import type {
-  BlowfishEvmApiClient,
+  BlowfishMultiChainApiClient,
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
   EvmTransactionsScanResult,
@@ -17,7 +17,7 @@ import {
 import useSWR, { SWRResponse } from "swr";
 import { isSmartContractWallet } from "../utils/wallets";
 import { useRef } from "react";
-import { useClient } from "./useClient";
+import { useClient } from "@blowfishxyz/ui";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -38,10 +38,15 @@ export const getCacheKey = (
 };
 
 const fetcher = async (
-  client: BlowfishEvmApiClient,
+  client: BlowfishMultiChainApiClient,
   request: DappRequest,
-  origin: string
+  origin: string,
+  chainFamily: ChainFamily | undefined,
+  chainNetwork: ChainNetwork | undefined
 ): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {
+  if (!chainFamily || !chainNetwork) {
+    throw new Error("Missing chain family or chain network");
+  }
   // NOTE: The api key is rewritten on the proxy
 
   if (isTransactionRequest(request)) {
@@ -52,12 +57,14 @@ const fetcher = async (
       ? request.payload.to
       : request.userAccount;
     return client
-      .scanTransactions(
+      .scanTransactionsEvm(
         [request.payload],
         userAccount,
         {
           origin,
         },
+        chainFamily,
+        chainNetwork,
         request.simulatorConfig
       )
       .then((response: ScanTransactionsEvm200Response) => {
@@ -77,7 +84,7 @@ const fetcher = async (
       }),
     } as EvmSignTypedDataDataDomain;
 
-    return client.scanSignTypedData(
+    return client.scanSignTypedDataEvm(
       {
         ...payload,
         domain,
@@ -85,12 +92,20 @@ const fetcher = async (
       request.userAccount,
       {
         origin,
-      }
+      },
+      chainFamily,
+      chainNetwork
     );
   } else if (isSignMessageRequest(request)) {
-    return client.scanMessage(request.payload.message, request.userAccount, {
-      origin,
-    });
+    return client.scanMessageEvm(
+      request.payload.message,
+      request.userAccount,
+      {
+        origin,
+      },
+      chainFamily,
+      chainNetwork
+    );
   }
   throw new Error(`Unsupported request: ${(request as DappRequest).type}`);
 };
@@ -109,7 +124,8 @@ export const useScanDappRequest = (
 
   const response = useSWR(
     getCacheKey(request, origin, chainFamily, chainNetwork),
-    ([request, origin]) => fetcher(client, request, origin),
+    ([request, origin]) =>
+      fetcher(client, request, origin, chainFamily, chainNetwork),
     {
       refreshInterval: SCAN_REFRESH_INTERVAL_MS,
     }
