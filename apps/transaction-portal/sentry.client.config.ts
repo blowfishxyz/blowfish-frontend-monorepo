@@ -35,6 +35,8 @@ Sentry.init({
     // Random plugins/extensions
     "top.GLOBALS",
     /connector not found/i,
+    /cannot estimate gas/i,
+    "Uncaught RangeError: WebAssembly.Memory(): could not allocate memory",
     "Cannot read properties of undefined (reading 'id')",
     "Cannot redefine property: ethereum",
   ],
