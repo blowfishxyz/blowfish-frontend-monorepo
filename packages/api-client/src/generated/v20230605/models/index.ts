@@ -107,6 +107,66 @@ export type BlowfishSimulationErrorKindEnum =
 /**
  *
  * @export
+ * @interface CompressedNftAsset
+ */
+export interface CompressedNftAsset {
+  /**
+   * cNFT symbol
+   * @type {string}
+   * @memberof CompressedNftAsset
+   */
+  id: string;
+  /**
+   * cNFT symbol
+   * @type {string}
+   * @memberof CompressedNftAsset
+   */
+  symbol: string;
+  /**
+   * cNFT name
+   * @type {string}
+   * @memberof CompressedNftAsset
+   */
+  name: string;
+  /**
+   *
+   * @type {CompressedNftStandard}
+   * @memberof CompressedNftAsset
+   */
+  compressedNftStandard: CompressedNftStandard;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof CompressedNftAsset
+   */
+  price: AssetPrice | null;
+  /**
+   * The URL of the asset's image. Can be `null`.
+   * @type {string}
+   * @memberof CompressedNftAsset
+   */
+  imageUrl: string | null;
+  /**
+   *
+   * @type {NftPreviews}
+   * @memberof CompressedNftAsset
+   */
+  previews: NftPreviews;
+}
+
+/**
+ *
+ * @export
+ */
+export const CompressedNftStandard = {
+  MetaplexBubblegum: "metaplex_bubblegum",
+} as const;
+export type CompressedNftStandard =
+  (typeof CompressedNftStandard)[keyof typeof CompressedNftStandard];
+
+/**
+ *
+ * @export
  * @interface Diff
  */
 export interface Diff {
@@ -3315,6 +3375,12 @@ export interface ScanTransactionsEvmRequest {
  */
 export interface ScanTransactionsSolana200Response {
   /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof ScanTransactionsSolana200Response
+   */
+  requestId: string;
+  /**
    *
    * @type {ScanTransactionsSolana200ResponseAggregated}
    * @memberof ScanTransactionsSolana200Response
@@ -3333,12 +3399,6 @@ export interface ScanTransactionsSolana200Response {
  * @interface ScanTransactionsSolana200ResponseAggregated
  */
 export interface ScanTransactionsSolana200ResponseAggregated {
-  /**
-   * Request ID uniquely identifies the HTTP request sent to our service
-   * @type {string}
-   * @memberof ScanTransactionsSolana200ResponseAggregated
-   */
-  requestId: string;
   /**
    *
    * @type {ActionEnum}
@@ -3415,6 +3475,9 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
     | ({
         kind: "BFP_LOADER_AUTHORITY_CHANGE";
       } & SolanaStateChangeBfpLoaderAuthorityChange)
+    | ({
+        kind: "COMPRESSED_NFT_TRANSFER";
+      } & SolanaStateChangeCompressedNftTransfer)
     | ({
         kind: "SOL_STAKE_AUTHORITY_CHANGE";
       } & SolanaStateChangeSolStakeAuthorityChange)
@@ -3689,7 +3752,7 @@ export interface SolanaSimulationTransactionError {
    * @type {string}
    * @memberof SolanaSimulationTransactionError
    */
-  kind?: SolanaSimulationTransactionErrorKindEnum;
+  kind: SolanaSimulationTransactionErrorKindEnum;
   /**
    * Human-readable version of the error. Values match the string version of the `TransactionError` enum values in the Solana repo
    * @type {string}
@@ -3760,6 +3823,60 @@ export interface SolanaStateChangeBfpLoaderAuthorityChangeData {
    * @memberof SolanaStateChangeBfpLoaderAuthorityChangeData
    */
   futureAuthority: string | null;
+}
+/**
+ * cNFT transfer
+ * @export
+ * @interface SolanaStateChangeCompressedNftTransfer
+ */
+export interface SolanaStateChangeCompressedNftTransfer {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof SolanaStateChangeCompressedNftTransfer
+   */
+  kind: SolanaStateChangeCompressedNftTransferKindEnum;
+  /**
+   *
+   * @type {SolanaStateChangeCompressedNftTransferData}
+   * @memberof SolanaStateChangeCompressedNftTransfer
+   */
+  data: SolanaStateChangeCompressedNftTransferData;
+}
+
+/**
+ * @export
+ */
+export const SolanaStateChangeCompressedNftTransferKindEnum = {
+  CompressedNftTransfer: "COMPRESSED_NFT_TRANSFER",
+} as const;
+export type SolanaStateChangeCompressedNftTransferKindEnum =
+  (typeof SolanaStateChangeCompressedNftTransferKindEnum)[keyof typeof SolanaStateChangeCompressedNftTransferKindEnum];
+
+/**
+ *
+ * @export
+ * @interface SolanaStateChangeCompressedNftTransferData
+ */
+export interface SolanaStateChangeCompressedNftTransferData {
+  /**
+   *
+   * @type {CompressedNftAsset}
+   * @memberof SolanaStateChangeCompressedNftTransferData
+   */
+  asset: CompressedNftAsset;
+  /**
+   *
+   * @type {Diff}
+   * @memberof SolanaStateChangeCompressedNftTransferData
+   */
+  diff: Diff;
+  /**
+   * Contains counterparty address if known. To whom the transfer was made for Send or from whom was it made for Receive
+   * @type {string}
+   * @memberof SolanaStateChangeCompressedNftTransferData
+   */
+  counterparty: string | null;
 }
 /**
  * Transferring control over a user's SOL staking account
@@ -4140,7 +4257,7 @@ export interface SplAsset {
    * @type {NftPreviews}
    * @memberof SplAsset
    */
-  previews?: NftPreviews;
+  previews: NftPreviews;
 }
 /**
  *
@@ -4239,6 +4356,7 @@ export const WarningInnerKindEnum = {
   TransferToMintAccount: "TRANSFER_TO_MINT_ACCOUNT",
   WhitelistedDomainCrossOrigin: "WHITELISTED_DOMAIN_CROSS_ORIGIN",
   YakoaNftIpInfringement: "YAKOA_NFT_IP_INFRINGEMENT",
+  ReliableSimulationNotPossible: "RELIABLE_SIMULATION_NOT_POSSIBLE",
 } as const;
 export type WarningInnerKindEnum =
   (typeof WarningInnerKindEnum)[keyof typeof WarningInnerKindEnum];

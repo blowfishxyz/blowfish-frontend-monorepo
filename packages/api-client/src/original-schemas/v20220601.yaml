@@ -47,6 +47,7 @@ paths:
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
+        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
@@ -592,6 +593,7 @@ paths:
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
+        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
@@ -1211,6 +1213,7 @@ paths:
                                 - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
                                 - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                 - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
+                                - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
                               discriminator:
                                 propertyName: kind
                                 mapping:
@@ -1220,6 +1223,7 @@ paths:
                                   SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
                                   BFP_LOADER_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                   USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
+                                  COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
                       error:
                         type: object
                         required:
@@ -1960,7 +1964,7 @@ paths:
                   type: string
                   description: |
                     What event occurred to cause the report. "PROCEEDED" means the user proceeded with signing
-                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported 
+                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported
                     Malicious" means the user explicitly reported the transaction as malicious.
                   enum:
                     - PROCEEDED
@@ -2113,6 +2117,7 @@ components:
               - TRANSFER_TO_MINT_ACCOUNT
               - WHITELISTED_DOMAIN_CROSS_ORIGIN
               - YAKOA_NFT_IP_INFRINGEMENT
+              - RELIABLE_SIMULATION_NOT_POSSIBLE
             example: SUSPECTED_MALICIOUS
           message:
             type: string
@@ -2288,6 +2293,10 @@ components:
       enum:
         [non_fungible, fungible_asset, fungible, non_fungible_edition, unknown]
       example: fungible
+    CompressedNftStandard:
+      type: string
+      enum: [metaplex_bubblegum]
+      example: metaplex_bubblegum
     EvmUserAccount:
       type: string
       description: A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
@@ -3507,3 +3516,57 @@ components:
               nullable: true
               example: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
               default: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
+    SolanaStateChangeCompressedNftTransfer:
+      type: object
+      description: cNFT transfer
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [COMPRESSED_NFT_TRANSFER]
+          example: COMPRESSED_NFT_TRANSFER
+        data:
+          type: object
+          required:
+            - id
+            - name
+            - symbol
+            - assetPrice
+            - compressedNftStandard
+            - previews
+            - imageUrl
+            - diff
+            - counterparty
+          properties:
+            id:
+              type: string
+              description: cNFT symbol
+              example: ENMS3RbQEZrnBxc5bzUkmipp6d56UoKncJaxM5qVyneq
+            symbol:
+              type: string
+              description: cNFT symbol
+              example: cNFT
+            name:
+              type: string
+              description: cNFT name
+              example: First
+            compressedNftStandard:
+              type: string
+              description: The compressed NFT standard for this asset
+              $ref: "#/components/schemas/CompressedNftStandard"
+            assetPrice:
+              description: The $-value price of the asset
+              $ref: "#/components/schemas/AssetPrice"
+            imageUrl:
+              type: string
+              description: The URL of the asset's image. Can be `null`.
+              nullable: true
+            previews:
+              $ref: "#/components/schemas/NftPreviews"
+            diff:
+              $ref: "#/components/schemas/Diff"
+            counterparty:
+              $ref: "#/components/schemas/SolanaTransferCounterparty"

@@ -11,93 +11,70 @@ export type UIWarning = {
   severity: "WARNING" | "CRITICAL" | "INFO";
 };
 
+const WARNING_TEXT: { [key in WarningInnerKindEnum]: string } = {
+  [WarningInnerKindEnum.ApprovalToEoa]: "Approval to EOA",
+  [WarningInnerKindEnum.BlurBulkOrderNotOnBlur]:
+    "Blur bulk order on a non-Blur domain",
+  [WarningInnerKindEnum.BlurV2OrderNotOnBlur]:
+    "Blur v2 order on a non-Blur domain",
+  [WarningInnerKindEnum.BlocklistedDomainCrossOrigin]:
+    "Blocklisted domain cross-origin",
+  [WarningInnerKindEnum.BulkApprovalsRequest]: "Bulk approval request",
+  [WarningInnerKindEnum.CompromisedAuthorityUpgrade]:
+    "Compromised authority upgrade",
+  [WarningInnerKindEnum.CopyCatDomain]: "Copycat domain",
+  [WarningInnerKindEnum.CopyCatImageUnresponsiveDomain]:
+    "Copycat unresponsive domain",
+  [WarningInnerKindEnum.DanglingApproval]: "Dangling approval",
+  [WarningInnerKindEnum.DebuggerPaused]: "Debugger paused",
+  [WarningInnerKindEnum.DurableNonce]: "Durable nonce",
+  [WarningInnerKindEnum.EthSignTxHash]: "Eth sign transaction hash",
+  [WarningInnerKindEnum.Forta]: "Potentially malicious on the Forta Network",
+  [WarningInnerKindEnum.ImbalancedDollarValue]: "Imbalanced Dollar Value",
+  [WarningInnerKindEnum.KnownMalicious]: "Known malicious",
+  [WarningInnerKindEnum.MaliciousPackages]: "Malicious packages detected",
+  [WarningInnerKindEnum.MultiCopyCatDomain]: "Multi copycat domain",
+  [WarningInnerKindEnum.NewDomain]: "New Domain",
+  [WarningInnerKindEnum.PermitNoExpiration]: "Permit without expiration",
+  [WarningInnerKindEnum.PermitUnlimitedAllowance]:
+    "Permit with unlimited allowance",
+  [WarningInnerKindEnum.PoisonedAddress]: "Poisoned address",
+  [WarningInnerKindEnum.ReferencedOfacAddress]:
+    "Referenced OFAC Sanctioned Address",
+  [WarningInnerKindEnum.SemiTrustedBlocklistDomain]:
+    "Semi-trusted blocklist domain",
+  [WarningInnerKindEnum.SetOwnerAuthority]: "Set owner authority",
+  [WarningInnerKindEnum.SuspectedMalicious]: "Suspected malicious behaviour",
+  [WarningInnerKindEnum.TooManyTransactions]: "Too many transactions",
+  [WarningInnerKindEnum.TradeForNothing]: "Trade for nothing",
+  [WarningInnerKindEnum.TradeForUnverifiedNft]: "Trade for unverified NFT",
+  [WarningInnerKindEnum.TransferringErc20ToOwnContract]:
+    "Transferring ERC20 to own contract",
+  [WarningInnerKindEnum.TransferringTooMuchSol]: "Transferring too much SOL",
+  [WarningInnerKindEnum.TransfersMajorityOfYourSol]:
+    "Transfers majority of your SOL",
+  [WarningInnerKindEnum.TrustedBlocklistDomain]: "Trusted blocklist domain",
+  [WarningInnerKindEnum.UnlimitedAllowanceToNfts]:
+    "Unlimited allowance to NFTs",
+  [WarningInnerKindEnum.UnusualGasConsumption]: "Unusual gas consumption",
+  [WarningInnerKindEnum.UserAccountOwnerChange]: "User account owner change",
+  [WarningInnerKindEnum.WhitelistedDomainCrossOrigin]:
+    "Whitelisted domain cross-origin",
+  [WarningInnerKindEnum.YakoaNftIpInfringement]: "Possible IP infringement",
+  [WarningInnerKindEnum.TransferToMintAccount]: "Transfer to mint account",
+  [WarningInnerKindEnum.ReliableSimulationNotPossible]:
+    "Reliable simulation not possible",
+};
+
 export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
   warning,
 }) => {
-  const kindText = useMemo(() => {
-    switch (warning.kind) {
-      case WarningInnerKindEnum.ApprovalToEoa:
-        return "Approval to EOA";
-      case WarningInnerKindEnum.BlurBulkOrderNotOnBlur:
-        return "Blur bulk order on a non-Blur domain";
-      case WarningInnerKindEnum.BlurV2OrderNotOnBlur:
-        return "Blur v2 order on a non-Blur domain";
-      case WarningInnerKindEnum.BlocklistedDomainCrossOrigin:
-        return "Blocklisted domain cross-origin";
-      case WarningInnerKindEnum.BulkApprovalsRequest:
-        return "Bulk approval request";
-      case WarningInnerKindEnum.CompromisedAuthorityUpgrade:
-        return "Compromised authority upgrade";
-      case WarningInnerKindEnum.CopyCatDomain:
-        return "Copycat domain";
-      case WarningInnerKindEnum.CopyCatImageUnresponsiveDomain:
-        return "Copycat unresponsive domain";
-      case WarningInnerKindEnum.DanglingApproval:
-        return "Dangling approval";
-      case WarningInnerKindEnum.DebuggerPaused:
-        return "Debugger paused";
-      case WarningInnerKindEnum.DurableNonce:
-        return "Durable nonce";
-      case WarningInnerKindEnum.EthSignTxHash:
-        return "Eth sign transaction hash";
-      case WarningInnerKindEnum.Forta:
-        return "Potentially malicious on the Forta Network";
-      case WarningInnerKindEnum.ImbalancedDollarValue:
-        return "Imbalanced Dollar Value";
-      case WarningInnerKindEnum.KnownMalicious:
-        return "Known malicious";
-      case WarningInnerKindEnum.MaliciousPackages:
-        return "Malicious packages detected";
-      case WarningInnerKindEnum.MultiCopyCatDomain:
-        return "Multi copycat domain";
-      case WarningInnerKindEnum.NewDomain:
-        return "New Domain";
-      case WarningInnerKindEnum.PermitNoExpiration:
-        return "Permit without expiration";
-      case WarningInnerKindEnum.PermitUnlimitedAllowance:
-        return "Permit with unlimited allowance";
-      case WarningInnerKindEnum.PoisonedAddress:
-        return "Poisoned address";
-      case WarningInnerKindEnum.ReferencedOfacAddress:
-        return "Referenced OFAC Sanctioned Address";
-      case WarningInnerKindEnum.SemiTrustedBlocklistDomain:
-        return "Semi-trusted blocklist domain";
-      case WarningInnerKindEnum.SetOwnerAuthority:
-        return "Set owner authority";
-      case WarningInnerKindEnum.SuspectedMalicious:
-        return "Suspected malicious behaviour";
-      case WarningInnerKindEnum.TooManyTransactions:
-        return "Too many transactions";
-      case WarningInnerKindEnum.TradeForNothing:
-        return "Trade for nothing";
-      case WarningInnerKindEnum.TradeForUnverifiedNft:
-        return "Trade for unverified NFT";
-      case WarningInnerKindEnum.TransferringErc20ToOwnContract:
-        return "Transferring ERC20 to own contract";
-      case WarningInnerKindEnum.TransferringTooMuchSol:
-        return "Transferring too much SOL";
-      case WarningInnerKindEnum.TransfersMajorityOfYourSol:
-        return "Transfers majority of your SOL";
-      case WarningInnerKindEnum.TrustedBlocklistDomain:
-        return "Trusted blocklist domain";
-      case WarningInnerKindEnum.UnlimitedAllowanceToNfts:
-        return "Unlimited allowance to NFTs";
-      case WarningInnerKindEnum.UnusualGasConsumption:
-        return "Unusual gas consumption";
-      case WarningInnerKindEnum.UserAccountOwnerChange:
-        return "User account owner change";
-      case WarningInnerKindEnum.WhitelistedDomainCrossOrigin:
-        return "Whitelisted domain cross-origin";
-      case WarningInnerKindEnum.YakoaNftIpInfringement:
-        return "Possible IP infringement";
-      case WarningInnerKindEnum.TransferToMintAccount:
-        return "Transfer to mint account";
-    }
-  }, [warning.kind]);
   const defaultKindText =
     warning.severity === "WARNING"
       ? "Possible dangerous behaviour"
       : "Dangerous behaviour";
+  const warningText = warning.kind ? WARNING_TEXT[warning.kind] : undefined;
+  const kindText = warningText || defaultKindText;
 
   const kindIcon: IconVariant = useMemo(() => {
     switch (warning.kind) {
@@ -105,7 +82,6 @@ export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({
       case WarningInnerKindEnum.CompromisedAuthorityUpgrade:
       case WarningInnerKindEnum.SetOwnerAuthority:
       case WarningInnerKindEnum.UserAccountOwnerChange:
-
       case WarningInnerKindEnum.BlurBulkOrderNotOnBlur:
       case WarningInnerKindEnum.BlurV2OrderNotOnBlur:
         return "user";

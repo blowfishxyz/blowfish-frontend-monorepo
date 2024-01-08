@@ -52,6 +52,7 @@ paths:
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
+        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transactions |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transactions |
         | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transactions |
@@ -293,20 +294,20 @@ paths:
               schema:
                 type: object
                 required:
+                  - requestId
                   - aggregated
                   - perTransaction
                 properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
                   aggregated:
                     type: object
                     required:
-                      - requestId
                       - action
                       - warnings
                       - error
                       - expectedStateChanges
                     properties:
-                      requestId:
-                        $ref: "#/components/schemas/RequestId"
                       action:
                         $ref: "#/components/schemas/ActionEnum"
                       warnings:
@@ -356,7 +357,7 @@ paths:
                                   - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
                                   - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
-                                  - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
+                                  - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
                                 discriminator:
                                   propertyName: kind
                                   mapping:
@@ -369,6 +370,8 @@ paths:
                                       thorityChange"
                                     USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOw\
                                       nerChange"
+                                    COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTr\
+                                      ansfer"
                   perTransaction:
                     type: array
                     items:
@@ -435,6 +438,7 @@ paths:
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
+        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
@@ -1084,6 +1088,7 @@ paths:
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/historical/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/historical/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/historical/transaction |
+        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/historical/transaction |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/historical/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/historical/transaction |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/historical/transaction |
@@ -1181,6 +1186,7 @@ paths:
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
+        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
         | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
@@ -1420,6 +1426,7 @@ components:
               - TRANSFER_TO_MINT_ACCOUNT
               - WHITELISTED_DOMAIN_CROSS_ORIGIN
               - YAKOA_NFT_IP_INFRINGEMENT
+              - RELIABLE_SIMULATION_NOT_POSSIBLE
             example: SUSPECTED_MALICIOUS
           message:
             type: string
@@ -1955,6 +1962,10 @@ components:
           unknown
         ]
       example: fungible
+    CompressedNftStandard:
+      type: string
+      enum: [ metaplex_bubblegum ]
+      example: metaplex_bubblegum
     EvmTxHash:
       type: string
     EvmTxData:
@@ -3201,6 +3212,7 @@ components:
         - metaplexTokenStandard
         - price
         - imageUrl
+        - previews
       properties:
         symbol:
           type: string
@@ -3225,6 +3237,43 @@ components:
         metaplexTokenStandard:
           description: The Metaplex token standard for this asset if any
           $ref: "#/components/schemas/MetaplexTokenStandard"
+        price:
+          description: The $-value price of the asset
+          $ref: "#/components/schemas/AssetPrice"
+        imageUrl:
+          type: string
+          description: The URL of the asset's image. Can be `null`.
+          nullable: true
+          example: "https://cdn.simplehash.com/assets/2b6b37a30a85f4d7f3727574afc296026d3\
+            453cc813f982a7c4c358668060ea9.png"
+        previews:
+          $ref: "#/components/schemas/NftPreviews"
+    CompressedNftAsset:
+      type: object
+      required:
+        - id
+        - name
+        - symbol
+        - compressedNftStandard
+        - price
+        - previews
+        - imageUrl
+      properties:
+        id:
+          type: string
+          description: cNFT symbol
+          example: ENMS3RbQEZrnBxc5bzUkmipp6d56UoKncJaxM5qVyneq
+        symbol:
+          type: string
+          description: cNFT symbol
+          example: cNFT
+        name:
+          type: string
+          description: cNFT name
+          example: First
+        compressedNftStandard:
+          description: The compressed NFT standard for this asset
+          $ref: "#/components/schemas/CompressedNftStandard"
         price:
           description: The $-value price of the asset
           $ref: "#/components/schemas/AssetPrice"
@@ -3428,6 +3477,31 @@ components:
               nullable: true
               example: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
               default: J58MrVr9qJPzJJS8RPQUDfaFirN3PiVHXU48zr95FY48
+    SolanaStateChangeCompressedNftTransfer:
+      type: object
+      description: cNFT transfer
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ COMPRESSED_NFT_TRANSFER ]
+          example: COMPRESSED_NFT_TRANSFER
+        data:
+          type: object
+          required:
+            - asset
+            - diff
+            - counterparty
+          properties:
+            asset:
+              $ref: "#/components/schemas/CompressedNftAsset"
+            diff:
+              $ref: "#/components/schemas/Diff"
+            counterparty:
+              $ref: "#/components/schemas/SolanaTransferCounterparty"
     SolanaSimulationError:
       description: A error object which includes the parsed simulation error
         encountered (if any). Can be `null`.
@@ -3462,6 +3536,7 @@ components:
     SolanaSimulationTransactionError:
       type: object
       required:
+        - kind
         - humanReadableError
       properties:
         kind:
