@@ -19,7 +19,7 @@ const SimulationWarningStory = ({
 }) => {
   const warning = {
     kind,
-    message: message || "Human-readable warning that comes from Blowfish API",
+    message: message || "Possible dangerous behaviour. Proceed with caution.",
     severity: "WARNING" as const,
   };
   return (
@@ -107,9 +107,10 @@ const WARNING_MESSAGES: { [key in WarningInnerKindEnum]: string } = {
     "We believe this transaction is malicious and unsafe to sign. Approving may lead to loss of funds.",
   [WarningInnerKindEnum.TransferToMintAccount]:
     "This transaction is trying to send the token to its own mint account. This will lead to the loss of funds",
-  [WarningInnerKindEnum.DebuggerPaused]: "",
   [WarningInnerKindEnum.BlocklistedDomainCrossOrigin]: "",
   [WarningInnerKindEnum.WhitelistedDomainCrossOrigin]: "",
+  [WarningInnerKindEnum.ReliableSimulationNotPossible]:
+    "We are unable to provide accurate simulations for this request. Only proceed if you trust this dApp.",
 };
 
 type Entries<T> = {
@@ -128,7 +129,7 @@ export const SingleWarning: StoryObj<{ kind: WarningInnerKindEnum }> = {
       kind,
       message:
         WARNING_MESSAGES[kind] ||
-        "Human-readable warning that comes from Blowfish API",
+        "Possible dangerous behaviour. Proceed with caution.",
       severity: "WARNING" as const,
     };
     return (
