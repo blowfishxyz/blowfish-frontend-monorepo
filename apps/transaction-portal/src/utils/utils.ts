@@ -5,6 +5,8 @@ import {
   EvmSimulationResults,
   ScanTransactionsSolanaRequest,
   ScanTransactionEvmRequest,
+  ScanTransactionsSolana200Response,
+  SolanaProtocol,
 } from "@blowfishxyz/api-client";
 import { DappRequest, Message } from "@blowfish/utils/types";
 
@@ -190,6 +192,16 @@ export const getProtocol = (
   } else if (simulationResults && "protocol" in simulationResults) {
     return simulationResults.protocol;
   }
+  return null;
+};
+
+export const getProtocolSolana = (
+  simulationResults: ScanTransactionsSolana200Response | null
+): SolanaProtocol | null => {
+  if (simulationResults && "aggregated" in simulationResults) {
+    return simulationResults.perTransaction[0]?.protocols[0];
+  }
+
   return null;
 };
 

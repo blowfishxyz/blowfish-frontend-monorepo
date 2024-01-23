@@ -38,7 +38,6 @@ const RequestJsonViewer: React.FC<RequestJsonViewerProps> = ({ request }) => {
 
   const content = useMemo(() => {
     if (isSolana) {
-      console.log(solanaRequest);
       return solanaRequest;
     }
 

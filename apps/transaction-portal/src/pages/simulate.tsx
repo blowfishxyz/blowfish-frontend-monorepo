@@ -1,9 +1,15 @@
 import dynamic from "next/dynamic";
-import React, { useLayoutEffect } from "react";
+import { useRouter } from "next/router";
+import React, { useLayoutEffect, useState } from "react";
+import ScanPageSolana from "~components/ScanPageSolana";
 import { useLayoutConfig } from "~components/layout/Layout";
+import { ApiClientProvider } from "~hooks/useClient";
 import { useQueryParams } from "~hooks/useQueryParams";
-import { useURLRequestParams } from "~hooks/useURLRequestParams";
-
+import { ScanParamsSuccess } from "~hooks/useScanParams";
+import {
+  SolanaSuccessParams,
+  useURLRequestParams,
+} from "~hooks/useURLRequestParams";
 const HistoricalScanPage = dynamic(
   () => import("~components/HistoricalScanPage"),
   {
@@ -18,12 +24,28 @@ const ScanPage = dynamic(() => import("~components/ScanPageV2"), {
 const ScanPageWrapper: React.FC = () => {
   const data = useURLRequestParams();
   const [, setLayoutConfig] = useLayoutConfig();
+  const [isMounted, setIsMounted] = useState(false);
 
   useLayoutEffect(() => {
     setLayoutConfig((prev) => ({ ...prev, hasRequestParams: true }));
+
+    // NOTE (Lolu): Added client-side mounting logic to address the hydration error.
+    // This ensures consistent markup between server-side and client-side rendering.
+    // The component initially renders as null during SSR and initial client render.
+    // Once mounted on the client, it re-renders with the appropriate data-loaded component.
+
+    setIsMounted(true);
   }, [setLayoutConfig]);
 
-  return <ScanPage data={data} />;
+  if (!isMounted) {
+    return null;
+  }
+
+  if (data && "isSolana" in data && data.isSolana) {
+    return <ScanPageSolana data={data as SolanaSuccessParams} />;
+  } else {
+    return <ScanPage data={data as ScanParamsSuccess} />;
+  }
 };
 
 const Page: React.FC = () => {
@@ -31,7 +53,15 @@ const Page: React.FC = () => {
   const hasQueryParams = Object.keys(queryParams).length > 0;
 
   if (hasQueryParams) {
-    return <ScanPageWrapper />;
+    return (
+      <ApiClientProvider
+        config={{
+          basePath: process.env.NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string,
+        }}
+      >
+        <ScanPageWrapper />
+      </ApiClientProvider>
+    );
   }
 
   return <HistoricalScanPage />;

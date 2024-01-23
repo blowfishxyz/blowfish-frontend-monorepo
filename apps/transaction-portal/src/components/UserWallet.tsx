@@ -7,6 +7,8 @@ import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import SolanaIcon from "./icons/SolanaIcon";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -35,12 +37,12 @@ const Connected = styled.div`
 
 const ChainContainer = styled.div`
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
 
   svg {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
   }
 `;
@@ -119,6 +121,7 @@ export const ImpersonatorWallet = ({
   chainId?: number | undefined;
 }) => {
   const [copied, setCopied] = useState(false);
+  const { query } = useRouter();
 
   const copyToClipboard = async () => {
     try {
@@ -142,13 +145,18 @@ export const ImpersonatorWallet = ({
           <Text onClick={copyToClipboard}>{shortenHex(address)}</Text>
         )}
       </AddressColumn>
-      {chainId ? (
+      {query.solanaNetwork ? (
         <ChainContainer>
-          <ChainIcon id={chainId} size={30} />
+          <SolanaIcon />
         </ChainContainer>
       ) : (
-        <Row width={5} />
+        chainId && (
+          <ChainContainer>
+            <ChainIcon id={chainId} size={30} />
+          </ChainContainer>
+        )
       )}
+      {!chainId && !query.solanaNetwork && <Row width={5} />}
     </StyledContainer>
   );
 };

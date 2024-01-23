@@ -5,6 +5,10 @@ import {
   Text,
   device,
   StateChangePreviewSolana,
+  Tooltip,
+  TooltipTrigger,
+  Icon,
+  TooltipContent,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -12,13 +16,18 @@ import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider } from "./common";
 import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
-import { ScanTransactionsSolana200Response } from "@blowfishxyz/api-client";
+import {
+  ScanTransactionsSolana200Response,
+  SolanaProtocol,
+} from "@blowfishxyz/api-client";
 import { ConfirmTxn } from "./ConfirmTxn";
+import { PreviewProtocol } from "./PreviewProtocol";
 
 export type SolanaTxnSimulationDataType = {
   dappUrl: string | undefined;
   account: string;
   scanResult: ScanTransactionsSolana200Response;
+  protocol: SolanaProtocol | null;
 };
 
 const SectionHeading = styled(Text).attrs({ size: "sm", color: "base40" })``;
@@ -30,6 +39,17 @@ const StyledCardContent = styled(Row).attrs({
   @media (${device.lg}) {
     padding: 0 32px;
   }
+`;
+
+const PreviewTokenTooltipContent = styled(TooltipContent)`
+  background-color: ${({ theme }) => theme.colors.backgroundPrimary};
+  box-shadow: 0px 4px 24px ${({ theme }) => theme.colors.border};
+  padding: 15px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: 4px;
+  z-index: 4;
+  width: 200px;
+  border-radius: 12px;
 `;
 
 const StyledColumn = styled(Column).attrs({
@@ -79,14 +99,46 @@ const PreviewCard: FC<PreviewCardProps> = ({
               </LinkWithArrow>
             </Row>
           </StyledColumn>
+          {txnData.protocol && (
+            <>
+              <Divider orientation="vertical" $margin="0 30px" />
+              <StyledColumn gap="sm" flex={1}>
+                <SectionHeading>Protocol</SectionHeading>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Row alignItems="center">
+                      {(txnData.protocol.trustLevel === "TRUSTED" ||
+                        txnData.protocol.trustLevel === "NATIVE") && (
+                        <Icon variant="verified" size={20} />
+                      )}
+                      <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
+                        <Text truncate>{txnData.protocol.name}</Text>
+                      </LinkWithArrow>
+                    </Row>
+                    <PreviewTokenTooltipContent showArrow={false}>
+                      <PreviewProtocol
+                        imageUrl={txnData.protocol.imageUrl}
+                        name={txnData.protocol.name}
+                        verified={
+                          txnData.protocol.trustLevel === "TRUSTED" ||
+                          txnData.protocol.trustLevel === "NATIVE"
+                        }
+                        description={txnData.protocol.description}
+                      />
+                    </PreviewTokenTooltipContent>
+                  </TooltipTrigger>
+                </Tooltip>
+              </StyledColumn>
+            </>
+          )}
         </StyledCardContent>
         <Divider $margin="0 0 16px" />
         {advancedDetails}
       </CardWrapper>
       <ConfirmTxn
-        onContinue={async () => console.log("tbd")}
+        onContinue={() => Promise.resolve()}
         onReport={onReport}
-        onCancel={async () => console.log("tbd")}
+        onCancel={() => Promise.resolve()}
         warnings={warnings}
         severity={severity}
       />

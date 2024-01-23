@@ -15,6 +15,7 @@ import { useLayoutConfig } from "~components/layout/Layout";
 import { useReportTransaction } from "~hooks/useReportTransaction";
 import { PreviewTxnSolana } from "./cards/PreviewTxnSolana";
 import { AdvancedDetails } from "./AdvancedDetails";
+import { getProtocolSolana } from "~utils/utils";
 
 export type UIWarning = {
   message: string;
@@ -62,20 +63,12 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       // TODO(kimpers): Should simulation errors be warnings from the API?
       const simulationResults = scanResults || undefined;
       if (error) {
-        switch (error.kind) {
-          case "SIMULATION_FAILED":
-            return {
-              severity: "WARNING",
-              message: `This transaction failed during simulation. Proceed with caution`,
-            };
-          // TODO: Add more specific messages for these errors
-          default:
-            return {
-              severity: "WARNING",
-              message: `Something went wrong while simulating this transaction. Proceed with caution`,
-            };
-        }
-      } else if (!simulationResults) {
+        return {
+          severity: "WARNING",
+          message: error.humanReadableError,
+        };
+      }
+      if (!simulationResults) {
         return {
           severity: "WARNING",
           message: `We are unable to simulate this message. Proceed with caution`,
@@ -124,9 +117,21 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     };
   }, [severity, impersonatingAddress, setLayoutConfig, error]);
 
+  const getRequestId = (scanResults: ScanTransactionsSolana200Response) => {
+    if (scanResults && "requestId" in scanResults) {
+      return scanResults.requestId as string;
+    }
+    return scanResults.aggregated.requestId;
+  };
+
   const txnData = {
-    scanResult: scanResults,
+    scanResult: {
+      aggregated: scanResults.aggregated,
+      perTransaction: scanResults.perTransaction,
+      requestId: getRequestId(scanResults),
+    },
     account: request.userAccount,
+    protocol: getProtocolSolana(scanResults),
     dappUrl: request.metadata.origin,
   };
 
@@ -143,12 +148,11 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
             scanResults={
               layoutConfig.hasRequestParams ? scanResults : undefined
             }
+            // Note(Lolu):  No logs for MVP, we can add it later
             decodedLogs={undefined}
           />
         }
-        onReport={() =>
-          reportTransaction(txnData.scanResult.aggregated.requestId)
-        }
+        onReport={() => reportTransaction(txnData.scanResult.requestId)}
       />
     </Row>
   );

@@ -11,10 +11,6 @@ export const getErrorFromSolanaScanResponse = (
   if (!simulationResults) return null;
 
   if ("aggregated" in simulationResults) {
-    console.log(
-      simulationResults.aggregated.error,
-      simulationResults.perTransaction[0].error
-    );
     return (
       simulationResults.aggregated?.error ||
       simulationResults.perTransaction[0]?.error

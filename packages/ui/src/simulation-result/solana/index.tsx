@@ -70,7 +70,6 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
       alignItems="flex-start"
     >
       <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
-        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
           <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
             <TxnSimulationImage>
               <SimulationImage stateChange={stateChange} />
@@ -86,7 +85,6 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
               />
             </Column>
           </TxnSimulationImageMsgWrapper>
-        </LinkWrapper>
       </LinkWrapper>
     </TxnSimulationWrapper>
   );
