@@ -22,3 +22,4 @@ export type {
   ThemeBackgroundColor,
   ThemeForegroundColor,
 } from "./theme";
+export * from "./hooks";
