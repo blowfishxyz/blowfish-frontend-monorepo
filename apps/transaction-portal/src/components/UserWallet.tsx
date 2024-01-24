@@ -37,12 +37,12 @@ const Connected = styled.div`
 
 const ChainContainer = styled.div`
   position: relative;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
 
   svg {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
   }
 `;
