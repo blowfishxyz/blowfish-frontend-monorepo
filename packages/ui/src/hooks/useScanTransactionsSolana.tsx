@@ -30,12 +30,7 @@ export const useScanTransactionsSolana = (
   };
 
   return useSWR<ScanTransactionsSolana200Response, Error>(
-    [
-      "scanTransactionsSolana",
-      transactions,
-      userAccount,
-      chainNetwork,
-    ],
+    ["scanTransactionsSolana", transactions, userAccount, chainNetwork],
     fetchTransactions
   );
 };

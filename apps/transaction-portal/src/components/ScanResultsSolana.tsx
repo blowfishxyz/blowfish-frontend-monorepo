@@ -117,18 +117,11 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     };
   }, [severity, impersonatingAddress, setLayoutConfig, error]);
 
-  const getRequestId = (scanResults: ScanTransactionsSolana200Response) => {
-    if (scanResults && "requestId" in scanResults) {
-      return scanResults.requestId as string;
-    }
-    return scanResults.aggregated.requestId;
-  };
-
   const txnData = {
     scanResult: {
       aggregated: scanResults.aggregated,
       perTransaction: scanResults.perTransaction,
-      requestId: getRequestId(scanResults),
+      requestId: scanResults.requestId,
     },
     account: request.userAccount,
     protocol: getProtocolSolana(scanResults),

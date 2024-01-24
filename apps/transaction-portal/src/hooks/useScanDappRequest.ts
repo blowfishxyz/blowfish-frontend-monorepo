@@ -1,6 +1,5 @@
 import type {
   BlowfishMultiChainApiClient,
-  BlowfishMultiChainApiClient,
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
   EvmTransactionsScanResult,
@@ -40,11 +39,7 @@ export const getCacheKey = (
 
 const fetcher = async (
   client: BlowfishMultiChainApiClient,
-  client: BlowfishMultiChainApiClient,
   request: DappRequest,
-  origin: string,
-  chainFamily: ChainFamily | undefined,
-  chainNetwork: ChainNetwork | undefined
   origin: string,
   chainFamily: ChainFamily | undefined,
   chainNetwork: ChainNetwork | undefined

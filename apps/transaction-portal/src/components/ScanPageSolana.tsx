@@ -6,13 +6,13 @@ import {
 import { Layout } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client/.";
-import { useScanTransactionsSolana } from "~hooks/useScanTransactionSolana";
 import ScanResultsSolana from "./ScanResultsSolana";
 import {
   SolanaScanParams,
   SolanaSuccessParams,
 } from "~hooks/useURLRequestParams";
 import { MessageError } from "~utils/utils";
+import { useScanTransactionsSolana } from "@blowfishxyz/ui";
 
 export const ScanPageSolanaV2Inner: React.FC<{
   data: SolanaScanParams;

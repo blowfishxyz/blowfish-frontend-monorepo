@@ -1,9 +1,8 @@
+import { ApiClientProvider } from "@blowfishxyz/ui";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import React, { useLayoutEffect, useState } from "react";
 import ScanPageSolana from "~components/ScanPageSolana";
 import { useLayoutConfig } from "~components/layout/Layout";
-import { ApiClientProvider } from "~hooks/useClient";
 import { useQueryParams } from "~hooks/useQueryParams";
 import { ScanParamsSuccess } from "~hooks/useScanParams";
 import {
