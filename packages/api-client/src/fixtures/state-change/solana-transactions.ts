@@ -41,6 +41,7 @@ export const splTransfer: SolanaExpectedStateChange = {
           updatedAt: 1691479249,
           dollarValuePerToken: 0.99998,
         },
+        previews: { small: "", medium: "", large: "" },
       },
       counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
       diff: {
@@ -72,6 +73,7 @@ export const splApproval: SolanaExpectedStateChange = {
           updatedAt: 1691479249,
           dollarValuePerToken: 0.99998,
         },
+        previews: { small: "", medium: "", large: "" },
       },
       diff: {
         sign: "MINUS",

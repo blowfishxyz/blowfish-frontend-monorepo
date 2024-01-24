@@ -1,5 +1,6 @@
 import type {
   BlowfishMultiChainApiClient,
+  BlowfishMultiChainApiClient,
   EvmMessageScanResult,
   EvmSignTypedDataDataDomain,
   EvmTransactionsScanResult,
@@ -17,7 +18,7 @@ import {
 import useSWR, { SWRResponse } from "swr";
 import { isSmartContractWallet } from "../utils/wallets";
 import { useRef } from "react";
-import { useClient } from "./useClient";
+import { useClient } from "@blowfishxyz/ui";
 
 export const BLOWFISH_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
@@ -39,11 +40,18 @@ export const getCacheKey = (
 
 const fetcher = async (
   client: BlowfishMultiChainApiClient,
+  client: BlowfishMultiChainApiClient,
   request: DappRequest,
   origin: string,
   chainFamily: ChainFamily | undefined,
   chainNetwork: ChainNetwork | undefined
+  origin: string,
+  chainFamily: ChainFamily | undefined,
+  chainNetwork: ChainNetwork | undefined
 ): Promise<EvmTransactionsScanResult | EvmMessageScanResult> => {
+  if (!chainFamily || !chainNetwork) {
+    throw new Error("Missing chain family or chain network");
+  }
   // NOTE: The api key is rewritten on the proxy
 
   if (chainNetwork && chainFamily) {

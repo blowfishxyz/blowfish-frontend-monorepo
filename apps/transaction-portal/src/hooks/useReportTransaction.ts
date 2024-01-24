@@ -1,5 +1,5 @@
 import { ReportRequestEventEnum } from "@blowfishxyz/api-client";
-import { useClient } from "~hooks/useClient";
+import { useClient } from "@blowfishxyz/ui";
 
 export const useReportTransaction = () => {
   const client = useClient();
