@@ -47,7 +47,7 @@ const fetcher = async (
   if (!chainFamily || !chainNetwork) {
     throw new Error("Missing chain family or chain network");
   }
-  
+
   // NOTE: The api key is rewritten on the proxy
   if (isTransactionRequest(request)) {
     // For smart contract wallets like Gnosis Safe we need to
