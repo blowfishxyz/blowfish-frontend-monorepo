@@ -106,29 +106,20 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     };
   }, [severity, impersonatingAddress, setLayoutConfig, error]);
 
-  const txnData = {
-    scanResult: {
-      aggregated: scanResults.aggregated,
-      perTransaction: scanResults.perTransaction,
-      requestId: scanResults.requestId,
-    },
-    account: request.userAccount,
-    protocol: scanResults.perTransaction[0].protocols[0],
-    dappUrl: useMemo(
-      () => createValidURL(request.metadata.origin),
-      [request.metadata.origin]
-    ),
-    decodedCalldata: undefined,
-    message: undefined,
-  };
+  const dappUrl = useMemo(
+    () => createValidURL(request.metadata.origin),
+    [request.metadata.origin]
+  );
 
   return (
     <Row justifyContent="center">
       <PreviewTxn
-        txnData={txnData}
         simulationError={error?.humanReadableError}
         warnings={warnings}
         severity={severity}
+        dappUrl={dappUrl}
+        protocol={scanResults.perTransaction[0].protocols[0]}
+        decodedCalldata={undefined}
         advancedDetails={
           <AdvancedDetails
             request={request}
@@ -139,12 +130,12 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
             decodedLogs={undefined}
           />
         }
-        onReport={() => reportTransaction(txnData.scanResult.requestId)}
+        onReport={() => reportTransaction(scanResults.requestId)}
         onContinue={() => Promise.resolve()}
         onCancel={() => Promise.resolve()}
       >
         <StateChangePreviewSolana
-          scanResult={txnData.scanResult}
+          scanResult={scanResults}
           chainNetwork="mainnet"
           userAccount={request.userAccount}
         />

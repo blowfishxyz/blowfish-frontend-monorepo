@@ -43,27 +43,25 @@ const RequestJsonViewer: React.FC<RequestJsonViewerProps> = ({ request }) => {
 
     const evmRequest = request as DappRequest;
 
-    if (evmRequest) {
-      if (isTransactionRequest(evmRequest)) {
-        const { to, from, value, data } = evmRequest.payload;
-        return {
-          to,
-          from,
-          value: new Decimal(value || 0).toFixed(),
-          data,
-        } as TransactionPayload;
-      } else if (isSignTypedDataRequest(evmRequest)) {
-        const transformedPayload =
-          evmRequest.signTypedDataVersion === SignTypedDataVersion.V1
-            ? transformTypedDataV1FieldsToEIP712(
-                evmRequest.payload,
-                evmRequest.chainId
-              )
-            : evmRequest.payload;
-        return transformedPayload;
-      } else if (isSignMessageRequest(evmRequest)) {
-        return { message: evmRequest.payload.message };
-      }
+    if (isTransactionRequest(evmRequest)) {
+      const { to, from, value, data } = evmRequest.payload;
+      return {
+        to,
+        from,
+        value: new Decimal(value || 0).toFixed(),
+        data,
+      } as TransactionPayload;
+    } else if (isSignTypedDataRequest(evmRequest)) {
+      const transformedPayload =
+        evmRequest.signTypedDataVersion === SignTypedDataVersion.V1
+          ? transformTypedDataV1FieldsToEIP712(
+              evmRequest.payload,
+              evmRequest.chainId
+            )
+          : evmRequest.payload;
+      return transformedPayload;
+    } else if (isSignMessageRequest(evmRequest)) {
+      return { message: evmRequest.payload.message };
     }
 
     logger.error("AdvancedDetails: Unhandled request type", request);

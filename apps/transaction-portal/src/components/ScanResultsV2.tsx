@@ -1,11 +1,20 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, {
+  useMemo,
+  useEffect,
+  useState,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import {
+  Button,
+  Column,
   Row,
   StateChangePreviewEvm,
+  Text,
   getErrorFromScanResponse,
   getResultsFromScanResponse,
 } from "@blowfishxyz/ui";
-import { PreviewTxn } from "~components/cards/PreviewTxn";
+import { PreviewTxn, SectionHeading } from "~components/cards/PreviewTxn";
 import {
   EvmMessageScanResult,
   EvmTransactionsScanResult,
@@ -21,6 +30,7 @@ import {
   isSignTypedDataRequest,
   isTransactionRequest,
 } from "@blowfish/utils/types";
+import styled from "styled-components";
 import { containsPunycode, createValidURL, getProtocol } from "~utils/utils";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useUserDecision } from "../hooks/useUserDecision";
@@ -237,12 +247,10 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         <ImpersonationErrorModal closeWindow={reject} />
       )}
       <PreviewTxn
-        txnData={txnData}
         simulationError={error?.humanReadableError}
         warnings={warnings}
         severity={severity}
-        chainNetwork={props.chainNetwork}
-        chainFamily={props.chainFamily}
+        dappUrl={dappUrl}
         advancedDetails={
           <AdvancedDetails
             request={request}
@@ -269,15 +277,81 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         }}
         onReport={() => reportTransaction(txnData.scanResult.requestId)}
       >
-        {
-          <StateChangePreviewEvm
-            scanResult={txnData.scanResult}
-            chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
-            chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}
-          />
-        }
+        {parsedMessageContent && (
+          <SignaturePreview message={parsedMessageContent} />
+        )}
+        <StateChangePreviewEvm
+          scanResult={txnData.scanResult}
+          chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
+          chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}
+        />
       </PreviewTxn>
     </Row>
+  );
+};
+
+const ShowMoreButton = styled(Button).attrs({
+  design: "tertiary",
+  size: "sm",
+})`
+  height: 15px;
+  padding: 0;
+  justify-content: flex-start;
+`;
+
+type MsgTextProps = { $expanded?: boolean };
+
+const SignatureSimulatioMsgText = styled(Text).attrs({
+  size: "sm",
+  design: "primary",
+})<MsgTextProps>`
+  display: -webkit-box;
+  -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: max-height 0.3s ease;
+`;
+
+const ShowMoreButtonWrapper = styled.div`
+  width: 50px;
+`;
+
+const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [isTextOverflowing, setIsTextOverflowing] = useState(false);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (textRef.current) {
+      const isOverflowing =
+        textRef.current.scrollHeight > textRef.current.clientHeight;
+      setIsTextOverflowing(isOverflowing);
+      setExpanded(!isOverflowing);
+    }
+  }, []);
+
+  const handleShowMore = () => {
+    setExpanded(!expanded);
+  };
+
+  return (
+    <Column gap="sm" marginBottom={18}>
+      <Row justifyContent="space-between">
+        <SectionHeading>Message</SectionHeading>
+      </Row>
+      <SignatureSimulatioMsgText ref={textRef} $expanded={expanded}>
+        {message}
+      </SignatureSimulatioMsgText>
+
+      <ShowMoreButtonWrapper>
+        <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
+          <Text size="xs" design="secondary">
+            {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
+          </Text>
+        </ShowMoreButton>
+      </ShowMoreButtonWrapper>
+    </Column>
   );
 };
 
