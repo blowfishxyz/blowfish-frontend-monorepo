@@ -5,10 +5,7 @@ import ScanPageSolana from "~components/ScanPageSolana";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useQueryParams } from "~hooks/useQueryParams";
 import { ScanParamsSuccess } from "~hooks/useScanParams";
-import {
-  SolanaSuccessParams,
-  useURLRequestParams,
-} from "~hooks/useURLRequestParams";
+import { useURLRequestParams } from "~hooks/useURLRequestParams";
 const HistoricalScanPage = dynamic(
   () => import("~components/HistoricalScanPage"),
   {
@@ -41,7 +38,7 @@ const ScanPageWrapper: React.FC = () => {
   }
 
   if (data && "isSolana" in data && data.isSolana) {
-    return <ScanPageSolana data={data as SolanaSuccessParams} />;
+    return <ScanPageSolana data={data} />;
   } else {
     return <ScanPage data={data as ScanParamsSuccess} />;
   }

@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect, useState } from "react";
 import {
   Row,
+  StateChangePreviewEvm,
   getErrorFromScanResponse,
   getResultsFromScanResponse,
 } from "@blowfishxyz/ui";
@@ -267,7 +268,15 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
           }
         }}
         onReport={() => reportTransaction(txnData.scanResult.requestId)}
-      />
+      >
+        {
+          <StateChangePreviewEvm
+            scanResult={txnData.scanResult}
+            chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
+            chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}
+          />
+        }
+      </PreviewTxn>
     </Row>
   );
 };

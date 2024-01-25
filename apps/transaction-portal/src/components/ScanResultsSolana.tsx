@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from "react";
 import {
   Row,
+  StateChangePreviewSolana,
   getErrorFromSolanaScanResponse,
   getResultsFromSolanaScanResponse,
 } from "@blowfishxyz/ui";
@@ -13,9 +14,9 @@ import { ChainNetwork } from "@blowfish/utils/chains";
 import { actionToSeverity } from "@blowfish/utils/types";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useReportTransaction } from "~hooks/useReportTransaction";
-import { PreviewTxnSolana } from "./cards/PreviewTxnSolana";
 import { AdvancedDetails } from "./AdvancedDetails";
-import { getProtocolSolana } from "~utils/utils";
+import { createValidURL } from "~utils/utils";
+import { PreviewTxn } from "./cards/PreviewTxn";
 
 export type UIWarning = {
   message: string;
@@ -46,21 +47,9 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
 
   const warnings: UIWarning[] = useMemo(() => {
     // Take warnings return from API first hand
-    const apiWarnings = scanResults.aggregated.warnings || [];
-
-    const warnings: UIWarning[] = apiWarnings.map((warning) => {
-      const severity =
-        scanResults.aggregated.action === "WARN" ? "WARNING" : "CRITICAL";
-      const { message, kind } = warning;
-      return {
-        message,
-        severity,
-        kind,
-      };
-    });
+    const warnings = scanResults.aggregated.warnings || [];
 
     function getInferedWarning(): UIWarning | undefined {
-      // TODO(kimpers): Should simulation errors be warnings from the API?
       const simulationResults = scanResults || undefined;
       if (error) {
         return {
@@ -124,13 +113,18 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       requestId: scanResults.requestId,
     },
     account: request.userAccount,
-    protocol: getProtocolSolana(scanResults),
-    dappUrl: request.metadata.origin,
+    protocol: scanResults.perTransaction[0].protocols[0],
+    dappUrl: useMemo(
+      () => createValidURL(request.metadata.origin),
+      [request.metadata.origin]
+    ),
+    decodedCalldata: undefined,
+    message: undefined,
   };
 
   return (
     <Row justifyContent="center">
-      <PreviewTxnSolana
+      <PreviewTxn
         txnData={txnData}
         simulationError={error?.humanReadableError}
         warnings={warnings}
@@ -146,7 +140,15 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
           />
         }
         onReport={() => reportTransaction(txnData.scanResult.requestId)}
-      />
+        onContinue={() => Promise.resolve()}
+        onCancel={() => Promise.resolve()}
+      >
+        <StateChangePreviewSolana
+          scanResult={txnData.scanResult}
+          chainNetwork="mainnet"
+          userAccount={request.userAccount}
+        />
+      </PreviewTxn>
     </Row>
   );
 };

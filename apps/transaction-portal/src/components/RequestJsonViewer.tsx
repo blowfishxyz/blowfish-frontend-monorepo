@@ -16,7 +16,6 @@ import {
   ScanTransactionEvmRequest,
   ScanTransactionsSolanaRequest,
 } from "@blowfishxyz/api-client";
-import { isSolanaTransaction } from "~utils/utils";
 
 const DynamicJsonViewer = dynamic(
   () => import("../components/JsonViewerV2").then((mod) => mod.JsonViewer),
@@ -34,12 +33,15 @@ interface RequestJsonViewerProps {
 }
 
 const RequestJsonViewer: React.FC<RequestJsonViewerProps> = ({ request }) => {
-  const { isSolana, solanaRequest, evmRequest } = isSolanaTransaction(request);
+  const isSolana =
+    "transactions" in request && Array.isArray(request.transactions);
 
   const content = useMemo(() => {
     if (isSolana) {
-      return solanaRequest;
+      return request;
     }
+
+    const evmRequest = request as DappRequest;
 
     if (evmRequest) {
       if (isTransactionRequest(evmRequest)) {
@@ -66,7 +68,7 @@ const RequestJsonViewer: React.FC<RequestJsonViewerProps> = ({ request }) => {
 
     logger.error("AdvancedDetails: Unhandled request type", request);
     return null;
-  }, [evmRequest, isSolana, solanaRequest, request]);
+  }, [isSolana, request]);
 
   return content ? <DynamicJsonViewer data={content} /> : null;
 };

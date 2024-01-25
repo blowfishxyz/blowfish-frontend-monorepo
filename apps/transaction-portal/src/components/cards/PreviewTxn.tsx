@@ -16,7 +16,6 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  StateChangePreviewEvm,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -29,11 +28,12 @@ import {
   EvmDecodedCalldata,
   EvmTransactionsScanResult,
   EvmMessageScanResult,
+  SolanaProtocol,
+  ScanTransactionsSolana200Response,
 } from "@blowfishxyz/api-client";
 import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
-import { useChainMetadata } from "~hooks/useChainMetadata";
 import { PreviewProtocol } from "./PreviewProtocol";
 import { InfoIcon } from "@blowfish/protect-ui/icons";
 
@@ -41,8 +41,11 @@ export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
   account: string;
   message: string | undefined;
-  scanResult: EvmTransactionsScanResult | EvmMessageScanResult;
-  protocol?: EvmProtocol | null;
+  scanResult:
+    | EvmTransactionsScanResult
+    | EvmMessageScanResult
+    | ScanTransactionsSolana200Response;
+  protocol?: EvmProtocol | SolanaProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
 };
 
@@ -248,12 +251,13 @@ export interface PreviewTxnProps {
   simulationError: string | undefined;
   warnings: UIWarning[];
   severity: Severity | undefined;
-  chainNetwork: ChainNetwork;
-  chainFamily: ChainFamily;
+  chainNetwork?: ChainNetwork;
+  chainFamily?: ChainFamily;
   advancedDetails: ReactElement;
   onContinue: () => Promise<SendTransactionResult | void>;
   onCancel: () => void;
   onReport: () => Promise<void>;
+  children: ReactNode;
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({
@@ -264,10 +268,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   onReport,
   onCancel,
   advancedDetails,
+  children,
 }) => {
-  const { dappUrl, scanResult, message } = txnData;
+  const { dappUrl, message } = txnData;
   const { origin, host } = dappUrl || {};
-  const chain = useChainMetadata();
 
   return (
     <PreviewCard
@@ -282,14 +286,8 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onCancel={onCancel}
       advancedDetails={advancedDetails}
     >
-      {message ? <SignaturePreview message={message} /> : null}
-      {
-        <StateChangePreviewEvm
-          scanResult={scanResult}
-          chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
-          chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}
-        />
-      }
+      {message && <SignaturePreview message={message} />}
+      {children}
     </PreviewCard>
   );
 };

@@ -1,7 +1,7 @@
 import { MessageError } from "~utils/utils";
 import { useQueryParams } from "./useQueryParams";
-import { ChainMetadata, useChainMetadata } from "./useChainMetadata";
-import { HexString, ScanParams } from "./useScanParams";
+import { useChainMetadata } from "./useChainMetadata";
+import { ScanParams } from "./useScanParams";
 import { DappRequest, Message, RequestType } from "@blowfish/utils/types";
 import {
   EvmSimulatorConfig,
@@ -38,12 +38,12 @@ export type UrlParsedRequest = {
         rawMessage: string;
       };
     }
+  | { transactions: string[] }
 );
 
 export type SolanaSuccessParams = {
   request: ScanTransactionsSolanaRequest;
-  userAccount: HexString;
-  chain: ChainMetadata;
+  userAccount: string;
   isImpersonating: boolean;
   isSolana: boolean;
 };
@@ -176,7 +176,6 @@ export function useURLRequestParams(): ScanParams | SolanaScanParams {
       } as ScanTransactionsSolanaRequest,
       isImpersonating: true,
       userAccount: parsedRequest.userAccount as `0x${string}`,
-      chain: undefined,
       isSolana: true,
     };
   }

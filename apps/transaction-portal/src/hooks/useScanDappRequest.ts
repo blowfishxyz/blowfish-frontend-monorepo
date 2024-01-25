@@ -47,67 +47,65 @@ const fetcher = async (
   if (!chainFamily || !chainNetwork) {
     throw new Error("Missing chain family or chain network");
   }
+  
   // NOTE: The api key is rewritten on the proxy
-
-  if (chainNetwork && chainFamily) {
-    if (isTransactionRequest(request)) {
-      // For smart contract wallets like Gnosis Safe we need to
-      // scan from the POV of the contract rather the the user's ExpandIcon
-      // TODO(kimpers): In the future we want to support multiple userAccounts
-      const userAccount = isSmartContractWallet(origin)
-        ? request.payload.to
-        : request.userAccount;
-      return client
-        .scanTransactionsEvm(
-          [request.payload],
-          userAccount,
-          {
-            origin,
-          },
-          chainFamily,
-          chainNetwork,
-          request.simulatorConfig
-        )
-        .then((response: ScanTransactionsEvm200Response) => {
-          return response;
-        });
-    } else if (isSignTypedDataRequest(request)) {
-      const payload =
-        request.signTypedDataVersion === SignTypedDataVersion.V1
-          ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
-          : request.payload;
-
-      // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
-      const domain = {
-        ...payload.domain,
-        ...(payload.domain.chainId && {
-          chainId: payload.domain.chainId.toString(),
-        }),
-      } as EvmSignTypedDataDataDomain;
-
-      return client.scanSignTypedDataEvm(
-        {
-          ...payload,
-          domain,
-        },
-        request.userAccount,
+  if (isTransactionRequest(request)) {
+    // For smart contract wallets like Gnosis Safe we need to
+    // scan from the POV of the contract rather the the user's ExpandIcon
+    // TODO(kimpers): In the future we want to support multiple userAccounts
+    const userAccount = isSmartContractWallet(origin)
+      ? request.payload.to
+      : request.userAccount;
+    return client
+      .scanTransactionsEvm(
+        [request.payload],
+        userAccount,
         {
           origin,
         },
         chainFamily,
-        chainNetwork
-      );
-    } else if (isSignMessageRequest(request)) {
-      return client.scanMessageEvm(
-        request.payload.message,
-        request.userAccount,
-        {
-          origin,
-        },
-        chainFamily,
-        chainNetwork
-      );
-    }
+        chainNetwork,
+        request.simulatorConfig
+      )
+      .then((response: ScanTransactionsEvm200Response) => {
+        return response;
+      });
+  } else if (isSignTypedDataRequest(request)) {
+    const payload =
+      request.signTypedDataVersion === SignTypedDataVersion.V1
+        ? transformTypedDataV1FieldsToEIP712(request.payload, request.chainId)
+        : request.payload;
+
+    // API expects chainId to be a string but Sign Typed Data V3 has chainId as a number
+    const domain = {
+      ...payload.domain,
+      ...(payload.domain.chainId && {
+        chainId: payload.domain.chainId.toString(),
+      }),
+    } as EvmSignTypedDataDataDomain;
+
+    return client.scanSignTypedDataEvm(
+      {
+        ...payload,
+        domain,
+      },
+      request.userAccount,
+      {
+        origin,
+      },
+      chainFamily,
+      chainNetwork
+    );
+  } else if (isSignMessageRequest(request)) {
+    return client.scanMessageEvm(
+      request.payload.message,
+      request.userAccount,
+      {
+        origin,
+      },
+      chainFamily,
+      chainNetwork
+    );
   }
   throw new Error(`Unsupported request: ${(request as DappRequest).type}`);
 };

@@ -11,7 +11,7 @@ import { ChainMetadata, useChainMetadata } from "~hooks/useChainMetadata";
 import { getScanRequestFromMessageChannelV2 } from "~utils/messages";
 import { MessageError, checkVersionAndTransformMessage } from "~utils/utils";
 
-export type HexString = `0x${string}`;
+type HexString = `0x${string}`;
 
 export type ScanParamsSuccess = {
   message: Message<DappRequest["type"], DappRequest>;

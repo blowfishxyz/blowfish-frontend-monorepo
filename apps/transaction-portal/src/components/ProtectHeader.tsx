@@ -7,6 +7,8 @@ import { UserWalletConnectKitWrapper } from "./UserWalletConnectKitWrapper";
 import { useLayoutConfig } from "./layout/Layout";
 import { useRouter } from "next/router";
 import { ImpersonatorWallet } from "./UserWallet";
+import SolanaIcon from "./icons/SolanaIcon";
+import { ChainIcon } from "connectkit";
 
 const ProtectScreenContent = styled(Row)`
   width: 100%;
@@ -32,16 +34,25 @@ export const ProtectHeader: React.FC<{
   const [{ severity, hasRequestParams }] = useLayoutConfig();
   const { pathname, query } = useRouter();
 
+  const chainIcon = query.solanaNetwork ? (
+    <SolanaIcon />
+  ) : (
+    <ChainIcon
+      id={hasRequestParams ? Number(query.chainId) : undefined}
+      size={30}
+    />
+  );
+
   return (
     <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull $contrast={severity === "CRITICAL"} />
       <RightContentWrapper gap="md">
-        {impersonatingAddress ? (
+        {impersonatingAddress && (
           <ImpersonatorWallet
             address={impersonatingAddress}
-            chainId={hasRequestParams ? Number(query.chainId) : undefined}
+            chainIcon={chainIcon}
           />
-        ) : null}
+        )}
         {pathname !== "/" && !pathname.startsWith("/simulate") ? (
           <UserWalletConnectKitWrapper />
         ) : null}

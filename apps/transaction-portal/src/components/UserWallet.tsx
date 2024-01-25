@@ -2,13 +2,11 @@ import { shortenEnsName } from "~utils/utils";
 import { SwitchIcon } from "~components/icons/SwitchIcon";
 import { Chain } from "wagmi";
 import styled from "styled-components";
-import { Column, Row, Text } from "@blowfishxyz/ui";
+import { Column, Text } from "@blowfishxyz/ui";
 import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
 import { useState } from "react";
-import { useRouter } from "next/router";
-import SolanaIcon from "./icons/SolanaIcon";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -113,15 +111,16 @@ export const UserWallet = ({
   );
 };
 
+type ImpersonatorWalletProps = {
+  address: string;
+  chainIcon: JSX.Element;
+};
+
 export const ImpersonatorWallet = ({
   address,
-  chainId,
-}: {
-  address: string;
-  chainId?: number | undefined;
-}) => {
+  chainIcon,
+}: ImpersonatorWalletProps) => {
   const [copied, setCopied] = useState(false);
-  const { query } = useRouter();
 
   const copyToClipboard = async () => {
     try {
@@ -145,18 +144,7 @@ export const ImpersonatorWallet = ({
           <Text onClick={copyToClipboard}>{shortenHex(address)}</Text>
         )}
       </AddressColumn>
-      {query.solanaNetwork ? (
-        <ChainContainer>
-          <SolanaIcon />
-        </ChainContainer>
-      ) : (
-        chainId && (
-          <ChainContainer>
-            <ChainIcon id={chainId} size={30} />
-          </ChainContainer>
-        )
-      )}
-      {!chainId && !query.solanaNetwork && <Row width={5} />}
+      <ChainContainer>{chainIcon}</ChainContainer>
     </StyledContainer>
   );
 };
