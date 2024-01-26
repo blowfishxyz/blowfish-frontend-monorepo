@@ -3,7 +3,10 @@ import { useQueryParams } from "./useQueryParams";
 import { useChainMetadata } from "./useChainMetadata";
 import { ScanParams } from "./useScanParams";
 import { DappRequest, Message, RequestType } from "@blowfish/utils/types";
-import { EvmSimulatorConfig } from "@blowfishxyz/api-client";
+import {
+  EvmSimulatorConfig,
+  ScanTransactionsSolanaRequest,
+} from "@blowfishxyz/api-client";
 import { fromUrlParam } from "~utils/url";
 
 export type UrlParsedRequest = {
@@ -35,9 +38,22 @@ export type UrlParsedRequest = {
         rawMessage: string;
       };
     }
+  | { transactions: string[] }
 );
 
-export function useURLRequestParams(): ScanParams {
+export type SolanaSuccessParams = {
+  request: ScanTransactionsSolanaRequest;
+  userAccount: string;
+  isImpersonating: boolean;
+  isSolana: boolean;
+};
+
+export type SolanaScanParams =
+  | SolanaSuccessParams
+  | { error: MessageError | undefined; id: string | undefined }
+  | undefined;
+
+export function useURLRequestParams(): ScanParams | SolanaScanParams {
   const chain = useChainMetadata();
   const { request: requestParam } = useQueryParams<{
     request?: string;
@@ -147,5 +163,20 @@ export function useURLRequestParams(): ScanParams {
         isImpersonating: true,
       };
     }
+  }
+
+  if ("transactions" in parsedRequest) {
+    return {
+      request: {
+        transactions: parsedRequest.transactions,
+        userAccount: parsedRequest.userAccount,
+        metadata: {
+          origin: parsedRequest.metadata.origin,
+        },
+      } as ScanTransactionsSolanaRequest,
+      isImpersonating: true,
+      userAccount: parsedRequest.userAccount as `0x${string}`,
+      isSolana: true,
+    };
   }
 }

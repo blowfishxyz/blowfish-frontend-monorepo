@@ -9,7 +9,6 @@ import { useMemo } from "react";
 import { useAccount, useSwitchNetwork } from "wagmi";
 import { useScanDappRequest } from "~hooks/useScanDappRequest";
 import { ScanParams, ScanParamsSuccess } from "~hooks/useScanParams";
-import { MessageError } from "~utils/utils";
 import {
   AccountNotConnectedModal,
   BlockedTransactionModal,
@@ -26,10 +25,7 @@ import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { useUserDecision } from "../hooks/useUserDecision";
 import { useConnectedChainId } from "~utils/wagmi";
 import ScanResultsV2 from "./ScanResultsV2";
-import { ApiClientProvider } from "@blowfishxyz/ui";
-
-export const BLOWFISH_API_BASE_URL = process.env
-  .NEXT_PUBLIC_BLOWFISH_API_BASE_URL as string;
+import { MessageError } from "~utils/utils";
 
 export const ScanPageV2Inner: React.FC<{
   data: ScanParams;
@@ -45,14 +41,13 @@ export const ScanPageV2Inner: React.FC<{
     if (data.error === MessageError.OUTDATED_EXTENSION) {
       return <OutdatedExtensionModal />;
     }
-
     return <TransactionNotFoundModal />;
   }
 
-  return <FullfieldView data={data} />;
+  return <EvmFullfieldView data={data} />;
 };
 
-const FullfieldView: React.FC<{
+const EvmFullfieldView: React.FC<{
   data: ScanParamsSuccess;
 }> = ({ data }) => {
   const { message, request, chain, isImpersonating, userAccount } = data;
@@ -73,21 +68,19 @@ const FullfieldView: React.FC<{
   }
 
   return (
-    <ApiClientProvider config={{ basePath: BLOWFISH_API_BASE_URL }}>
-      <ResultsView
-        message={message}
-        request={request}
-        chainInfo={chain.chainInfo}
-        chainId={chain.chainId}
-        isImpersonating={isImpersonating}
-        userAccount={userAccount}
-        reject={reject}
-      />
-    </ApiClientProvider>
+    <EvmResultsView
+      message={message}
+      request={request}
+      chainInfo={chain.chainInfo}
+      chainId={chain.chainId}
+      isImpersonating={isImpersonating}
+      userAccount={userAccount}
+      reject={reject}
+    />
   );
 };
 
-const ResultsView: React.FC<{
+const EvmResultsView: React.FC<{
   message: Message<DappRequest["type"], DappRequest>;
   request: DappRequest;
   chainInfo: ChainInfo;

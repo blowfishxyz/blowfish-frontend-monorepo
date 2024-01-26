@@ -8,15 +8,22 @@ import { DappRequest } from "@blowfish/utils/types";
 import {
   EvmDecodedLog,
   ScanMessageEvm200Response,
+  ScanTransactionEvmRequest,
   ScanTransactionsEvm200Response,
+  ScanTransactionsSolana200Response,
+  ScanTransactionsSolanaRequest,
 } from "@blowfishxyz/api-client";
 import RawResponseViewer from "./RawResponseViewer";
 
 export const AdvancedDetails = memo<{
-  request: DappRequest;
+  request:
+    | DappRequest
+    | ScanTransactionEvmRequest
+    | ScanTransactionsSolanaRequest;
   scanResults:
     | ScanMessageEvm200Response
     | ScanTransactionsEvm200Response
+    | ScanTransactionsSolana200Response
     | undefined;
   decodedLogs: EvmDecodedLog[] | undefined;
 }>(function AdvancedDetails({ request, decodedLogs, scanResults }) {

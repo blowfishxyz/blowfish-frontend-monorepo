@@ -1,13 +1,5 @@
-import React, {
-  FC,
-  ReactElement,
-  ReactNode,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, ReactElement, ReactNode } from "react";
 import {
-  Button,
   Column,
   Row,
   Text,
@@ -16,7 +8,6 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-  StateChangePreviewEvm,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
@@ -27,13 +18,10 @@ import { Severity } from "@blowfish/utils/types";
 import {
   EvmProtocol,
   EvmDecodedCalldata,
-  EvmTransactionsScanResult,
-  EvmMessageScanResult,
+  SolanaProtocol,
 } from "@blowfishxyz/api-client";
-import { ChainFamily, ChainNetwork } from "@blowfish/utils/chains";
 import { ConfirmTxn } from "./ConfirmTxn";
 import { SendTransactionResult } from "@wagmi/core";
-import { useChainMetadata } from "~hooks/useChainMetadata";
 import { PreviewProtocol } from "./PreviewProtocol";
 import { InfoIcon } from "@blowfish/protect-ui/icons";
 
@@ -41,12 +29,14 @@ export type TxnSimulationDataType = {
   dappUrl: URL | undefined;
   account: string;
   message: string | undefined;
-  scanResult: EvmTransactionsScanResult | EvmMessageScanResult;
-  protocol?: EvmProtocol | null;
+  protocol?: EvmProtocol | SolanaProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
 };
 
-const SectionHeading = styled(Text).attrs({ size: "sm", color: "base40" })``;
+export const SectionHeading = styled(Text).attrs({
+  size: "sm",
+  color: "base40",
+})``;
 
 const StyledCardContent = styled(Row).attrs({
   alignItems: "center",
@@ -95,7 +85,6 @@ const DecodedCallDataText = styled(Text).attrs({ size: "sm" })`
 `;
 
 interface PreviewCardProps {
-  txnData: TxnSimulationDataType;
   title: string;
   origin?: string;
   website?: string;
@@ -106,10 +95,11 @@ interface PreviewCardProps {
   onReport: () => Promise<void>;
   onCancel: () => void;
   advancedDetails: ReactElement;
+  protocol?: EvmProtocol | SolanaProtocol | null;
+  decodedCalldata?: EvmDecodedCalldata | null;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
-  txnData,
   title,
   warnings,
   severity,
@@ -119,6 +109,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
   onCancel,
   advancedDetails,
   website,
+  protocol,
+  decodedCalldata,
 }) => {
   return (
     <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
@@ -141,7 +133,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
               </LinkWithArrow>
             </Row>
           </StyledColumn>
-          {txnData.protocol && (
+          {protocol && (
             <>
               <Divider orientation="vertical" $margin="0 30px" />
               <StyledColumn gap="sm" flex={1}>
@@ -149,23 +141,23 @@ const PreviewCard: FC<PreviewCardProps> = ({
                 <Tooltip>
                   <TooltipTrigger>
                     <Row alignItems="center">
-                      {(txnData.protocol.trustLevel === "TRUSTED" ||
-                        txnData.protocol.trustLevel === "NATIVE") && (
+                      {(protocol.trustLevel === "TRUSTED" ||
+                        protocol.trustLevel === "NATIVE") && (
                         <Icon variant="verified" size={20} />
                       )}
-                      <LinkWithArrow href={txnData.protocol.websiteUrl || ""}>
-                        <Text truncate>{txnData.protocol.name}</Text>
+                      <LinkWithArrow href={protocol.websiteUrl || ""}>
+                        <Text truncate>{protocol.name}</Text>
                       </LinkWithArrow>
                     </Row>
                     <PreviewTokenTooltipContent showArrow={false}>
                       <PreviewProtocol
-                        imageUrl={txnData.protocol.imageUrl}
-                        name={txnData.protocol.name}
+                        imageUrl={protocol.imageUrl}
+                        name={protocol.name}
                         verified={
-                          txnData.protocol.trustLevel === "TRUSTED" ||
-                          txnData.protocol.trustLevel === "NATIVE"
+                          protocol.trustLevel === "TRUSTED" ||
+                          protocol.trustLevel === "NATIVE"
                         }
-                        description={txnData.protocol.description}
+                        description={protocol.description}
                       />
                     </PreviewTokenTooltipContent>
                   </TooltipTrigger>
@@ -187,14 +179,14 @@ const PreviewCard: FC<PreviewCardProps> = ({
         </CardText>
       </StyledColumn> */}
         </StyledCardContent>
-        {txnData.decodedCalldata && (
+        {decodedCalldata && (
           <>
             <Divider />
             <CardContent>
               <StyledColumn gap="md">
                 <Row>
                   <SectionHeading>Decoded calldata</SectionHeading>
-                  {!txnData.protocol && (
+                  {!protocol && (
                     <Tooltip>
                       <TooltipTrigger>
                         <StyledInfoIcon />
@@ -208,9 +200,9 @@ const PreviewCard: FC<PreviewCardProps> = ({
 
                 <Column gap="xs">
                   <DecodedCallDataText>
-                    function {txnData.decodedCalldata?.data.functionName}(
-                    {txnData.decodedCalldata &&
-                      txnData.decodedCalldata.data.arguments.map((arg, i) => (
+                    function {decodedCalldata?.data.functionName}(
+                    {decodedCalldata &&
+                      decodedCalldata.data.arguments.map((arg, i) => (
                         <DecodedCallDataArgs key={`${arg}-${i}`}>
                           {arg.paramType} {arg.name}
                         </DecodedCallDataArgs>
@@ -244,34 +236,35 @@ const PreviewWrapper = styled(Row)`
 `;
 
 export interface PreviewTxnProps {
-  txnData: TxnSimulationDataType;
   simulationError: string | undefined;
   warnings: UIWarning[];
   severity: Severity | undefined;
-  chainNetwork: ChainNetwork;
-  chainFamily: ChainFamily;
   advancedDetails: ReactElement;
   onContinue: () => Promise<SendTransactionResult | void>;
   onCancel: () => void;
   onReport: () => Promise<void>;
+  children: ReactNode;
+  protocol?: EvmProtocol | SolanaProtocol | null;
+  decodedCalldata?: EvmDecodedCalldata | null;
+  dappUrl: URL | undefined;
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({
-  txnData,
   warnings,
   severity,
   onContinue,
   onReport,
   onCancel,
   advancedDetails,
+  children,
+  protocol,
+  decodedCalldata,
+  dappUrl,
 }) => {
-  const { dappUrl, scanResult, message } = txnData;
   const { origin, host } = dappUrl || {};
-  const chain = useChainMetadata();
 
   return (
     <PreviewCard
-      txnData={txnData}
       title="Preview changes"
       origin={origin}
       website={host}
@@ -281,80 +274,10 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       onReport={onReport}
       onCancel={onCancel}
       advancedDetails={advancedDetails}
+      protocol={protocol}
+      decodedCalldata={decodedCalldata}
     >
-      {message ? <SignaturePreview message={message} /> : null}
-      {
-        <StateChangePreviewEvm
-          scanResult={scanResult}
-          chainFamily={chain?.chainInfo?.chainFamily || "ethereum"}
-          chainNetwork={chain?.chainInfo?.chainNetwork || "mainnet"}
-        />
-      }
+      {children}
     </PreviewCard>
-  );
-};
-
-type MsgTextProps = { $expanded?: boolean };
-
-const SignatureSimulatioMsgText = styled(Text).attrs({
-  size: "sm",
-  design: "primary",
-})<MsgTextProps>`
-  display: -webkit-box;
-  -webkit-line-clamp: ${({ $expanded }) => ($expanded ? "none" : "5")};
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  transition: max-height 0.3s ease;
-`;
-
-const ShowMoreButtonWrapper = styled.div`
-  width: 50px;
-`;
-
-const ShowMoreButton = styled(Button).attrs({
-  design: "tertiary",
-  size: "sm",
-})`
-  height: 15px;
-  padding: 0;
-  justify-content: flex-start;
-`;
-
-const SignaturePreview: React.FC<{ message: string }> = ({ message }) => {
-  const [expanded, setExpanded] = useState(false);
-  const [isTextOverflowing, setIsTextOverflowing] = useState(false);
-  const textRef = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    if (textRef.current) {
-      const isOverflowing =
-        textRef.current.scrollHeight > textRef.current.clientHeight;
-      setIsTextOverflowing(isOverflowing);
-      setExpanded(!isOverflowing);
-    }
-  }, []);
-
-  const handleShowMore = () => {
-    setExpanded(!expanded);
-  };
-
-  return (
-    <Column gap="sm" marginBottom={18}>
-      <Row justifyContent="space-between">
-        <SectionHeading>Message</SectionHeading>
-      </Row>
-      <SignatureSimulatioMsgText ref={textRef} $expanded={expanded}>
-        {message}
-      </SignatureSimulatioMsgText>
-
-      <ShowMoreButtonWrapper>
-        <ShowMoreButton stretch design="tertiary" onClick={handleShowMore}>
-          <Text size="xs" design="secondary">
-            {isTextOverflowing ? (expanded ? "Show less" : "Show more") : ""}
-          </Text>
-        </ShowMoreButton>
-      </ShowMoreButtonWrapper>
-    </Column>
   );
 };
