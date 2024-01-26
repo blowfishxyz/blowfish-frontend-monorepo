@@ -91,8 +91,8 @@ export const AdvancedDetails = memo<{
           <Text design="secondary" size="sm">
             {scanResults
               ? showAdvancedDetails
-                ? "Hide raw response"
-                : "View raw response"
+                ? "Hide raw request and response data"
+                : "View raw request and response data"
               : showAdvancedDetails
               ? "View less details"
               : "View more details"}
