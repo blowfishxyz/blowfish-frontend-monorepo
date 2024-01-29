@@ -88,8 +88,8 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
       justifyContent="space-between"
       alignItems="flex-start"
     >
-      <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
-        <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
           {hasStateChangeImage(rawInfo) ? (
             <Tooltip placement="bottom-start">
               <TooltipTrigger>
@@ -106,19 +106,25 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
               <SimulationImage rawInfo={stateChange.rawInfo} />
             </TxnSimulationImage>
           )}
+        </LinkWrapper>
 
-          <Column gap="xs">
+        <Column gap="xs">
+          <LinkWrapper
+            href={assetLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <TxnSimulationText weight="normal">
               {stateChange.humanReadableDiff}
             </TxnSimulationText>
-            <TokenFooter
-              rawInfo={stateChange.rawInfo}
-              counterpartyLink={counterpartyLink}
-              isPositiveEffect={isPositiveStateChange(rawInfo)}
-            />
-          </Column>
-        </TxnSimulationImageMsgWrapper>
-      </LinkWrapper>
+          </LinkWrapper>
+          <TokenFooter
+            rawInfo={stateChange.rawInfo}
+            counterpartyLink={counterpartyLink}
+            isPositiveEffect={isPositiveStateChange(rawInfo)}
+          />
+        </Column>
+      </TxnSimulationImageMsgWrapper>
     </TxnSimulationWrapper>
   );
 };
