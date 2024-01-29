@@ -88,8 +88,8 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
       justifyContent="space-between"
       alignItems="flex-start"
     >
-      <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
-        <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+      <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
           {hasStateChangeImage(rawInfo) ? (
             <Tooltip placement="bottom-start">
               <TooltipTrigger>
@@ -106,19 +106,20 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
               <SimulationImage rawInfo={stateChange.rawInfo} />
             </TxnSimulationImage>
           )}
+        </LinkWrapper>
 
-          <Column gap="xs">
-            <TxnSimulationText weight="normal">
-              {stateChange.humanReadableDiff}
-            </TxnSimulationText>
-            <TokenFooter
-              rawInfo={stateChange.rawInfo}
-              counterpartyLink={counterpartyLink}
-              isPositiveEffect={isPositiveStateChange(rawInfo)}
-            />
-          </Column>
-        </TxnSimulationImageMsgWrapper>
-      </LinkWrapper>
+        <Column gap="xs">
+          <TxnSimulationText weight="normal">
+            {stateChange.humanReadableDiff}
+          </TxnSimulationText>
+          <TokenFooter
+            rawInfo={stateChange.rawInfo}
+            counterpartyLink={counterpartyLink}
+            assetLink={assetLink}
+            isPositiveEffect={isPositiveStateChange(rawInfo)}
+          />
+        </Column>
+      </TxnSimulationImageMsgWrapper>
     </TxnSimulationWrapper>
   );
 };
@@ -224,17 +225,20 @@ const TokenTooltipContent: React.FC<{
 const TokenFooter: React.FC<{
   rawInfo: EvmExpectedStateChange["rawInfo"];
   counterpartyLink: string | undefined;
+  assetLink: string | undefined;
   isPositiveEffect: boolean;
-}> = ({ rawInfo, counterpartyLink, isPositiveEffect }) => {
+}> = ({ rawInfo, counterpartyLink, assetLink, isPositiveEffect }) => {
   if (isCurrencyStateChange(rawInfo)) {
     return (
       <Row gap="md">
-        <Text size="sm" design="secondary">
-          Asset:{" "}
-          <Text size="sm" design="primary">
-            {rawInfo.data.asset.name}
+        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
+          <Text size="sm" design="secondary">
+            Asset:{" "}
+            <Text size="sm" design="primary">
+              {rawInfo.data.asset.name}
+            </Text>
           </Text>
-        </Text>
+        </LinkWrapper>
         {hasCounterparty(rawInfo) && rawInfo.data.counterparty ? (
           <LinkWrapper
             href={counterpartyLink}
