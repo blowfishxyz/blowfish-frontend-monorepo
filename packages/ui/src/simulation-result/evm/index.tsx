@@ -109,18 +109,13 @@ export const SimulationResultEvm: React.FC<SimulationResultEvmProps> = ({
         </LinkWrapper>
 
         <Column gap="xs">
-          <LinkWrapper
-            href={assetLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TxnSimulationText weight="normal">
-              {stateChange.humanReadableDiff}
-            </TxnSimulationText>
-          </LinkWrapper>
+          <TxnSimulationText weight="normal">
+            {stateChange.humanReadableDiff}
+          </TxnSimulationText>
           <TokenFooter
             rawInfo={stateChange.rawInfo}
             counterpartyLink={counterpartyLink}
+            assetLink={assetLink}
             isPositiveEffect={isPositiveStateChange(rawInfo)}
           />
         </Column>
@@ -230,17 +225,20 @@ const TokenTooltipContent: React.FC<{
 const TokenFooter: React.FC<{
   rawInfo: EvmExpectedStateChange["rawInfo"];
   counterpartyLink: string | undefined;
+  assetLink: string | undefined;
   isPositiveEffect: boolean;
-}> = ({ rawInfo, counterpartyLink, isPositiveEffect }) => {
+}> = ({ rawInfo, counterpartyLink, assetLink, isPositiveEffect }) => {
   if (isCurrencyStateChange(rawInfo)) {
     return (
       <Row gap="md">
-        <Text size="sm" design="secondary">
-          Asset:{" "}
-          <Text size="sm" design="primary">
-            {rawInfo.data.asset.name}
+        <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
+          <Text size="sm" design="secondary">
+            Asset:{" "}
+            <Text size="sm" design="primary">
+              {rawInfo.data.asset.name}
+            </Text>
           </Text>
-        </Text>
+        </LinkWrapper>
         {hasCounterparty(rawInfo) && rawInfo.data.counterparty ? (
           <LinkWrapper
             href={counterpartyLink}
