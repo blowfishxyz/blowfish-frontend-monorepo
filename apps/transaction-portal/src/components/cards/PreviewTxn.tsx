@@ -244,7 +244,7 @@ export interface PreviewTxnProps {
   onCancel: () => void;
   onReport: () => Promise<void>;
   children: ReactNode;
-  protocol?: EvmProtocol | SolanaProtocol | null;
+  protocol: EvmProtocol | SolanaProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
   dappUrl: URL | undefined;
 }
