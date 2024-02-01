@@ -251,6 +251,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
         warnings={warnings}
         severity={severity}
         dappUrl={dappUrl}
+        protocol={txnData.protocol}
         advancedDetails={
           <AdvancedDetails
             request={request}
