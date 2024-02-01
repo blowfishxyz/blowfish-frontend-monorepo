@@ -158,6 +158,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
                           protocol.trustLevel === "NATIVE"
                         }
                         description={protocol.description}
+                        trustLevel={protocol.trustLevel}
                       />
                     </PreviewTokenTooltipContent>
                   </TooltipTrigger>
