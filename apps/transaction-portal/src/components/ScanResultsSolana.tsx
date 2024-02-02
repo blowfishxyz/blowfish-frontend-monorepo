@@ -118,7 +118,6 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         warnings={warnings}
         severity={severity}
         dappUrl={dappUrl}
-        protocol={scanResults.perTransaction[0].protocols[0]}
         decodedCalldata={undefined}
         advancedDetails={
           <AdvancedDetails
