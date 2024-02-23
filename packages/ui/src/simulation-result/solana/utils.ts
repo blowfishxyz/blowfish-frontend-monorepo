@@ -54,7 +54,8 @@ const getSimulationDiff = (rawInfo: SolanaExpectedStateChange["rawInfo"]) => {
   if (
     rawInfo.kind === "SOL_STAKE_AUTHORITY_CHANGE" ||
     rawInfo.kind === "USER_ACCOUNT_OWNER_CHANGE" ||
-    rawInfo.kind === "BFP_LOADER_AUTHORITY_CHANGE"
+    rawInfo.kind === "BFP_LOADER_AUTHORITY_CHANGE" ||
+    rawInfo.kind === "SOL_STAKE_ACCOUNT_DEPOSIT"
   ) {
     return new Decimal(0);
   }
