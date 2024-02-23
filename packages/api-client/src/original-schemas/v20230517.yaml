@@ -40,17 +40,19 @@ paths:
         | Network | Base URL |
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transactions |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
+        | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
         | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transactions |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
         | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transactions |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transactions |
+        | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
+        | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transactions |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transactions |
-        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transactions |
+        | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transactions |
+        | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transactions |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
@@ -267,17 +269,19 @@ paths:
         | Network | Base URL |
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
+        | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
         | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transaction |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
         | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
+        | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
+        | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transaction |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
-        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
+        | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
+        | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transaction |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       deprecated: true
       security:
@@ -768,17 +772,19 @@ paths:
         | Network | Base URL |
         | --- | --- |
         | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/message |
-        | Goerli Testnet | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
+        | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
         | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/message |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message |
         | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
         | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
-        | Optimism Goerli Testnet | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
+        | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
+        | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/message |
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
-        | Base Goerli Testnet | https://api.blowfish.xyz/base/v0/goerli/scan/message |
+        | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/message |
+        | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/message |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
       security:
         - ApiKeyAuth: []
@@ -1416,6 +1422,7 @@ paths:
                                 enum:
                                   - CREDIT
                                   - DEBIT
+                                  - INFO
                                 example: CREDIT
                               rawInfo:
                                 description: A machine-parsable state change object describing the state change.
@@ -1424,6 +1431,8 @@ paths:
                                   - $ref: "#/components/schemas/SolanaStateChangeSplTransfer"
                                   - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
                                   - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
                                   - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
@@ -1434,6 +1443,8 @@ paths:
                                     SPL_TRANSFER: "#/components/schemas/SolanaStateChangeSplTransfer"
                                     SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
                                     SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
+                                    SOL_STAKE_ACCOUNT_DEPOSIT: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
+                                    SOL_STAKE_ACCOUNT_WITHDRAWAL: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
                                     BFP_LOADER_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                     USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
                                     COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
@@ -3737,6 +3748,62 @@ components:
               type: integer
               description: Amount of SOL staked by this account
               example: 1000000000000
+    SolanaStateChangeSolStakeAccountDeposit:
+      type: object
+      description: Creation of a SOL staking account
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [SOL_STAKE_ACCOUNT_DEPOSIT]
+          example: SOL_STAKE_ACCOUNT_DEPOSIT
+        data:
+          type: object
+          required:
+            - stakeAccount
+            - asset
+            - solStaked
+          properties:
+            stakeAccount:
+              type: string
+              description: The stake account address
+              example: 2AG3beWwvyvEMLfwJcQS9DKMV62C3UWTTf8d7gp2vFQS
+            asset:
+              $ref: "#/components/schemas/SolAsset"
+            solStaked:
+              type: integer
+              description: Amount of SOL staked by this account
+              example: 1000000000000
+    SolanaStateChangeSolStakeAccountWithdrawal:
+      type: object
+      description: Withdrawal from a SOL staking account
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [SOL_STAKE_ACCOUNT_WITHDRAWAL]
+          example: SOL_STAKE_ACCOUNT_WITHDRAWAL
+        data:
+          type: object
+          required:
+            - stakeAccount
+            - asset
+            - diff
+          properties:
+            stakeAccount:
+              type: string
+              description: The stake account address
+              example: 2AG3beWwvyvEMLfwJcQS9DKMV62C3UWTTf8d7gp2vFQS
+            asset:
+              $ref: "#/components/schemas/SolAsset"
+            diff:
+              $ref: "#/components/schemas/Diff"
     SolanaStateChangeBfpLoaderAuthorityChange:
       type: object
       description: Changing the authority on the BFP loader. It allows the new authority to change the deployed program at any time

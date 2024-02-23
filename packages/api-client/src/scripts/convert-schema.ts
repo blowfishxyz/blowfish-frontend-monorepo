@@ -199,6 +199,7 @@ function createEvmChainNetwork() {
         - mainnet
         - one
         - goerli
+        - sepolia
     required: true
   `) as YAMLMap;
 

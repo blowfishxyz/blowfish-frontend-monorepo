@@ -2730,6 +2730,7 @@ export const ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChan
   {
     Credit: "CREDIT",
     Debit: "DEBIT",
+    Info: "INFO",
   } as const;
 export type ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum =
   (typeof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum)[keyof typeof ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInnerSuggestedColorEnum];
@@ -2747,6 +2748,12 @@ export type ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChang
     | ({
         kind: "COMPRESSED_NFT_TRANSFER";
       } & SolanaStateChangeCompressedNftTransfer)
+    | ({
+        kind: "SOL_STAKE_ACCOUNT_DEPOSIT";
+      } & SolanaStateChangeSolStakeAccountDeposit)
+    | ({
+        kind: "SOL_STAKE_ACCOUNT_WITHDRAWAL";
+      } & SolanaStateChangeSolStakeAccountWithdrawal)
     | ({
         kind: "SOL_STAKE_AUTHORITY_CHANGE";
       } & SolanaStateChangeSolStakeAuthorityChange)
@@ -2974,6 +2981,138 @@ export interface SolanaStateChangeCompressedNftTransferData {
    * @memberof SolanaStateChangeCompressedNftTransferData
    */
   counterparty: string | null;
+}
+/**
+ * Creation of a SOL staking account
+ * @export
+ * @interface SolanaStateChangeSolStakeAccountDeposit
+ */
+export interface SolanaStateChangeSolStakeAccountDeposit {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountDeposit
+   */
+  kind: SolanaStateChangeSolStakeAccountDepositKindEnum;
+  /**
+   *
+   * @type {SolanaStateChangeSolStakeAccountDepositData}
+   * @memberof SolanaStateChangeSolStakeAccountDeposit
+   */
+  data: SolanaStateChangeSolStakeAccountDepositData;
+}
+
+/**
+ * @export
+ */
+export const SolanaStateChangeSolStakeAccountDepositKindEnum = {
+  SolStakeAccountDeposit: "SOL_STAKE_ACCOUNT_DEPOSIT",
+} as const;
+export type SolanaStateChangeSolStakeAccountDepositKindEnum =
+  (typeof SolanaStateChangeSolStakeAccountDepositKindEnum)[keyof typeof SolanaStateChangeSolStakeAccountDepositKindEnum];
+
+/**
+ *
+ * @export
+ * @interface SolanaStateChangeSolStakeAccountDepositData
+ */
+export interface SolanaStateChangeSolStakeAccountDepositData {
+  /**
+   * The stake account address
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountDepositData
+   */
+  stakeAccount: string;
+  /**
+   * Symbol of the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountDepositData
+   */
+  symbol: string;
+  /**
+   * Name of the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountDepositData
+   */
+  name: string;
+  /**
+   * Decimals of the Solana native token
+   * @type {number}
+   * @memberof SolanaStateChangeSolStakeAccountDepositData
+   */
+  decimals: number;
+  /**
+   * Amount of SOL staked by this account
+   * @type {number}
+   * @memberof SolanaStateChangeSolStakeAccountDepositData
+   */
+  solStaked: number;
+}
+/**
+ * Withdrawal from a SOL staking account
+ * @export
+ * @interface SolanaStateChangeSolStakeAccountWithdrawal
+ */
+export interface SolanaStateChangeSolStakeAccountWithdrawal {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawal
+   */
+  kind: SolanaStateChangeSolStakeAccountWithdrawalKindEnum;
+  /**
+   *
+   * @type {SolanaStateChangeSolStakeAccountWithdrawalData}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawal
+   */
+  data: SolanaStateChangeSolStakeAccountWithdrawalData;
+}
+
+/**
+ * @export
+ */
+export const SolanaStateChangeSolStakeAccountWithdrawalKindEnum = {
+  SolStakeAccountWithdrawal: "SOL_STAKE_ACCOUNT_WITHDRAWAL",
+} as const;
+export type SolanaStateChangeSolStakeAccountWithdrawalKindEnum =
+  (typeof SolanaStateChangeSolStakeAccountWithdrawalKindEnum)[keyof typeof SolanaStateChangeSolStakeAccountWithdrawalKindEnum];
+
+/**
+ *
+ * @export
+ * @interface SolanaStateChangeSolStakeAccountWithdrawalData
+ */
+export interface SolanaStateChangeSolStakeAccountWithdrawalData {
+  /**
+   * The stake account address
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawalData
+   */
+  stakeAccount: string;
+  /**
+   * Symbol of the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawalData
+   */
+  symbol: string;
+  /**
+   * Name of the Solana native token
+   * @type {string}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawalData
+   */
+  name: string;
+  /**
+   * Decimals of the Solana native token
+   * @type {number}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawalData
+   */
+  decimals: number;
+  /**
+   *
+   * @type {Diff}
+   * @memberof SolanaStateChangeSolStakeAccountWithdrawalData
+   */
+  diff: Diff;
 }
 /**
  * Transferring control over a user's SOL staking account
