@@ -31,50 +31,57 @@ You can also use `SimulationWarning` to display Blowfish warnings.
 ### Example
 
 ```tsx
+import React from "react";
 import useSWR from "swr";
-import { createEvmClient } from "@blowfishxyz/api-client";
-import { SimulationWarning, StateChangePreviewEvm } from "@blowfishxyz/ui";
+import { createEvmClient, type EvmTxData } from "@blowfishxyz/api-client";
+import {
+  SimulationWarning,
+  StateChangePreviewEvm,
+  BlowfishUIProvider,
+} from "@blowfishxyz/ui";
 
 function EvmApp() {
-  const userAccount = "0x...";
-  const tx: EvmTxData = {};
-  const origin = "app.uniswap.org";
+  const userAccount = "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045";
+  const tx: EvmTxData = {
+    data: "0xa9059cbb000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000000000000000000000000000002386f26fc10000",
+    from: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+    to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+  };
+  const origin = "https://unkown-domain.dev";
 
   const scanTransactions = () => {
     return createEvmClient({
-      basePath: API_BASE_URL,
+      basePath: "https://api.blowfish.xyz",
+      // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
+      apiKey: "4daa1e3b-87e6-40b2-8883-758feb6a8e46",
       chainFamily: "ethereum",
       chainNetwork: "mainnet",
-      // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
-      apiKey: API_KEY,
-      // Optional
-      language: Languages.En,
     }).scanTransactions([tx], userAccount, {
       origin,
     });
   };
 
-  const { data } = useSWR(getCacheKey(), scanTransactions, {
-    refreshInterval: SCAN_REFRESH_INTERVAL_MS,
-  });
+  const { data } = useSWR(tx.data, scanTransactions);
 
   if (!data) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <StateChangePreviewEvm
-        scanResult={data}
-        chainFamily="ethereum"
-        chainNetwork="mainnet"
-      />
+    <BlowfishUIProvider mode="auto">
       <div>
-        {data.warnings.map((warning) => (
-          <SimulationWarning key={warning.message} warning={warning} />
-        ))}
+        <StateChangePreviewEvm
+          scanResult={data}
+          chainFamily="ethereum"
+          chainNetwork="mainnet"
+        />
+        <div>
+          {data.warnings.map((warning) => (
+            <SimulationWarning key={warning.message} warning={warning} />
+          ))}
+        </div>
       </div>
-    </div>
+    </BlowfishUIProvider>
   );
 }
 ```
@@ -88,46 +95,55 @@ Use `StateChangePreviewSolana` to display state changes for solana transactions.
 ### Example
 
 ```tsx
+import React from "react";
 import useSWR from "swr";
-import { createSolanaClient } from "@blowfishxyz/api-client";
-import { SimulationWarning, StateChangePreviewSolana } from "@blowfishxyz/ui";
+import { Languages, createSolanaClient } from "@blowfishxyz/api-client";
+import {
+  BlowfishUIProvider,
+  SimulationWarning,
+  StateChangePreviewSolana,
+} from "@blowfishxyz/ui";
 
 function SolanaApp() {
-  const userAccount = "5F64...";
-  const tx1 = "AgAAA...";
-  const tx2 = "AgAAA...";
-  const origin = "app.uniswap.org";
+  const userAccount = "FXxHSp14Yfmwn5c3ynpxx3AMHU3JVmdXJu1MgEwz3bAu";
+  const tx =
+    "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAED1/GM77uLGslrQf0lxej6sBRDW3dUMBw4Mxo1zRrpZGZafbJORJb+gzh+vcMdhnn8px1N+NcuQ1Lj1KvhFRwAywbd9uHXZaGT2cvhRs7reawctIXtX1s3kTqM9YV+/wCpBn9A83Xu7uaFQt8+0152j5cclxp+kZToz5JJnbLwpxQBAgIBACMGAgF0db0rJ/DnR+R6kWV6kj4FchRRhx9TXx7HEF7/uDTADQ==";
+  const origin = "https://unkown-domain.dev";
 
   const scanTransactions = () => {
     return createSolanaClient({
-      basePath: API_BASE_URL,
-      chainNetwork: "mainnet",
+      basePath: "https://api.blowfish.xyz",
       // Optional: It's highly encouraged to use a proxy server to not expose your API key on the client (see: https://docs.blowfish.xyz/docs/wallet-integration-guide#optional-proxy-server)
-      apiKey: API_KEY,
+      apiKey: "4daa1e3b-87e6-40b2-8883-758feb6a8e46",
+      chainNetwork: "mainnet",
       // Optional
       language: Languages.En,
-    }).scanTransactions([tx1, tx2], userAccount, {
+    }).scanTransactions([tx], userAccount, {
       origin,
     });
   };
 
-  const { data } = useSWR("cache-key", scanTransactions, {
-    refreshInterval: SCAN_REFRESH_INTERVAL_MS,
-  });
+  const { data } = useSWR(tx, scanTransactions);
 
   if (!data) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <StateChangePreviewSolana scanResult={data} chainNetwork="mainnet" />
+    <BlowfishUIProvider mode="auto">
       <div>
-        {data.warnings.map((warning) => (
-          <SimulationWarning key={warning.message} warning={warning} />
-        ))}
+        <StateChangePreviewSolana
+          scanResult={data}
+          userAccount={userAccount}
+          chainNetwork="mainnet"
+        />
+        <div>
+          {data.aggregated.warnings.map((warning) => (
+            <SimulationWarning key={warning.message} warning={warning} />
+          ))}
+        </div>
       </div>
-    </div>
+    </BlowfishUIProvider>
   );
 }
 ```
