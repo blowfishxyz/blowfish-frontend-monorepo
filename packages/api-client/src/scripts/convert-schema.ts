@@ -182,6 +182,7 @@ function createEvmChainFamily() {
         - arbitrum
         - optimism
         - base
+        - zora
     required: true
   `) as YAMLMap;
 
