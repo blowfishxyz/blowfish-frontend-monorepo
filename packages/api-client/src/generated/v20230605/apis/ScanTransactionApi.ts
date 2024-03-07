@@ -149,6 +149,7 @@ export const ScanTransactionEvmOperationChainFamilyEnum = {
   Arbitrum: "arbitrum",
   Optimism: "optimism",
   Base: "base",
+  Zora: "zora",
 } as const;
 export type ScanTransactionEvmOperationChainFamilyEnum =
   (typeof ScanTransactionEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionEvmOperationChainFamilyEnum];
