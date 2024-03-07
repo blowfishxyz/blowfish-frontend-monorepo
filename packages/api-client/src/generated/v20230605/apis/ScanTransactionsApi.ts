@@ -29,6 +29,7 @@ export interface ScanTransactionsEvmOperationRequest {
   chainFamily: ScanTransactionsEvmOperationChainFamilyEnum;
   chainNetwork: ScanTransactionsEvmOperationChainNetworkEnum;
   language?: Languages;
+  method?: string | null;
   contentType?: string;
   scanTransactionsEvmRequest?: ScanTransactionsEvmRequest;
 }
@@ -38,6 +39,7 @@ export interface ScanTransactionsSolanaOperationRequest {
   chainNetwork: ScanTransactionsSolanaOperationChainNetworkEnum;
   scanTransactionsSolanaRequest: ScanTransactionsSolanaRequest;
   language?: Languages;
+  method?: string | null;
   simulationTimeoutMs?: number;
   simulateExpired?: ScanTransactionsSolanaOperationSimulateExpiredEnum;
   contentType?: string;
@@ -89,6 +91,10 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
 
     if (requestParameters.language !== undefined) {
       queryParameters["language"] = requestParameters.language;
+    }
+
+    if (requestParameters.method !== undefined) {
+      queryParameters["method"] = requestParameters.method;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -194,6 +200,10 @@ export class ScanTransactionsApi extends runtime.BaseAPI {
       queryParameters["language"] = requestParameters.language;
     }
 
+    if (requestParameters.method !== undefined) {
+      queryParameters["method"] = requestParameters.method;
+    }
+
     if (requestParameters.simulationTimeoutMs !== undefined) {
       queryParameters["simulationTimeoutMs"] =
         requestParameters.simulationTimeoutMs;
@@ -268,6 +278,7 @@ export const ScanTransactionsEvmOperationChainFamilyEnum = {
   Arbitrum: "arbitrum",
   Optimism: "optimism",
   Base: "base",
+  Zora: "zora",
 } as const;
 export type ScanTransactionsEvmOperationChainFamilyEnum =
   (typeof ScanTransactionsEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];

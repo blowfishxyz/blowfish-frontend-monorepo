@@ -64,6 +64,12 @@ paths:
           description: The language to use in the returned human-readable warnings and simulation results
           schema:
             $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the transaction
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "eth_sendTransaction"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -611,6 +617,12 @@ paths:
           description: The language to use in the returned human-readable warnings and simulation results
           schema:
             $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the message
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "eth_signTypedData_v4"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -1121,6 +1133,12 @@ paths:
           description: The language to use in the returned human-readable warnings and simulation results
           schema:
             $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the transaction
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "signAndSendTransaction"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -2246,6 +2264,11 @@ components:
         - yo
         - zh_CN
         - zh_TW
+    Method:
+      type: string
+      nullable: true
+      description: The RPC method used by dApp to propose the transaction
+      example: "eth_sendTransaction"
     RequestMetadata:
       type: object
       properties:

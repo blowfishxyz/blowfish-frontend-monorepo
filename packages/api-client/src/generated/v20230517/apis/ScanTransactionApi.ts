@@ -27,6 +27,7 @@ export interface ScanTransactionEvmOperationRequest {
   chainFamily: ScanTransactionEvmOperationChainFamilyEnum;
   chainNetwork: ScanTransactionEvmOperationChainNetworkEnum;
   language?: Languages;
+  method?: string | null;
   contentType?: string;
   scanTransactionEvmRequest?: ScanTransactionEvmRequest;
 }
@@ -77,6 +78,10 @@ export class ScanTransactionApi extends runtime.BaseAPI {
 
     if (requestParameters.language !== undefined) {
       queryParameters["language"] = requestParameters.language;
+    }
+
+    if (requestParameters.method !== undefined) {
+      queryParameters["method"] = requestParameters.method;
     }
 
     const headerParameters: runtime.HTTPHeaders = {};
@@ -149,6 +154,7 @@ export const ScanTransactionEvmOperationChainFamilyEnum = {
   Arbitrum: "arbitrum",
   Optimism: "optimism",
   Base: "base",
+  Zora: "zora",
 } as const;
 export type ScanTransactionEvmOperationChainFamilyEnum =
   (typeof ScanTransactionEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionEvmOperationChainFamilyEnum];

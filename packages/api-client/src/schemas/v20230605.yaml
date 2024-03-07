@@ -69,6 +69,12 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the transaction
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "eth_sendTransaction"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -92,6 +98,7 @@ paths:
               - arbitrum
               - optimism
               - base
+              - zora
           required: true
         - name: chain-network
           in: path
@@ -195,6 +202,12 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the transaction
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "signAndSendTransaction"
         - name: simulationTimeoutMs
           in: query
           description: The desired timeout for the transaction simulation (defaults to 30
@@ -466,6 +479,12 @@ paths:
             simulation results
           schema:
             $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the message
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "eth_signTypedData_v4"
         - name: X-Api-Version
           in: header
           description: Which version of the API to use
@@ -489,6 +508,7 @@ paths:
               - arbitrum
               - optimism
               - base
+              - zora
           required: true
         - name: chain-network
           in: path
@@ -1243,6 +1263,7 @@ paths:
               - arbitrum
               - optimism
               - base
+              - zora
           required: true
         - name: chain-network
           in: path
@@ -1567,6 +1588,11 @@ components:
         - yo
         - zh_CN
         - zh_TW
+    Method:
+      type: string
+      nullable: true
+      description: The RPC method used by dApp to propose the transaction
+      example: "eth_sendTransaction"
     RequestMetadata:
       type: object
       properties:
