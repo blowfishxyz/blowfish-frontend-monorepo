@@ -35,22 +35,11 @@ export class BlowfishMultiChainApiClient {
   private readonly config: Configuration;
 
   private getConfig(apiKey?: string): ConfigurationParameters {
-    console.log("@@ HER");
     return {
       basePath: this.basePath,
       headers: this.getHeaders(),
       apiKey,
       fetchApi: this.fetchApi,
-      middleware: [
-        {
-          post: async (context) => {
-            console.log("@@@ POST ", await context.response.json());
-          },
-          onError: async (context) => {
-            console.log("@@@ ERROR ", context);
-          },
-        },
-      ],
     };
   }
 
