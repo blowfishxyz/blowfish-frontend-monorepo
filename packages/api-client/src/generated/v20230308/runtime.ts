@@ -12,6 +12,13 @@
  * Do not edit the class manually.
  */
 
+import {
+  BlowfishBadRequestError,
+  BlowfishInternalServerError,
+  BlowfishRateLimitError,
+  BlowfishUnknownError,
+} from "../../clients/common/utils";
+
 export const BASE_PATH = "https://api.blowfish.xyz".replace(/\/+$/, "");
 
 export interface ConfigurationParameters {
@@ -156,7 +163,18 @@ export class BaseAPI {
     if (response && response.status >= 200 && response.status < 300) {
       return response;
     }
-    throw new ResponseError(response, "Response returned an error code");
+    const error = await response.json();
+    if (response && response.status === 400) {
+      throw new BlowfishBadRequestError(error);
+    }
+    if (response && response.status === 429) {
+      throw new BlowfishRateLimitError(error);
+    }
+    if (response && response.status === 500) {
+      throw new BlowfishInternalServerError(error);
+    }
+
+    throw new BlowfishUnknownError(error, response.status);
   }
 
   private async createFetchParams(
