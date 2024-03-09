@@ -191,6 +191,7 @@ paths:
                                 - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
                                 - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
                                 - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
+                                - $ref: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
                               discriminator:
                                 propertyName: kind
                                 mapping:
@@ -205,6 +206,7 @@ paths:
                                   ERC721_LOCK: "#/components/schemas/EvmStateChangeErc721Lock"
                                   ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
                                   ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+                                  FARCASTER_STORAGE_RENT: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
 
                       error:
                         description: An error object which includes the parsed simulation error encountered (if any). Can be `null`.
@@ -3214,6 +3216,51 @@ components:
               type: string
               description: The type of specified NFT
               example: ERC721
+          description: Data associated with the state change
+    EvmStateChangeFarcasterStorageRent:
+      type: object
+      description: Farcaster Storage Rent Purchase
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [FARCASTER_STORAGE_RENT]
+          example: FARCASTER_STORAGE_RENT
+        data:
+          type: object
+          required:
+            - symbol
+            - name
+            - decimals
+            - contract
+            - amount
+            - fid
+            - asset
+          properties:
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+              deprecated: true
+              description: Deprecated, use asset.symbol instead
+            name:
+              $ref: "#/components/schemas/EvmName"
+              deprecated: true
+              description: Deprecated, use asset.name instead
+            decimals:
+              $ref: "#/components/schemas/EvmDecimals"
+              deprecated: true
+              description: Deprecated, use asset.decimals instead
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            fid:
+              description: The Farcaster ID of the storage rent recipient
+              type: string
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
           description: Data associated with the state change
     SolanaStateChangeSolTransfer:
       type: object
