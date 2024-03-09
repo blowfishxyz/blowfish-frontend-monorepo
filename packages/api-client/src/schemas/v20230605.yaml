@@ -2062,6 +2062,7 @@ components:
             - $ref: "#/components/schemas/EvmStateChangeErc721Lock"
             - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+            - $ref: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
           discriminator:
             propertyName: kind
             mapping:
@@ -2076,6 +2077,7 @@ components:
               ERC721_LOCK: "#/components/schemas/EvmStateChangeErc721Lock"
               ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
               ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
+              FARCASTER_STORAGE_RENT: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
     EvmExpectedStateChanges:
       type: array
       items:
@@ -2938,6 +2940,33 @@ components:
               $ref: "#/components/schemas/EvmAddressInfo"
             asset:
               $ref: "#/components/schemas/EvmErc1155Asset"
+          description: Data associated with the state change
+    EvmStateChangeFarcasterStorageRent:
+      type: object
+      description: Farcaster Storage Rent Purchase
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ FARCASTER_STORAGE_RENT ]
+          example: FARCASTER_STORAGE_RENT
+        data:
+          type: object
+          required:
+            - amount
+            - fid
+            - asset
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            fid:
+              description: The Farcaster ID of the storage rent recipient
+              type: string
+            asset:
+              $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
     # Message endpoint uses 2023-03-08 state change types
     EvmMessageStateChangeErc20Permit:

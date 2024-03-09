@@ -869,6 +869,7 @@ export type EvmExpectedStateChangeRawInfo =
       kind: "ERC721_LOCK_APPROVAL_FOR_ALL";
     } & EvmStateChangeErc721LockApprovalForAll)
   | ({ kind: "ERC721_TRANSFER" } & EvmStateChangeErc721Transfer)
+  | ({ kind: "FARCASTER_STORAGE_RENT" } & EvmStateChangeFarcasterStorageRent)
   | ({ kind: "NATIVE_ASSET_TRANSFER" } & EvmStateChangeNativeAssetTransfer);
 /**
  * An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
@@ -2472,6 +2473,60 @@ export interface EvmStateChangeErc721TransferData {
    * @memberof EvmStateChangeErc721TransferData
    */
   asset: EvmErc721Asset;
+}
+/**
+ * Farcaster Storage Rent Purchase
+ * @export
+ * @interface EvmStateChangeFarcasterStorageRent
+ */
+export interface EvmStateChangeFarcasterStorageRent {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeFarcasterStorageRent
+   */
+  kind: EvmStateChangeFarcasterStorageRentKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeFarcasterStorageRentData}
+   * @memberof EvmStateChangeFarcasterStorageRent
+   */
+  data: EvmStateChangeFarcasterStorageRentData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeFarcasterStorageRentKindEnum = {
+  FarcasterStorageRent: "FARCASTER_STORAGE_RENT",
+} as const;
+export type EvmStateChangeFarcasterStorageRentKindEnum =
+  (typeof EvmStateChangeFarcasterStorageRentKindEnum)[keyof typeof EvmStateChangeFarcasterStorageRentKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmStateChangeFarcasterStorageRentData
+ */
+export interface EvmStateChangeFarcasterStorageRentData {
+  /**
+   *
+   * @type {EvmAmount}
+   * @memberof EvmStateChangeFarcasterStorageRentData
+   */
+  amount: EvmAmount;
+  /**
+   * The Farcaster ID of the storage rent recipient
+   * @type {string}
+   * @memberof EvmStateChangeFarcasterStorageRentData
+   */
+  fid: string;
+  /**
+   *
+   * @type {EvmErc20Asset}
+   * @memberof EvmStateChangeFarcasterStorageRentData
+   */
+  asset: EvmErc20Asset;
 }
 /**
  * ETH transfers

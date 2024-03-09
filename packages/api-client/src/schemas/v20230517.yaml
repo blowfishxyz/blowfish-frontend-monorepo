@@ -1948,6 +1948,7 @@ components:
               - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
               - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
               - $ref: "#/components/schemas/EvmStateChangeAnyNftFromCollectionTransfer"
+              - $ref: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
             discriminator:
               propertyName: kind
               mapping:
@@ -1964,6 +1965,7 @@ components:
                 ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
                 ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFro\
                   mCollectionTransfer"
+                FARCASTER_STORAGE_RENT: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
     EvmUserAccount:
       type: string
       description: A hex-representation of the user account who is being asked to sign
@@ -2840,6 +2842,36 @@ components:
               type: string
               description: The type of specified NFT
               example: ERC721
+          description: Data associated with the state change
+    EvmStateChangeFarcasterStorageRent:
+      type: object
+      description: Farcaster Storage Rent Purchase
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ FARCASTER_STORAGE_RENT ]
+          example: FARCASTER_STORAGE_RENT
+        data:
+          type: object
+          required:
+            - amount
+            - fid
+            - asset
+            - contract
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            fid:
+              description: The Farcaster ID of the storage rent recipient
+              type: string
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
           description: Data associated with the state change
     SolanaStateChangeSolTransfer:
       type: object
