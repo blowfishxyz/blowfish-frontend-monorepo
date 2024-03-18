@@ -6,4 +6,3 @@ export * from "./ScanDomainApi";
 export * from "./ScanMessageApi";
 export * from "./ScanTransactionApi";
 export * from "./ScanTransactionsApi";
-export * from "./SimulateHistoricalTransactionApi";

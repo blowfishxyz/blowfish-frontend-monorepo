@@ -4,7 +4,6 @@ apis/ScanDomainApi.ts
 apis/ScanMessageApi.ts
 apis/ScanTransactionApi.ts
 apis/ScanTransactionsApi.ts
-apis/SimulateHistoricalTransactionApi.ts
 apis/index.ts
 index.ts
 models/index.ts

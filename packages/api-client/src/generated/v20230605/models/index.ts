@@ -2744,50 +2744,6 @@ export type GnosisSafePresetKindEnum =
 /**
  *
  * @export
- * @interface HistoricalTransactionEvm200Response
- */
-export interface HistoricalTransactionEvm200Response {
-  /**
-   *
-   * @type {EvmAggregatedSimulationResults}
-   * @memberof HistoricalTransactionEvm200Response
-   */
-  aggregated: EvmAggregatedSimulationResults;
-  /**
-   *
-   * @type {Array<EvmPerTransactionSimulationResultsInner>}
-   * @memberof HistoricalTransactionEvm200Response
-   */
-  perTransaction: Array<EvmPerTransactionSimulationResultsInner>;
-  /**
-   * Request ID uniquely identifies the HTTP request sent to our service
-   * @type {string}
-   * @memberof HistoricalTransactionEvm200Response
-   */
-  requestId: string;
-}
-/**
- *
- * @export
- * @interface HistoricalTransactionEvmRequest
- */
-export interface HistoricalTransactionEvmRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof HistoricalTransactionEvmRequest
-   */
-  txHash: string;
-  /**
-   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
-   * @type {string}
-   * @memberof HistoricalTransactionEvmRequest
-   */
-  userAccount: string;
-}
-/**
- *
- * @export
  * @interface InternalServerError
  */
 export interface InternalServerError {
