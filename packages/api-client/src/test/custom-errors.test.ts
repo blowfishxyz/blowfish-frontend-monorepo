@@ -1,11 +1,11 @@
+import { describe, it, expect } from "vitest";
 import * as v20230605 from "../clients/v20230605";
 import * as v20230517 from "../clients/v20230517";
 import * as v20230308 from "../clients/v20230308";
 import * as v20220601 from "../clients/v20220601";
-import { describe, it, expect } from "vitest";
 
-describe("ApiClient", () => {
-  it("all clients should export custom errors", async () => {
+describe("All API Clients", () => {
+  it("should export custom errors", async () => {
     const errors = {
       v20230605: [
         v20230605.BlowfishBadRequestError,
@@ -44,6 +44,31 @@ describe("ApiClient", () => {
     );
     expect(errors.v20220601.length).toEqual(
       v20220601.BlowfishErrorTypes.length
+    );
+  });
+
+  it("should have correct version header", async () => {
+    // read the version from package.json
+    const packageJson = require("../../package.json");
+
+    const client = new v20230605.BlowfishMultiChainApiClient("/test-path");
+    expect(client.getHeaders()["X-Api-Client-Version"]).toEqual(
+      packageJson.version
+    );
+
+    const client2 = new v20230517.BlowfishMultiChainApiClient("/test-path");
+    expect(client2.getHeaders()["X-Api-Client-Version"]).toEqual(
+      packageJson.version
+    );
+
+    const client3 = new v20230308.BlowfishMultiChainApiClient("/test-path");
+    expect(client3.getHeaders()["X-Api-Client-Version"]).toEqual(
+      packageJson.version
+    );
+
+    const client4 = new v20220601.BlowfishMultiChainApiClient("/test-path");
+    expect(client4.getHeaders()["X-Api-Client-Version"]).toEqual(
+      packageJson.version
     );
   });
 });

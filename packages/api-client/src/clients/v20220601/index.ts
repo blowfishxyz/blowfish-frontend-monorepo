@@ -3,6 +3,8 @@ export {
   createEvmClient,
   BlowfishSolanaApiClient,
   createSolanaClient,
+  BlowfishMultiChainApiClient,
+  createMultiChainClient,
 } from "./client";
 export {
   BlowfishUnknownError,
