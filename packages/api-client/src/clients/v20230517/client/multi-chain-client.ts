@@ -40,7 +40,7 @@ export class BlowfishMultiChainApiClient {
     };
   }
 
-  private getHeaders() {
+  getHeaders() {
     return BASE_HEADERS;
   }
 

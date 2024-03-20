@@ -26,8 +26,6 @@ tags:
     description: Endpoints related to scanning multiple blockchain transactions
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
-  - name: Simulate historical transaction
-    description: Endpoints related to viewing actual state changes of transactions that are already on-chain
 security:
   - ApiKeyAuth: []
 
@@ -2980,108 +2978,6 @@ paths:
                     type: string
                     description: The Request ID of the successfully reported transaction/message scan.
                     example: "eafdae18039f531b5a586310cfbd654e"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
-  /ethereum/v0/mainnet/historical/transaction:
-    post:
-      tags:
-        - Simulate historical transaction
-      summary: EVM
-      operationId: historical-transaction-evm
-      description: |
-        Simulates historical transaction to get the actual state changes it produced.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/historical/transaction |
-        | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/historical/transaction |
-        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/historical/transaction |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/historical/transaction |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/historical/transaction |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/historical/transaction |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/historical/transaction |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/historical/transaction |
-        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/historical/transaction |
-        | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/historical/transaction |
-        | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/historical/transaction |
-        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/historical/transaction |
-        | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/historical/transaction |
-        | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/historical/transaction |
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txHash:
-                  $ref: "#/components/schemas/EvmTxHash"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-              required:
-                - txHash
-                - userAccount
-              default:
-                txHash: "0x8010da429a651ca117e5c087497cdd8d62e2b7ac1d4095358897817a4d1aa477"
-                userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-            examples:
-              native_transfer:
-                summary: Native Transfer
-                value:
-                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-                  txHash: "0x8010da429a651ca117e5c087497cdd8d62e2b7ac1d4095358897817a4d1aa477"
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - requestId
-                  - aggregated
-                  - perTransaction
-                properties:
-                  aggregated:
-                    $ref: "#/components/schemas/EvmAggregatedSimulationResults"
-                  perTransaction:
-                    $ref: "#/components/schemas/EvmPerTransactionSimulationResults"
-                  requestId:
-                    $ref: "#/components/schemas/RequestId"
         "400":
           description: Bad request
           content:

@@ -15,7 +15,6 @@ import {
   DownloadBlocklistApi,
   ScanMessageApi,
   ReportRequestApi,
-  SimulateHistoricalTransactionApi,
   ScanTransactionsSolanaOperationSimulateExpiredEnum,
 } from "../../../generated/v20230605/apis";
 import { Configuration } from "../../../generated/v20230605/runtime";
@@ -43,7 +42,7 @@ export class BlowfishMultiChainApiClient {
     };
   }
 
-  private getHeaders() {
+  getHeaders() {
     return BASE_HEADERS;
   }
 
@@ -53,7 +52,6 @@ export class BlowfishMultiChainApiClient {
     domain: ScanDomainApi;
     blocklist: DownloadBlocklistApi;
     reporting: ReportRequestApi;
-    historical: SimulateHistoricalTransactionApi;
   };
 
   constructor(
@@ -69,7 +67,6 @@ export class BlowfishMultiChainApiClient {
       domain: new ScanDomainApi(this.config),
       blocklist: new DownloadBlocklistApi(this.config),
       reporting: new ReportRequestApi(this.config),
-      historical: new SimulateHistoricalTransactionApi(this.config),
     };
   }
 
@@ -142,20 +139,6 @@ export class BlowfishMultiChainApiClient {
       },
       language: this.language,
       xApiVersion: this.apiVersion,
-    });
-  };
-
-  simulateHistoricalTransaction = async (
-    txHash: string,
-    userAccount: string
-  ) => {
-    return this.apis.historical.historicalTransactionEvm({
-      historicalTransactionEvmRequest: {
-        txHash,
-        userAccount,
-      },
-      xApiVersion: this.apiVersion,
-      language: this.language,
     });
   };
 

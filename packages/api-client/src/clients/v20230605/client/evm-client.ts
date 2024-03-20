@@ -13,7 +13,6 @@ export class BlowfishEvmApiClient {
   private readonly multiChainClient: BlowfishMultiChainApiClient;
   public scanDomains: BlowfishMultiChainApiClient["scanDomains"];
   public downloadBlocklist: BlowfishMultiChainApiClient["downloadBlocklist"];
-  public simulateHistoricalTransaction: BlowfishMultiChainApiClient["simulateHistoricalTransaction"];
   public reportTransaction: BlowfishMultiChainApiClient["reportTransaction"];
 
   constructor(
@@ -32,8 +31,6 @@ export class BlowfishEvmApiClient {
     );
     this.scanDomains = this.multiChainClient.scanDomains;
     this.downloadBlocklist = this.multiChainClient.downloadBlocklist;
-    this.simulateHistoricalTransaction =
-      this.multiChainClient.simulateHistoricalTransaction;
     this.reportTransaction = this.multiChainClient.reportTransaction;
   }
 

@@ -209,18 +209,6 @@ const domainsScan = await client.scanDomains([
 ]);
 ```
 
-## Historical Simulations
-
-Simulates historical transaction to get the actual state changes it produced.
-**Note:** Only works in the API version **2023-06-05** and higher
-
-```tsx
-const historicalSimulation = await client.simulateHistoricalTransaction(
-  "0x8010da429a651ca117e5c087497cdd8d62e2b7ac1d4095358897817a4d1aa477",
-  "0xc1e42f862d202b4a0ed552c1145735ee088f6ccf"
-);
-```
-
 ## Blocklist
 
 Checkout our Blocklist NPM package: https://www.npmjs.com/package/@blowfishxyz/blocklist
