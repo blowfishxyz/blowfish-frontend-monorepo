@@ -6,7 +6,6 @@ import {
   isNftStateChange,
   chainToBlockExplorerUrl,
   formatMetaplexStandard,
-  shortenAddress,
   isSplStateChange,
   isNftMetaplexStandard,
 } from "~/simulation-result/solana/utils";
@@ -70,21 +69,21 @@ export const SimulationResultSolana: React.FC<SimulationResultSolanaProps> = ({
       alignItems="flex-start"
     >
       <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
-          <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
-            <TxnSimulationImage>
-              <SimulationImage stateChange={stateChange} />
-            </TxnSimulationImage>
+        <TxnSimulationImageMsgWrapper gap="md" alignItems="flex-start">
+          <TxnSimulationImage>
+            <SimulationImage stateChange={stateChange} />
+          </TxnSimulationImage>
 
-            <Column gap="xs">
-              <TxnSimulationText weight="normal">
-                {stateChange.humanReadableDiff}
-              </TxnSimulationText>
-              <TokenFooter
-                rawInfo={stateChange.rawInfo}
-                chainNetwork={chainNetwork}
-              />
-            </Column>
-          </TxnSimulationImageMsgWrapper>
+          <Column gap="xs">
+            <TxnSimulationText weight="normal">
+              {stateChange.humanReadableDiff}
+            </TxnSimulationText>
+            <TokenFooter
+              rawInfo={stateChange.rawInfo}
+              chainNetwork={chainNetwork}
+            />
+          </Column>
+        </TxnSimulationImageMsgWrapper>
       </LinkWrapper>
     </TxnSimulationWrapper>
   );
@@ -143,7 +142,7 @@ const TokenFooter: React.FC<{
     );
 
     return (
-      <Row gap="md">
+      <Row gap="md" flexWrap="wrap">
         {typeStr ? (
           <Text size="sm" design="secondary">
             Type:{" "}
@@ -161,7 +160,7 @@ const TokenFooter: React.FC<{
     );
   } else if (isCurrencyStateChange(rawInfo)) {
     return (
-      <Row gap="md">
+      <Row gap="md" flexWrap="wrap">
         <Text size="sm" design="secondary">
           Asset:{" "}
           <Text size="sm" design="primary">
@@ -172,7 +171,7 @@ const TokenFooter: React.FC<{
     );
   } else if (rawInfo.kind === "SOL_STAKE_AUTHORITY_CHANGE") {
     return (
-      <Row gap="md">
+      <Row gap="md" flexWrap="wrap">
         <Text size="sm" design="secondary">
           To:{" "}
           <FooterAddress
@@ -184,7 +183,7 @@ const TokenFooter: React.FC<{
     );
   } else if (rawInfo.kind === "USER_ACCOUNT_OWNER_CHANGE") {
     return (
-      <Row gap="md">
+      <Row gap="md" flexWrap="wrap">
         <Text size="sm" design="secondary">
           To:{" "}
           <FooterAddress
@@ -212,7 +211,7 @@ function FooterAddress({
       rel="noopener noreferrer"
     >
       <Text size="sm" design="primary">
-        {shortenAddress(address)}
+        {address}
       </Text>
     </LinkWrapper>
   );

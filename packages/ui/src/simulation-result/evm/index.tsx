@@ -14,7 +14,6 @@ import {
   isApprovalForAllStateChange,
   chainToBlockExplorerUrl,
   hasCounterparty,
-  shortenHex,
 } from "~/simulation-result/evm/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~/common/tooltip";
 import {
@@ -230,7 +229,7 @@ const TokenFooter: React.FC<{
 }> = ({ rawInfo, counterpartyLink, assetLink, isPositiveEffect }) => {
   if (isCurrencyStateChange(rawInfo)) {
     return (
-      <Row gap="md">
+      <Row gap="md" flexWrap="wrap">
         <LinkWrapper href={assetLink} target="_blank" rel="noopener noreferrer">
           <Text size="sm" design="secondary">
             Asset:{" "}
@@ -249,7 +248,7 @@ const TokenFooter: React.FC<{
               <Text size="sm" design="secondary">
                 {isPositiveEffect ? "From" : "To"}:
                 <Text size="sm" design="primary">
-                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 4)}`}
+                  {` ${rawInfo.data.counterparty.address || ""}`}
                 </Text>
               </Text>
               <Icon variant="arrow" size={10} />
@@ -269,7 +268,7 @@ const TokenFooter: React.FC<{
     }
 
     return (
-      <Row gap="md">
+      <Row gap="md" flexWrap="wrap">
         {typeStr ? (
           <TokenFooterText>
             Type:{" "}
@@ -293,7 +292,7 @@ const TokenFooter: React.FC<{
               <TokenFooterText>
                 {isPositiveEffect ? "From" : "To"}:
                 <Text size="sm" design="primary">
-                  {` ${shortenHex(rawInfo.data.counterparty.address || "", 4)}`}
+                  {` ${rawInfo.data.counterparty.address || ""}`}
                 </Text>
               </TokenFooterText>
               <Icon variant="arrow" size={10} />
