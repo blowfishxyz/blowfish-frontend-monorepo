@@ -56,7 +56,11 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transactions |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transactions |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transactions |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transactions |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transactions |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transactions |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats. 
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -96,6 +100,7 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
           required: true
         - name: chain-network
           in: path
@@ -107,6 +112,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:
@@ -290,9 +296,10 @@ paths:
                   description: Base58-encoded account of signer of transactions
                 metadata:
                   $ref: "#/components/schemas/RequestMetadata"
+                config:
+                  $ref: "#/components/schemas/RequestConfig"
               required:
                 - transactions
-                - userAccount
                 - metadata
               default:
                 transactions:
@@ -406,6 +413,7 @@ paths:
                       properties:
                         isNonceValid:
                           type: boolean
+                          nullable: true
                           example: false
                           description: Whether the tx nonce is valid
                         error:
@@ -419,7 +427,7 @@ paths:
                         instructions:
                           type: array
                           items:
-                            $ref: "#/components/schemas/SolanaInstruction"
+                            $ref: "#/components/schemas/TopLevelInstruction"
         "400":
           description: Bad request
           content:
@@ -466,7 +474,11 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/message |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/message |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/message |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/message |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/message |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats. 
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -506,6 +518,7 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
           required: true
         - name: chain-network
           in: path
@@ -517,6 +530,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:
@@ -1061,7 +1075,7 @@ paths:
                   type: string
                   description: |
                     What event occurred to cause the report. "PROCEEDED" means the user proceeded with signing
-                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported 
+                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported
                     Malicious" means the user explicitly reported the transaction as malicious.
                   enum:
                     - PROCEEDED
@@ -1129,7 +1143,11 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transaction |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transaction |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transaction |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transaction |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats. 
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       deprecated: true
       security:
         - ApiKeyAuth: []
@@ -1164,6 +1182,7 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
           required: true
         - name: chain-network
           in: path
@@ -1175,6 +1194,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:
@@ -1502,6 +1522,16 @@ components:
           example: "https://uniswap.org"
       required:
         - origin
+    RequestConfig:
+      type: object
+      nullable: true
+      properties:
+        instructionDecoding:
+          type: boolean
+          nullable: true
+          description: Payload includes decoded instructions for each transaction in the
+            request if enabled
+          example: true
     AssetPrice:
       type: object
       required:
@@ -1885,17 +1915,71 @@ components:
         - description
         - websiteUrl
         - imageUrl
-    SolanaInstruction:
+    TopLevelInstruction:
       type: object
-      description: Information about each instruction
+      description: Details of a top-level instruction of this transaction. The
+        top-level instruction details are hard-coded into the transaction and
+        therefore guaranteed to be called, whereas the inner-instructions are
+        CPIs (cross-program invocations) extracted from the transaction's
+        simulation and are therefore not guaranteed to be called when the
+        transaction is submitted on-chain. It is recommended this difference in
+        certainty be displayed to end users in the UI.
       required:
         - protocolIndex
+        - topLevelInstruction
+        - flattenedInnerInstructions
       properties:
         protocolIndex:
           type: number
           example: 0
           nullable: true
-          description: Index of the protocol in the list of protocols for this instruction
+          description: Index of the protocol in the list of protocols for this transaction
+        topLevelInstruction:
+          nullable: true
+          $ref: "#/components/schemas/SolanaInstruction"
+        flattenedInnerInstructions:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/SolanaInstruction"
+    SolanaInstruction:
+      type: object
+      description: Information about each instruction
+      required:
+        - protocolIndex
+        - programId
+        - name
+        - accountKeys
+        - decodedData
+        - encodedData
+      properties:
+        protocolIndex:
+          type: number
+          example: 0
+          nullable: true
+          description: Index of the protocol in the list of protocols for this transaction
+        programId:
+          type: string
+          example: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+          description: On-chain program this instruction is calling
+        name:
+          type: string
+          nullable: true
+          example: "bubblegumSetCollectionSize"
+          description: Function name that this instruction is calling
+        accountKeys:
+          type: array
+          description: Accounts passed into this instruction
+          items:
+            type: string
+        decodedData:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Arguments of the function being called
+        encodedData:
+          type: string
+          description: Base58 encoded instruction data
     MetaplexTokenStandard:
       type: string
       enum:
@@ -3628,12 +3712,14 @@ components:
         logs:
           type: array
           description: Program logs generated during execution
+          nullable: true
           items:
             type: string
             example: Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]
         unitsConsumed:
           type: integer
           format: int32
+          nullable: true
           example: 148013
         returnData:
           type: object

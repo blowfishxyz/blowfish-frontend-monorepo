@@ -55,7 +55,11 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transaction |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transaction |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transaction |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transaction |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats. 
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       deprecated: true
       security:
         - ApiKeyAuth: []
@@ -96,6 +100,7 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
           required: true
         - name: chain-network
           in: path
@@ -107,6 +112,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:
@@ -301,7 +307,11 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/message |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/message |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/message |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/message |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/message |
+        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats. 
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -341,6 +351,7 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
           required: true
         - name: chain-network
           in: path
@@ -352,6 +363,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:

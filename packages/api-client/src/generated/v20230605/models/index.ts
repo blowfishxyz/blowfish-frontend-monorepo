@@ -2978,6 +2978,19 @@ export type ReportRequestEventEnum =
 /**
  *
  * @export
+ * @interface RequestConfig
+ */
+export interface RequestConfig {
+  /**
+   * Payload includes decoded instructions for each transaction in the request if enabled
+   * @type {boolean}
+   * @memberof RequestConfig
+   */
+  instructionDecoding?: boolean | null;
+}
+/**
+ *
+ * @export
  * @interface RequestMetadata
  */
 export interface RequestMetadata {
@@ -3516,7 +3529,7 @@ export interface ScanTransactionsSolana200ResponsePerTransactionInner {
    * @type {boolean}
    * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
    */
-  isNonceValid: boolean;
+  isNonceValid: boolean | null;
   /**
    *
    * @type {SolanaSimulationError}
@@ -3537,10 +3550,10 @@ export interface ScanTransactionsSolana200ResponsePerTransactionInner {
   protocols: Array<SolanaProtocol>;
   /**
    *
-   * @type {Array<SolanaInstruction>}
+   * @type {Array<TopLevelInstruction>}
    * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
    */
-  instructions: Array<SolanaInstruction>;
+  instructions: Array<TopLevelInstruction>;
 }
 /**
  *
@@ -3559,13 +3572,19 @@ export interface ScanTransactionsSolanaRequest {
    * @type {string}
    * @memberof ScanTransactionsSolanaRequest
    */
-  userAccount: string;
+  userAccount?: string;
   /**
    *
    * @type {RequestMetadata}
    * @memberof ScanTransactionsSolanaRequest
    */
   metadata: RequestMetadata;
+  /**
+   *
+   * @type {RequestConfig}
+   * @memberof ScanTransactionsSolanaRequest
+   */
+  config?: RequestConfig | null;
 }
 /**
  *
@@ -3611,11 +3630,41 @@ export interface SolAsset {
  */
 export interface SolanaInstruction {
   /**
-   * Index of the protocol in the list of protocols for this instruction
+   * Index of the protocol in the list of protocols for this transaction
    * @type {number}
    * @memberof SolanaInstruction
    */
   protocolIndex: number | null;
+  /**
+   * On-chain program this instruction is calling
+   * @type {string}
+   * @memberof SolanaInstruction
+   */
+  programId: string;
+  /**
+   * Function name that this instruction is calling
+   * @type {string}
+   * @memberof SolanaInstruction
+   */
+  name: string | null;
+  /**
+   * Accounts passed into this instruction
+   * @type {Array<string>}
+   * @memberof SolanaInstruction
+   */
+  accountKeys: Array<string>;
+  /**
+   * Arguments of the function being called
+   * @type {{ [key: string]: any | undefined; }}
+   * @memberof SolanaInstruction
+   */
+  decodedData: { [key: string]: any | undefined } | null;
+  /**
+   * Base58 encoded instruction data
+   * @type {string}
+   * @memberof SolanaInstruction
+   */
+  encodedData: string;
 }
 /**
  * Human-readable protocol information. Note that a single protocol can consist of multiple programs.
@@ -3683,13 +3732,13 @@ export interface SolanaRawSimulationResults {
    * @type {Array<string>}
    * @memberof SolanaRawSimulationResults
    */
-  logs: Array<string>;
+  logs: Array<string> | null;
   /**
    *
    * @type {number}
    * @memberof SolanaRawSimulationResults
    */
-  unitsConsumed: number;
+  unitsConsumed: number | null;
   /**
    *
    * @type {SolanaRawSimulationResultsReturnData}
@@ -4384,6 +4433,31 @@ export interface SplAsset {
    * @memberof SplAsset
    */
   previews: NftPreviews;
+}
+/**
+ * Details of a top-level instruction of this transaction. The top-level instruction details are hard-coded into the transaction and therefore guaranteed to be called, whereas the inner-instructions are CPIs (cross-program invocations) extracted from the transaction's simulation and are therefore not guaranteed to be called when the transaction is submitted on-chain. It is recommended this difference in certainty be displayed to end users in the UI.
+ * @export
+ * @interface TopLevelInstruction
+ */
+export interface TopLevelInstruction {
+  /**
+   * Index of the protocol in the list of protocols for this transaction
+   * @type {number}
+   * @memberof TopLevelInstruction
+   */
+  protocolIndex: number | null;
+  /**
+   *
+   * @type {SolanaInstruction}
+   * @memberof TopLevelInstruction
+   */
+  topLevelInstruction: SolanaInstruction;
+  /**
+   *
+   * @type {Array<SolanaInstruction>}
+   * @memberof TopLevelInstruction
+   */
+  flattenedInnerInstructions: Array<SolanaInstruction> | null;
 }
 /**
  *
