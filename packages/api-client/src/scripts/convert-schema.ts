@@ -183,6 +183,7 @@ function createEvmChainFamily() {
         - optimism
         - base
         - zora
+        - avalanche
     required: true
   `) as YAMLMap;
 
@@ -201,6 +202,7 @@ function createEvmChainNetwork() {
         - one
         - goerli
         - sepolia
+        - fuji
     required: true
   `) as YAMLMap;
 
