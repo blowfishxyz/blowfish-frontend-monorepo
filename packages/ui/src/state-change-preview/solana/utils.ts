@@ -22,13 +22,16 @@ export const getErrorFromSolanaScanResponse = (
 
 export const getResultsFromSolanaScanResponse = (
   simulationResults: ScanTransactionsSolana200Response | null | undefined,
-  userAccount: string
+  userAccount: string | undefined
 ): {
   expectedStateChanges:
     | ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner[]
     | undefined;
 } | null => {
   if (!simulationResults) {
+    return null;
+  }
+  if (!userAccount) {
     return null;
   }
 

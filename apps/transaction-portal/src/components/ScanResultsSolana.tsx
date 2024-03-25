@@ -40,8 +40,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   const error = getErrorFromSolanaScanResponse(scanResults);
   const result = getResultsFromSolanaScanResponse(
     scanResults,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    request.userAccount!
+    request.userAccount
   );
 
   const reportTransaction = useReportTransaction();
@@ -138,6 +137,8 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         <StateChangePreviewSolana
           scanResult={scanResults}
           chainNetwork="mainnet"
+          // Note: In Blowfish Protect we will show a warning if "userAccount" is undefined,
+          // but it's important that "userAccount" stays required for external users of the component
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           userAccount={request.userAccount!}
         />
