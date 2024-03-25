@@ -175,7 +175,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
             chainNetwork={chainNetwork}
             address={contract}
           >
-            {shortenHex(contract)}
+            {contract}
           </BlockExplorerLink>
         </CardText>
       </StyledColumn> */}
