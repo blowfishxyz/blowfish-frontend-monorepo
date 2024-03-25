@@ -76,11 +76,7 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
   ],
 };
@@ -232,14 +228,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -286,14 +275,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -340,14 +322,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -394,14 +369,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -453,14 +421,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
   ],
 };
