@@ -40,7 +40,8 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   const error = getErrorFromSolanaScanResponse(scanResults);
   const result = getResultsFromSolanaScanResponse(
     scanResults,
-    request.userAccount
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    request.userAccount!
   );
 
   const reportTransaction = useReportTransaction();
@@ -137,7 +138,8 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         <StateChangePreviewSolana
           scanResult={scanResults}
           chainNetwork="mainnet"
-          userAccount={request.userAccount}
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          userAccount={request.userAccount!}
         />
       </PreviewTxn>
     </Row>
