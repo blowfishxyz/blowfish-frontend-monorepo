@@ -96,6 +96,11 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
+              - degen
+              - gnosis
+              - linea
+              - blast
           required: true
         - name: chain-network
           in: path
@@ -107,6 +112,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:
@@ -341,6 +347,11 @@ paths:
               - optimism
               - base
               - zora
+              - avalanche
+              - degen
+              - gnosis
+              - linea
+              - blast
           required: true
         - name: chain-network
           in: path
@@ -352,6 +363,7 @@ paths:
               - one
               - goerli
               - sepolia
+              - fuji
           required: true
       requestBody:
         content:

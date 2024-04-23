@@ -268,6 +268,11 @@ export const ScanTransactionsEvmOperationChainFamilyEnum = {
   Optimism: "optimism",
   Base: "base",
   Zora: "zora",
+  Avalanche: "avalanche",
+  Degen: "degen",
+  Gnosis: "gnosis",
+  Linea: "linea",
+  Blast: "blast",
 } as const;
 export type ScanTransactionsEvmOperationChainFamilyEnum =
   (typeof ScanTransactionsEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];
@@ -279,6 +284,7 @@ export const ScanTransactionsEvmOperationChainNetworkEnum = {
   One: "one",
   Goerli: "goerli",
   Sepolia: "sepolia",
+  Fuji: "fuji",
 } as const;
 export type ScanTransactionsEvmOperationChainNetworkEnum =
   (typeof ScanTransactionsEvmOperationChainNetworkEnum)[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];
