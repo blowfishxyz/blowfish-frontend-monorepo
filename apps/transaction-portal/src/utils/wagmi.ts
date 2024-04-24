@@ -22,6 +22,36 @@ import {
 } from "../config";
 import { EthereumIcon } from "@blowfish/protect-ui/icons";
 
+const base = {
+  id: 8453,
+  network: "base",
+  name: "Base",
+  nativeCurrency: {
+    name: "Base",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://mainnet.base.org"],
+    },
+    public: {
+      http: ["https://mainnet.base.org"],
+    },
+  },
+  blockExplorers: {
+    etherscan: {
+      name: "Basescan",
+      url: "https://basescan.org",
+    },
+    default: {
+      name: "Basescan",
+      url: "https://basescan.org",
+    },
+  },
+  testnet: false,
+};
+
 export const useConnectedChainId = () => {
   const network = useNetwork();
   return network.chain?.id;
@@ -101,7 +131,7 @@ const getRpcUrl = (chainId: number, protocol: "https" | "wss") => {
 
 export const createWagmiClient = () => {
   const { chains, provider } = configureChains(
-    [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism],
+    [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism, base],
     [
       jsonRpcProvider({
         priority: 0,
