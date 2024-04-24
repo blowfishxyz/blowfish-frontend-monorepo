@@ -4,9 +4,9 @@ import { useProvider } from "wagmi";
 import { toUrlParam } from "~utils/url";
 import type { UrlParsedRequest } from "~/hooks/useURLRequestParams";
 
-export function useSimulateByTxnHash() {
+export function useSimulateByTxnHash({ chainId }: { chainId?: number } = {}) {
   const router = useRouter();
-  const provider = useProvider();
+  const provider = useProvider({ chainId });
 
   return async (txnHash: string, domain: string) => {
     const data = await provider.getTransaction(txnHash);
@@ -19,12 +19,14 @@ export function useSimulateByTxnHash() {
     };
 
     const dataToSend: UrlParsedRequest = {
-      metadata: { origin: domain },
+      metadata: { origin: domain || "https://scamsite.com" },
       userAccount: data.from,
       txObjects: [
         {
           from: data.from,
-          to: data.to,
+          // Note: data.to is not present for base transactions that create a contract
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          to: data.to || (data as any).creates,
           data: data.data,
           value: data.value.toString(),
         },

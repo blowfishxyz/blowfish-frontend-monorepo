@@ -7,10 +7,12 @@ import { useSimulateByTxnHash } from "~hooks/useSimulateByTxnHash";
 const HistoricalScanPage: React.FC = () => {
   const [txnHash, setTxnHash] = useState<string>("");
   const [dappDomain, setDappDomain] = useState<string>("");
+  const [chainId, setChainId] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<{
     txnHashError?: string;
     dappDomainError?: string;
+    chainIdError?: string;
   }>({});
   const [, setLayoutConfig] = useLayoutConfig();
 
@@ -35,14 +37,23 @@ const HistoricalScanPage: React.FC = () => {
     setDappDomain(e.target.value);
   };
 
-  const simulateByTxnHash = useSimulateByTxnHash();
+  const handleChainIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError({
+      chainIdError: "",
+    });
+    setChainId(parseInt(e.target.value, 10));
+  };
+
+  const simulateByTxnHash = useSimulateByTxnHash({ chainId });
 
   const handleSimulateClick = async () => {
     let dappDomainValidationError = undefined;
     let txnHashValidationError = undefined;
 
     try {
-      new URL(dappDomain);
+      if (dappDomain) {
+        new URL(dappDomain);
+      }
     } catch (_) {
       dappDomainValidationError =
         "Invalid URL. Make sure it's a full URL (ex: https://protect.blowfish.xyz)";
@@ -91,7 +102,7 @@ const HistoricalScanPage: React.FC = () => {
             )}
           </Column>
           <Column gap="sm">
-            <label htmlFor="dappDomain">Dapp Domain: </label>
+            <label htmlFor="dappDomain">dApp Domain: </label>
             <StyledHistoricalInput
               type="text"
               id="dappDomain"
@@ -103,6 +114,15 @@ const HistoricalScanPage: React.FC = () => {
                 {error.dappDomainError}
               </HistoricalInputErrorMessage>
             )}
+          </Column>
+          <Column gap="sm">
+            <label htmlFor="dappDomain">Chain ID: </label>
+            <StyledHistoricalInput
+              type="number"
+              id="chainID"
+              value={chainId}
+              onChange={handleChainIdChange}
+            />
           </Column>
           <Button
             stretch

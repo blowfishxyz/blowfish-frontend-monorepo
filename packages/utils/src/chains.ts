@@ -38,6 +38,10 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
     chainFamily: "bnb",
     chainNetwork: "mainnet",
   },
+  8453: {
+    chainFamily: "base",
+    chainNetwork: "mainnet",
+  },
 };
 
 /**
