@@ -24,9 +24,10 @@ export function useSimulateByTxnHash({ chainId }: { chainId?: number } = {}) {
       txObjects: [
         {
           from: data.from,
-          // Note: data.to is not present for base transactions that create a contract
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          to: data.to || (data as any).creates,
+          // // Note: data.to is not present for base transactions that create a contract
+          // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          // to: data.to || (data as any).creates,
+          to: data.to,
           data: data.data,
           value: data.value.toString(),
         },
