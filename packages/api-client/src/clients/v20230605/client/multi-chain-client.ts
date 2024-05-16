@@ -95,6 +95,31 @@ export class BlowfishMultiChainApiClient {
       .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
   };
 
+  scanPersonalSignEvm = async (
+    rawMessage: string,
+    userAccount: string,
+    metadata: RequestMetadata,
+    chainFamily: EvmChainFamily,
+    chainNetwork: EvmChainNetwork
+  ) => {
+    return this.apis.message
+      .scanMessageEvm({
+        chainFamily: chainFamily,
+        chainNetwork: chainNetwork,
+        scanMessageEvmRequest: {
+          message: {
+            kind: "PERSONAL_SIGN",
+            rawMessage,
+          },
+          userAccount,
+          metadata,
+        },
+        language: this.language,
+        xApiVersion: this.apiVersion,
+      })
+      .then((x) => mapMessageResponse(x as ScanMessageEvm200ResponseLegacy));
+  };
+
   scanSignTypedDataEvm = async (
     typedData: EvmSignTypedDataData,
     userAccount: string,

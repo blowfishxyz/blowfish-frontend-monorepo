@@ -48,6 +48,20 @@ export class BlowfishEvmApiClient {
     );
   }
 
+  async scanPersonalSign(
+    rawMessage: string,
+    userAccount: string,
+    metadata: RequestMetadata
+  ) {
+    return this.multiChainClient.scanPersonalSignEvm(
+      rawMessage,
+      userAccount,
+      metadata,
+      this.chainFamily,
+      this.chainNetwork
+    );
+  }
+
   async scanSignTypedData(
     typedData: EvmSignTypedDataData,
     userAccount: string,
