@@ -174,6 +174,7 @@ export const approveAllErc721ScanResult: EvmTransactionsScanResult = {
       message:
         "You are allowing this website to withdraw funds from your account in the future.",
       severity: "WARNING",
+      data: null,
     },
   ],
   simulationResults: {
@@ -208,6 +209,7 @@ export const approveAllErc1155ScanResult: EvmTransactionsScanResult = {
       message:
         "You are allowing this website to withdraw funds from your account in the future.",
       severity: "WARNING",
+      data: null,
     },
   ],
   simulationResults: {
@@ -271,6 +273,7 @@ export const transactionWarningScanResult: EvmTransactionsScanResult = {
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
       severity: "WARNING",
+      data: null,
     },
   ],
 };
@@ -315,6 +318,7 @@ export const transactionsWarningScanResult: EvmTransactionsScanResult = {
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
       severity: "WARNING",
+      data: null,
     },
   ],
 };
@@ -338,6 +342,7 @@ export const transactionBlockScanResult: EvmTransactionsScanResult = {
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
       severity: "WARNING",
+      data: null,
     },
   ],
 };
@@ -361,6 +366,7 @@ export const transactionsBlockScanResult: EvmTransactionsScanResult = {
       message:
         "You are allowing this dApp to withdraw funds from your account in the future",
       severity: "WARNING",
+      data: null,
     },
   ],
 };

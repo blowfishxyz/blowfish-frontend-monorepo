@@ -34,6 +34,9 @@ export const EnrichedSimulationResult: React.FC<{
   }
 
   const diff = useMemo(() => {
+    if (!("amount" in stateChange.rawInfo.data)) {
+      return new Decimal(0);
+    }
     const { amount } = stateChange.rawInfo.data;
 
     if (typeof amount === "object") {
