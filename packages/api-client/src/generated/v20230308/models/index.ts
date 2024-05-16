@@ -142,6 +142,12 @@ export interface DownloadBlocklist200Response {
    * @memberof DownloadBlocklist200Response
    */
   recentlyRemoved: Array<string>;
+  /**
+   * Cursor to fetch the next batch of `recentlyAdded` and `recentlyRemoved` domains. Use this value in the `cursor` field of the next request to only fetch new domains.
+   * @type {string}
+   * @memberof DownloadBlocklist200Response
+   */
+  nextCursor?: string;
 }
 /**
  *
@@ -198,6 +204,12 @@ export interface DownloadBlocklistRequest {
    * @memberof DownloadBlocklistRequest
    */
   bloomFilterTtl?: number;
+  /**
+   * A cursor to only fetch new `recentlyAdded` and `recentlyRemoved`. Has no impact on the bloom filter. Use value from `nextCursor` field in the previous response.
+   * @type {string}
+   * @memberof DownloadBlocklistRequest
+   */
+  cursor?: string;
 }
 
 /**
@@ -251,6 +263,35 @@ export const DownloadBlocklistRequestPriorityBlockListsEnum = {
 } as const;
 export type DownloadBlocklistRequestPriorityBlockListsEnum =
   (typeof DownloadBlocklistRequestPriorityBlockListsEnum)[keyof typeof DownloadBlocklistRequestPriorityBlockListsEnum];
+
+/**
+ * Override a EIP-4337 wallet contract to bypass signature validation during simulation. This allows you to pass bytes(0) instead of the user signature when encoding the EIP4337 entrypoint transaction for scanning & simulation. NOTE: This is an advanced feature that may require additional configuration on Blowfish's end to support your architecture. Please reach out to us if you have any issues
+ * @export
+ * @interface Eip4337WalletPreset
+ */
+export interface Eip4337WalletPreset {
+  /**
+   * The kind of simulator preset configuration to apply
+   * @type {string}
+   * @memberof Eip4337WalletPreset
+   */
+  kind: Eip4337WalletPresetKindEnum;
+  /**
+   * The address of the contract that will validate the user signature as part of the EIP-4337 transaction. In most cases this is the user's own wallet contract.
+   * @type {string}
+   * @memberof Eip4337WalletPreset
+   */
+  signatureValidationContract: string;
+}
+
+/**
+ * @export
+ */
+export const Eip4337WalletPresetKindEnum = {
+  Eip4337Wallet: "EIP4337_WALLET",
+} as const;
+export type Eip4337WalletPresetKindEnum =
+  (typeof Eip4337WalletPresetKindEnum)[keyof typeof Eip4337WalletPresetKindEnum];
 
 /**
  * Solidity token value. Addresses are serialized with `0x` prefix. Bytes and numbers are serialized as hex with `0x` prefix.
@@ -620,6 +661,9 @@ export type EvmExpectedStateChangesInnerRawInfo =
       kind: "ERC721_LOCK_APPROVAL_FOR_ALL";
     } & EvmStateChangeErc721LockApprovalForAll)
   | ({ kind: "ERC721_TRANSFER" } & EvmStateChangeErc721Transfer)
+  | ({
+      kind: "FARCASTER_CHANGE_RECOVERY_ADDRESS";
+    } & EvmStateChangeFarcasterChangeRecoveryAddress)
   | ({ kind: "FARCASTER_STORAGE_RENT" } & EvmStateChangeFarcasterStorageRent)
   | ({ kind: "NATIVE_ASSET_TRANSFER" } & EvmStateChangeNativeAssetTransfer);
 /**
@@ -1011,7 +1055,9 @@ export interface EvmSimulatorConfig {
  *
  * @export
  */
-export type EvmSimulatorConfigPresetsInner = GnosisSafePreset;
+export type EvmSimulatorConfigPresetsInner =
+  | Eip4337WalletPreset
+  | GnosisSafePreset;
 /**
  *
  * @export
@@ -1907,6 +1953,60 @@ export interface EvmStateChangeErc721TransferData {
   assetPrice: AssetPrice | null;
 }
 /**
+ * Farcaster Change Recovery Address
+ * @export
+ * @interface EvmStateChangeFarcasterChangeRecoveryAddress
+ */
+export interface EvmStateChangeFarcasterChangeRecoveryAddress {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddress
+   */
+  kind: EvmStateChangeFarcasterChangeRecoveryAddressKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeFarcasterChangeRecoveryAddressData}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddress
+   */
+  data: EvmStateChangeFarcasterChangeRecoveryAddressData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeFarcasterChangeRecoveryAddressKindEnum = {
+  FarcasterChangeRecoveryAddress: "FARCASTER_CHANGE_RECOVERY_ADDRESS",
+} as const;
+export type EvmStateChangeFarcasterChangeRecoveryAddressKindEnum =
+  (typeof EvmStateChangeFarcasterChangeRecoveryAddressKindEnum)[keyof typeof EvmStateChangeFarcasterChangeRecoveryAddressKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmStateChangeFarcasterChangeRecoveryAddressData
+ */
+export interface EvmStateChangeFarcasterChangeRecoveryAddressData {
+  /**
+   * The Farcaster ID of the user changing the recovery address
+   * @type {string}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddressData
+   */
+  id: string;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddressData
+   */
+  recovery: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddressData
+   */
+  contract: EvmAddressInfo;
+}
+/**
  * Farcaster Storage Rent Purchase
  * @export
  * @interface EvmStateChangeFarcasterStorageRent
@@ -2120,6 +2220,12 @@ export interface EvmTxData {
    * @memberof EvmTxData
    */
   value?: string;
+  /**
+   * String representation of the maximum amount of gas allowed for the transaction
+   * @type {string}
+   * @memberof EvmTxData
+   */
+  gas?: string;
 }
 /**
  *
@@ -2959,7 +3065,7 @@ export type ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerEr
  */
 export interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas {
   /**
-   * A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+   * A field that if the simulation was successful contains the estimated gas used while simulating the transaction. **NOTE:** Despite the name, this should be viewed as a realistic usage estimate, not an upper bound for how much gas the transaction could consume in the worst case. In future versions this field may be renamed to `gasUsageEstimate`. Can be null.
    * @type {string}
    * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas
    */

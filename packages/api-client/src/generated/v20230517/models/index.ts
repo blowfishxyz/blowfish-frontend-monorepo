@@ -223,6 +223,12 @@ export interface DownloadBlocklist200Response {
    * @memberof DownloadBlocklist200Response
    */
   recentlyRemoved: Array<string>;
+  /**
+   * Cursor to fetch the next batch of `recentlyAdded` and `recentlyRemoved` domains. Use this value in the `cursor` field of the next request to only fetch new domains.
+   * @type {string}
+   * @memberof DownloadBlocklist200Response
+   */
+  nextCursor?: string;
 }
 /**
  *
@@ -279,6 +285,12 @@ export interface DownloadBlocklistRequest {
    * @memberof DownloadBlocklistRequest
    */
   bloomFilterTtl?: number;
+  /**
+   * A cursor to only fetch new `recentlyAdded` and `recentlyRemoved`. Has no impact on the bloom filter. Use value from `nextCursor` field in the previous response.
+   * @type {string}
+   * @memberof DownloadBlocklistRequest
+   */
+  cursor?: string;
 }
 
 /**
@@ -332,6 +344,35 @@ export const DownloadBlocklistRequestPriorityBlockListsEnum = {
 } as const;
 export type DownloadBlocklistRequestPriorityBlockListsEnum =
   (typeof DownloadBlocklistRequestPriorityBlockListsEnum)[keyof typeof DownloadBlocklistRequestPriorityBlockListsEnum];
+
+/**
+ * Override a EIP-4337 wallet contract to bypass signature validation during simulation. This allows you to pass bytes(0) instead of the user signature when encoding the EIP4337 entrypoint transaction for scanning & simulation. NOTE: This is an advanced feature that may require additional configuration on Blowfish's end to support your architecture. Please reach out to us if you have any issues
+ * @export
+ * @interface Eip4337WalletPreset
+ */
+export interface Eip4337WalletPreset {
+  /**
+   * The kind of simulator preset configuration to apply
+   * @type {string}
+   * @memberof Eip4337WalletPreset
+   */
+  kind: Eip4337WalletPresetKindEnum;
+  /**
+   * The address of the contract that will validate the user signature as part of the EIP-4337 transaction. In most cases this is the user's own wallet contract.
+   * @type {string}
+   * @memberof Eip4337WalletPreset
+   */
+  signatureValidationContract: string;
+}
+
+/**
+ * @export
+ */
+export const Eip4337WalletPresetKindEnum = {
+  Eip4337Wallet: "EIP4337_WALLET",
+} as const;
+export type Eip4337WalletPresetKindEnum =
+  (typeof Eip4337WalletPresetKindEnum)[keyof typeof Eip4337WalletPresetKindEnum];
 
 /**
  * Solidity token value. Addresses are serialized with `0x` prefix. Bytes and numbers are serialized as hex with `0x` prefix.
@@ -701,6 +742,9 @@ export type EvmExpectedStateChangesInnerRawInfo =
       kind: "ERC721_LOCK_APPROVAL_FOR_ALL";
     } & EvmStateChangeErc721LockApprovalForAll)
   | ({ kind: "ERC721_TRANSFER" } & EvmStateChangeErc721Transfer)
+  | ({
+      kind: "FARCASTER_CHANGE_RECOVERY_ADDRESS";
+    } & EvmStateChangeFarcasterChangeRecoveryAddress)
   | ({ kind: "FARCASTER_STORAGE_RENT" } & EvmStateChangeFarcasterStorageRent)
   | ({ kind: "NATIVE_ASSET_TRANSFER" } & EvmStateChangeNativeAssetTransfer);
 /**
@@ -1092,7 +1136,9 @@ export interface EvmSimulatorConfig {
  *
  * @export
  */
-export type EvmSimulatorConfigPresetsInner = GnosisSafePreset;
+export type EvmSimulatorConfigPresetsInner =
+  | Eip4337WalletPreset
+  | GnosisSafePreset;
 /**
  *
  * @export
@@ -1988,6 +2034,60 @@ export interface EvmStateChangeErc721TransferData {
   assetPrice: AssetPrice | null;
 }
 /**
+ * Farcaster Change Recovery Address
+ * @export
+ * @interface EvmStateChangeFarcasterChangeRecoveryAddress
+ */
+export interface EvmStateChangeFarcasterChangeRecoveryAddress {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddress
+   */
+  kind: EvmStateChangeFarcasterChangeRecoveryAddressKindEnum;
+  /**
+   *
+   * @type {EvmStateChangeFarcasterChangeRecoveryAddressData}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddress
+   */
+  data: EvmStateChangeFarcasterChangeRecoveryAddressData;
+}
+
+/**
+ * @export
+ */
+export const EvmStateChangeFarcasterChangeRecoveryAddressKindEnum = {
+  FarcasterChangeRecoveryAddress: "FARCASTER_CHANGE_RECOVERY_ADDRESS",
+} as const;
+export type EvmStateChangeFarcasterChangeRecoveryAddressKindEnum =
+  (typeof EvmStateChangeFarcasterChangeRecoveryAddressKindEnum)[keyof typeof EvmStateChangeFarcasterChangeRecoveryAddressKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmStateChangeFarcasterChangeRecoveryAddressData
+ */
+export interface EvmStateChangeFarcasterChangeRecoveryAddressData {
+  /**
+   * The Farcaster ID of the user changing the recovery address
+   * @type {string}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddressData
+   */
+  id: string;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddressData
+   */
+  recovery: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmStateChangeFarcasterChangeRecoveryAddressData
+   */
+  contract: EvmAddressInfo;
+}
+/**
  * Farcaster Storage Rent Purchase
  * @export
  * @interface EvmStateChangeFarcasterStorageRent
@@ -2201,6 +2301,12 @@ export interface EvmTxData {
    * @memberof EvmTxData
    */
   value?: string;
+  /**
+   * String representation of the maximum amount of gas allowed for the transaction
+   * @type {string}
+   * @memberof EvmTxData
+   */
+  gas?: string;
 }
 /**
  *
@@ -2506,6 +2612,44 @@ export interface RequestMetadata {
    * @memberof RequestMetadata
    */
   origin: string;
+}
+/**
+ *
+ * @export
+ * @interface RequestSimulatorConfig
+ */
+export interface RequestSimulatorConfig {
+  /**
+   * Payload includes decoded instructions for each transaction in the request if enabled
+   * @type {boolean}
+   * @memberof RequestSimulatorConfig
+   */
+  decodeInstructions?: boolean;
+  /**
+   *
+   * @type {RequestSimulatorConfigGuarantee}
+   * @memberof RequestSimulatorConfig
+   */
+  guarantee?: RequestSimulatorConfigGuarantee;
+}
+/**
+ *
+ * @export
+ * @interface RequestSimulatorConfigGuarantee
+ */
+export interface RequestSimulatorConfigGuarantee {
+  /**
+   * Enable Guarantee transaction generation
+   * @type {boolean}
+   * @memberof RequestSimulatorConfigGuarantee
+   */
+  enabled: boolean;
+  /**
+   * Max slippage percentage for Solana and fungable token balances
+   * @type {number}
+   * @memberof RequestSimulatorConfigGuarantee
+   */
+  slippage?: number;
 }
 /**
  *
@@ -2823,16 +2967,29 @@ export interface ScanTransactionEvm200ResponseSimulationResults {
   error: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerError | null;
   /**
    *
-   * @type {ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas}
+   * @type {ScanTransactionEvm200ResponseSimulationResultsGas}
    * @memberof ScanTransactionEvm200ResponseSimulationResults
    */
-  gas: ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas;
+  gas: ScanTransactionEvm200ResponseSimulationResultsGas;
   /**
    *
    * @type {EvmProtocol}
    * @memberof ScanTransactionEvm200ResponseSimulationResults
    */
   protocol: EvmProtocol | null;
+}
+/**
+ * An object that contains nullable fields with information about the estimated gas consumption of the simulated transaction
+ * @export
+ * @interface ScanTransactionEvm200ResponseSimulationResultsGas
+ */
+export interface ScanTransactionEvm200ResponseSimulationResultsGas {
+  /**
+   * A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+   * @type {string}
+   * @memberof ScanTransactionEvm200ResponseSimulationResultsGas
+   */
+  gasLimit: string | null;
 }
 /**
  *
@@ -3003,7 +3160,7 @@ export type ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerEr
  */
 export interface ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas {
   /**
-   * A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+   * A field that if the simulation was successful contains the estimated gas used while simulating the transaction. **NOTE:** Despite the name, this should be viewed as a realistic usage estimate, not an upper bound for how much gas the transaction could consume in the worst case. In future versions this field may be renamed to `gasUsageEstimate`. Can be null.
    * @type {string}
    * @memberof ScanTransactionsEvm200ResponseSimulationResultsPerTransactionInnerGas
    */
@@ -3064,6 +3221,12 @@ export interface ScanTransactionsSolana200Response {
    * @memberof ScanTransactionsSolana200Response
    */
   perTransaction: Array<ScanTransactionsSolana200ResponsePerTransactionInner>;
+  /**
+   *
+   * @type {ScanTransactionsSolana200ResponseGuarantee}
+   * @memberof ScanTransactionsSolana200Response
+   */
+  guarantee: ScanTransactionsSolana200ResponseGuarantee | null;
 }
 /**
  *
@@ -3099,6 +3262,12 @@ export interface ScanTransactionsSolana200ResponseAggregated {
       | Array<ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValueInner>
       | undefined;
   };
+  /**
+   * Slot height at which the simulation took place
+   * @type {number}
+   * @memberof ScanTransactionsSolana200ResponseAggregated
+   */
+  simulatedSlotHeight: number | null;
 }
 /**
  *
@@ -3169,6 +3338,25 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
 /**
  *
  * @export
+ * @interface ScanTransactionsSolana200ResponseGuarantee
+ */
+export interface ScanTransactionsSolana200ResponseGuarantee {
+  /**
+   *
+   * @type {string}
+   * @memberof ScanTransactionsSolana200ResponseGuarantee
+   */
+  error: string | null;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ScanTransactionsSolana200ResponseGuarantee
+   */
+  transactions: Array<string>;
+}
+/**
+ *
+ * @export
  * @interface ScanTransactionsSolana200ResponsePerTransactionInner
  */
 export interface ScanTransactionsSolana200ResponsePerTransactionInner {
@@ -3177,7 +3365,7 @@ export interface ScanTransactionsSolana200ResponsePerTransactionInner {
    * @type {boolean}
    * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
    */
-  isNonceValid: boolean;
+  isNonceValid: boolean | null;
   /**
    *
    * @type {SolanaSimulationError}
@@ -3198,10 +3386,10 @@ export interface ScanTransactionsSolana200ResponsePerTransactionInner {
   protocols: Array<SolanaProtocol>;
   /**
    *
-   * @type {Array<SolanaInstruction>}
+   * @type {Array<TopLevelInstruction>}
    * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
    */
-  instructions: Array<SolanaInstruction>;
+  instructions: Array<TopLevelInstruction>;
 }
 /**
  *
@@ -3220,13 +3408,19 @@ export interface ScanTransactionsSolanaRequest {
    * @type {string}
    * @memberof ScanTransactionsSolanaRequest
    */
-  userAccount: string;
+  userAccount?: string;
   /**
    *
    * @type {RequestMetadata}
    * @memberof ScanTransactionsSolanaRequest
    */
   metadata: RequestMetadata;
+  /**
+   *
+   * @type {RequestSimulatorConfig}
+   * @memberof ScanTransactionsSolanaRequest
+   */
+  simulatorConfig?: RequestSimulatorConfig | null;
 }
 /**
  *
@@ -3272,11 +3466,41 @@ export interface SolAsset {
  */
 export interface SolanaInstruction {
   /**
-   * Index of the protocol in the list of protocols for this instruction
+   * Index of the protocol in the list of protocols for this transaction
    * @type {number}
    * @memberof SolanaInstruction
    */
   protocolIndex: number | null;
+  /**
+   * On-chain program this instruction is calling
+   * @type {string}
+   * @memberof SolanaInstruction
+   */
+  programId: string;
+  /**
+   * Function name that this instruction is calling
+   * @type {string}
+   * @memberof SolanaInstruction
+   */
+  name: string | null;
+  /**
+   * Accounts passed into this instruction
+   * @type {Array<string>}
+   * @memberof SolanaInstruction
+   */
+  accountKeys: Array<string>;
+  /**
+   * Arguments of the function being called
+   * @type {{ [key: string]: any | undefined; }}
+   * @memberof SolanaInstruction
+   */
+  decodedData: { [key: string]: any | undefined } | null;
+  /**
+   * Base58 encoded instruction data
+   * @type {string}
+   * @memberof SolanaInstruction
+   */
+  encodedData: string;
 }
 /**
  * Human-readable protocol information. Note that a single protocol can consist of multiple programs.
@@ -3344,13 +3568,13 @@ export interface SolanaRawSimulationResults {
    * @type {Array<string>}
    * @memberof SolanaRawSimulationResults
    */
-  logs: Array<string>;
+  logs: Array<string> | null;
   /**
    *
    * @type {number}
    * @memberof SolanaRawSimulationResults
    */
-  unitsConsumed: number;
+  unitsConsumed: number | null;
   /**
    *
    * @type {SolanaRawSimulationResultsReturnData}
@@ -4047,6 +4271,31 @@ export interface SplAsset {
   previews: NftPreviews;
 }
 /**
+ * Details of a top-level instruction of this transaction. The top-level instruction details are hard-coded into the transaction and therefore guaranteed to be called, whereas the inner-instructions are CPIs (cross-program invocations) extracted from the transaction's simulation and are therefore not guaranteed to be called when the transaction is submitted on-chain. It is recommended this difference in certainty be displayed to end users in the UI.
+ * @export
+ * @interface TopLevelInstruction
+ */
+export interface TopLevelInstruction {
+  /**
+   * Index of the protocol in the list of protocols for this transaction
+   * @type {number}
+   * @memberof TopLevelInstruction
+   */
+  protocolIndex: number | null;
+  /**
+   *
+   * @type {SolanaInstruction}
+   * @memberof TopLevelInstruction
+   */
+  topLevelInstruction: SolanaInstruction;
+  /**
+   *
+   * @type {Array<SolanaInstruction>}
+   * @memberof TopLevelInstruction
+   */
+  flattenedInnerInstructions: Array<SolanaInstruction> | null;
+}
+/**
  *
  * @export
  * @interface Unauthorized
@@ -4071,6 +4320,12 @@ export interface Unauthorized {
  * @interface WarningInner
  */
 export interface WarningInner {
+  /**
+   *
+   * @type {string}
+   * @memberof WarningInner
+   */
+  data: string | null;
   /**
    * warning severity level. We suggest a yellow message if "WARNING", and a red message if "CRITICAL".
    * @type {string}
