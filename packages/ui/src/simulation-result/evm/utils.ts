@@ -117,11 +117,10 @@ export const isApprovalForAllStateChange = (
 };
 
 const getSimulationDiff = (rawInfo: EvmExpectedStateChange["rawInfo"]) => {
-  const { amount } = rawInfo.data;
-
-  if (!amount) {
+  if (!("amount" in rawInfo.data)) {
     return new Decimal(0);
   }
+  const { amount } = rawInfo.data;
 
   if (typeof amount === "string") {
     return new Decimal(amount);

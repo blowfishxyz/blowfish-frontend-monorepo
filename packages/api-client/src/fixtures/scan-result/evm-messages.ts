@@ -24,6 +24,7 @@ export const exampleEthSignScanResult: EvmMessageScanResult =
         message:
           "You are signing what could be a transaction hash, which is a valid Ethereum transaction. Approving may lead to loss of funds.",
         severity: "WARNING",
+        data: null,
       },
     ],
     simulationResults: null,
@@ -624,6 +625,7 @@ export const unlimitedAmountPermit2ScanResult: EvmMessageScanResult =
         message:
           "You are allowing this dApp to withdraw funds from your account in the future.",
         severity: "WARNING",
+        data: null,
       },
     ],
     simulationResults: {
@@ -756,6 +758,7 @@ export const unlimitedAmountPermitScanResult: EvmMessageScanResult =
         message:
           "You are allowing this dApp to withdraw funds from your account in the future.",
         severity: "WARNING",
+        data: null,
       },
     ],
   });

@@ -5,14 +5,17 @@ export const SOLANA_TEST_ACCOUNT =
 
 export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
   requestId: "a532f37d3505ca43816e4b834288edb5",
+  guarantee: null,
   aggregated: {
     action: "BLOCK",
+    simulatedSlotHeight: null,
     warnings: [
       {
         kind: "SET_OWNER_AUTHORITY",
         message:
           "This transaction changes the owner of your SPL tokens. This allows the new owner to transfer the tokens without your permission.",
         severity: "CRITICAL",
+        data: null,
       },
     ],
     error: null,
@@ -76,21 +79,19 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
   ],
 };
 
 export const solanaNftTransfer: SolanaTransactionsResult = {
   requestId: "a532f37d3505ca43816e4b834288edb5",
+  guarantee: null,
   aggregated: {
     action: "NONE",
     warnings: [],
     error: null,
+    simulatedSlotHeight: null,
     expectedStateChanges: {
       [SOLANA_TEST_ACCOUNT]: [
         {
@@ -232,14 +233,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -286,14 +280,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -340,14 +327,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -394,14 +374,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
     {
       isNonceValid: true,
@@ -453,14 +426,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
           websiteUrl: "https://solana.com/",
         },
       ],
-      instructions: [
-        {
-          protocolIndex: 0,
-        },
-        {
-          protocolIndex: 0,
-        },
-      ],
+      instructions: [],
     },
   ],
 };

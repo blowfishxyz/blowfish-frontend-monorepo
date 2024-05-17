@@ -146,6 +146,32 @@ async function parseFile(
         }
       }
 
+      if (Yaml.isSeq(node.value) && key.value === "type") {
+        // change
+        // - type: [string, "null"]
+        // to
+        // - type: string
+        // nullable: true
+
+        console.log("@@ here", node.value);
+        node.value = node.value.items[0];
+        const parent = path.at(-2);
+
+        if (Yaml.isSeq(parent)) {
+          parent.add(new Yaml.Pair("nullable", true));
+          return;
+        }
+
+        // if (Yaml.isSeq(parent)) {
+        //   const deleted = parent.delete(parent.items.length - 1);
+        //   const prevParent = path.at(-4);
+        //   if (deleted && Yaml.isCollection(prevParent)) {
+        //     prevParent.add(new Yaml.Pair("nullable", true));
+        //     return;
+        //   }
+        // }
+      }
+
       // remove all "examples" nodes
       if (key.value === "examples") {
         const parent = path.at(-2);
@@ -224,6 +250,7 @@ function createSolanaChainNetwork() {
         - mainnet
         - testnet
         - devnet
+        - amoy
     required: true
   `) as YAMLMap;
 

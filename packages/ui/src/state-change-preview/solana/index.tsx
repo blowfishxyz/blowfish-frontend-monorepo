@@ -15,7 +15,7 @@ export type StateChangePreviewSolanaProps = {
   scanResult: SolanaTransactionsResult;
   chainNetwork: SolanaChainNetwork;
   sectionLabel?: string | null;
-  userAccount: string;
+  userAccount: string | undefined;
 };
 
 export const StateChangePreviewSolana: React.FC<
@@ -26,6 +26,10 @@ export const StateChangePreviewSolana: React.FC<
   userAccount,
   sectionLabel = "State change",
 }) => {
+  if (!userAccount) {
+    return null;
+  }
+
   const simulationResults =
     scanResult.aggregated.expectedStateChanges[userAccount] || [];
   const simulationError = scanResult.aggregated.error;

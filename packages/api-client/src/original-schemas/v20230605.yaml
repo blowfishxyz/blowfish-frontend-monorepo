@@ -45,7 +45,7 @@ paths:
         | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transactions |
         | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transactions |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transactions |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transactions |
+        | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
         | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transactions |
@@ -55,7 +55,16 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transactions |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transactions |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transactions |
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transactions |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transactions |
+        | Degen Mainnet| https://api.blowfish.xyz/degen/v0/mainnet/scan/transactions |
+        | Blast Mainnet | https://api.blowfish.xyz/blast/v0/mainnet/scan/transactions |
+        | Blast Sepolia | https://api.blowfish.xyz/blast/v0/sepolia/scan/transactions |
+        | Gnosis Mainnet | https://api.blowfish.xyz/gnosis/v0/mainnet/scan/transactions |
+        | Linea Mainnet | https://api.blowfish.xyz/linea/v0/mainnet/scan/transactions |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transactions |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -965,22 +974,23 @@ paths:
                   type: array
                   items:
                     type: string
-                    example: "GfoPPvWL5eSJssAoemjqUpE9nMVt5kWTNznPz1F1CKi5kcBY8tDBgLzpbdBnTQjHJgyutdXEHmkkmE3iM3y94LE5s3zZ8wq2sjMkgjpddAnTwY1TrGSk6yZNykT2Un1PKqwo2XMXBa5FR3BpKStBV4krbiFzT9UySLSysTBzw31caBCuvcsetdE7yYWXGXEGbRiCf3BCWFkrooKAHrzW7bSHmGdUuB2sip9wEcb7r3SjhzkkAK2tySVkrbvVB5c11oF6zDYVys7wpaGbjn2DsVPYo9gbGVQXHi4qgCBXTzCT8v8pZV9gh4FeMRWw5yzfuWtxw44aQ6EKz55cTUhBAVMUCEZQUrfJbx1NzEYod41n7GFHzEXTZyPCo5CnGmX8u2UhuLhx2n8ZNg6Mj1dH6PGRQnKtxAzwicfPJ9KahGjoNLNcki9gfdxURy56DY3YH3DDviLrKKjiEoTmZs8UiaSBwRjsLA5dhJ6G6LyC9bjertH1cpcDWSQhRfwBXHAvHNirLX8927WcCHoTAUWXKqB34YJu4cLPwTn5kUr4FMQgQBhvyaMDDzrH76bwSFS4oRmMqXtscyWXbdXJC1k8iiRHftqmZhg3bP3UydcXKBUQJi15A64kjpkGY7ChxdcuwgLzKnVNJGG897nUPsVmsVfZNwiVqVZ6QKv1z7yv4EGvbkhWStx9NFvv8JkHjUhL4vNo8o7TPNib21WeFLgmiAu7nrn25kkJLZ3XE6ZVceUEbywJCMdwMomPx2maxauRehuxSorkE3ngcj7mC88HEgPTBQiP2JRJxcFvQp1CsfErCs3F3uG79kEKJLzNoFbCL58s6JsH3rE69wcb5e47JztFmrmGp4p3mb2jYoUfj6AfCctky9MnB6jWTdyg2o7zUcr5f35Qwahgcsce95RgH9mcWKFLqu49RxpFUgnHiNaDG67YEGdDgu2YABYxv6tv7PEtCJqZH4VVbpu9TRQCCXkQv4Xj7j6ALmhbNoJBEHJHqTGhiNQvV5aibesnGG62epoPz36uNJZrt6GV53AeLig22HVtBRr1NE2wB6h9Ax6VX7KKrekKBMzUxeAjWbGERkCWuXdRjTrpDG3bbDCDgep8k9ZnDDQtNqSKJbbxZ1VJvMKgcgty5P4n4YTXTSFNQ9kE8VCikb9tpN6iRnUwD9GFRQfiR76QNZs5hU2hn8asGYFnRcEgjZV9cSwC6foKrV47uq9X2dPWZg56TpNhPb85fzbkN13LdFHcua3MTvWmSD4LZAFMF8QWqpb7b2YZZpc1sQvYc5gN856JwehDybMsB2EFepiBFQXTxwB2c9xbHjEf3RcWwe3LZiD8vvWLfGF2t7PzwDKbEREpsX8piN76GkCGiRjgkdehiXaLzjQ5nW3Fi8F2HjALRRjHJxfNQq4vH4B6Nwp7rruzqdY1j6cm3QagrgeXCmfSmRV6kaCMRRQYbVW6Ju4rMbLTWa7FAWCmR2rvmevmi1PmV8zhApVFbV9VHd2hTazrddBWXRAmTRBZEjyRqSkr3y45ecph1ae87Pi3quaEEhjFP9oSWTUs3ufHCW2XjLj"
+                    example: "5PpG8s71i21PiBqHqT4FWoay6v8PkJwPgGRokSHom7ZKzygead3AtzN1YWCQEZCBLf2Sz9YYBh8Vr7HKLwCpshR8tYrya1wkogWYsrb2JAEhUt63VTuySpWuFPqC5bwqcgRjps5vJLEM6GPaKNi52iUXcLiaER7k8f9LVdXcFx5vRnHSAdnHunZgTTTfm92BMDvw93wbHm5HZCFPFmcyZ7iQh2ZVMyorz8BMkChM9L7u6aNg1VVN286fQxV1R5TBbSy1C55QvGBwnMV4MB3RmpvjgmCBxP4YBwX6PfkQmNrfqgTsLKg2YJSwQsoXLfpw8bwBtUXs1HxBVLpbxtXyWm3B196AEaCbLfXzLsecoSMvu7c97kSvZ9iCceNT9gQdQTSWJLrBPPozsCUqFcQi5G7FQYHX7dHrWZVkk1ZEnfdugohrDLbrfMjpazdkXYK4jaLm3sXaVNY71JkcgZsoLMuFYCRZ2L58PKaibgy6uRzLQvx5EdZHEPdEvRWzX7VHJU8pKCvdoCU49Z1nzbD5CHMuyXMBBZyN2qn8DGVR8dsUjtrb1LMWhsgy1p4HDdphQLrBbYQamPvPa6GaCLk9cU4DUDeabstP8PZ777aZAr1CM1fgyXrG8DWj8bGMx1qFNtjgGenYEhgTmcBV44rhDVoX4RcsVvevgFGjXC4aX1WEDxrtQw6ricHsxaWFkniRbmYBLFBGtt5BHG5qJwNdJekQbMiFnQrVwQMC8mQUvFvwmhHb4VA5NGdtkuSMiA3YFLnDS8Gp7CGU7GcQMbXeER5H9R4YE2FLUvS9R3XM3tAykYGUrWXKYjeBpVgvi5WUq7mTiMyPmUht4kN4MWYsrjxVadsN3NzCVkobyA6QDmDe6zwGNcggzu2fb2xCh3LJF8nTK1hVBKpXCFUasdB2RfZw47dt553uLEkRPKvz8Q46TJxCbMgjo4tKgsUe22fDyNUstqvrFHw7tL44Ms5wYCCtJZeC4cnrG86SLfNBr295oHGXGLgxH9JbxNkCPfqec7dBnhT6Hh2AZ7Bq9oVTvm74AuGMb3Aru9C6Bc9NcDU8EEbd6vdsmeqJPffhSXuMDPEazr5msTV9XutnQToA294dALPNKsqYZrPAVz68YuVZFT6r95kMggEaXnjLoqh52nWZodSkyjYkwe7UjftBDZJZQxvWmC368rULyt2EddPp8V2KBkF7YDwZiYxcdUkpo8v5DoJFp1XeLqgy1JpCLMa6g3JKoghiGYXY2idkQ3o4DNvZa891izpn8VUs9u21FSHBmsqE1F6qtWXqPEmQC7ohDC5TFqVcAQyJCEKsoJ5fNHbsFoL8Xeqe5ekYfdMAfSxALPKydaU6XZexoQDgdWGojyu4tHvVjmfpVWLJPaTucwrzHwhQ4ia56o6FwhFWaWxBd9Qs8omfpAfKXK6pqt6yBcQtswZuTwtMXdsMDekmc4DFjBes77RQrt9Pz2L5rk4Z18jjiwJRcb1PLLZYBRSekCmczpmGzS1sDfzDE9QmJ9uAkY8ibjYuD2TjzYPieFdSGL9V"
                   description: Base58 or Base64 encoded Solana transactions to scan
                 userAccount:
                   type: string
-                  example: "5ufzDEwP2jKrvx78inuWNPrXRmR9AcXySqc2B3CRqR3G"
+                  example: "6dsoHqoCv6LcT9vX7rc8FTD6hxVhzd2v98E4r8VX7WBR"
                   description: Base58-encoded account of signer of transactions
                 metadata:
                   $ref: "#/components/schemas/RequestMetadata"
+                simulatorConfig:
+                  $ref: "#/components/schemas/RequestSimulatorConfig"
               required:
                 - transactions
-                - userAccount
                 - metadata
               default:
                 transactions:
-                  - GfoPPvWL5eSJssAoemjqUpE9nMVt5kWTNznPz1F1CKi5kcBY8tDBgLzpbdBnTQjHJgyutdXEHmkkmE3iM3y94LE5s3zZ8wq2sjMkgjpddAnTwY1TrGSk6yZNykT2Un1PKqwo2XMXBa5FR3BpKStBV4krbiFzT9UySLSysTBzw31caBCuvcsetdE7yYWXGXEGbRiCf3BCWFkrooKAHrzW7bSHmGdUuB2sip9wEcb7r3SjhzkkAK2tySVkrbvVB5c11oF6zDYVys7wpaGbjn2DsVPYo9gbGVQXHi4qgCBXTzCT8v8pZV9gh4FeMRWw5yzfuWtxw44aQ6EKz55cTUhBAVMUCEZQUrfJbx1NzEYod41n7GFHzEXTZyPCo5CnGmX8u2UhuLhx2n8ZNg6Mj1dH6PGRQnKtxAzwicfPJ9KahGjoNLNcki9gfdxURy56DY3YH3DDviLrKKjiEoTmZs8UiaSBwRjsLA5dhJ6G6LyC9bjertH1cpcDWSQhRfwBXHAvHNirLX8927WcCHoTAUWXKqB34YJu4cLPwTn5kUr4FMQgQBhvyaMDDzrH76bwSFS4oRmMqXtscyWXbdXJC1k8iiRHftqmZhg3bP3UydcXKBUQJi15A64kjpkGY7ChxdcuwgLzKnVNJGG897nUPsVmsVfZNwiVqVZ6QKv1z7yv4EGvbkhWStx9NFvv8JkHjUhL4vNo8o7TPNib21WeFLgmiAu7nrn25kkJLZ3XE6ZVceUEbywJCMdwMomPx2maxauRehuxSorkE3ngcj7mC88HEgPTBQiP2JRJxcFvQp1CsfErCs3F3uG79kEKJLzNoFbCL58s6JsH3rE69wcb5e47JztFmrmGp4p3mb2jYoUfj6AfCctky9MnB6jWTdyg2o7zUcr5f35Qwahgcsce95RgH9mcWKFLqu49RxpFUgnHiNaDG67YEGdDgu2YABYxv6tv7PEtCJqZH4VVbpu9TRQCCXkQv4Xj7j6ALmhbNoJBEHJHqTGhiNQvV5aibesnGG62epoPz36uNJZrt6GV53AeLig22HVtBRr1NE2wB6h9Ax6VX7KKrekKBMzUxeAjWbGERkCWuXdRjTrpDG3bbDCDgep8k9ZnDDQtNqSKJbbxZ1VJvMKgcgty5P4n4YTXTSFNQ9kE8VCikb9tpN6iRnUwD9GFRQfiR76QNZs5hU2hn8asGYFnRcEgjZV9cSwC6foKrV47uq9X2dPWZg56TpNhPb85fzbkN13LdFHcua3MTvWmSD4LZAFMF8QWqpb7b2YZZpc1sQvYc5gN856JwehDybMsB2EFepiBFQXTxwB2c9xbHjEf3RcWwe3LZiD8vvWLfGF2t7PzwDKbEREpsX8piN76GkCGiRjgkdehiXaLzjQ5nW3Fi8F2HjALRRjHJxfNQq4vH4B6Nwp7rruzqdY1j6cm3QagrgeXCmfSmRV6kaCMRRQYbVW6Ju4rMbLTWa7FAWCmR2rvmevmi1PmV8zhApVFbV9VHd2hTazrddBWXRAmTRBZEjyRqSkr3y45ecph1ae87Pi3quaEEhjFP9oSWTUs3ufHCW2XjLj
-                userAccount: 5ufzDEwP2jKrvx78inuWNPrXRmR9AcXySqc2B3CRqR3G
+                  - 5PpG8s71i21PiBqHqT4FWoay6v8PkJwPgGRokSHom7ZKzygead3AtzN1YWCQEZCBLf2Sz9YYBh8Vr7HKLwCpshR8tYrya1wkogWYsrb2JAEhUt63VTuySpWuFPqC5bwqcgRjps5vJLEM6GPaKNi52iUXcLiaER7k8f9LVdXcFx5vRnHSAdnHunZgTTTfm92BMDvw93wbHm5HZCFPFmcyZ7iQh2ZVMyorz8BMkChM9L7u6aNg1VVN286fQxV1R5TBbSy1C55QvGBwnMV4MB3RmpvjgmCBxP4YBwX6PfkQmNrfqgTsLKg2YJSwQsoXLfpw8bwBtUXs1HxBVLpbxtXyWm3B196AEaCbLfXzLsecoSMvu7c97kSvZ9iCceNT9gQdQTSWJLrBPPozsCUqFcQi5G7FQYHX7dHrWZVkk1ZEnfdugohrDLbrfMjpazdkXYK4jaLm3sXaVNY71JkcgZsoLMuFYCRZ2L58PKaibgy6uRzLQvx5EdZHEPdEvRWzX7VHJU8pKCvdoCU49Z1nzbD5CHMuyXMBBZyN2qn8DGVR8dsUjtrb1LMWhsgy1p4HDdphQLrBbYQamPvPa6GaCLk9cU4DUDeabstP8PZ777aZAr1CM1fgyXrG8DWj8bGMx1qFNtjgGenYEhgTmcBV44rhDVoX4RcsVvevgFGjXC4aX1WEDxrtQw6ricHsxaWFkniRbmYBLFBGtt5BHG5qJwNdJekQbMiFnQrVwQMC8mQUvFvwmhHb4VA5NGdtkuSMiA3YFLnDS8Gp7CGU7GcQMbXeER5H9R4YE2FLUvS9R3XM3tAykYGUrWXKYjeBpVgvi5WUq7mTiMyPmUht4kN4MWYsrjxVadsN3NzCVkobyA6QDmDe6zwGNcggzu2fb2xCh3LJF8nTK1hVBKpXCFUasdB2RfZw47dt553uLEkRPKvz8Q46TJxCbMgjo4tKgsUe22fDyNUstqvrFHw7tL44Ms5wYCCtJZeC4cnrG86SLfNBr295oHGXGLgxH9JbxNkCPfqec7dBnhT6Hh2AZ7Bq9oVTvm74AuGMb3Aru9C6Bc9NcDU8EEbd6vdsmeqJPffhSXuMDPEazr5msTV9XutnQToA294dALPNKsqYZrPAVz68YuVZFT6r95kMggEaXnjLoqh52nWZodSkyjYkwe7UjftBDZJZQxvWmC368rULyt2EddPp8V2KBkF7YDwZiYxcdUkpo8v5DoJFp1XeLqgy1JpCLMa6g3JKoghiGYXY2idkQ3o4DNvZa891izpn8VUs9u21FSHBmsqE1F6qtWXqPEmQC7ohDC5TFqVcAQyJCEKsoJ5fNHbsFoL8Xeqe5ekYfdMAfSxALPKydaU6XZexoQDgdWGojyu4tHvVjmfpVWLJPaTucwrzHwhQ4ia56o6FwhFWaWxBd9Qs8omfpAfKXK6pqt6yBcQtswZuTwtMXdsMDekmc4DFjBes77RQrt9Pz2L5rk4Z18jjiwJRcb1PLLZYBRSekCmczpmGzS1sDfzDE9QmJ9uAkY8ibjYuD2TjzYPieFdSGL9V
+                userAccount: 6dsoHqoCv6LcT9vX7rc8FTD6hxVhzd2v98E4r8VX7WBR
                 metadata:
                   origin: https://magiceden.io/
       responses:
@@ -994,6 +1004,7 @@ paths:
                   - requestId
                   - aggregated
                   - perTransaction
+                  - guarantee
                 properties:
                   requestId:
                     $ref: "#/components/schemas/RequestId"
@@ -1004,6 +1015,7 @@ paths:
                       - warnings
                       - error
                       - expectedStateChanges
+                      - simulatedSlotHeight
                     properties:
                       action:
                         $ref: "#/components/schemas/ActionEnum"
@@ -1045,6 +1057,7 @@ paths:
                                   - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
                                   - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
                                   - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
+                                  - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
                                 discriminator:
                                   propertyName: kind
@@ -1058,6 +1071,11 @@ paths:
                                     BFP_LOADER_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                     USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
                                     COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
+                      simulatedSlotHeight:
+                        type: number
+                        nullable: true
+                        description: Slot height at which the simulation took place
+                        example: 256805354
                   perTransaction:
                     type: array
                     items:
@@ -1071,6 +1089,7 @@ paths:
                       properties:
                         isNonceValid:
                           type: boolean
+                          nullable: true
                           example: false
                           description: Whether the tx nonce is valid
                         error:
@@ -1084,7 +1103,24 @@ paths:
                         instructions:
                           type: array
                           items:
-                            $ref: "#/components/schemas/SolanaInstruction"
+                            $ref: "#/components/schemas/TopLevelInstruction"
+                  guarantee:
+                    type: object
+                    nullable: true
+                    required:
+                      - error
+                      - transactions
+                    properties:
+                      error:
+                        type: string
+                        nullable: true
+                        example: TOO_LARGE_FOR_JITO_BOUNDLE
+                      transactions:
+                        type: array
+                        items:
+                          type: string
+                          description: Base58 encoded Guarantee transaction
+
         "400":
           description: Bad request
           content:
@@ -1121,7 +1157,7 @@ paths:
         | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/message |
         | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/message |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/message |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/message |
+        | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
         | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
@@ -1131,7 +1167,16 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/message |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/message |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/message |
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/message |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/message |
+        | Degen Mainnet| https://api.blowfish.xyz/degen/v0/mainnet/scan/message |
+        | Blast Mainnet | https://api.blowfish.xyz/blast/v0/mainnet/scan/message |
+        | Blast Sepolia | https://api.blowfish.xyz/blast/v0/sepolia/scan/message |
+        | Gnosis Mainnet | https://api.blowfish.xyz/gnosis/v0/mainnet/scan/message |
+        | Linea Mainnet | https://api.blowfish.xyz/linea/v0/mainnet/scan/message |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/message |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       security:
         - ApiKeyAuth: []
       parameters:
@@ -2847,6 +2892,9 @@ paths:
                   type: integer
                   description: How long a bloom filter and corresponding `hash` should remain static. By default, 24 hours. Minimum 24 hours, maximum 14 days. During this time, new domains will be added to `recentlyAdded` and removed from `recentlyRemoved` fields.
                   example: 86400
+                cursor:
+                  type: string
+                  description: A cursor to only fetch new `recentlyAdded` and `recentlyRemoved`. Has no impact on the bloom filter. Use value from `nextCursor` field in the previous response.
               default:
                 allowLists:
                   - BLOWFISH
@@ -2871,6 +2919,7 @@ paths:
                   - bloomFilter
                   - recentlyAdded
                   - recentlyRemoved
+                  - nextCursor
                 properties:
                   requestId:
                     $ref: "#/components/schemas/RequestId"
@@ -2897,6 +2946,9 @@ paths:
                     items:
                       type: string
                       example: notscammer.com
+                  nextCursor:
+                    type: string
+                    description: Cursor to fetch the next batch of `recentlyAdded` and `recentlyRemoved` domains. Use this value in the `cursor` field of the next request to only fetch new domains.
 
         "400":
           description: Bad request
@@ -2957,7 +3009,7 @@ paths:
                   type: string
                   description: |
                     What event occurred to cause the report. "PROCEEDED" means the user proceeded with signing
-                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported 
+                    the proposed action, "REJECTED" means the user rejected the proposed action, and "Reported
                     Malicious" means the user explicitly reported the transaction as malicious.
                   enum:
                     - PROCEEDED
@@ -3014,7 +3066,7 @@ paths:
         | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
         | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transaction |
         | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
-        | Polygon Mumbai Testnet  | https://api.blowfish.xyz/polygon/v0/mumbai/scan/transaction |
+        | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
         | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
@@ -3024,7 +3076,16 @@ paths:
         | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
         | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
         | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transaction |
+        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transaction |
+        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transaction |
+        | Degen Mainnet| https://api.blowfish.xyz/degen/v0/mainnet/scan/transaction |
+        | Blast Mainnet | https://api.blowfish.xyz/blast/v0/mainnet/scan/transaction |
+        | Blast Sepolia | https://api.blowfish.xyz/blast/v0/sepolia/scan/transaction |
+        | Gnosis Mainnet | https://api.blowfish.xyz/gnosis/v0/mainnet/scan/transaction |
+        | Linea Mainnet | https://api.blowfish.xyz/linea/v0/mainnet/scan/transaction |
+        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transaction |
         Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
+        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
       deprecated: true
       security:
         - ApiKeyAuth: []
@@ -3195,10 +3256,14 @@ components:
       items:
         type: object
         required:
+          - data
           - severity
           - kind
           - message
         properties:
+          data:
+            type: string
+            nullable: true
           severity:
             type: string
             description: warning severity level. We suggest a yellow message if "WARNING", and a red message if "CRITICAL".
@@ -3382,6 +3447,28 @@ components:
           example: "https://uniswap.org"
       required:
         - origin
+    RequestSimulatorConfig:
+      type: object
+      nullable: true
+      properties:
+        decodeInstructions:
+          type: boolean
+          description: Payload includes decoded instructions for each transaction in the request if enabled
+          example: true
+        guarantee:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              description: Enable Guarantee transaction generation
+              example: true
+            slippage:
+              type: number
+              format: float
+              description: Max slippage percentage for Solana and fungable token balances
+              example: 0.1
+          required:
+            - enabled
     AssetPrice:
       type: object
       required:
@@ -3649,7 +3736,7 @@ components:
         gasLimit:
           type: string
           example: "46220"
-          description: A field that if the simulation was successful contains the estimated upper limit of gas usage for this transaction. The gasLimit should be viewed as an upper bound of how much gas the transaction can use, not as an accurate estimate how much it will realistically consume when submitted on-chain. Can be `null`.
+          description: A field that if the simulation was successful contains the estimated gas used while simulating the transaction. **NOTE:** Despite the name, this should be viewed as a realistic usage estimate, not an upper bound for how much gas the transaction could consume in the worst case. In future versions this field may be renamed to `gasUsageEstimate`. Can be null.
           nullable: true
     EvmSimulationResults:
       type: object
@@ -3799,17 +3886,65 @@ components:
         - description
         - websiteUrl
         - imageUrl
-    SolanaInstruction:
+    TopLevelInstruction:
       type: object
-      description: Information about each instruction
+      description: Details of a top-level instruction of this transaction. The top-level instruction details are hard-coded into the transaction and therefore guaranteed to be called, whereas the inner-instructions are CPIs (cross-program invocations) extracted from the transaction's simulation and are therefore not guaranteed to be called when the transaction is submitted on-chain. It is recommended this difference in certainty be displayed to end users in the UI.
       required:
         - protocolIndex
+        - topLevelInstruction
+        - flattenedInnerInstructions
       properties:
         protocolIndex:
           type: number
           example: 0
           nullable: true
-          description: Index of the protocol in the list of protocols for this instruction
+          description: Index of the protocol in the list of protocols for this transaction
+        topLevelInstruction:
+          nullable: true
+          $ref: "#/components/schemas/SolanaInstruction"
+        flattenedInnerInstructions:
+          type: array
+          nullable: true
+          items:
+            $ref: "#/components/schemas/SolanaInstruction"
+    SolanaInstruction:
+      type: object
+      description: Information about each instruction
+      required:
+        - protocolIndex
+        - programId
+        - name
+        - accountKeys
+        - decodedData
+        - encodedData
+      properties:
+        protocolIndex:
+          type: number
+          example: 0
+          nullable: true
+          description: Index of the protocol in the list of protocols for this transaction
+        programId:
+          type: string
+          example: "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+          description: On-chain program this instruction is calling
+        name:
+          type: string
+          nullable: true
+          example: "bubblegumSetCollectionSize"
+          description: Function name that this instruction is calling
+        accountKeys:
+          type: array
+          description: Accounts passed into this instruction
+          items:
+            type: string
+        decodedData:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Arguments of the function being called
+        encodedData:
+          type: string
+          description: Base58 encoded instruction data
     MetaplexTokenStandard:
       type: string
       enum:
@@ -3829,17 +3964,21 @@ components:
           description: Hex-representation address of transaction signer
           example: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
         to:
-          type: string
+          type: [string, "null"]
           description: Hex-representation address of transaction recipient
           example: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
         data:
-          type: string
+          type: [string, "null"]
           description: Hex-representation of ABI encoded call data
           example: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
         value:
-          type: string
+          type: [string, "null"]
           description: String representation of Ether/Matic (in Wei) to send with the transaction
           example: "0"
+        gas:
+          type: [string, "null"]
+          description: String representation of the maximum amount of gas allowed for the transaction
+          example: "21000"
     EvmExpectedStateChange:
       type: object
       required:
@@ -3865,6 +4004,7 @@ components:
             - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
             - $ref: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
             - $ref: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
+            - $ref: "#/components/schemas/EvmStateChangeFarcasterChangeRecoveryAddress"
           discriminator:
             propertyName: kind
             mapping:
@@ -3880,6 +4020,7 @@ components:
               ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
               ERC1155_APPROVAL_FOR_ALL: "#/components/schemas/EvmStateChangeErc1155ApprovalForAll"
               FARCASTER_STORAGE_RENT: "#/components/schemas/EvmStateChangeFarcasterStorageRent"
+              FARCASTER_CHANGE_RECOVERY_ADDRESS: "#/components/schemas/EvmStateChangeFarcasterChangeRecoveryAddress"
     EvmExpectedStateChanges:
       type: array
       items:
@@ -3895,7 +4036,7 @@ components:
       example: "0xc1e42f862d202b4a0ed552c1145735ee088f6ccf"
     EvmSimulatorConfig:
       description: "An optional advanced usage configuration to change the simulator environment during simulation. Under normal circumstances this configuration should not be set when making requests."
-      type: object
+      type: [object, "null"]
       properties:
         blockNumber:
           type: string
@@ -3974,6 +4115,7 @@ components:
           items:
             oneOf:
               - $ref: "#/components/schemas/GnosisSafePreset"
+              - $ref: "#/components/schemas/Eip4337WalletPreset"
 
     GnosisSafePreset:
       type: object
@@ -3993,6 +4135,25 @@ components:
           example: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
           default: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
           description: "The address of the Gnosis safe to override"
+
+    Eip4337WalletPreset:
+      type: object
+      description: "Override a EIP-4337 wallet contract to bypass signature validation during simulation. This allows you to pass bytes(0) instead of the user signature when encoding the EIP4337 entrypoint transaction for scanning & simulation. NOTE: This is an advanced feature that may require additional configuration on Blowfish's end to support your architecture. Please reach out to us if you have any issues"
+      required:
+        - kind
+        - signatureValidationContract
+      properties:
+        kind:
+          type: string
+          enum: [EIP4337_WALLET]
+          example: EIP4337_WALLET
+          description: "The kind of simulator preset configuration to apply"
+          default: EIP4337_WALLET
+        signatureValidationContract:
+          type: string
+          example: "0x6aBD8abe4c7C03413610F9CC5EACF64A8BD7F69E"
+          default: "0x6aBD8abe4c7C03413610F9CC5EACF64A8BD7F69E"
+          description: "The address of the contract that will validate the user signature as part of the EIP-4337 transaction. In most cases this is the user's own wallet contract."
 
     EvmAddressInfo:
       type: object
@@ -4754,6 +4915,35 @@ components:
             asset:
               $ref: "#/components/schemas/EvmErc20Asset"
           description: Data associated with the state change
+    EvmStateChangeFarcasterChangeRecoveryAddress:
+      type: object
+      description: Farcaster Change Recovery Address
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [FARCASTER_CHANGE_RECOVERY_ADDRESS]
+          example: FARCASTER_CHANGE_RECOVERY_ADDRESS
+        data:
+          type: object
+          required:
+            - id
+            - recovery
+            - contract
+          properties:
+            id:
+              description: The Farcaster ID of the user changing the recovery address
+              type: string
+            recovery:
+              $ref: "#/components/schemas/EvmAddressInfo"
+              description: The new recovery address
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+              description: Farcaster IDRegistry contract address
+          description: Data associated with the state change
     # Message endpoint uses 2023-03-08 state change types
     EvmMessageStateChangeErc20Permit:
       type: object
@@ -5485,12 +5675,14 @@ components:
         logs:
           type: array
           description: Program logs generated during execution
+          nullable: true
           items:
             type: string
             example: Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]
         unitsConsumed:
           type: integer
           format: int32
+          nullable: true
           example: 148013
         returnData:
           type: object
