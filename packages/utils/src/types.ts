@@ -53,6 +53,7 @@ export enum RequestType {
   MessageAck = "BLOWFISH_MESSAGE_ACK",
   BlockDomain = "BLOCK_DOMAIN",
   AllowlistedDomains = "ALLOWLISTED_DOMAINS",
+  SolanaSignTransactionRequest = "SOLANA_SIGN_TRANSACTION_REQUEST",
 }
 
 // TODO(kimpers): Type message
@@ -72,7 +73,8 @@ export type DappRequest =
   | TransactionRequest
   | SignTypedDataRequest
   | SignMessageRequest
-  | BatchRequests;
+  | BatchRequests
+  | SolanaSignTransactionRequest;
 
 export const parseRequestFromMessage = (
   message: Message<DappRequest["type"], DappRequest>
@@ -97,6 +99,18 @@ interface BaseRequest {
 export interface TransactionRequest extends BaseRequest {
   type: RequestType.Transaction;
   payload: TransactionPayload;
+  isImpersonatingWallet?: boolean;
+  extensionVersion: string;
+  simulatorConfig?: EvmSimulatorConfig;
+}
+
+export type SolanaSignTransactionPayload = {
+  transactions: string[];
+};
+
+export interface SolanaSignTransactionRequest extends BaseRequest {
+  type: RequestType.SolanaSignTransactionRequest;
+  payload: SolanaSignTransactionPayload;
   isImpersonatingWallet?: boolean;
   extensionVersion: string;
   simulatorConfig?: EvmSimulatorConfig;
@@ -245,6 +259,15 @@ export const isTransactionRequestMessage = (
   return message.type === RequestType.Transaction;
 };
 
+export const isSolanaSignTransactionRequestMessage = (
+  message: Message<DappRequest["type"], DappRequest>
+): message is Message<
+  RequestType.SolanaSignTransactionRequest,
+  SolanaSignTransactionRequest
+> => {
+  return message.type === RequestType.SolanaSignTransactionRequest;
+};
+
 export const isSignTypedDataRequestMessage = (
   message: Message<DappRequest["type"], DappRequest>
 ): message is Message<RequestType.SignTypedData, SignTypedDataRequest> => {
@@ -270,7 +293,8 @@ export const isDappRequestMessage = (
     message.type === RequestType.Transaction ||
     message.type === RequestType.SignTypedData ||
     message.type === RequestType.SignMessage ||
-    message.type === RequestType.BatchRequests
+    message.type === RequestType.BatchRequests ||
+    message.type === RequestType.SolanaSignTransactionRequest
   );
 };
 
