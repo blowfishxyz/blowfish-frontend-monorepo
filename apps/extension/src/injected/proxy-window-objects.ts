@@ -9,20 +9,14 @@ import {
   Identifier,
   Message,
   RequestType,
-  SolanaSignTransactionRequest,
-  UserDecisionResponse,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
-import { WalletSignTransactionError } from "@solana/wallet-adapter-base";
 import type { Transaction, VersionedTransaction } from "@solana/web3.js";
 import { providers } from "ethers";
 
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
-import {
-  createSolanaSignTransactionRequestMessage,
-  sendAndAwaitResponseFromStream,
-} from "~utils/messages";
-import { requestHandler, sendAsyncHandler } from "~utils/proxy-handlers";
+import { requestHandler, sendAsyncHandler } from "~utils/evm-proxy-handlers";
+import { signTransactionsHandler } from "~utils/solana-proxy-handlers";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -191,41 +185,6 @@ const overrideWindowSolana = () => {
 
   logger.debug("overrideWindowSolana");
 
-  // clearInterval(overrideIntervalSolana);
-  // Recheck that we are still proxying window.ethereum every 10 seconds
-
-  async function handleSignTransactions(
-    txns: (Transaction | VersionedTransaction)[]
-  ) {
-    try {
-      const transactions = txns.map((tx) =>
-        Buffer.from(
-          tx.serialize({ verifySignatures: false, requireAllSignatures: false })
-        ).toString("base64")
-      );
-      const pubKey = window.solana.publicKey.toString();
-
-      const response = await sendAndAwaitResponseFromStream<
-        SolanaSignTransactionRequest,
-        UserDecisionResponse
-      >(
-        stream,
-        createSolanaSignTransactionRequestMessage({ transactions }, pubKey)
-      );
-
-      logger.debug("response", response);
-
-      if (response.data.isOk) {
-        return Promise.resolve();
-      } else {
-        throw new WalletSignTransactionError("User rejected the request");
-      }
-    } catch (e) {
-      logger.error("Failed to sign transactions", e);
-      throw new WalletSignTransactionError("User rejected the request");
-    }
-  }
-
   const signTransactionHandler = {
     apply: async (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -237,7 +196,11 @@ const overrideWindowSolana = () => {
       logger.debug("signTransaction handler", argumentsList);
 
       try {
-        await handleSignTransactions(argumentsList);
+        await signTransactionsHandler(
+          stream,
+          argumentsList,
+          window.solana.publicKey.toString()
+        );
       } catch (err) {
         logger.error("Failed to sign transaction", err);
         throw err;
@@ -263,7 +226,11 @@ const overrideWindowSolana = () => {
       logger.debug("signAllTransactions handler", argumentsList);
 
       try {
-        await handleSignTransactions(argumentsList);
+        await signTransactionsHandler(
+          stream,
+          argumentsList,
+          window.solana.publicKey.toString()
+        );
       } catch (err) {
         logger.error("Failed to sign all transactions", err);
         throw err;
@@ -292,6 +259,6 @@ const overrideWindowSolana = () => {
 setInterval(overrideIfNotProxiedSolana, 10_000);
 overrideWindowSolana();
 
-logger.debug("proxy-window-evm.ts loaded");
+logger.debug("proxy-window-objects.ts loaded");
 
 export default {};
