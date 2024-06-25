@@ -1,6 +1,6 @@
 import { logger } from "@blowfish/utils/logger";
 import type {
-  SolanaSignTransactionRequest,
+  SolanaSignTransactionsRequest,
   UserDecisionResponse,
 } from "@blowfish/utils/types";
 import type { WindowPostMessageStream } from "@metamask/post-message-stream";
@@ -8,14 +8,16 @@ import { WalletSignTransactionError } from "@solana/wallet-adapter-base";
 import type { Transaction, VersionedTransaction } from "@solana/web3.js";
 
 import {
-  createSolanaSignTransactionRequestMessage,
+  createSolanaSignTransactionsMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
 
-export async function signTransactionsHandler(
+export async function solanaHandler(
   stream: WindowPostMessageStream,
   txns: (Transaction | VersionedTransaction)[],
-  publicKey: string
+  publicKey: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  method: "sign" | "signAndSend"
 ) {
   try {
     const transactions = txns.map((tx) =>
@@ -25,11 +27,11 @@ export async function signTransactionsHandler(
     );
 
     const response = await sendAndAwaitResponseFromStream<
-      SolanaSignTransactionRequest,
+      SolanaSignTransactionsRequest,
       UserDecisionResponse
     >(
       stream,
-      createSolanaSignTransactionRequestMessage({ transactions }, publicKey)
+      createSolanaSignTransactionsMessage({ transactions }, publicKey, method)
     );
 
     logger.debug("response", response);

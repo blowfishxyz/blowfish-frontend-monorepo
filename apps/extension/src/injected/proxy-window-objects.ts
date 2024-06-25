@@ -16,7 +16,7 @@ import { providers } from "ethers";
 
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
 import { requestHandler, sendAsyncHandler } from "~utils/evm-proxy-handlers";
-import { signTransactionsHandler } from "~utils/solana-proxy-handlers";
+import { solanaHandler } from "~utils/solana-proxy-handlers";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -167,7 +167,11 @@ const overrideInterval = setInterval(overrideWindowEthereum, 100);
 overrideWindowEthereum();
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let signTransactionProxy: any, signAllTransactionsProxy: any;
+let signTransactionProxy: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signAllTransactionsProxy: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signAndSendTransactionProxy: any;
 
 const overrideIfNotProxiedSolana = () => {
   if (
@@ -185,51 +189,28 @@ const overrideWindowSolana = () => {
 
   logger.debug("overrideWindowSolana");
 
-  const signTransactionHandler = {
+  const signTransactionsHandler = {
     apply: async (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       target: any,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       thisArg: any,
-      argumentsList: (Transaction | VersionedTransaction)[]
+      argumentsList: [
+        | (Transaction | VersionedTransaction)[]
+        | (Transaction | VersionedTransaction)
+      ]
     ) => {
-      logger.debug("signTransaction handler", argumentsList);
+      logger.debug("signTransactions handler", argumentsList);
+      const transactions = Array.isArray(argumentsList[0])
+        ? argumentsList[0]
+        : [argumentsList[0]];
 
       try {
-        await signTransactionsHandler(
+        await solanaHandler(
           stream,
-          argumentsList,
-          window.solana.publicKey.toString()
-        );
-      } catch (err) {
-        logger.error("Failed to sign transaction", err);
-        throw err;
-      }
-
-      return Reflect.apply(target, thisArg, argumentsList);
-    },
-  };
-
-  signTransactionProxy = new Proxy(
-    window.solana.signTransaction,
-    signTransactionHandler
-  );
-
-  const signAllTransactionsHandler = {
-    apply: async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      target: any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      thisArg: any,
-      argumentsList: (Transaction | VersionedTransaction)[]
-    ) => {
-      logger.debug("signAllTransactions handler", argumentsList);
-
-      try {
-        await signTransactionsHandler(
-          stream,
-          argumentsList,
-          window.solana.publicKey.toString()
+          transactions,
+          window.solana.publicKey.toString(),
+          "sign"
         );
       } catch (err) {
         logger.error("Failed to sign all transactions", err);
@@ -240,9 +221,9 @@ const overrideWindowSolana = () => {
     },
   };
 
-  signAllTransactionsProxy = new Proxy(
-    window.solana.signAllTransactions,
-    signAllTransactionsHandler
+  signTransactionProxy = new Proxy(
+    window.solana.signTransaction,
+    signTransactionsHandler
   );
 
   Object.defineProperty(window.solana, "signTransaction", {
@@ -250,8 +231,55 @@ const overrideWindowSolana = () => {
     writable: false,
   });
 
+  signAllTransactionsProxy = new Proxy(
+    window.solana.signAllTransactions,
+    signTransactionsHandler
+  );
+
   Object.defineProperty(window.solana, "signAllTransactions", {
     value: signAllTransactionsProxy,
+    writable: false,
+  });
+
+  const signAndSendTransactionHandler = {
+    apply: async (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      target: any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      thisArg: any,
+      argumentsList: [
+        | (Transaction | VersionedTransaction)[]
+        | (Transaction | VersionedTransaction)
+      ]
+    ) => {
+      logger.debug("sendTransaction handler", argumentsList);
+      const transactions = Array.isArray(argumentsList[0])
+        ? argumentsList[0]
+        : [argumentsList[0]];
+
+      try {
+        await solanaHandler(
+          stream,
+          transactions,
+          window.solana.publicKey.toString(),
+          "signAndSend"
+        );
+      } catch (err) {
+        logger.error("Failed to sign transaction", err);
+        throw err;
+      }
+
+      return Reflect.apply(target, thisArg, argumentsList);
+    },
+  };
+
+  signAndSendTransactionProxy = new Proxy(
+    window.solana.signAndSendTransaction,
+    signAndSendTransactionHandler
+  );
+
+  Object.defineProperty(window.solana, "signAndSendTransaction", {
+    value: signAndSendTransactionProxy,
     writable: false,
   });
 };

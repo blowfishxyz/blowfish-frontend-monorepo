@@ -11,13 +11,13 @@ import {
   RequestType,
   SignMessageRequest,
   SignTypedDataRequest,
-  SolanaSignTransactionRequest,
+  SolanaSignTransactionsRequest,
   TransactionRequest,
   UserDecisionResponse,
   isBatchRequestsMessage,
   isSignRequestMessage,
   isSignTypedDataRequestMessage,
-  isSolanaSignTransactionRequestMessage,
+  isSolanaSignTransactionsRequestMessage,
   isTransactionRequestMessage,
   isUserDecisionResponseMessage,
 } from "@blowfish/utils/types";
@@ -71,8 +71,8 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
         return processSignMessageRequest(message, remotePort);
       } else if (isBatchRequestsMessage(message)) {
         return processBatchRequests(message, remotePort);
-      } else if (isSolanaSignTransactionRequestMessage(message)) {
-        return processSolanaSignTransactionRequest(message, remotePort);
+      } else if (isSolanaSignTransactionsRequestMessage(message)) {
+        return processSolanaSignTransactionsRequest(message, remotePort);
       }
     }
   );
@@ -253,10 +253,10 @@ const processTransactionRequest = async (
   await processRequestBase(message, remotePort);
 };
 
-const processSolanaSignTransactionRequest = async (
+const processSolanaSignTransactionsRequest = async (
   message: Message<
-    RequestType.SolanaSignTransactionRequest,
-    SolanaSignTransactionRequest
+    RequestType.SolanaSignTransactions,
+    SolanaSignTransactionsRequest
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
@@ -264,12 +264,24 @@ const processSolanaSignTransactionRequest = async (
     data: {
       userAccount,
       payload: { transactions },
+      method,
     },
   } = message;
+  let methodToSend;
+  if (method === "sign") {
+    if (transactions.length === 1) {
+      methodToSend = "signTransaction";
+    } else {
+      methodToSend = "signAllTransactions";
+    }
+  } else if (method === "signAndSend") {
+    methodToSend = "signAndSendTransaction";
+  }
   const dataToSend = {
     metadata: { origin: message.origin },
     userAccount,
     transactions,
+    method: methodToSend,
   };
 
   // TODO: Change to /scan after supporting solana there

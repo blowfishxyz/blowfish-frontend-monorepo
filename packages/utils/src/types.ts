@@ -53,7 +53,7 @@ export enum RequestType {
   MessageAck = "BLOWFISH_MESSAGE_ACK",
   BlockDomain = "BLOCK_DOMAIN",
   AllowlistedDomains = "ALLOWLISTED_DOMAINS",
-  SolanaSignTransactionRequest = "SOLANA_SIGN_TRANSACTION_REQUEST",
+  SolanaSignTransactions = "SOLANA_SIGN_TRANSACTIONS",
 }
 
 // TODO(kimpers): Type message
@@ -74,7 +74,7 @@ export type DappRequest =
   | SignTypedDataRequest
   | SignMessageRequest
   | BatchRequests
-  | SolanaSignTransactionRequest;
+  | SolanaSignTransactionsRequest;
 
 export const parseRequestFromMessage = (
   message: Message<DappRequest["type"], DappRequest>
@@ -104,16 +104,16 @@ export interface TransactionRequest extends BaseRequest {
   simulatorConfig?: EvmSimulatorConfig;
 }
 
-export type SolanaSignTransactionPayload = {
+export type SolanaSignTransactionsPayload = {
   transactions: string[];
 };
 
-export interface SolanaSignTransactionRequest extends BaseRequest {
-  type: RequestType.SolanaSignTransactionRequest;
-  payload: SolanaSignTransactionPayload;
+export interface SolanaSignTransactionsRequest extends BaseRequest {
+  type: RequestType.SolanaSignTransactions;
+  payload: SolanaSignTransactionsPayload;
+  method: "sign" | "signAndSend";
   isImpersonatingWallet?: boolean;
   extensionVersion: string;
-  simulatorConfig?: EvmSimulatorConfig;
 }
 
 export const isTransactionRequest = (
@@ -259,13 +259,13 @@ export const isTransactionRequestMessage = (
   return message.type === RequestType.Transaction;
 };
 
-export const isSolanaSignTransactionRequestMessage = (
+export const isSolanaSignTransactionsRequestMessage = (
   message: Message<DappRequest["type"], DappRequest>
 ): message is Message<
-  RequestType.SolanaSignTransactionRequest,
-  SolanaSignTransactionRequest
+  RequestType.SolanaSignTransactions,
+  SolanaSignTransactionsRequest
 > => {
-  return message.type === RequestType.SolanaSignTransactionRequest;
+  return message.type === RequestType.SolanaSignTransactions;
 };
 
 export const isSignTypedDataRequestMessage = (
@@ -294,7 +294,7 @@ export const isDappRequestMessage = (
     message.type === RequestType.SignTypedData ||
     message.type === RequestType.SignMessage ||
     message.type === RequestType.BatchRequests ||
-    message.type === RequestType.SolanaSignTransactionRequest
+    message.type === RequestType.SolanaSignTransactions
   );
 };
 

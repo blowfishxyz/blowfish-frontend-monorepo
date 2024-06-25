@@ -8,8 +8,8 @@ import {
   SignMessagePayload,
   SignMessageRequest,
   SignTypedDataRequest,
-  SolanaSignTransactionPayload,
-  SolanaSignTransactionRequest,
+  SolanaSignTransactionsPayload,
+  SolanaSignTransactionsRequest,
   SupportedSignTypedDataPayloadVersion,
   TransactionPayload,
   TransactionRequest,
@@ -45,16 +45,18 @@ export const createTransactionRequestMessage = (
   return createRawMessage(type, transactionRequest);
 };
 
-export const createSolanaSignTransactionRequestMessage = (
-  payload: SolanaSignTransactionPayload,
-  userAccount: string
+export const createSolanaSignTransactionsMessage = (
+  payload: SolanaSignTransactionsPayload,
+  userAccount: string,
+  method: "sign" | "signAndSend"
 ): Message<
-  RequestType.SolanaSignTransactionRequest,
-  SolanaSignTransactionRequest
+  RequestType.SolanaSignTransactions,
+  SolanaSignTransactionsRequest
 > => {
-  const type = RequestType.SolanaSignTransactionRequest;
-  const transactionRequest: SolanaSignTransactionRequest = {
+  const type = RequestType.SolanaSignTransactions;
+  const transactionRequest: SolanaSignTransactionsRequest = {
     type,
+    method,
     payload,
     chainId: "solana:101",
     userAccount,
