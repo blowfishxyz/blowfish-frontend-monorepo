@@ -1,4 +1,4 @@
-import {AccountMeta, TransactionInstruction,} from "@solana/web3.js";
+import { AccountMeta, TransactionInstruction } from "@solana/web3.js";
 
 type Primitive = string | number | boolean | null | undefined;
 
@@ -8,7 +8,12 @@ export function assertEq(a: Primitive, b: Primitive, err: string) {
   }
 }
 
-export function assertWithinSlippage(val: number, expectedVal: number, slippage: number, err: string) {
+export function assertWithinSlippage(
+  val: number,
+  expectedVal: number,
+  slippage: number,
+  err: string
+) {
   const upperBoundary = expectedVal * (1 + slippage);
 
   if (val > upperBoundary) {
@@ -16,7 +21,10 @@ export function assertWithinSlippage(val: number, expectedVal: number, slippage:
   }
 }
 
-export function assertTruthy<T>(val: T, err: string): asserts val is NonNullable<T> {
+export function assertTruthy<T>(
+  val: T,
+  err: string
+): asserts val is NonNullable<T> {
   if (!val) {
     throw new Error(err);
   }
@@ -34,7 +42,11 @@ export function assertKeysEq(a: AccountMeta[], b: AccountMeta[], err: string) {
   }
 }
 
-export function assertInstructionsEq(a: TransactionInstruction, b: TransactionInstruction, err: string) {
+export function assertInstructionsEq(
+  a: TransactionInstruction,
+  b: TransactionInstruction,
+  err: string
+) {
   assertEq(a.data.toString(), b.data.toString(), err);
   assertEq(a.programId.toString(), b.programId.toString(), err);
   assertKeysEq(a.keys, b.keys, err);
