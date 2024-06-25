@@ -6,9 +6,7 @@ import bs58 from "bs58";
  * @param {string} rawTx
  */
 export function decodeRawTransaction(rawTx: string): Uint8Array {
-  if (/[0OIl+/]/.test(rawTx)) {
-    return new Uint8Array(Buffer.from(rawTx, "base64"));
-  } else {
-    return bs58.decode(rawTx);
-  }
+  return /[0OIl+/]/.test(rawTx)
+    ? new Uint8Array(Buffer.from(rawTx, "base64"))
+    : bs58.decode(rawTx);
 }
