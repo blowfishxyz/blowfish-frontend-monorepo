@@ -16,7 +16,6 @@ export async function solanaHandler(
   stream: WindowPostMessageStream,
   txns: (Transaction | VersionedTransaction)[],
   publicKey: string,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   method: "sign" | "signAndSend"
 ) {
   try {
