@@ -5,7 +5,7 @@ export const SOLANA_TEST_ACCOUNT =
 
 export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
   requestId: "a532f37d3505ca43816e4b834288edb5",
-  guarantee: null,
+  safeguard: null,
   aggregated: {
     action: "BLOCK",
     simulatedSlotHeight: null,
@@ -39,6 +39,8 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
                   updatedAt: 1692022153,
                   dollarValuePerToken: 1,
                 },
+                verified: false,
+                lists: [],
                 previews: { small: "", medium: "", large: "" },
                 imageUrl:
                   "https://d1ts37qlq4uz4s.cloudfront.net/solana__solana%3A%3Asolana__solana%3A%3Asolana%3A%3Amainnet__EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png",
@@ -86,7 +88,7 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
 
 export const solanaNftTransfer: SolanaTransactionsResult = {
   requestId: "a532f37d3505ca43816e4b834288edb5",
-  guarantee: null,
+  safeguard: null,
   aggregated: {
     action: "NONE",
     warnings: [],
@@ -108,6 +110,8 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
                 supply: 97643,
                 metaplexTokenStandard: "fungible_asset",
                 price: null,
+                verified: false,
+                lists: [],
                 imageUrl: null,
                 previews: { small: "", medium: "", large: "" },
               },
@@ -132,6 +136,8 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
                 decimals: 0,
                 supply: 9957002411,
                 metaplexTokenStandard: "unknown",
+                verified: false,
+                lists: [],
                 price: {
                   source: "Coingecko",
                   updatedAt: 1692087924,
@@ -167,6 +173,8 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
                   updatedAt: 1692088066,
                   dollarValuePerToken: 0.13629000000000002,
                 },
+                verified: false,
+                lists: [],
                 previews: { small: "", medium: "", large: "" },
                 imageUrl:
                   "https://cdn.simplehash.com/assets/20c007a2b4e01a94b31f2e5badceef86c281b553eb1af8dffdbd10f4becdeb44.jpg",

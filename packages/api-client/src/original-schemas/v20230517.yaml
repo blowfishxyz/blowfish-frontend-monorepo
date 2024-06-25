@@ -26,6 +26,8 @@ tags:
     description: Endpoints related to scanning multiple blockchain transactions
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
+  - name: Scan Assets
+    description: Endpoints related to scanning assets
 
 paths:
   /ethereum/v0/mainnet/scan/transactions:
@@ -1541,6 +1543,7 @@ paths:
                     required:
                       - error
                       - transactions
+                      - shouldBundle
                     properties:
                       error:
                         type: string
@@ -1550,7 +1553,11 @@ paths:
                         type: array
                         items:
                           type: string
-                          description: Base58 encoded Guarantee transaction
+                          description: Base58 encoded user's transaction plus guard transactions
+                      shouldBundle:
+                        type: boolean
+                        example: false
+                        description: must use Jito to submit transactions
         "400":
           description: Bad request
           content:
@@ -2020,13 +2027,94 @@ paths:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
 
+  /v0/scan/assets:
+    post:
+      tags:
+        - Scan assets
+      summary: Scan assets
+      operationId: scan-assets
+      description: |
+        Scan a list of assets in order to receive recommended actions, tailored warnings and human-readable warnings and risk signals.
+
+        Max amount of assets per request is 100.
+
+        Assets can be NFTs or tokens and the format is:
+        - EVM compatible NFTs: `{chain}:{network}:{collection_address}:{item_id}` 
+          For example: `ethereum:mainnet:0x60e4d786628fea6478f785a6d7e704777c86a7c6:7330`
+
+        - EVM compatible Tokens: `{chain}:{network}:{token_address}`
+          For example: `ethereum:mainnet:0xdAC17F958D2ee523a2206206994597C13D831ec7`
+
+        - Solana assets: `solana:{network}:{address/pubkey}` 
+          For example: `solana:mainnet:6eqgcVBG7PbQkjaRHnJ6YKGVEHCCFSKxXwx2WDLsxv6N`
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                assets:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/AssetId"
+      responses:
+        "200":
+          description: |
+            Scanning results for each asset ID in the request
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - assets
+                  - requestId
+                properties:
+                  assets:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ScanAssetResult"
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+
 components:
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
       in: header
       name: X-Api-Key
-      x-default: "4daa1e3b-87e6-40b2-8883-758feb6a8e46"
+      x-default: "EMAIL support@blowfish.xyz FOR AN API KEY"
   schemas:
     RequestId:
       type: string
@@ -3773,6 +3861,8 @@ components:
         - price
         - imageUrl
         - previews
+        - verified
+        - lists
       properties:
         symbol:
           type: string
@@ -3807,6 +3897,19 @@ components:
           example: "https://cdn.simplehash.com/assets/2b6b37a30a85f4d7f3727574afc296026d3453cc813f982a7c4c358668060ea9.png"
         previews:
           $ref: "#/components/schemas/NftPreviews"
+        verified:
+          type: boolean
+          example: true
+          description: Whether the asset is verified as safe
+        lists:
+          description: The trusted token lists on which this asset is listed
+          type: array
+          items:
+            type: string
+            enum:
+              - JUPITER
+              - BLOWFISH
+              - SOLFLARE
     CompressedNftAsset:
       type: object
       required:
@@ -4227,3 +4330,146 @@ components:
                   "AQAAANVgbnOWDT3H5I2/oye32/palPUEeT1S5fbKj2WqgpTuAQAAAAAAAAAAAQEAAADVYG5zlg09x+SNv6Mnt9v6WpT1BHk9UuX2yo9lqoKU7g==",
                   "base64",
                 ]
+
+    AssetId:
+      type: string
+      example: "ethereum:mainnet:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      description: |
+        EVM asset ids:
+         - For tokens: chain:network:contract_address
+         - For NFTs: chain:network:collection_address:id
+        Solana asset ids:
+         - Both tokens and NFTs: solana:mainnet:address
+
+    # NOTE: same schema as EvmAsset but used for /scan/assets endpoint which supports both EVM and Solana assets.
+    Asset:
+      type: object
+      required:
+        - address
+        - symbol
+        - name
+        - decimals
+        - verified
+        - lists
+        - imageUrl
+        - price
+      properties:
+        address:
+          type: string
+          example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+          description: The contract address of the asset
+        symbol:
+          type: string
+          example: USDT
+          description: The symbol of the asset
+        name:
+          type: string
+          example: Tether USD
+          description: The name of the asset
+        decimals:
+          type: integer
+          example: 6
+          description: The number of decimal places used by the asset
+        verified:
+          type: boolean
+          example: true
+          description: Whether the asset is verified as safe
+        lists:
+          type: array
+          items:
+            type: string
+            enum:
+              - COINGECKO
+              - ZERION
+              - ONE_INCH
+              - UNISWAP
+              - MY_CRYPTO_API
+              - KLEROS_TOKENS
+              - POLYGON_POPULAR_TOKENS
+              - EVM_NATIVE
+              - BLOWFISH
+            example: COINGECKO
+          description: The trusted token lists on which this asset is listed
+        imageUrl:
+          type: string
+          description: The URL of the asset's image. Can be `null`.
+          nullable: true
+          example: "https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Aethereum__evm%3A%3Aethereum%3A%3Amainnet__0x6b175474e89094c44da98b954eedeac495271d0f.png"
+        price:
+          description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
+          $ref: "#/components/schemas/AssetPrice"
+          nullable: true
+
+    RiskSignals:
+      type: array
+      description: An array of risk signals generated from scanning the assets.
+      items:
+        type: object
+        required:
+          - severity
+          - kind
+          - message
+        properties:
+          severity:
+            type: string
+            description: Risk signal severity level.
+            enum:
+              - CRITICAL
+              - WARNING
+            example: WARNING
+          kind:
+            type: string
+            description: Risk signal kind.
+            enum:
+              - RISK_THRESHOLD_HIT
+              - TRADING_RESTRICTIONS
+              - CALLS_EXTERNAL_CONTRACT
+              - TOKENS_CAN_BE_STOLEN
+              - SUSPICIOUS_CREATION_MINTING
+              - ANTI_WHALE_MODIFIABLE
+              - OWNERSHIP_NOT_RENOUNCED
+              - HIDDEN_OWNER
+              - PREVIOUS_SCAM_BY_CREATOR
+              - HONEYPOT
+              - MINTABLE
+              - PROXY
+              - BLOCKLIST_ALLOWLIST
+              - BALANCES_MODIFIABLE
+              - HIGH_TOKEN_OWNERSHIP
+              - VERY_HIGH_TOKEN_OWNERSHIP
+              - CONTRACT_SELF_DESTRUCT
+              - HIGH_TRADING_TAX
+              - TRADING_TAX_MODIFIABLE
+              - TRADING_COOLDOWN
+              - TRADING_CAN_BE_STOPPED
+              - GAS_MINTING
+              - COPYCAT_TOKEN
+              - TRADING_TAX
+              - RUG_PULL
+            example: TRADING_TAX
+          message:
+            type: string
+            description: human-readable message to present to the end-user
+            example: "This token levies a very high tax during trading"
+
+    ScanAssetResult:
+      type: object
+      description: Result of scanning an asset
+      required:
+        - assetId
+        - chain
+        - asset
+        - warnings
+        - riskSignals
+      properties:
+        assetId:
+          $ref: "#/components/schemas/AssetId"
+        chain:
+          type: string
+          example: "ethereum:mainnet"
+        asset:
+          $ref: "#/components/schemas/Asset"
+        warnings:
+          $ref: "#/components/schemas/Warning"
+        riskSignals:
+          $ref: "#/components/schemas/RiskSignals"
