@@ -1,0 +1,39 @@
+{
+  "name": "@blowfishxyz/safeguard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/index.js",
+  "module": "./build/index.mjs",
+  "files": [
+    "build",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rm -rf build && tsup",
+    "build:dev": "rm -rf build && tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "pnpm vitest run",
+    "test:dev": "pnpm vitest",
+    "prepare": "pnpm run build"
+  },
+  "dependencies": {
+    "bs58": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@solana/web3.js": "^1.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.54.0",
+    "@typescript-eslint/parser": "^5.54.0",
+    "eslint": "8.35.0",
+    "@blowfish/tsconfig": "workspace:*",
+    "ts-node": "^10.9.1",
+    "tsup": "^6.6.3",
+    "typescript": "4.9.5",
+    "vitest": "^1.4.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
