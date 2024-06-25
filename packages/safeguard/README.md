@@ -17,12 +17,14 @@ It is used to ensure that the original transaction is not tampered with and that
 
 ## Installation
 
-To install this package, use npm or yarn:
+To install this package run one of the following commands:
 
 ```bash
 npm install @blowfishxyz/safeguard
 # or
 yarn add @blowfishxyz/safeguard
+# or
+pnpm add @blowfishxyz/safeguard
 ```
 
 ## Usage
