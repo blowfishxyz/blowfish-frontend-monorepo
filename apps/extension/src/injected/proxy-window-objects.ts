@@ -201,23 +201,22 @@ const overrideWindowSolana = () => {
       ]
     ) => {
       logger.debug("signTransactions handler", argumentsList);
-      const transactions = Array.isArray(argumentsList[0])
-        ? argumentsList[0]
-        : [argumentsList[0]];
+      const [firstArg, ...restArgs] = argumentsList;
+      const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
 
       try {
-        await solanaHandler(
+        const txns = await solanaHandler(
           stream,
           transactions,
           window.solana.publicKey.toString(),
           "sign"
         );
+        logger.debug("Txns to submit", txns);
+        return Reflect.apply(target, thisArg, [txns, ...restArgs]);
       } catch (err) {
         logger.error("Failed to sign all transactions", err);
         throw err;
       }
-
-      return Reflect.apply(target, thisArg, argumentsList);
     },
   };
 
@@ -253,23 +252,22 @@ const overrideWindowSolana = () => {
       ]
     ) => {
       logger.debug("sendTransaction handler", argumentsList);
-      const transactions = Array.isArray(argumentsList[0])
-        ? argumentsList[0]
-        : [argumentsList[0]];
+      const [firstArg, ...restArgs] = argumentsList;
+      const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
 
       try {
-        await solanaHandler(
+        const txns = await solanaHandler(
           stream,
           transactions,
           window.solana.publicKey.toString(),
           "signAndSend"
         );
+
+        return Reflect.apply(target, thisArg, [txns, ...restArgs]);
       } catch (err) {
         logger.error("Failed to sign transaction", err);
         throw err;
       }
-
-      return Reflect.apply(target, thisArg, argumentsList);
     },
   };
 

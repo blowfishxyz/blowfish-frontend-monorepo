@@ -103,11 +103,8 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
           <DefaultView
             severity={severity}
             warnings={warnings}
-            onContinue={
-              layoutConfig.hasRequestParams || layoutConfig.impersonatingAddress
-                ? undefined
-                : handleContinueClick
-            }
+            // TODO: disable in impersonation mode
+            onContinue={handleContinueClick}
             onCancel={onCancel}
             onReport={onReport}
           />

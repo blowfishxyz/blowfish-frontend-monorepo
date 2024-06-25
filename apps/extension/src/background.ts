@@ -282,12 +282,17 @@ const processSolanaSignTransactionsRequest = async (
     userAccount,
     transactions,
     method: methodToSend,
+    simulatorConfig: {
+      safeguard: {
+        enabled: true,
+      },
+    },
   };
 
   // TODO: Change to /scan after supporting solana there
   const pathname = `/simulate?request=${encodeURIComponent(
     global.btoa(JSON.stringify(dataToSend))
-  )}&solanaNetwork=mainnet`;
+  )}&solanaNetwork=mainnet&messageId=${message.id}`;
 
   await processRequestBase(message, remotePort, pathname);
 };

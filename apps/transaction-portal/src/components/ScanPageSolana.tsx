@@ -5,7 +5,7 @@ import {
 } from "./modals";
 import { Layout } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
-import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client/.";
+import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client";
 import ScanResultsSolana from "./ScanResultsSolana";
 import {
   SolanaScanParams,
@@ -62,6 +62,7 @@ const SolanaResultsView: React.FC<{
     userAccount: userAccount,
     metadata: request.metadata,
     chainNetwork: "mainnet",
+    simulatorConfig: request.simulatorConfig,
   });
 
   if (scanError) {

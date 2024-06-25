@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import {
   RequestMetadata,
+  RequestSimulatorConfig,
   ScanTransactionsSolana200Response,
   SolanaChainNetwork,
 } from "@blowfishxyz/api-client";
@@ -11,12 +12,14 @@ interface UseScanTransactionsSolanaParams {
   userAccount: string;
   metadata: RequestMetadata;
   chainNetwork: SolanaChainNetwork;
+  simulatorConfig?: RequestSimulatorConfig;
 }
 
 export const useScanTransactionsSolana = (
   params: UseScanTransactionsSolanaParams
 ) => {
-  const { transactions, userAccount, metadata, chainNetwork } = params;
+  const { transactions, userAccount, metadata, chainNetwork, simulatorConfig } =
+    params;
 
   const client = useClient();
 
@@ -25,7 +28,8 @@ export const useScanTransactionsSolana = (
       transactions,
       userAccount,
       metadata,
-      chainNetwork
+      chainNetwork,
+      simulatorConfig
     );
   };
 
