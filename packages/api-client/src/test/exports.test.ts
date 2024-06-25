@@ -71,4 +71,113 @@ describe("All API Clients", () => {
       packageJson.version
     );
   });
+
+  it("should have all methods", async () => {
+    const multiClientMethods = [
+      "scanMessageEvm",
+      "scanTransactionsEvm",
+      "scanTransactionsSolana",
+      "scanDomains",
+      "downloadBlocklist",
+      "reportTransaction",
+      "scanAssets",
+    ];
+    const evmClientMethods = [
+      "scanMessage",
+      "scanPersonalSign",
+      "scanSignTypedData",
+      "scanTransactions",
+      "scanDomains",
+      "scanAssets",
+    ];
+    const solanaClientMethods = [
+      "scanTransactions",
+      "scanDomains",
+      "scanAssets",
+    ];
+
+    const client = new v20230605.BlowfishMultiChainApiClient("/test-path");
+    const evmClient = new v20230605.BlowfishEvmApiClient(
+      "/test-path",
+      "ethereum",
+      "mainnet"
+    );
+    const solanaClient = new v20230605.BlowfishSolanaApiClient(
+      "/test-path",
+      "mainnet"
+    );
+    for (const method of multiClientMethods) {
+      expect(client).toHaveProperty(method);
+    }
+    for (const method of evmClientMethods) {
+      expect(evmClient).toHaveProperty(method);
+    }
+    for (const method of solanaClientMethods) {
+      expect(solanaClient).toHaveProperty(method);
+    }
+
+    const client2 = new v20230517.BlowfishMultiChainApiClient("/test-path");
+    const evmClient2 = new v20230517.BlowfishEvmApiClient(
+      "/test-path",
+      "ethereum",
+      "mainnet"
+    );
+    const solanaClient2 = new v20230517.BlowfishSolanaApiClient(
+      "/test-path",
+      "mainnet"
+    );
+    for (const method of multiClientMethods) {
+      expect(client2).toHaveProperty(method);
+    }
+    for (const method of evmClientMethods) {
+      expect(evmClient2).toHaveProperty(method);
+    }
+    for (const method of solanaClientMethods) {
+      expect(solanaClient2).toHaveProperty(method);
+    }
+
+    const client3 = new v20230308.BlowfishMultiChainApiClient("/test-path");
+    const evmClient3 = new v20230308.BlowfishEvmApiClient(
+      "/test-path",
+      "ethereum",
+      "mainnet"
+    );
+    const solanaClient3 = new v20230308.BlowfishSolanaApiClient(
+      "/test-path",
+      "mainnet"
+    );
+    for (const method of multiClientMethods) {
+      expect(client3).toHaveProperty(method);
+    }
+    for (const method of evmClientMethods) {
+      expect(evmClient3).toHaveProperty(method);
+    }
+    for (const method of solanaClientMethods) {
+      expect(solanaClient3).toHaveProperty(method);
+    }
+
+    const client4 = new v20220601.BlowfishMultiChainApiClient("/test-path");
+    const evmClient4 = new v20220601.BlowfishEvmApiClient(
+      "/test-path",
+      "ethereum",
+      "mainnet"
+    );
+    const solanaClient4 = new v20220601.BlowfishSolanaApiClient(
+      "/test-path",
+      "mainnet"
+    );
+    for (const method of multiClientMethods.filter(
+      (x) => x !== "scanTransactionsEvm"
+    )) {
+      expect(client4).toHaveProperty(method);
+    }
+    for (const method of evmClientMethods.filter(
+      (x) => x !== "scanTransactions"
+    )) {
+      expect(evmClient4).toHaveProperty(method);
+    }
+    for (const method of solanaClientMethods) {
+      expect(solanaClient4).toHaveProperty(method);
+    }
+  });
 });

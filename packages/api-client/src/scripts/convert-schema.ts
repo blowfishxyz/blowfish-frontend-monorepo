@@ -153,7 +153,6 @@ async function parseFile(
         // - type: string
         // nullable: true
 
-        console.log("@@ here", node.value);
         node.value = node.value.items[0];
         const parent = path.at(-2);
 
