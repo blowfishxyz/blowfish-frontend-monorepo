@@ -19,6 +19,79 @@ export type ActionEnum = (typeof ActionEnum)[keyof typeof ActionEnum];
 /**
  *
  * @export
+ * @interface Asset
+ */
+export interface Asset {
+  /**
+   * The contract address of the asset
+   * @type {string}
+   * @memberof Asset
+   */
+  address: string;
+  /**
+   * The symbol of the asset
+   * @type {string}
+   * @memberof Asset
+   */
+  symbol: string;
+  /**
+   * The name of the asset
+   * @type {string}
+   * @memberof Asset
+   */
+  name: string;
+  /**
+   * The number of decimal places used by the asset
+   * @type {number}
+   * @memberof Asset
+   */
+  decimals: number;
+  /**
+   * Whether the asset is verified as safe
+   * @type {boolean}
+   * @memberof Asset
+   */
+  verified: boolean;
+  /**
+   * The trusted token lists on which this asset is listed
+   * @type {Array<string>}
+   * @memberof Asset
+   */
+  lists: Array<AssetListsEnum>;
+  /**
+   * The URL of the asset's image. Can be `null`.
+   * @type {string}
+   * @memberof Asset
+   */
+  imageUrl: string | null;
+  /**
+   *
+   * @type {AssetPrice}
+   * @memberof Asset
+   */
+  price: AssetPrice | null;
+}
+
+/**
+ * @export
+ */
+export const AssetListsEnum = {
+  Coingecko: "COINGECKO",
+  Zerion: "ZERION",
+  OneInch: "ONE_INCH",
+  Uniswap: "UNISWAP",
+  MyCryptoApi: "MY_CRYPTO_API",
+  KlerosTokens: "KLEROS_TOKENS",
+  PolygonPopularTokens: "POLYGON_POPULAR_TOKENS",
+  EvmNative: "EVM_NATIVE",
+  Blowfish: "BLOWFISH",
+} as const;
+export type AssetListsEnum =
+  (typeof AssetListsEnum)[keyof typeof AssetListsEnum];
+
+/**
+ *
+ * @export
  * @interface AssetPrice
  */
 export interface AssetPrice {
@@ -3108,29 +3181,171 @@ export interface RequestSimulatorConfig {
   decodeInstructions?: boolean;
   /**
    *
-   * @type {RequestSimulatorConfigGuarantee}
+   * @type {RequestSimulatorConfigSafeguard}
    * @memberof RequestSimulatorConfig
    */
-  guarantee?: RequestSimulatorConfigGuarantee;
+  safeguard?: RequestSimulatorConfigSafeguard;
 }
 /**
  *
  * @export
- * @interface RequestSimulatorConfigGuarantee
+ * @interface RequestSimulatorConfigSafeguard
  */
-export interface RequestSimulatorConfigGuarantee {
+export interface RequestSimulatorConfigSafeguard {
   /**
-   * Enable Guarantee transaction generation
+   * Enable guard transaction(s) generation
    * @type {boolean}
-   * @memberof RequestSimulatorConfigGuarantee
+   * @memberof RequestSimulatorConfigSafeguard
    */
   enabled: boolean;
   /**
-   * Max slippage percentage for Solana and fungable token balances
+   * Max slippage percentage for Solana and fungable token balances. Defaults to 10% slippage or max slippage specified on DEX trade.
    * @type {number}
-   * @memberof RequestSimulatorConfigGuarantee
+   * @memberof RequestSimulatorConfigSafeguard
    */
   slippage?: number;
+}
+/**
+ *
+ * @export
+ * @interface RiskSignalsInner
+ */
+export interface RiskSignalsInner {
+  /**
+   * Risk signal severity level.
+   * @type {string}
+   * @memberof RiskSignalsInner
+   */
+  severity: RiskSignalsInnerSeverityEnum;
+  /**
+   * Risk signal kind.
+   * @type {string}
+   * @memberof RiskSignalsInner
+   */
+  kind: RiskSignalsInnerKindEnum;
+  /**
+   * human-readable message to present to the end-user
+   * @type {string}
+   * @memberof RiskSignalsInner
+   */
+  message: string;
+}
+
+/**
+ * @export
+ */
+export const RiskSignalsInnerSeverityEnum = {
+  Critical: "CRITICAL",
+  Warning: "WARNING",
+} as const;
+export type RiskSignalsInnerSeverityEnum =
+  (typeof RiskSignalsInnerSeverityEnum)[keyof typeof RiskSignalsInnerSeverityEnum];
+
+/**
+ * @export
+ */
+export const RiskSignalsInnerKindEnum = {
+  RiskThresholdHit: "RISK_THRESHOLD_HIT",
+  TradingRestrictions: "TRADING_RESTRICTIONS",
+  CallsExternalContract: "CALLS_EXTERNAL_CONTRACT",
+  TokensCanBeStolen: "TOKENS_CAN_BE_STOLEN",
+  SuspiciousCreationMinting: "SUSPICIOUS_CREATION_MINTING",
+  AntiWhaleModifiable: "ANTI_WHALE_MODIFIABLE",
+  OwnershipNotRenounced: "OWNERSHIP_NOT_RENOUNCED",
+  HiddenOwner: "HIDDEN_OWNER",
+  PreviousScamByCreator: "PREVIOUS_SCAM_BY_CREATOR",
+  Honeypot: "HONEYPOT",
+  Mintable: "MINTABLE",
+  Proxy: "PROXY",
+  BlocklistAllowlist: "BLOCKLIST_ALLOWLIST",
+  BalancesModifiable: "BALANCES_MODIFIABLE",
+  HighTokenOwnership: "HIGH_TOKEN_OWNERSHIP",
+  VeryHighTokenOwnership: "VERY_HIGH_TOKEN_OWNERSHIP",
+  ContractSelfDestruct: "CONTRACT_SELF_DESTRUCT",
+  HighTradingTax: "HIGH_TRADING_TAX",
+  TradingTaxModifiable: "TRADING_TAX_MODIFIABLE",
+  TradingCooldown: "TRADING_COOLDOWN",
+  TradingCanBeStopped: "TRADING_CAN_BE_STOPPED",
+  GasMinting: "GAS_MINTING",
+  CopycatToken: "COPYCAT_TOKEN",
+  TradingTax: "TRADING_TAX",
+  RugPull: "RUG_PULL",
+} as const;
+export type RiskSignalsInnerKindEnum =
+  (typeof RiskSignalsInnerKindEnum)[keyof typeof RiskSignalsInnerKindEnum];
+
+/**
+ * Result of scanning an asset
+ * @export
+ * @interface ScanAssetResult
+ */
+export interface ScanAssetResult {
+  /**
+   * EVM asset ids:
+   *  - For tokens: chain:network:contract_address
+   *  - For NFTs: chain:network:collection_address:id
+   * Solana asset ids:
+   *  - Both tokens and NFTs: solana:mainnet:address
+   * @type {string}
+   * @memberof ScanAssetResult
+   */
+  assetId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof ScanAssetResult
+   */
+  chain: string;
+  /**
+   *
+   * @type {Asset}
+   * @memberof ScanAssetResult
+   */
+  asset: Asset;
+  /**
+   * An array of warnings generated from scanning the transactions. All these warnings won't be returned in a single response (some are mutually exclusive) but it is advisable that your UI can display multiple warnings. Warnings are returned sorted by severity, so if you can only show a user one warning, show them the one at the 0th index.
+   * @type {Array<WarningInner>}
+   * @memberof ScanAssetResult
+   */
+  warnings: Array<WarningInner>;
+  /**
+   * An array of risk signals generated from scanning the assets.
+   * @type {Array<RiskSignalsInner>}
+   * @memberof ScanAssetResult
+   */
+  riskSignals: Array<RiskSignalsInner>;
+}
+/**
+ *
+ * @export
+ * @interface ScanAssets200Response
+ */
+export interface ScanAssets200Response {
+  /**
+   *
+   * @type {Array<ScanAssetResult>}
+   * @memberof ScanAssets200Response
+   */
+  assets: Array<ScanAssetResult>;
+  /**
+   * Request ID uniquely identifies the HTTP request sent to our service
+   * @type {string}
+   * @memberof ScanAssets200Response
+   */
+  requestId: string;
+}
+/**
+ *
+ * @export
+ * @interface ScanAssetsRequest
+ */
+export interface ScanAssetsRequest {
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ScanAssetsRequest
+   */
+  assets?: Array<string>;
 }
 /**
  *
@@ -3549,10 +3764,10 @@ export interface ScanTransactionsSolana200Response {
   perTransaction: Array<ScanTransactionsSolana200ResponsePerTransactionInner>;
   /**
    *
-   * @type {ScanTransactionsSolana200ResponseGuarantee}
+   * @type {ScanTransactionsSolana200ResponseSafeguard}
    * @memberof ScanTransactionsSolana200Response
    */
-  guarantee: ScanTransactionsSolana200ResponseGuarantee | null;
+  safeguard: ScanTransactionsSolana200ResponseSafeguard | null;
 }
 /**
  *
@@ -3664,25 +3879,6 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
 /**
  *
  * @export
- * @interface ScanTransactionsSolana200ResponseGuarantee
- */
-export interface ScanTransactionsSolana200ResponseGuarantee {
-  /**
-   *
-   * @type {string}
-   * @memberof ScanTransactionsSolana200ResponseGuarantee
-   */
-  error: string | null;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof ScanTransactionsSolana200ResponseGuarantee
-   */
-  transactions: Array<string>;
-}
-/**
- *
- * @export
  * @interface ScanTransactionsSolana200ResponsePerTransactionInner
  */
 export interface ScanTransactionsSolana200ResponsePerTransactionInner {
@@ -3716,6 +3912,31 @@ export interface ScanTransactionsSolana200ResponsePerTransactionInner {
    * @memberof ScanTransactionsSolana200ResponsePerTransactionInner
    */
   instructions: Array<TopLevelInstruction>;
+}
+/**
+ *
+ * @export
+ * @interface ScanTransactionsSolana200ResponseSafeguard
+ */
+export interface ScanTransactionsSolana200ResponseSafeguard {
+  /**
+   *
+   * @type {string}
+   * @memberof ScanTransactionsSolana200ResponseSafeguard
+   */
+  error: string | null;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof ScanTransactionsSolana200ResponseSafeguard
+   */
+  transactions: Array<string>;
+  /**
+   * must use Jito to submit transactions
+   * @type {boolean}
+   * @memberof ScanTransactionsSolana200ResponseSafeguard
+   */
+  shouldBundle: boolean;
 }
 /**
  *
@@ -3959,6 +4180,12 @@ export interface SolanaSimulationProgramError {
    * @memberof SolanaSimulationProgramError
    */
   solanaProgramAddress: string;
+  /**
+   * The name of the Solana program where this revert error occurred
+   * @type {string}
+   * @memberof SolanaSimulationProgramError
+   */
+  idlErrorKind?: string;
 }
 
 /**
@@ -4595,7 +4822,31 @@ export interface SplAsset {
    * @memberof SplAsset
    */
   previews: NftPreviews;
+  /**
+   * Whether the asset is verified as safe
+   * @type {boolean}
+   * @memberof SplAsset
+   */
+  verified: boolean;
+  /**
+   * The trusted token lists on which this asset is listed
+   * @type {Array<string>}
+   * @memberof SplAsset
+   */
+  lists: Array<SplAssetListsEnum>;
 }
+
+/**
+ * @export
+ */
+export const SplAssetListsEnum = {
+  Jupiter: "JUPITER",
+  Blowfish: "BLOWFISH",
+  Solflare: "SOLFLARE",
+} as const;
+export type SplAssetListsEnum =
+  (typeof SplAssetListsEnum)[keyof typeof SplAssetListsEnum];
+
 /**
  * Details of a top-level instruction of this transaction. The top-level instruction details are hard-coded into the transaction and therefore guaranteed to be called, whereas the inner-instructions are CPIs (cross-program invocations) extracted from the transaction's simulation and are therefore not guaranteed to be called when the transaction is submitted on-chain. It is recommended this difference in certainty be displayed to end users in the UI.
  * @export

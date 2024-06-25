@@ -41,6 +41,8 @@ export const splTransfer: SolanaExpectedStateChange = {
           updatedAt: 1691479249,
           dollarValuePerToken: 0.99998,
         },
+        verified: false,
+        lists: [],
         previews: { small: "", medium: "", large: "" },
       },
       counterparty: "5xPpQvZuMV5b8VBWGqRMZinB5tMz23axQPA1dAqzHTNz",
@@ -68,6 +70,8 @@ export const splApproval: SolanaExpectedStateChange = {
         mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         supply: 5034943397677802,
         decimals: 6,
+        verified: false,
+        lists: [],
         price: {
           source: "Coingecko",
           updatedAt: 1691479249,
@@ -144,6 +148,8 @@ export const splTransferChange: SolanaExpectedStateChange = {
           updatedAt: 1692001350,
           dollarValuePerToken: 0.00001449,
         },
+        verified: false,
+        lists: [],
         imageUrl: "",
         previews: {
           small:

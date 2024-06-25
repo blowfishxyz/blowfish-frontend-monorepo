@@ -6,6 +6,7 @@ export class BlowfishSolanaApiClient {
   public scanDomains: BlowfishMultiChainApiClient["scanDomains"];
   public downloadBlocklist: BlowfishMultiChainApiClient["downloadBlocklist"];
   public reportTransaction: BlowfishMultiChainApiClient["reportTransaction"];
+  public scanAssets: BlowfishMultiChainApiClient["scanAssets"];
 
   constructor(
     basePath: string,
@@ -23,6 +24,7 @@ export class BlowfishSolanaApiClient {
     this.scanDomains = this.multiChainClient.scanDomains;
     this.downloadBlocklist = this.multiChainClient.downloadBlocklist;
     this.reportTransaction = this.multiChainClient.reportTransaction;
+    this.scanAssets = this.multiChainClient.scanAssets;
   }
 
   scanTransactions(

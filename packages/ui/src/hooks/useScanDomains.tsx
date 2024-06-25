@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { ScanDomain200ResponseInner } from "@blowfishxyz/api-client";
 import { useClient } from "./useClient";
 
-export const useScanDomain = (domains: string[]) => {
+export const useScanDomains = (domains: string[]) => {
   const client = useClient();
 
   if (domains.length === 0) {
