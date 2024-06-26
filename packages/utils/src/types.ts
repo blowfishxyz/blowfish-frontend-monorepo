@@ -53,6 +53,7 @@ export enum RequestType {
   MessageAck = "BLOWFISH_MESSAGE_ACK",
   BlockDomain = "BLOCK_DOMAIN",
   AllowlistedDomains = "ALLOWLISTED_DOMAINS",
+  SolanaSignTransactions = "SOLANA_SIGN_TRANSACTIONS",
 }
 
 // TODO(kimpers): Type message
@@ -72,7 +73,8 @@ export type DappRequest =
   | TransactionRequest
   | SignTypedDataRequest
   | SignMessageRequest
-  | BatchRequests;
+  | BatchRequests
+  | SolanaSignTransactionsRequest;
 
 export const parseRequestFromMessage = (
   message: Message<DappRequest["type"], DappRequest>
@@ -100,6 +102,18 @@ export interface TransactionRequest extends BaseRequest {
   isImpersonatingWallet?: boolean;
   extensionVersion: string;
   simulatorConfig?: EvmSimulatorConfig;
+}
+
+export type SolanaSignTransactionsPayload = {
+  transactions: string[];
+};
+
+export interface SolanaSignTransactionsRequest extends BaseRequest {
+  type: RequestType.SolanaSignTransactions;
+  payload: SolanaSignTransactionsPayload;
+  method: "sign" | "signAndSend";
+  isImpersonatingWallet?: boolean;
+  extensionVersion: string;
 }
 
 export const isTransactionRequest = (
@@ -181,6 +195,11 @@ export type UserDecisionResponse =
       isOk: true;
       result: string;
       opts?: UserDecisionOpts;
+    }
+  | {
+      isOk: true;
+      safeguardTransactions: string[] | undefined;
+      opts?: UserDecisionOpts;
     };
 
 export interface TypedDataV1Field {
@@ -245,6 +264,15 @@ export const isTransactionRequestMessage = (
   return message.type === RequestType.Transaction;
 };
 
+export const isSolanaSignTransactionsRequestMessage = (
+  message: Message<DappRequest["type"], DappRequest>
+): message is Message<
+  RequestType.SolanaSignTransactions,
+  SolanaSignTransactionsRequest
+> => {
+  return message.type === RequestType.SolanaSignTransactions;
+};
+
 export const isSignTypedDataRequestMessage = (
   message: Message<DappRequest["type"], DappRequest>
 ): message is Message<RequestType.SignTypedData, SignTypedDataRequest> => {
@@ -270,7 +298,8 @@ export const isDappRequestMessage = (
     message.type === RequestType.Transaction ||
     message.type === RequestType.SignTypedData ||
     message.type === RequestType.SignMessage ||
-    message.type === RequestType.BatchRequests
+    message.type === RequestType.BatchRequests ||
+    message.type === RequestType.SolanaSignTransactions
   );
 };
 

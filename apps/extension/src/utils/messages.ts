@@ -8,6 +8,8 @@ import {
   SignMessagePayload,
   SignMessageRequest,
   SignTypedDataRequest,
+  SolanaSignTransactionsPayload,
+  SolanaSignTransactionsRequest,
   SupportedSignTypedDataPayloadVersion,
   TransactionPayload,
   TransactionRequest,
@@ -37,6 +39,26 @@ export const createTransactionRequestMessage = (
     type,
     payload,
     chainId: chainId.toString(),
+    userAccount,
+    extensionVersion: BLOWFISH_EXTENSION_VERSION,
+  };
+  return createRawMessage(type, transactionRequest);
+};
+
+export const createSolanaSignTransactionsMessage = (
+  payload: SolanaSignTransactionsPayload,
+  userAccount: string,
+  method: "sign" | "signAndSend"
+): Message<
+  RequestType.SolanaSignTransactions,
+  SolanaSignTransactionsRequest
+> => {
+  const type = RequestType.SolanaSignTransactions;
+  const transactionRequest: SolanaSignTransactionsRequest = {
+    type,
+    method,
+    payload,
+    chainId: "solana:101",
     userAccount,
     extensionVersion: BLOWFISH_EXTENSION_VERSION,
   };

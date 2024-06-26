@@ -16,6 +16,8 @@ export default {
 } as Meta;
 const Template: Story<ScanResultsV2Props> = ({ ...args }) => {
   const { data, isLoading } = useScanSignedTypedData({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     request: args.request as SignTypedDataRequest,
     metadata: { origin: "https://examples.blowfish.tools/" },
     chainFamily: args.chainFamily,

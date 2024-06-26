@@ -47,6 +47,19 @@ export const sendResult = async (
   await sendAndAwaitAck(message);
 };
 
+export const sendSafeguardResult = async (
+  id: string,
+  safeguardTransactions: string[] | undefined,
+  opts?: UserDecisionOpts
+) => {
+  const message: Message<RequestType.UserDecision, UserDecisionResponse> = {
+    id,
+    data: { isOk: true, safeguardTransactions, opts },
+    type: RequestType.UserDecision,
+  };
+  await sendAndAwaitAck(message);
+};
+
 export const sendAbort = async (id: string, opts?: UserDecisionOpts) => {
   const message: Message<RequestType.UserDecision, UserDecisionResponse> = {
     id,
