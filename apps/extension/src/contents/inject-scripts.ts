@@ -1,5 +1,5 @@
 import type { PlasmoContentScript } from "plasmo";
-import evmProxyScript from "url:~/injected/proxy-window-evm";
+import windowObjectsProxyScript from "url:~/injected/proxy-window-objects";
 
 import { BLOWFISH_PORTAL_TRUSTED_URLS } from "~constants";
 
@@ -22,7 +22,7 @@ const addScript = (url: string) => {
 // here we want to talk directly to the wallet
 const { hostname } = window.location;
 if (!BLOWFISH_PORTAL_TRUSTED_URLS.some((url) => url.hostname === hostname)) {
-  addScript(evmProxyScript);
+  addScript(windowObjectsProxyScript);
 }
 
 export default {};

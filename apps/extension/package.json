@@ -20,13 +20,14 @@
   },
   "dependencies": {
     "@blowfish/hooks": "workspace:*",
-    "@blowfishxyz/ui": "workspace:*",
     "@blowfish/protect-ui": "workspace:*",
     "@blowfish/utils": "workspace:*",
     "@blowfishxyz/blocklist": "^0.0.7",
+    "@blowfishxyz/ui": "workspace:*",
     "@ethersproject/address": "^5.7.0",
     "@metamask/post-message-stream": "^6.1.0",
     "@plasmohq/storage": "^1.2.0",
+    "@solana/wallet-adapter-base": "^0.9.23",
     "decimal.js": "^10.4.3",
     "eth-rpc-errors": "^4.0.3",
     "ethers": "^5.7.2",
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.7",
     "@plasmohq/prettier-plugin-sort-imports": "3.6.1",
+    "@solana/web3.js": "^1.78.0",
     "@types/chrome": "0.0.206",
     "@types/jest": "^29.2.5",
     "@types/node": "18.11.18",

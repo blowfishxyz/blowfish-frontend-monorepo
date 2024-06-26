@@ -56,7 +56,7 @@ describe("request proxy", () => {
     const mockAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
     const { provider, forwardToWallet, stream } = setupTest({});
 
-    const { requestHandler } = await import("~utils/proxy-handlers");
+    const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
     const res = await requestHandler({
       request: { method: "wallet_requestPermissions" },
@@ -79,7 +79,7 @@ describe("request proxy", () => {
 
     const mockAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
 
-    const { requestHandler } = await import("~utils/proxy-handlers");
+    const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
     const res1 = await requestHandler({
       request: { method: "eth_requestAccounts" },
@@ -104,7 +104,7 @@ describe("request proxy", () => {
 
   test(`forwards to wallet any request that is not intercepted`, async () => {
     const { provider, forwardToWallet, stream } = setupTest({});
-    const { requestHandler } = await import("~utils/proxy-handlers");
+    const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
     await requestHandler({
       request: { method: "eth_chainId" },
@@ -144,7 +144,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
       const res = await requestHandler({
         request,
         provider,
@@ -173,7 +173,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       try {
         await requestHandler({
@@ -203,7 +203,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -233,7 +233,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -266,7 +266,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
       const res = await requestHandler({
         request,
         provider,
@@ -295,7 +295,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       try {
         await requestHandler({
@@ -325,7 +325,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -355,7 +355,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -388,7 +388,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
       const res = await requestHandler({
         request,
         provider,
@@ -417,7 +417,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       try {
         await requestHandler({
@@ -447,7 +447,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -477,7 +477,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -510,7 +510,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
       const res = await requestHandler({
         request,
         provider,
@@ -539,7 +539,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       try {
         await requestHandler({
@@ -569,7 +569,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -599,7 +599,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -632,7 +632,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
       await requestHandler({
         request,
         provider,
@@ -662,7 +662,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       try {
         await requestHandler({
@@ -692,7 +692,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
@@ -722,7 +722,7 @@ describe("request proxy", () => {
         mockResponse,
       });
 
-      const { requestHandler } = await import("~utils/proxy-handlers");
+      const { requestHandler } = await import("~utils/evm-proxy-handlers");
 
       await requestHandler({
         request,
