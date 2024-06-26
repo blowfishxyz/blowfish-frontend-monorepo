@@ -39,6 +39,7 @@ export type VerifyConfig = {
 };
 
 export enum VERIFY_ERROR {
+  RECENT_BLOCKHASH_MISSMATCH = "Recent blockhash does not match the initial transaction",
   INSTRUCTION_MISSMATCH = "Instructions do not match the initial transaction",
   UNKNOWN_PROGRAM_INTERACTION = "Instruction is attempting to interact with an unknown program",
   MISSING_BLOWFISH_FEE = "Instructions are missing Blowfish service fee",
@@ -78,6 +79,13 @@ export function verifyTransaction(
   const safeGuardTx = VersionedTransaction.deserialize(
     decodeRawTransaction(safeGuardTxB58orB64)
   );
+
+  assertEq(
+    originalTx.message.recentBlockhash,
+    safeGuardTx.message.recentBlockhash,
+    VERIFY_ERROR.RECENT_BLOCKHASH_MISSMATCH
+  );
+
   const originalIxs = originalTx.message.compiledInstructions.map((ix) =>
     unwrapIx(ix, originalTx)
   );
