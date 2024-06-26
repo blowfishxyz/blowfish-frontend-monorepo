@@ -249,7 +249,7 @@ const processIfBatchRequests = async (
       logger.debug(response);
       const { isOk } = response.data;
 
-      if (isOk) {
+      if (isOk && "result" in response.data) {
         return { shouldForward: false, data: response.data.result, request };
       } else {
         throw ethErrors.provider.userRejectedRequest(
@@ -290,7 +290,7 @@ const processIfSendTransaction = async (
     logger.debug(response);
     const { isOk } = response.data;
 
-    if (isOk) {
+    if (isOk && "result" in response.data) {
       return { shouldForward: false, data: response.data.result };
     } else {
       throw ethErrors.provider.userRejectedRequest(
@@ -341,7 +341,7 @@ const processIfSignTypedData = async (
     logger.debug(response);
     const { isOk } = response.data;
 
-    if (isOk) {
+    if (isOk && "result" in response.data) {
       return { shouldForward: false, data: response.data.result };
     } else {
       throw ethErrors.provider.userRejectedRequest(
@@ -386,7 +386,7 @@ const processIfMessageSignData = async (
     logger.debug(response);
     const { isOk } = response.data;
 
-    if (isOk) {
+    if (isOk && "result" in response.data) {
       return { shouldForward: false, data: response.data.result };
     } else {
       throw ethErrors.provider.userRejectedRequest(

@@ -280,8 +280,14 @@ const processSolanaSignTransactionsRequest = async (
   const dataToSend = {
     metadata: { origin: message.origin },
     userAccount,
+    messageId: message.id,
     transactions,
     method: methodToSend,
+    simulatorConfig: {
+      safeguard: {
+        enabled: true,
+      },
+    },
   };
 
   // TODO: Change to /scan after supporting solana there

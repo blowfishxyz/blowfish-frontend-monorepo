@@ -1,4 +1,9 @@
-import { SolanaChainNetwork, RequestMetadata, Languages } from "../types";
+import {
+  SolanaChainNetwork,
+  RequestMetadata,
+  Languages,
+  RequestSimulatorConfig,
+} from "../types";
 import { BlowfishMultiChainApiClient, FetchAPI } from "./multi-chain-client";
 
 export class BlowfishSolanaApiClient {
@@ -31,6 +36,7 @@ export class BlowfishSolanaApiClient {
     transactions: string[],
     userAccount: string,
     metadata: RequestMetadata,
+    simulatorConfig?: RequestSimulatorConfig,
     simulateExpired?: boolean,
     simulationTimeoutMs?: number
   ) {
@@ -39,6 +45,7 @@ export class BlowfishSolanaApiClient {
       userAccount,
       metadata,
       this.chainNetwork,
+      simulatorConfig,
       simulateExpired,
       simulationTimeoutMs
     );

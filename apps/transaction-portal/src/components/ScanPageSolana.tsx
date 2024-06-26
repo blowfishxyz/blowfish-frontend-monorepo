@@ -5,7 +5,7 @@ import {
 } from "./modals";
 import { Layout } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
-import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client/.";
+import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client";
 import ScanResultsSolana from "./ScanResultsSolana";
 import {
   SolanaScanParams,
@@ -37,13 +37,14 @@ export const ScanPageSolanaV2Inner: React.FC<{
 const SolanaFullfieldView: React.FC<{ data: SolanaSuccessParams }> = ({
   data,
 }) => {
-  const { request, userAccount, isImpersonating } = data;
+  const { request, userAccount, isImpersonating, messageId } = data;
 
   return (
     <SolanaResultsView
       request={request}
       userAccount={userAccount}
       isImpersonating={isImpersonating}
+      messageId={messageId}
     />
   );
 };
@@ -52,7 +53,8 @@ const SolanaResultsView: React.FC<{
   request: ScanTransactionsSolanaRequest;
   userAccount: string;
   isImpersonating: boolean;
-}> = ({ request, userAccount, isImpersonating }) => {
+  messageId: string | undefined;
+}> = ({ request, userAccount, isImpersonating, messageId }) => {
   const {
     data: scanResults,
     error: scanError,
@@ -62,6 +64,9 @@ const SolanaResultsView: React.FC<{
     userAccount: userAccount,
     metadata: request.metadata,
     chainNetwork: "mainnet",
+    simulatorConfig: request.simulatorConfig
+      ? request.simulatorConfig
+      : undefined,
   });
 
   if (scanError) {
@@ -81,6 +86,7 @@ const SolanaResultsView: React.FC<{
   return (
     <ScanResultsSolana
       request={request}
+      messageId={messageId}
       scanResults={scanResults}
       impersonatingAddress={isImpersonating ? userAccount : undefined}
       chainNetwork="mainnet"

@@ -195,6 +195,11 @@ export type UserDecisionResponse =
       isOk: true;
       result: string;
       opts?: UserDecisionOpts;
+    }
+  | {
+      isOk: true;
+      safeguardTransactions: string[] | undefined;
+      opts?: UserDecisionOpts;
     };
 
 export interface TypedDataV1Field {
