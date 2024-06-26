@@ -51,6 +51,7 @@ export async function solanaHandler(
             );
             const originalTxn = txns[i];
             // Hack: The recentBlockhash is wrong in safeguard txn
+            // Remove when https://github.com/blowfishxyz/blowfish-monorepo/pull/1601 is merged
             if ("message" in originalTxn) {
               txn.message.recentBlockhash =
                 // @ts-expect-error
