@@ -15,3 +15,6 @@ export const BLOWFISH_EXTENSION_VERSION = process.env
 
 export const BLOWFISH_API_BASE_URL = process.env
   .PLASMO_PUBLIC_BLOWFISH_API_BASE_URL as string;
+
+export const SOLANA_ENABLED =
+  process.env.PLASMO_PUBLIC_BLOWFISH_SOLANA_ENABLED === "true";

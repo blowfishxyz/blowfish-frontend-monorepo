@@ -5,6 +5,7 @@ import { Storage } from "@plasmohq/storage";
 import {
   BLOWFISH_TRANSACTION_PORTAL_URL,
   CUSTOM_PORTAL_URL_ENABLED,
+  SOLANA_ENABLED,
 } from "~config";
 
 const PREFERENCES_UNSUPPORTED_CHAINS_DISMISSED_KEY =
@@ -81,5 +82,26 @@ export const setBlowfishPortalUrl = async (url: string | undefined) => {
   return storage.set(
     BlowfishOption.PREFERENCES_BLOWFISH_CUSTOM_PORTAL_URL,
     url
+  );
+};
+
+export const getBlowfishSolanaEnbaled = async () => {
+  if (!SOLANA_ENABLED) {
+    return false;
+  }
+  try {
+    const solanaEnabled = await storage.get<boolean | undefined>(
+      BlowfishOption.PREFERENCES_BLOWFISH_SOLANA_ENABLED
+    );
+    return solanaEnabled || SOLANA_ENABLED;
+  } catch (error) {
+    return SOLANA_ENABLED;
+  }
+};
+
+export const setBlowfishSolanaEnbaled = async (solanaEnabled: boolean) => {
+  return storage.set(
+    BlowfishOption.PREFERENCES_BLOWFISH_SOLANA_ENABLED,
+    solanaEnabled
   );
 };

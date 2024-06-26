@@ -12,6 +12,7 @@ import {
   createSolanaSignTransactionsMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
+import { getBlowfishSolanaEnbaled } from "~utils/storage";
 
 import { decodeRawTransaction } from "./decode";
 
@@ -21,6 +22,10 @@ export async function solanaHandler(
   publicKey: string,
   method: "sign" | "signAndSend"
 ): Promise<(Transaction | VersionedTransaction)[]> {
+  const solanaEnabled = await getBlowfishSolanaEnbaled();
+  if (!solanaEnabled) {
+    return Promise.resolve(txns);
+  }
   try {
     const transactions = txns.map((tx) =>
       Buffer.from(
