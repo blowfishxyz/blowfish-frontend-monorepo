@@ -64,7 +64,9 @@ const SolanaResultsView: React.FC<{
     userAccount: userAccount,
     metadata: request.metadata,
     chainNetwork: "mainnet",
-    simulatorConfig: request.simulatorConfig,
+    simulatorConfig: request.simulatorConfig
+      ? request.simulatorConfig
+      : undefined,
   });
 
   if (scanError) {
