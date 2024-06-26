@@ -34,14 +34,14 @@ const createMockTransfer = (lamports = LAMPORTS_PER_SOL / 1000) => {
 };
 
 const expectedSafeGuard =
-  "7F4eCdp2uErMrDnuwhGjt24BjSy29pwH6gv3VFv8udmAqRgU5qoMPFSvu8ZybW5Kcpfcq29KbPEMvopyXthMf3PUEAiieYNbrkoxvPnqCaGSLmTVpZBWg4RerL81KSbGqV5BmrCYukpwhLNafamtymAHZnQGszAzBug58K6Dk1MF22AVJNxd7T31M1vvTDahB8Xw9c3gksTBtVZx2GAZYHZNX8M1tUHr69gPcHK5EGHF7LQDA1pU4mPt3L13xkxtT8edPmBw8UMRmk3c3jByYfTuCaM8ZUMqWGrj2MpNrY1tj2ZXnvUtNjLAM4rjtgC4usSVYHxU6ef4iePoFzTzEEqK1qC93nsaNVTGN32zQP1i29QGuRGpLMfdHfVfMD7HH4A6516yxoqT2QPPgz8PXgQizqzopLVhKvwMfbeXkkWj";
+  "7F4eCdp2uErMrDnuwhGjt24BjSy29pwH6gv3VFv8udmAqRgU5qoMPFSvu8ZybW5Kcpfcq29KbPEMvopyXthMf3PUEAiieYNbrkoxvPnqCaGSLmTVpZBWg4RerL81KSbGqV5BmrCYukpwhLNafamtymAHZnQGszAzBug58K6Dk1MF22AVJNxd7T31M1vvTDahB8Xw9c3gksTBtVZx2GAZYHZNX8M1tUHr69gPcHK5EGHF7LQDA1pU4mPt3L13xkxtT8edPmBw8UMRmk3c3jByYfTuCaM8ZUMqWGrj2MpNrY1tj2ZXnvUtNjLAM95dMWd3aPN23qhNeVCc7z6jsQgoJ4p5SLbMoefB2DU8u3yXR4RJhwfKrt9MHZmuuJhMLZccqeZ5pqbnoUvhe8h6MR1piaonygiLJXfUbmVC7LBkQ7NX";
 
 describe("verify", () => {
   describe("verifyTransaction", () => {
     it("should not throw an error for a valid transaction", () => {
       const txB58 = bs58.encode(createMockTransfer());
 
-      verifyTransaction(txB58.toString(), expectedSafeGuard, {
+      verifyTransaction(txB58, expectedSafeGuard, {
         solUsdRate: 130,
       });
     });
