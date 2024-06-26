@@ -69,7 +69,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
   const [layoutConfig] = useLayoutConfig();
 
   const handleContinueClick = useCallback(async () => {
-    if (layoutConfig.impersonatingAddress) {
+    if (!layoutConfig.canConfirmTxn) {
       return;
     }
     setAnimating(true);
@@ -94,7 +94,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
       setAnimating(false);
       setViewState(ViewState.SUCCESS);
     }
-  }, [onContinue, layoutConfig.impersonatingAddress]);
+  }, [onContinue, layoutConfig.canConfirmTxn]);
 
   const getContent = () => {
     switch (viewState) {
@@ -104,9 +104,7 @@ export const ConfirmTxn: React.FC<ConfirmTxnProps> = ({
             severity={severity}
             warnings={warnings}
             onContinue={
-              layoutConfig.hasRequestParams || layoutConfig.impersonatingAddress
-                ? undefined
-                : handleContinueClick
+              layoutConfig.canConfirmTxn ? handleContinueClick : undefined
             }
             onCancel={onCancel}
             onReport={onReport}

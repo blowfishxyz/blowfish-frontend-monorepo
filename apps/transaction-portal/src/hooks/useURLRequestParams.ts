@@ -6,6 +6,7 @@ import { DappRequest, Message, RequestType } from "@blowfish/utils/types";
 import {
   EvmSimulatorConfig,
   ScanTransactionsSolanaRequest,
+  RequestSimulatorConfig,
 } from "@blowfishxyz/api-client";
 import { fromUrlParam } from "~utils/url";
 
@@ -38,7 +39,11 @@ export type UrlParsedRequest = {
         rawMessage: string;
       };
     }
-  | { transactions: string[] }
+  | {
+      transactions: string[];
+      simulatorConfig?: RequestSimulatorConfig;
+      messageId?: string;
+    }
 );
 
 export type SolanaSuccessParams = {
@@ -46,6 +51,7 @@ export type SolanaSuccessParams = {
   userAccount: string;
   isImpersonating: boolean;
   isSolana: boolean;
+  messageId?: string;
 };
 
 export type SolanaScanParams =
@@ -173,9 +179,11 @@ export function useURLRequestParams(): ScanParams | SolanaScanParams {
         metadata: {
           origin: parsedRequest.metadata.origin,
         },
+        simulatorConfig: parsedRequest.simulatorConfig,
       } as ScanTransactionsSolanaRequest,
       isImpersonating: true,
       userAccount: parsedRequest.userAccount as `0x${string}`,
+      messageId: parsedRequest.messageId,
       isSolana: true,
     };
   }

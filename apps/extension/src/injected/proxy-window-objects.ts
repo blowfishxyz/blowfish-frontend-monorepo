@@ -11,14 +11,18 @@ import {
   RequestType,
 } from "@blowfish/utils/types";
 import { WindowPostMessageStream } from "@metamask/post-message-stream";
+import type { Transaction, VersionedTransaction } from "@solana/web3.js";
 import { providers } from "ethers";
 
 import { IS_IMPERSONATION_AVAILABLE } from "~config";
-import { requestHandler, sendAsyncHandler } from "~utils/proxy-handlers";
+import { requestHandler, sendAsyncHandler } from "~utils/evm-proxy-handlers";
+import { solanaHandler } from "~utils/solana-proxy-handlers";
 
 declare let window: Window & {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ethereum?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  solana?: any;
 };
 
 const stream = new WindowPostMessageStream({
@@ -161,5 +165,106 @@ if (IS_IMPERSONATION_AVAILABLE) {
 
 const overrideInterval = setInterval(overrideWindowEthereum, 100);
 overrideWindowEthereum();
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let signTransactionProxy: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signAllTransactionsProxy: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  signAndSendTransactionProxy: any;
+
+const overrideIfNotProxiedSolana = () => {
+  if (
+    window.solana &&
+    (window.solana.signAllTransactions !== signAllTransactionsProxy ||
+      window.solana.signTransaction !== signTransactionProxy)
+  ) {
+    logger.debug("Reproxying window.solana");
+    overrideWindowSolana();
+  }
+};
+
+const overrideWindowSolana = () => {
+  if (!window.solana) return;
+
+  logger.debug("overrideWindowSolana");
+
+  function createProxyHandler(
+    method: "sign" | "signAndSend",
+    multipleTxns: boolean
+  ) {
+    return {
+      apply: async (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        target: any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        thisArg: any,
+        argumentsList: [
+          | (Transaction | VersionedTransaction)[]
+          | (Transaction | VersionedTransaction)
+        ]
+      ) => {
+        logger.debug(
+          `${method}Transaction${multipleTxns ? "s" : ""} handler `,
+          argumentsList
+        );
+        const [firstArg, ...restArgs] = argumentsList;
+        const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
+
+        try {
+          const nextTxns = await solanaHandler(
+            stream,
+            transactions,
+            window.solana.publicKey.toString(),
+            method
+          );
+          const txnOrTxns = multipleTxns ? nextTxns : nextTxns[0];
+          const newArgs = [txnOrTxns, ...restArgs];
+          logger.debug("Original: ", argumentsList);
+          logger.debug("Safeguard: ", newArgs);
+          return Reflect.apply(target, thisArg, newArgs);
+        } catch (err) {
+          logger.error(`Failed to ${method} all transactions`, err);
+          throw err;
+        }
+      },
+    };
+  }
+
+  signTransactionProxy = new Proxy(
+    window.solana.signTransaction,
+    createProxyHandler("sign", false)
+  );
+
+  Object.defineProperty(window.solana, "signTransaction", {
+    value: signTransactionProxy,
+    writable: false,
+  });
+
+  signAllTransactionsProxy = new Proxy(
+    window.solana.signAllTransactions,
+    createProxyHandler("sign", true)
+  );
+
+  Object.defineProperty(window.solana, "signAllTransactions", {
+    value: signAllTransactionsProxy,
+    writable: false,
+  });
+
+  signAndSendTransactionProxy = new Proxy(
+    window.solana.signAndSendTransaction,
+    createProxyHandler("signAndSend", false)
+  );
+
+  Object.defineProperty(window.solana, "signAndSendTransaction", {
+    value: signAndSendTransactionProxy,
+    writable: false,
+  });
+};
+
+setInterval(overrideIfNotProxiedSolana, 10_000);
+overrideWindowSolana();
+
+logger.debug("proxy-window-objects.ts loaded");
 
 export default {};

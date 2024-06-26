@@ -17,6 +17,7 @@ import { useReportTransaction } from "~hooks/useReportTransaction";
 import { AdvancedDetails } from "./AdvancedDetails";
 import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
+import { sendAbort, sendSafeguardResult } from "~utils/messages";
 
 export type UIWarning = {
   message: string;
@@ -29,12 +30,14 @@ interface ScanResultsSolanaProps {
   scanResults: ScanTransactionsSolana200Response;
   chainNetwork: ChainNetwork;
   impersonatingAddress: string | undefined;
+  messageId?: string;
 }
 
 const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   request,
   scanResults,
   impersonatingAddress,
+  messageId,
 }) => {
   const [layoutConfig, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
@@ -131,8 +134,22 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
           />
         }
         onReport={() => reportTransaction(scanResults.requestId)}
-        onContinue={() => Promise.resolve()}
-        onCancel={() => Promise.resolve()}
+        onContinue={async () => {
+          if (messageId) {
+            await sendSafeguardResult(
+              messageId,
+              scanResults.safeguard?.transactions
+            );
+          }
+          window.close();
+          return Promise.resolve();
+        }}
+        onCancel={async () => {
+          if (messageId) {
+            await sendAbort(messageId);
+          }
+          window.close();
+        }}
       >
         <StateChangePreviewSolana
           scanResult={scanResults}

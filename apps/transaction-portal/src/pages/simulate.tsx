@@ -22,8 +22,16 @@ const ScanPageWrapper: React.FC = () => {
   const [, setLayoutConfig] = useLayoutConfig();
   const [isMounted, setIsMounted] = useState(false);
 
+  const canConfirmTxn = Boolean(
+    data && "isSolana" in data && data.isSolana && data.messageId
+  );
+
   useLayoutEffect(() => {
-    setLayoutConfig((prev) => ({ ...prev, hasRequestParams: true }));
+    setLayoutConfig((prev) => ({
+      ...prev,
+      hasRequestParams: true,
+      canConfirmTxn,
+    }));
 
     // NOTE (Lolu): Added client-side mounting logic to address the hydration error.
     // This ensures consistent markup between server-side and client-side rendering.

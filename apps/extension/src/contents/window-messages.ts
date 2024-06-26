@@ -59,7 +59,7 @@ if (IS_IMPERSONATION_AVAILABLE) {
           key: BlowfishOption.PREFERENCES_BLOWFISH_IMPERSONATION_WALLET,
           value: address,
         });
-      // Send impersonating wallet address to proxy-window-evm
+      // Send impersonating wallet address to proxy-window-objects
       stream.write(message);
     }
   };

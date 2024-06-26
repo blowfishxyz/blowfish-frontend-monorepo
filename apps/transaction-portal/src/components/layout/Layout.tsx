@@ -8,10 +8,12 @@ import { ProtectHeader } from "~components/ProtectHeader";
 export const useLayoutConfig = createGlobalState<{
   severity: Severity;
   impersonatingAddress?: string | undefined;
-  hasRequestParams?: boolean | undefined;
+  hasRequestParams: boolean | undefined;
+  canConfirmTxn: boolean;
 }>({
   severity: "INFO",
   hasRequestParams: false,
+  canConfirmTxn: true,
 });
 
 export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {

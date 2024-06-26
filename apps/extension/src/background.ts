@@ -11,11 +11,13 @@ import {
   RequestType,
   SignMessageRequest,
   SignTypedDataRequest,
+  SolanaSignTransactionsRequest,
   TransactionRequest,
   UserDecisionResponse,
   isBatchRequestsMessage,
   isSignRequestMessage,
   isSignTypedDataRequestMessage,
+  isSolanaSignTransactionsRequestMessage,
   isTransactionRequestMessage,
   isUserDecisionResponseMessage,
 } from "@blowfish/utils/types";
@@ -69,6 +71,8 @@ const setupRemoteConnection = async (remotePort: Browser.Runtime.Port) => {
         return processSignMessageRequest(message, remotePort);
       } else if (isBatchRequestsMessage(message)) {
         return processBatchRequests(message, remotePort);
+      } else if (isSolanaSignTransactionsRequestMessage(message)) {
+        return processSolanaSignTransactionsRequest(message, remotePort);
       }
     }
   );
@@ -148,7 +152,9 @@ Browser.runtime.onMessage.addListener(onBrowserMessageListener);
 
 const processRequestBase = async (
   message: Message<RequestType, DappRequest>,
-  remotePort: Browser.Runtime.Port
+  remotePort: Browser.Runtime.Port,
+  // for cases when we want to pass whole request in the URL
+  pathname?: string
 ): Promise<void> => {
   const { address } = (await getBlowfishImpersonationWallet()) || {};
   const isImpersonatingWallet = !!address;
@@ -190,8 +196,11 @@ const processRequestBase = async (
   // TODO(kimpers): We could consider kicking off the scan before we even open the popup
   logger.debug(message);
   const portalUrl = await getBlowfishPortalUrl();
+  const url = pathname
+    ? `${portalUrl}${pathname}`
+    : `${portalUrl}/scan?id=${message.id}&chainId=${chainId}`;
   const tab = await Browser.tabs.create({
-    url: `${portalUrl}/scan?id=${message.id}&chainId=${chainId}`,
+    url,
     active: true,
   });
   const tabId = tab.id!;
@@ -242,6 +251,51 @@ const processTransactionRequest = async (
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
   await processRequestBase(message, remotePort);
+};
+
+const processSolanaSignTransactionsRequest = async (
+  message: Message<
+    RequestType.SolanaSignTransactions,
+    SolanaSignTransactionsRequest
+  >,
+  remotePort: Browser.Runtime.Port
+): Promise<void> => {
+  const {
+    data: {
+      userAccount,
+      payload: { transactions },
+      method,
+    },
+  } = message;
+  let methodToSend;
+  if (method === "sign") {
+    if (transactions.length === 1) {
+      methodToSend = "signTransaction";
+    } else {
+      methodToSend = "signAllTransactions";
+    }
+  } else if (method === "signAndSend") {
+    methodToSend = "signAndSendTransaction";
+  }
+  const dataToSend = {
+    metadata: { origin: message.origin },
+    userAccount,
+    messageId: message.id,
+    transactions,
+    method: methodToSend,
+    simulatorConfig: {
+      safeguard: {
+        enabled: true,
+      },
+    },
+  };
+
+  // TODO: Change to /scan after supporting solana there
+  const pathname = `/simulate?request=${encodeURIComponent(
+    global.btoa(JSON.stringify(dataToSend))
+  )}&solanaNetwork=mainnet`;
+
+  await processRequestBase(message, remotePort, pathname);
 };
 
 const processSignTypedDataRequest = async (
