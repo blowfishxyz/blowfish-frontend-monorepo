@@ -17,7 +17,7 @@ import { useReportTransaction } from "~hooks/useReportTransaction";
 import { AdvancedDetails } from "./AdvancedDetails";
 import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
-import { sendResult, sendSafeguardResult } from "~utils/messages";
+import { sendAbort, sendSafeguardResult } from "~utils/messages";
 
 export type UIWarning = {
   message: string;
@@ -141,9 +141,15 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
               scanResults.safeguard?.transactions
             );
           }
+          window.close();
           return Promise.resolve();
         }}
-        onCancel={() => window.close()}
+        onCancel={async () => {
+          if (messageId) {
+            await sendAbort(messageId);
+          }
+          window.close();
+        }}
       >
         <StateChangePreviewSolana
           scanResult={scanResults}

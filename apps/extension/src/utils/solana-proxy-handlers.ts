@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { logger } from "@blowfish/utils/logger";
 import type {
   SolanaSignTransactionsRequest,
@@ -11,6 +12,8 @@ import {
   createSolanaSignTransactionsMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
+
+import { decodeRawTransaction } from "./decode";
 
 export async function solanaHandler(
   stream: WindowPostMessageStream,
@@ -41,11 +44,24 @@ export async function solanaHandler(
         response.data.safeguardTransactions
       ) {
         const deserializedSafeguardTxns =
-          response.data.safeguardTransactions.map((txn) =>
-            VersionedTransaction.deserialize(
-              Uint8Array.from(Buffer.from(txn, "base64"))
-            )
-          );
+          response.data.safeguardTransactions.map((rawTxn, i) => {
+            // TODO: should we deserialize into legacy txn if it was passed?
+            const txn = VersionedTransaction.deserialize(
+              decodeRawTransaction(rawTxn)
+            );
+            const originalTxn = txns[i];
+            // Hack: The recentBlockhash is wrong in safeguard txn
+            if ("message" in originalTxn) {
+              txn.message.recentBlockhash =
+                // @ts-expect-error
+                txns[i].message.recentBlockhash;
+            } else if ("recentBlockhash" in originalTxn) {
+              txn.message.recentBlockhash = originalTxn.recentBlockhash!;
+            }
+
+            return txn;
+          });
+
         return Promise.resolve(deserializedSafeguardTxns);
       }
       return Promise.resolve(txns);

@@ -280,6 +280,7 @@ const processSolanaSignTransactionsRequest = async (
   const dataToSend = {
     metadata: { origin: message.origin },
     userAccount,
+    messageId: message.id,
     transactions,
     method: methodToSend,
     simulatorConfig: {
@@ -292,7 +293,7 @@ const processSolanaSignTransactionsRequest = async (
   // TODO: Change to /scan after supporting solana there
   const pathname = `/simulate?request=${encodeURIComponent(
     global.btoa(JSON.stringify(dataToSend))
-  )}&solanaNetwork=mainnet&messageId=${message.id}`;
+  )}&solanaNetwork=mainnet`;
 
   await processRequestBase(message, remotePort, pathname);
 };

@@ -189,40 +189,51 @@ const overrideWindowSolana = () => {
 
   logger.debug("overrideWindowSolana");
 
-  const signTransactionsHandler = {
-    apply: async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      target: any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      thisArg: any,
-      argumentsList: [
-        | (Transaction | VersionedTransaction)[]
-        | (Transaction | VersionedTransaction)
-      ]
-    ) => {
-      logger.debug("signTransactions handler", argumentsList);
-      const [firstArg, ...restArgs] = argumentsList;
-      const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
-
-      try {
-        const txns = await solanaHandler(
-          stream,
-          transactions,
-          window.solana.publicKey.toString(),
-          "sign"
+  function createProxyHandler(
+    method: "sign" | "signAndSend",
+    multipleTxns: boolean
+  ) {
+    return {
+      apply: async (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        target: any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        thisArg: any,
+        argumentsList: [
+          | (Transaction | VersionedTransaction)[]
+          | (Transaction | VersionedTransaction)
+        ]
+      ) => {
+        logger.debug(
+          `${method}Transaction${multipleTxns ? "s" : ""} handler `,
+          argumentsList
         );
-        logger.debug("Txns to submit", txns);
-        return Reflect.apply(target, thisArg, [txns, ...restArgs]);
-      } catch (err) {
-        logger.error("Failed to sign all transactions", err);
-        throw err;
-      }
-    },
-  };
+        const [firstArg, ...restArgs] = argumentsList;
+        const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
+
+        try {
+          const nextTxns = await solanaHandler(
+            stream,
+            transactions,
+            window.solana.publicKey.toString(),
+            method
+          );
+          const txnOrTxns = multipleTxns ? nextTxns : nextTxns[0];
+          const newArgs = [txnOrTxns, ...restArgs];
+          logger.debug("Original: ", argumentsList);
+          logger.debug("Safeguard: ", newArgs);
+          return Reflect.apply(target, thisArg, newArgs);
+        } catch (err) {
+          logger.error(`Failed to ${method} all transactions`, err);
+          throw err;
+        }
+      },
+    };
+  }
 
   signTransactionProxy = new Proxy(
     window.solana.signTransaction,
-    signTransactionsHandler
+    createProxyHandler("sign", false)
   );
 
   Object.defineProperty(window.solana, "signTransaction", {
@@ -232,7 +243,7 @@ const overrideWindowSolana = () => {
 
   signAllTransactionsProxy = new Proxy(
     window.solana.signAllTransactions,
-    signTransactionsHandler
+    createProxyHandler("sign", true)
   );
 
   Object.defineProperty(window.solana, "signAllTransactions", {
@@ -240,40 +251,9 @@ const overrideWindowSolana = () => {
     writable: false,
   });
 
-  const signAndSendTransactionHandler = {
-    apply: async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      target: any,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      thisArg: any,
-      argumentsList: [
-        | (Transaction | VersionedTransaction)[]
-        | (Transaction | VersionedTransaction)
-      ]
-    ) => {
-      logger.debug("sendTransaction handler", argumentsList);
-      const [firstArg, ...restArgs] = argumentsList;
-      const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
-
-      try {
-        const txns = await solanaHandler(
-          stream,
-          transactions,
-          window.solana.publicKey.toString(),
-          "signAndSend"
-        );
-
-        return Reflect.apply(target, thisArg, [txns, ...restArgs]);
-      } catch (err) {
-        logger.error("Failed to sign transaction", err);
-        throw err;
-      }
-    },
-  };
-
   signAndSendTransactionProxy = new Proxy(
     window.solana.signAndSendTransaction,
-    signAndSendTransactionHandler
+    createProxyHandler("signAndSend", false)
   );
 
   Object.defineProperty(window.solana, "signAndSendTransaction", {
