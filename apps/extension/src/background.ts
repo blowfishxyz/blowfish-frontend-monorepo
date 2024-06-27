@@ -28,6 +28,7 @@ import { updateStoredAllowlist } from "~utils/blocklist";
 import {
   getBlowfishImpersonationWallet,
   getBlowfishPortalUrl,
+  getBlowfishSolanaEnabled,
   isUnsupportedChainDismissed,
   setUnsupportedChainDismissed,
   storage,
@@ -260,6 +261,14 @@ const processSolanaSignTransactionsRequest = async (
   >,
   remotePort: Browser.Runtime.Port
 ): Promise<void> => {
+  const enabled = await getBlowfishSolanaEnabled();
+  if (!enabled) {
+    postResponseToPort(remotePort, message, {
+      isOk: false,
+      opts: { pauseScan: true, chainId: "solana:101" },
+    });
+    return;
+  }
   const {
     data: {
       userAccount,

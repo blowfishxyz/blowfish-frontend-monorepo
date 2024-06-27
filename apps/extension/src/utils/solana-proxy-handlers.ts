@@ -38,30 +38,27 @@ export async function solanaHandler(
 
     logger.debug("response", response);
 
+    if (response.data.opts?.pauseScan) {
+      return Promise.resolve(txns);
+    }
+
     if (response.data.isOk) {
       if (
         "safeguardTransactions" in response.data &&
         response.data.safeguardTransactions
       ) {
         const deserializedSafeguardTxns =
-          response.data.safeguardTransactions.map((rawTxn, i) => {
+          response.data.safeguardTransactions.map((rawTxn) => {
             // TODO: should we deserialize into legacy txn if it was passed?
             const txn = VersionedTransaction.deserialize(
               decodeRawTransaction(rawTxn)
             );
-            const originalTxn = txns[i];
-            // Hack: The recentBlockhash is wrong in safeguard txn
-            // Remove when https://github.com/blowfishxyz/blowfish-monorepo/pull/1601 is merged
-            if ("message" in originalTxn) {
-              txn.message.recentBlockhash =
-                // @ts-expect-error
-                txns[i].message.recentBlockhash;
-            } else if ("recentBlockhash" in originalTxn) {
-              txn.message.recentBlockhash = originalTxn.recentBlockhash!;
-            }
 
             return txn;
           });
+
+        logger.info("Original: ", txns);
+        logger.info("Safeguard: ", deserializedSafeguardTxns);
 
         return Promise.resolve(deserializedSafeguardTxns);
       }

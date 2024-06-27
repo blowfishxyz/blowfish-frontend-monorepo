@@ -220,8 +220,6 @@ const overrideWindowSolana = () => {
           );
           const txnOrTxns = multipleTxns ? nextTxns : nextTxns[0];
           const newArgs = [txnOrTxns, ...restArgs];
-          logger.debug("Original: ", argumentsList);
-          logger.debug("Safeguard: ", newArgs);
           return Reflect.apply(target, thisArg, newArgs);
         } catch (err) {
           logger.error(`Failed to ${method} all transactions`, err);
