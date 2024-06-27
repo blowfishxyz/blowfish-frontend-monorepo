@@ -1,6 +1,11 @@
 import {
+  AddressLookupTableAccount,
+  clusterApiUrl,
+  Connection,
   LAMPORTS_PER_SOL,
+  MessageAddressTableLookup,
   MessageCompiledInstruction,
+  MessageV0,
   SystemInstruction,
   TransactionInstruction,
   VersionedTransaction,
@@ -57,7 +62,8 @@ export const DEFAULT_CONFIG: Omit<VerifyConfig, "solUsdRate"> = {
 type VerifyTransactionOptions = Partial<VerifyConfig> &
   Omit<VerifyConfig, keyof typeof DEFAULT_CONFIG>;
 
-export function verifyTransaction(
+export async function verifyTransaction(
+  conn: Connection,
   originalTxB58orB64: string,
   safeGuardTxB58orB64: string,
   options: VerifyTransactionOptions
@@ -76,8 +82,19 @@ export function verifyTransaction(
   const originalTx = VersionedTransaction.deserialize(
     decodeRawTransaction(originalTxB58orB64)
   );
+
   const safeGuardTx = VersionedTransaction.deserialize(
     decodeRawTransaction(safeGuardTxB58orB64)
+  );
+
+  const originalTxLookUpTables = await resolveLookUpsTable(
+    conn,
+    originalTx.message.addressTableLookups
+  );
+
+  const safeGuardTxLookUpTables = await resolveLookUpsTable(
+    conn,
+    safeGuardTx.message.addressTableLookups
   );
 
   assertEq(
@@ -87,10 +104,10 @@ export function verifyTransaction(
   );
 
   const originalIxs = originalTx.message.compiledInstructions.map((ix) =>
-    unwrapIx(ix, originalTx)
+    unwrapIx(ix, originalTx, originalTxLookUpTables)
   );
   const safeGuardIxs = safeGuardTx.message.compiledInstructions.map((ix) =>
-    unwrapIx(ix, safeGuardTx)
+    unwrapIx(ix, safeGuardTx, safeGuardTxLookUpTables)
   );
 
   for (const [i, originalInstruction] of originalIxs.entries()) {
@@ -138,12 +155,45 @@ export function verifyTransaction(
   );
 }
 
+async function resolveLookUpsTable(
+  conn: Connection,
+  table: Array<MessageAddressTableLookup>
+) {
+  const res = [];
+
+  for (const { accountKey } of table) {
+    const { value } = await conn.getAddressLookupTable(accountKey);
+
+    if (!value) {
+      throw new Error(
+        `Failed to resolve address lookup table for ${accountKey}`
+      );
+    }
+
+    res.push(value);
+  }
+
+  return res;
+}
+
 function unwrapIx(
   ix: MessageCompiledInstruction,
-  tx: VersionedTransaction
+  tx: VersionedTransaction,
+  addressLookupTableAccounts: AddressLookupTableAccount[]
 ): TransactionInstruction {
-  const addressAtIndex = (index: number) =>
-    tx.message.staticAccountKeys[index]!;
+  const accountKeys = tx.message.getAccountKeys({
+    addressLookupTableAccounts,
+  });
+
+  const addressAtIndex = (index: number) => {
+    const account = accountKeys.get(index);
+
+    if (!account) {
+      throw new Error(`Failed to get account at index ${index}`);
+    }
+
+    return account;
+  };
 
   return new TransactionInstruction({
     programId: addressAtIndex(ix.programIdIndex),
