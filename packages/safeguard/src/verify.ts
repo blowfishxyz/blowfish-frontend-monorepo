@@ -87,27 +87,16 @@ export async function verifyTransaction(
     decodeRawTransaction(safeGuardTxB58orB64)
   );
 
-  const originalTxLookUpTables = await resolveLookUpsTable(
-    conn,
-    originalTx.message.addressTableLookups
-  );
-
-  const safeGuardTxLookUpTables = await resolveLookUpsTable(
-    conn,
-    safeGuardTx.message.addressTableLookups
-  );
-
   assertEq(
     originalTx.message.recentBlockhash,
     safeGuardTx.message.recentBlockhash,
     VERIFY_ERROR.RECENT_BLOCKHASH_MISSMATCH
   );
 
-  const originalIxs = originalTx.message.compiledInstructions.map((ix) =>
-    unwrapIx(ix, originalTx, originalTxLookUpTables)
-  );
-  const safeGuardIxs = safeGuardTx.message.compiledInstructions.map((ix) =>
-    unwrapIx(ix, safeGuardTx, safeGuardTxLookUpTables)
+  const originalIxs = await decompileTransactionInstructions(conn, originalTx);
+  const safeGuardIxs = await decompileTransactionInstructions(
+    conn,
+    safeGuardTx
   );
 
   for (const [i, originalInstruction] of originalIxs.entries()) {
@@ -155,6 +144,20 @@ export async function verifyTransaction(
   );
 }
 
+async function decompileTransactionInstructions(
+  conn: Connection,
+  tx: VersionedTransaction
+) {
+  const lookUpTable = await resolveLookUpsTable(
+    conn,
+    tx.message.addressTableLookups
+  );
+
+  return tx.message.compiledInstructions.map((ix) =>
+    unwrapIx(ix, tx, lookUpTable)
+  );
+}
+
 async function resolveLookUpsTable(
   conn: Connection,
   table: Array<MessageAddressTableLookup>
@@ -166,7 +169,7 @@ async function resolveLookUpsTable(
 
     if (!value) {
       throw new Error(
-        `Failed to resolve address lookup table for ${accountKey}`
+        `Failed to resolve address lookup table for ${accountKey.toBase58()}`
       );
     }
 
