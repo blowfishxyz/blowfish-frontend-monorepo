@@ -85,7 +85,7 @@ export const setBlowfishPortalUrl = async (url: string | undefined) => {
   );
 };
 
-export const getBlowfishSolanaEnbaled = async () => {
+export const getBlowfishSolanaEnabled = async () => {
   if (!SOLANA_ENABLED) {
     return false;
   }
@@ -93,13 +93,16 @@ export const getBlowfishSolanaEnbaled = async () => {
     const solanaEnabled = await storage.get<boolean | undefined>(
       BlowfishOption.PREFERENCES_BLOWFISH_SOLANA_ENABLED
     );
-    return solanaEnabled || SOLANA_ENABLED;
+
+    return solanaEnabled === undefined || solanaEnabled === null
+      ? SOLANA_ENABLED
+      : solanaEnabled;
   } catch (error) {
     return SOLANA_ENABLED;
   }
 };
 
-export const setBlowfishSolanaEnbaled = async (solanaEnabled: boolean) => {
+export const setBlowfishSolanaEnabled = async (solanaEnabled: boolean) => {
   return storage.set(
     BlowfishOption.PREFERENCES_BLOWFISH_SOLANA_ENABLED,
     solanaEnabled

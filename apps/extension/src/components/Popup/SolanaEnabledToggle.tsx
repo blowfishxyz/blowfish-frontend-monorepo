@@ -5,21 +5,32 @@ import useSWR from "swr";
 
 import Toggle from "~components/Toggle";
 import {
-  getBlowfishSolanaEnbaled,
-  setBlowfishSolanaEnbaled,
+  getBlowfishSolanaEnabled,
+  setBlowfishSolanaEnabled,
 } from "~utils/storage";
 
-export const SolanaEnabledToggle: React.FC = () => {
+export const SolanaEnabledToggle = () => {
   const { data: initialSolanaEnabled } = useSWR(
     "solanaEnabled",
-    getBlowfishSolanaEnbaled
+    getBlowfishSolanaEnabled
   );
+  if (initialSolanaEnabled === undefined) {
+    return null;
+  }
+  return (
+    <SolanaEnabledToggleInner initialSolanaEnabled={initialSolanaEnabled} />
+  );
+};
+
+export const SolanaEnabledToggleInner: React.FC<{
+  initialSolanaEnabled: boolean;
+}> = ({ initialSolanaEnabled }) => {
   const [solanaEnabled, setSolanaEnabled] = useState(initialSolanaEnabled);
 
   const handleToggle = () => {
     setSolanaEnabled((prev) => {
       const enabled = !prev;
-      setBlowfishSolanaEnbaled(enabled);
+      setBlowfishSolanaEnabled(enabled);
       return enabled;
     });
   };

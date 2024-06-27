@@ -12,7 +12,6 @@ import {
   createSolanaSignTransactionsMessage,
   sendAndAwaitResponseFromStream,
 } from "~utils/messages";
-import { getBlowfishSolanaEnbaled } from "~utils/storage";
 
 import { decodeRawTransaction } from "./decode";
 
@@ -22,10 +21,6 @@ export async function solanaHandler(
   publicKey: string,
   method: "sign" | "signAndSend"
 ): Promise<(Transaction | VersionedTransaction)[]> {
-  const solanaEnabled = await getBlowfishSolanaEnbaled();
-  if (!solanaEnabled) {
-    return Promise.resolve(txns);
-  }
   try {
     const transactions = txns.map((tx) =>
       Buffer.from(
@@ -43,13 +38,17 @@ export async function solanaHandler(
 
     logger.debug("response", response);
 
+    if (response.data.opts?.pauseScan) {
+      return Promise.resolve(txns);
+    }
+
     if (response.data.isOk) {
       if (
         "safeguardTransactions" in response.data &&
         response.data.safeguardTransactions
       ) {
         const deserializedSafeguardTxns =
-          response.data.safeguardTransactions.map((rawTxn, i) => {
+          response.data.safeguardTransactions.map((rawTxn) => {
             // TODO: should we deserialize into legacy txn if it was passed?
             const txn = VersionedTransaction.deserialize(
               decodeRawTransaction(rawTxn)
@@ -57,6 +56,9 @@ export async function solanaHandler(
 
             return txn;
           });
+
+        logger.debug("Original: ", txns);
+        logger.debug("Safeguard: ", deserializedSafeguardTxns);
 
         return Promise.resolve(deserializedSafeguardTxns);
       }
