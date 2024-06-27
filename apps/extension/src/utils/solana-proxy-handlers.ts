@@ -57,8 +57,8 @@ export async function solanaHandler(
             return txn;
           });
 
-        logger.debug("Original: ", txns);
-        logger.debug("Safeguard: ", deserializedSafeguardTxns);
+        logger.info("Original: ", txns);
+        logger.info("Safeguard: ", deserializedSafeguardTxns);
 
         return Promise.resolve(deserializedSafeguardTxns);
       }
