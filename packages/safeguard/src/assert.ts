@@ -1,3 +1,5 @@
+import { Buffer } from "buffer";
+
 type Primitive = string | number | boolean | null | undefined;
 
 export type SimpleTransactionInstruction = {

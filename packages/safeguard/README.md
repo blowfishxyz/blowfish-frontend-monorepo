@@ -70,7 +70,7 @@ The default configuration values are:
 ```javascript
 const DEFAULT_CONFIG = {
   blowfishFeeInUsd: 0.01, // 1 cent
-  blowfishServiceFeeAccount: "5duLivVJZbwBveW66wFwCZSrovFQMSs8yekFKPZhJGRG",
+  blowfishServiceFeeAccount: "EPr6e66NYBKrP3u688U2VHmxdviUAV7FeRFWqfqZD9So",
   feeSlippage: 0.1, // 10%
   lightHouseId: "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK",
 };

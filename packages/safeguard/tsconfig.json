@@ -2,7 +2,6 @@
   "extends": "@blowfish/tsconfig/base",
   "compilerOptions": {
     "outDir": "./build",
-    "moduleResolution": "Node16",
     "target": "es6"
   },
   "include": ["."],

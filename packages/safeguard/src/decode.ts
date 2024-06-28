@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import bs58 from "bs58";
 
 /**

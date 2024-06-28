@@ -18,7 +18,8 @@
     "prepare": "pnpm run build"
   },
   "dependencies": {
-    "bs58": "^5.0.0"
+    "bs58": "^5.0.0",
+    "buffer": "^6.0.0"
   },
   "peerDependencies": {
     "@solana/web3.js": "^1.0.0"

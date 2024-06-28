@@ -601,6 +601,9 @@ importers:
       bs58:
         specifier: ^5.0.0
         version: 5.0.0
+      buffer:
+        specifier: ^6.0.0
+        version: 6.0.3
     devDependencies:
       '@blowfish/tsconfig':
         specifier: workspace:*

@@ -6,6 +6,7 @@ import {
   TransactionInstruction,
   VersionedTransaction,
 } from "@solana/web3.js";
+import { Buffer } from "buffer";
 
 import {
   assertEq,
@@ -23,7 +24,7 @@ export type VerifyConfig = {
    */
   lightHouseId: string;
   /**
-   * The Blowfish service fee account, default to 5duLivVJZbwBveW66wFwCZSrovFQMSs8yekFKPZhJGRG
+   * The Blowfish service fee account, default to EPr6e66NYBKrP3u688U2VHmxdviUAV7FeRFWqfqZD9So
    */
   blowfishServiceFeeAccount: string;
   /**
@@ -51,7 +52,7 @@ export enum VERIFY_ERROR {
 
 export const DEFAULT_CONFIG: Omit<VerifyConfig, "solUsdRate"> = {
   blowfishFeeInUsd: 0.01, // 1 cent,
-  blowfishServiceFeeAccount: "5duLivVJZbwBveW66wFwCZSrovFQMSs8yekFKPZhJGRG",
+  blowfishServiceFeeAccount: "EPr6e66NYBKrP3u688U2VHmxdviUAV7FeRFWqfqZD9So",
   feeSlippage: 0.1, // 10%,
   lightHouseId: "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK",
 };
