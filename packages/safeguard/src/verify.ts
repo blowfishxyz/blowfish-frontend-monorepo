@@ -160,8 +160,8 @@ function unwrapIx(
 ): SimpleTransactionInstruction {
   const accountKeys = [
     ...tx.message.staticAccountKeys.map((v) => v.toBase58()),
-    // We avoid resolving ALTs here because it's as additional RPC call
-    // We assume that if both txs are looking at the same ALT at the same index, they are the same
+    // We avoid resolving ALTs here because it's an additional RPC call
+    // We assume that if both txs are looking at the same ALT and at the same index, they are the same
     // https://solana.com/docs/advanced/lookup-tables
     ...tx.message.addressTableLookups.flatMap((a) =>
       a.writableIndexes.map((i) => `${a.accountKey.toBase58()}-${i}`)
