@@ -1,6 +1,14 @@
-import { AccountMeta, TransactionInstruction } from "@solana/web3.js";
-
 type Primitive = string | number | boolean | null | undefined;
+
+export type SimpleTransactionInstruction = {
+  programId: string;
+  keys: Array<{
+    pubkey: string;
+    isSigner: boolean;
+    isWritable: boolean;
+  }>;
+  data: Buffer;
+};
 
 export function assertEq(a: Primitive, b: Primitive, err: string) {
   if (a !== b) {
@@ -30,7 +38,11 @@ export function assertTruthy<T>(
   }
 }
 
-export function assertKeysEq(a: AccountMeta[], b: AccountMeta[], err: string) {
+export function assertKeysEq(
+  a: SimpleTransactionInstruction["keys"],
+  b: SimpleTransactionInstruction["keys"],
+  err: string
+) {
   if (a.length !== b.length) {
     throw new Error(err);
   }
@@ -43,8 +55,8 @@ export function assertKeysEq(a: AccountMeta[], b: AccountMeta[], err: string) {
 }
 
 export function assertInstructionsEq(
-  a: TransactionInstruction,
-  b: TransactionInstruction,
+  a: SimpleTransactionInstruction,
+  b: SimpleTransactionInstruction,
   err: string
 ) {
   assertEq(a.data.toString(), b.data.toString(), err);

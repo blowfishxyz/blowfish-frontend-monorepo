@@ -1,11 +1,7 @@
 import {
-  AddressLookupTableAccount,
-  clusterApiUrl,
-  Connection,
   LAMPORTS_PER_SOL,
-  MessageAddressTableLookup,
   MessageCompiledInstruction,
-  MessageV0,
+  PublicKey,
   SystemInstruction,
   TransactionInstruction,
   VersionedTransaction,
@@ -16,6 +12,7 @@ import {
   assertInstructionsEq,
   assertTruthy,
   assertWithinSlippage,
+  SimpleTransactionInstruction,
 } from "./assert";
 import { decodeRawTransaction } from "./decode";
 
@@ -62,8 +59,7 @@ export const DEFAULT_CONFIG: Omit<VerifyConfig, "solUsdRate"> = {
 type VerifyTransactionOptions = Partial<VerifyConfig> &
   Omit<VerifyConfig, keyof typeof DEFAULT_CONFIG>;
 
-export async function verifyTransaction(
-  conn: Connection,
+export function verifyTransaction(
   originalTxB58orB64: string,
   safeGuardTxB58orB64: string,
   options: VerifyTransactionOptions
@@ -93,11 +89,8 @@ export async function verifyTransaction(
     VERIFY_ERROR.RECENT_BLOCKHASH_MISSMATCH
   );
 
-  const originalIxs = await decompileTransactionInstructions(conn, originalTx);
-  const safeGuardIxs = await decompileTransactionInstructions(
-    conn,
-    safeGuardTx
-  );
+  const originalIxs = decompileTransactionInstructions(originalTx);
+  const safeGuardIxs = decompileTransactionInstructions(safeGuardTx);
 
   for (const [i, originalInstruction] of originalIxs.entries()) {
     const safeGuardInstruction = safeGuardIxs[i];
@@ -120,7 +113,7 @@ export async function verifyTransaction(
   );
 
   const isCallingLighthouseOnly = restIxs.every(
-    (ix) => ix.programId.toBase58() === lightHouseId
+    (ix) => ix.programId === lightHouseId
   );
 
   assertTruthy(
@@ -128,7 +121,20 @@ export async function verifyTransaction(
     VERIFY_ERROR.UNKNOWN_PROGRAM_INTERACTION
   );
 
-  const fee = SystemInstruction.decodeTransfer(feeIx);
+  // We can safely assume that the last instruction is the fee instruction
+  // and the keys are not of type <ALTAddress>-<Index>
+  const fee = SystemInstruction.decodeTransfer(
+    new TransactionInstruction({
+      keys: feeIx.keys.map((k) => ({
+        pubkey: new PublicKey(k.pubkey),
+        isSigner: k.isSigner,
+        isWritable: k.isWritable,
+      })),
+      programId: new PublicKey(feeIx.programId),
+      data: feeIx.data,
+    })
+  );
+
   const usdFee = (Number(fee.lamports) * solUsdRate) / LAMPORTS_PER_SOL;
 
   assertEq(
@@ -144,52 +150,29 @@ export async function verifyTransaction(
   );
 }
 
-async function decompileTransactionInstructions(
-  conn: Connection,
-  tx: VersionedTransaction
-) {
-  const lookUpTable = await resolveLookUpsTable(
-    conn,
-    tx.message.addressTableLookups
-  );
-
-  return tx.message.compiledInstructions.map((ix) =>
-    unwrapIx(ix, tx, lookUpTable)
-  );
-}
-
-async function resolveLookUpsTable(
-  conn: Connection,
-  table: Array<MessageAddressTableLookup>
-) {
-  const res = [];
-
-  for (const { accountKey } of table) {
-    const { value } = await conn.getAddressLookupTable(accountKey);
-
-    if (!value) {
-      throw new Error(
-        `Failed to resolve address lookup table for ${accountKey.toBase58()}`
-      );
-    }
-
-    res.push(value);
-  }
-
-  return res;
+function decompileTransactionInstructions(tx: VersionedTransaction) {
+  return tx.message.compiledInstructions.map((ix) => unwrapIx(ix, tx));
 }
 
 function unwrapIx(
   ix: MessageCompiledInstruction,
-  tx: VersionedTransaction,
-  addressLookupTableAccounts: AddressLookupTableAccount[]
-): TransactionInstruction {
-  const accountKeys = tx.message.getAccountKeys({
-    addressLookupTableAccounts,
-  });
+  tx: VersionedTransaction
+): SimpleTransactionInstruction {
+  const accountKeys = [
+    ...tx.message.staticAccountKeys.map((v) => v.toBase58()),
+    // We avoid resolving ALTs here because it's as additional RPC call
+    // We assume that if both txs are looking at the same ALT at the same index, they are the same
+    // https://solana.com/docs/advanced/lookup-tables
+    ...tx.message.addressTableLookups.flatMap((a) =>
+      a.writableIndexes.map((i) => `${a.accountKey.toBase58()}-${i}`)
+    ),
+    ...tx.message.addressTableLookups.flatMap((a) =>
+      a.readonlyIndexes.map((i) => `${a.accountKey.toBase58()}-${i}`)
+    ),
+  ];
 
   const addressAtIndex = (index: number) => {
-    const account = accountKeys.get(index);
+    const account = accountKeys[index];
 
     if (!account) {
       throw new Error(`Failed to get account at index ${index}`);
@@ -198,7 +181,7 @@ function unwrapIx(
     return account;
   };
 
-  return new TransactionInstruction({
+  return {
     programId: addressAtIndex(ix.programIdIndex),
     data: Buffer.from(ix.data),
     keys: ix.accountKeyIndexes
@@ -208,5 +191,5 @@ function unwrapIx(
         isSigner: tx.message.isAccountWritable(i),
         isWritable: tx.message.isAccountWritable(i),
       })),
-  });
+  };
 }

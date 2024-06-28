@@ -98,6 +98,7 @@ function verifyTransaction(
 
 The function throws specific errors to indicate different types of verification failures:
 
+- `RECENT_BLOCKHASH_MISSMATCH`: Recent blockhash does not match the initial transaction.
 - `INSTRUCTION_MISSMATCH`: Instructions do not match the initial transaction.
 - `UNKNOWN_PROGRAM_INTERACTION`: Instruction is attempting to interact with an unknown program.
 - `MISSING_BLOWFISH_FEE`: Instructions are missing Blowfish service fee.
