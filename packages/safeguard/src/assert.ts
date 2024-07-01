@@ -1,4 +1,5 @@
 import { Buffer } from "buffer";
+import { ComputeBudgetProgram } from "@solana/web3.js";
 
 type Primitive = string | number | boolean | null | undefined;
 
@@ -61,7 +62,27 @@ export function assertInstructionsEq(
   b: SimpleTransactionInstruction,
   err: string
 ) {
+  // If both instructions are setting the compute unit limit, we can skip the data comparison
+  // because SafeGuard might have an increased compute unit limit.
+  if (
+    isSetComputeUnitLimitInstruction(a) &&
+    isSetComputeUnitLimitInstruction(b)
+  ) {
+    return;
+  }
+
   assertEq(a.data.toString(), b.data.toString(), err);
   assertEq(a.programId.toString(), b.programId.toString(), err);
   assertKeysEq(a.keys, b.keys, err);
+}
+
+const DISCRIMINATOR_SET_COMPUTE_UNIT_LIMIT = 2;
+
+function isSetComputeUnitLimitInstruction(
+  instruction: SimpleTransactionInstruction
+): boolean {
+  return (
+    instruction.programId === ComputeBudgetProgram.programId.toString() &&
+    instruction.data[0] === DISCRIMINATOR_SET_COMPUTE_UNIT_LIMIT
+  );
 }
