@@ -12,7 +12,7 @@ import {
   SolanaSuccessParams,
 } from "~hooks/useURLRequestParams";
 import { MessageError } from "~utils/utils";
-import { useScanTransactionsSolana } from "@blowfishxyz/ui";
+import { useScanTransactionsWithSafeguard } from "~hooks/useScanTransactionsWithSafeguard";
 
 export const ScanPageSolanaV2Inner: React.FC<{
   data: SolanaScanParams;
@@ -59,7 +59,7 @@ const SolanaResultsView: React.FC<{
     data,
     error: scanError,
     mutate,
-  } = useScanTransactionsSolana({
+  } = useScanTransactionsWithSafeguard({
     transactions: request.transactions,
     userAccount: userAccount,
     metadata: request.metadata,
