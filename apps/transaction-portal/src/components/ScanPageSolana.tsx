@@ -107,6 +107,7 @@ const SolanaResultsView: React.FC<{
       request={request}
       messageId={messageId}
       scanResults={scanResults}
+      safeguardScanResults={safeguardResults}
       impersonatingAddress={isImpersonating ? userAccount : undefined}
       chainNetwork="mainnet"
     />

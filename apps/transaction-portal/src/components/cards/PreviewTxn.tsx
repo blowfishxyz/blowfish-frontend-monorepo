@@ -8,12 +8,12 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
+  UIWarning,
 } from "@blowfishxyz/ui";
 import { LinkWithArrow } from "@blowfish/protect-ui/core";
 import styled from "styled-components";
 import { Chip } from "../chips/Chip";
 import { CardWrapper, CardContent, Divider } from "./common";
-import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import {
   EvmProtocol,

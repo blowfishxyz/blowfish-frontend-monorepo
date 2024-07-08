@@ -1,9 +1,15 @@
-import { Row, Button, Column, Text, SimulationWarning } from "@blowfishxyz/ui";
+import {
+  Row,
+  Button,
+  Column,
+  Text,
+  SimulationWarning,
+  UIWarning,
+} from "@blowfishxyz/ui";
 import { ContinueIcon, BlowfishWarningIcon } from "@blowfish/protect-ui/icons";
 import { Severity } from "@blowfish/utils/types";
 import { useMemo } from "react";
 import { useTheme } from "styled-components";
-import { UIWarning } from "~components/ScanResultsV2";
 import { ReportBtn } from "~components/txn-views/ReportBtn";
 
 export const DefaultView: React.FC<{
@@ -13,7 +19,17 @@ export const DefaultView: React.FC<{
   onCancel: (() => void) | undefined;
   onReport: () => Promise<void>;
 }> = ({ severity = "INFO", warnings, onContinue, onCancel, onReport }) => {
+  const hasSafeguardError = !!warnings?.some(
+    (x) => x.kind === "SAFEGUARD_ASSERTION_ERROR"
+  );
   const title = useMemo(() => {
+    if (hasSafeguardError) {
+      return (
+        <Text size="xxl" weight="semi-bold" textAlign="center">
+          Safeguard Error
+        </Text>
+      );
+    }
     if (severity === "CRITICAL") {
       return (
         <Text size="xxl" weight="semi-bold" textAlign="center">
@@ -36,10 +52,16 @@ export const DefaultView: React.FC<{
         </Text>
       );
     }
-  }, [severity]);
+  }, [severity, hasSafeguardError]);
 
   const description = useMemo(() => {
-    if (severity === "CRITICAL") {
+    if (hasSafeguardError) {
+      return (
+        <Text size="md" textAlign="center">
+          Safeguard transaction simulation failed with an assertion error.
+        </Text>
+      );
+    } else if (severity === "CRITICAL") {
       return (
         <Text size="md" textAlign="center">
           We believe this transaction is malicious and unsafe to sign, and is
@@ -61,7 +83,7 @@ export const DefaultView: React.FC<{
         </Text>
       );
     }
-  }, [severity]);
+  }, [severity, hasSafeguardError]);
 
   const buttons = useMemo(() => {
     if (severity === "WARNING" || severity === "CRITICAL") {
