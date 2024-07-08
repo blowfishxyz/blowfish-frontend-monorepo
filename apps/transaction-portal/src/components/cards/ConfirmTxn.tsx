@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from "react";
 import styled from "styled-components";
-import { Row } from "@blowfishxyz/ui";
+import { Row, UIWarning } from "@blowfishxyz/ui";
 import { PendingView } from "~components/txn-views/PendingView";
 import { ConfirmingView } from "~components/txn-views/ConfirmingView";
-import { UIWarning } from "~components/ScanResultsV2";
 import { Severity } from "@blowfish/utils/types";
 import { sleep } from "~utils/utils";
 import { SendTransactionResult } from "@wagmi/core";

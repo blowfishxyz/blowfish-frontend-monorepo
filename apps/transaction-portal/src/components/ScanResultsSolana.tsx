@@ -4,11 +4,12 @@ import {
   StateChangePreviewSolana,
   getErrorFromSolanaScanResponse,
   getResultsFromSolanaScanResponse,
+  UIWarning,
 } from "@blowfishxyz/ui";
 import {
+  BlowfishSimulationError,
   ScanTransactionsSolana200Response,
   ScanTransactionsSolanaRequest,
-  WarningInnerKindEnum,
 } from "@blowfishxyz/api-client";
 import { ChainNetwork } from "@blowfish/utils/chains";
 import { actionToSeverity } from "@blowfish/utils/types";
@@ -18,16 +19,12 @@ import { AdvancedDetails } from "./AdvancedDetails";
 import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
-
-export type UIWarning = {
-  message: string;
-  kind?: WarningInnerKindEnum;
-  severity: "WARNING" | "CRITICAL" | "INFO";
-};
+import { Divider } from "./cards/common";
 
 interface ScanResultsSolanaProps {
   request: ScanTransactionsSolanaRequest;
   scanResults: ScanTransactionsSolana200Response;
+  safeguardScanResults?: ScanTransactionsSolana200Response;
   chainNetwork: ChainNetwork;
   impersonatingAddress: string | undefined;
   messageId?: string;
@@ -36,11 +33,13 @@ interface ScanResultsSolanaProps {
 const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   request,
   scanResults,
+  safeguardScanResults,
   impersonatingAddress,
   messageId,
 }) => {
   const [layoutConfig, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
+  const safeguardAssertError = getSafeguardError(safeguardScanResults);
   const result = getResultsFromSolanaScanResponse(
     scanResults,
     request.userAccount
@@ -54,6 +53,13 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
 
     function getInferedWarning(): UIWarning | undefined {
       const simulationResults = scanResults || undefined;
+      if (safeguardAssertError) {
+        return {
+          severity: "WARNING",
+          kind: "SAFEGUARD_ASSERTION_ERROR",
+          message: safeguardAssertError.humanReadableError,
+        };
+      }
       if (error) {
         return {
           severity: "WARNING",
@@ -85,10 +91,19 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
+    if (safeguardAssertError) {
+      return "WARNING";
+    }
+
     return scanResults?.aggregated.action
       ? actionToSeverity(scanResults?.aggregated.action)
       : "INFO";
-  }, [scanResults?.aggregated.action, error, result?.expectedStateChanges]);
+  }, [
+    scanResults?.aggregated.action,
+    error,
+    result?.expectedStateChanges,
+    safeguardAssertError,
+  ]);
 
   useEffect(() => {
     if (error && severity === "INFO") {
@@ -124,14 +139,25 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         protocol={null}
         decodedCalldata={undefined}
         advancedDetails={
-          <AdvancedDetails
-            request={request}
-            scanResults={
-              layoutConfig.hasRequestParams ? scanResults : undefined
-            }
-            // Note(Lolu):  No logs for MVP, we can add it later
-            decodedLogs={undefined}
-          />
+          <>
+            <AdvancedDetails
+              request={request}
+              scanResults={scanResults}
+              safeguardScanResults={undefined}
+              decodedLogs={undefined}
+            />
+            {!!safeguardScanResults && (
+              <>
+                <Divider $margin="16px 0" />
+                <AdvancedDetails
+                  request={request}
+                  scanResults={undefined}
+                  safeguardScanResults={safeguardScanResults}
+                  decodedLogs={undefined}
+                />{" "}
+              </>
+            )}
+          </>
         }
         onReport={() => reportTransaction(scanResults.requestId)}
         onContinue={async () => {
@@ -160,5 +186,43 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     </Row>
   );
 };
+
+function getSafeguardError(
+  simulationResults: ScanTransactionsSolana200Response | undefined
+): BlowfishSimulationError | undefined {
+  const tx = simulationResults?.perTransaction.find((tx) => {
+    return (
+      tx.error?.kind === "PROGRAM_ERROR" &&
+      tx.error.solanaProgramAddress ===
+        "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK"
+    );
+  });
+  if (!tx) {
+    return;
+  }
+  if (!tx.raw.logs) {
+    return;
+  }
+  const startLogIdx = tx.raw.logs.findIndex((log) => {
+    return log.startsWith(
+      "Program L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK invoke"
+    );
+  });
+  const endLogIdx = tx.raw.logs.findIndex((log) => {
+    return log.startsWith(
+      "Program L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK consumed"
+    );
+  });
+
+  if (startLogIdx !== -1 && endLogIdx !== -1) {
+    const instruction =
+      tx.raw.logs[startLogIdx + 1]?.split("Instruction:")?.[1];
+    const assertTxt = tx.raw.logs[startLogIdx + 2]?.split("Result:")?.[1];
+    return {
+      kind: "SIMULATION_FAILED",
+      humanReadableError: `${instruction}: ${assertTxt}`,
+    };
+  }
+}
 
 export default ScanResultsSolana;

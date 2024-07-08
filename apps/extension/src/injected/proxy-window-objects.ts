@@ -204,10 +204,10 @@ const overrideWindowSolana = () => {
           | (Transaction | VersionedTransaction)
         ]
       ) => {
-        logger.debug(
-          `${method}Transaction${multipleTxns ? "s" : ""} handler `,
-          argumentsList
-        );
+        const debugMethod = multipleTxns
+          ? `${method}AllTransactions`
+          : `${method}Transaction`;
+        logger.info(`${debugMethod} handler `, argumentsList);
         const [firstArg, ...restArgs] = argumentsList;
         const transactions = Array.isArray(firstArg) ? firstArg : [firstArg];
 

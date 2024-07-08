@@ -25,9 +25,16 @@ export const AdvancedDetails = memo<{
     | ScanTransactionsEvm200Response
     | ScanTransactionsSolana200Response
     | undefined;
+  safeguardScanResults: ScanTransactionsSolana200Response | undefined;
   decodedLogs: EvmDecodedLog[] | undefined;
-}>(function AdvancedDetails({ request, decodedLogs, scanResults }) {
+}>(function AdvancedDetails({
+  request,
+  decodedLogs,
+  scanResults,
+  safeguardScanResults,
+}) {
   const [showAdvancedDetails, setShowAdvancedDetails] = useState(false);
+  const isSafeguard = !!safeguardScanResults;
 
   return (
     <Column width="100%">
@@ -35,7 +42,12 @@ export const AdvancedDetails = memo<{
         <DynamicJsonViewerWrapper $show={showAdvancedDetails}>
           <CardContent>
             {showAdvancedDetails &&
-              (scanResults ? (
+              (isSafeguard ? (
+                <RawResponseViewer
+                  request={undefined}
+                  scanResults={safeguardScanResults}
+                />
+              ) : scanResults ? (
                 <RawResponseViewer
                   request={request}
                   scanResults={scanResults}
@@ -96,7 +108,11 @@ export const AdvancedDetails = memo<{
           }}
         >
           <Text design="secondary" size="sm">
-            {scanResults
+            {isSafeguard
+              ? showAdvancedDetails
+                ? "Hide Safeguard simulation"
+                : "View Safeguard simulation"
+              : scanResults
               ? showAdvancedDetails
                 ? "Hide raw request and response data"
                 : "View raw request and response data"
