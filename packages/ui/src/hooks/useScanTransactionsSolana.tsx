@@ -12,14 +12,21 @@ interface UseScanTransactionsSolanaParams {
   userAccount: string;
   metadata: RequestMetadata;
   chainNetwork: SolanaChainNetwork;
+  method?: string;
   simulatorConfig?: RequestSimulatorConfig;
 }
 
 export const useScanTransactionsSolana = (
   params: UseScanTransactionsSolanaParams
 ) => {
-  const { transactions, userAccount, metadata, chainNetwork, simulatorConfig } =
-    params;
+  const {
+    transactions,
+    userAccount,
+    metadata,
+    method,
+    chainNetwork,
+    simulatorConfig,
+  } = params;
 
   const client = useClient();
 
@@ -29,6 +36,7 @@ export const useScanTransactionsSolana = (
       userAccount,
       metadata,
       chainNetwork,
+      method,
       simulatorConfig
     );
   };

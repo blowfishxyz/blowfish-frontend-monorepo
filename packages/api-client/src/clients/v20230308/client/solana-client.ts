@@ -30,13 +30,15 @@ export class BlowfishSolanaApiClient {
   scanTransactions(
     transactions: string[],
     userAccount: string,
-    metadata: RequestMetadata
+    metadata: RequestMetadata,
+    method?: string
   ) {
     return this.multiChainClient.scanTransactionsSolana(
       transactions,
       userAccount,
       metadata,
-      this.chainNetwork
+      this.chainNetwork,
+      method
     );
   }
 }

@@ -15,6 +15,7 @@ export type UrlParsedRequest = {
     origin: string;
   };
   userAccount: string;
+  method?: string;
 } & (
   | {
       txObjects: [
@@ -51,6 +52,7 @@ export type SolanaSuccessParams = {
   userAccount: string;
   isImpersonating: boolean;
   isSolana: boolean;
+  method?: string;
   messageId?: string;
 };
 
@@ -182,6 +184,7 @@ export function useURLRequestParams(): ScanParams | SolanaScanParams {
         simulatorConfig: parsedRequest.simulatorConfig,
       } as ScanTransactionsSolanaRequest,
       isImpersonating: true,
+      method: parsedRequest.method,
       userAccount: parsedRequest.userAccount as `0x${string}`,
       messageId: parsedRequest.messageId,
       isSolana: true,

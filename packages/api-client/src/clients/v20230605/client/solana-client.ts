@@ -37,6 +37,7 @@ export class BlowfishSolanaApiClient {
     userAccount: string,
     metadata: RequestMetadata,
     simulatorConfig?: RequestSimulatorConfig,
+    method?: string,
     simulateExpired?: boolean,
     simulationTimeoutMs?: number
   ) {
@@ -45,6 +46,7 @@ export class BlowfishSolanaApiClient {
       userAccount,
       metadata,
       this.chainNetwork,
+      method,
       simulatorConfig,
       simulateExpired,
       simulationTimeoutMs
