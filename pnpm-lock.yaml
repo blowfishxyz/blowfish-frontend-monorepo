@@ -268,9 +268,6 @@ importers:
       '@blowfishxyz/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
-      '@blowfishxyz/safeguard':
-        specifier: workspace:*
-        version: link:../../packages/safeguard
       '@blowfishxyz/ui':
         specifier: workspace:*
         version: link:../../packages/ui
