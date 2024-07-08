@@ -19,6 +19,7 @@ import { AdvancedDetails } from "./AdvancedDetails";
 import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
+import { Divider } from "./cards/common";
 
 interface ScanResultsSolanaProps {
   request: ScanTransactionsSolanaRequest;
@@ -138,14 +139,25 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         protocol={null}
         decodedCalldata={undefined}
         advancedDetails={
-          <AdvancedDetails
-            request={request}
-            scanResults={
-              layoutConfig.hasRequestParams ? scanResults : undefined
-            }
-            // Note(Lolu):  No logs for MVP, we can add it later
-            decodedLogs={undefined}
-          />
+          <>
+            <AdvancedDetails
+              request={request}
+              scanResults={scanResults}
+              safeguardScanResults={undefined}
+              decodedLogs={undefined}
+            />
+            {!!safeguardScanResults && (
+              <>
+                <Divider $margin="16px 0" />
+                <AdvancedDetails
+                  request={request}
+                  scanResults={undefined}
+                  safeguardScanResults={safeguardScanResults}
+                  decodedLogs={undefined}
+                />{" "}
+              </>
+            )}
+          </>
         }
         onReport={() => reportTransaction(scanResults.requestId)}
         onContinue={async () => {

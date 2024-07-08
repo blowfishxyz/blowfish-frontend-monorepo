@@ -13,7 +13,6 @@ import {
 } from "~hooks/useURLRequestParams";
 import { MessageError } from "~utils/utils";
 import { useScanTransactionsSolana } from "@blowfishxyz/ui";
-import { logger } from "ethers";
 
 export const ScanPageSolanaV2Inner: React.FC<{
   data: SolanaScanParams;
@@ -82,7 +81,7 @@ const SolanaResultsView: React.FC<{
   // const scanResults = safeguardResults ? safeguardResults : originalResults;
   const scanResults = originalResults;
 
-  logger.info("scanResults", {
+  console.log("scanResults", {
     originalResults,
     safeguardResults,
     recommended,
