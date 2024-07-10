@@ -48,6 +48,7 @@ export enum VERIFY_ERROR {
   MISSING_BLOWFISH_FEE = "Instructions are missing Blowfish service fee",
   MISSING_LIGHTHOUSE_PROGRAM_CALL = "Instructions are missing Lighthouse program call",
   FEE_MISMATCH = "Fee does not match the expected Blowfish service fee",
+  TX_COUNT_MISMATCH = "There are more original transactions than safeguard transactions",
 }
 
 export const DEFAULT_CONFIG: Omit<VerifyConfig, "solUsdRate"> = {
@@ -60,9 +61,9 @@ export const DEFAULT_CONFIG: Omit<VerifyConfig, "solUsdRate"> = {
 type VerifyTransactionOptions = Partial<VerifyConfig> &
   Omit<VerifyConfig, keyof typeof DEFAULT_CONFIG>;
 
-export function verifyTransaction(
-  originalTxB58orB64: string,
-  safeGuardTxB58orB64: string,
+export function verifyTransactions(
+  originalTxsB58orB64: string[],
+  safeGuardTxsB58orB64: string[],
   options: VerifyTransactionOptions
 ) {
   const {
@@ -76,22 +77,33 @@ export function verifyTransaction(
     ...options,
   };
 
-  const originalTx = VersionedTransaction.deserialize(
-    decodeRawTransaction(originalTxB58orB64)
+  assertTruthy(
+    safeGuardTxsB58orB64.length >= originalTxsB58orB64.length,
+    VERIFY_ERROR.TX_COUNT_MISMATCH
   );
 
-  const safeGuardTx = VersionedTransaction.deserialize(
-    decodeRawTransaction(safeGuardTxB58orB64)
+  const originalTxs = originalTxsB58orB64.map((tx) =>
+    VersionedTransaction.deserialize(decodeRawTransaction(tx))
   );
 
-  assertEq(
-    originalTx.message.recentBlockhash,
-    safeGuardTx.message.recentBlockhash,
-    VERIFY_ERROR.RECENT_BLOCKHASH_MISSMATCH
+  const safeGuardTxs = safeGuardTxsB58orB64.map((tx) =>
+    VersionedTransaction.deserialize(decodeRawTransaction(tx))
   );
 
-  const originalIxs = decompileTransactionInstructions(originalTx);
-  const safeGuardIxs = decompileTransactionInstructions(safeGuardTx);
+  originalTxs.forEach((originalTx, i) => {
+    assertEq(
+      originalTx.message.recentBlockhash,
+      safeGuardTxs[i].message.recentBlockhash,
+      VERIFY_ERROR.RECENT_BLOCKHASH_MISSMATCH
+    );
+  });
+
+  const originalIxs = originalTxs.flatMap((tx) =>
+    decompileTransactionInstructions(tx)
+  );
+  const safeGuardIxs = safeGuardTxs.flatMap((tx) =>
+    decompileTransactionInstructions(tx)
+  );
 
   for (const [i, originalInstruction] of originalIxs.entries()) {
     const safeGuardInstruction = safeGuardIxs[i];
