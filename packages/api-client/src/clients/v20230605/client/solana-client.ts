@@ -36,8 +36,8 @@ export class BlowfishSolanaApiClient {
     transactions: string[],
     userAccount: string,
     metadata: RequestMetadata,
-    simulatorConfig?: RequestSimulatorConfig,
     method?: string,
+    simulatorConfig?: RequestSimulatorConfig,
     simulateExpired?: boolean,
     simulationTimeoutMs?: number
   ) {
