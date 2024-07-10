@@ -7,6 +7,7 @@ import type {
   Languages,
   EvmSimulatorConfig,
   FetchAPI,
+  RequestSimulatorConfig,
 } from "../../../generated/v20230517";
 import {
   ScanTransactionsApi,
@@ -188,6 +189,7 @@ export class BlowfishMultiChainApiClient {
     metadata: RequestMetadata,
     chainNetwork: SolanaChainNetwork,
     method?: string,
+    simulatorConfig?: RequestSimulatorConfig,
     simulateExpired?: boolean,
     simulationTimeoutMs?: number
   ) => {
