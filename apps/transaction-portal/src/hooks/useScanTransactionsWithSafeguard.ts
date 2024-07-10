@@ -12,23 +12,39 @@ interface UseScanTransactionsSolanaParams {
   userAccount: string;
   metadata: RequestMetadata;
   chainNetwork: SolanaChainNetwork;
+  method?: string;
   simulatorConfig?: RequestSimulatorConfig;
 }
 
 export const useScanTransactionsWithSafeguard = (
   params: UseScanTransactionsSolanaParams
 ) => {
-  const { transactions, userAccount, metadata, chainNetwork, simulatorConfig } =
-    params;
+  const {
+    transactions,
+    userAccount,
+    metadata,
+    chainNetwork,
+    method,
+    simulatorConfig,
+  } = params;
 
   const client = useClient();
 
   const fetchTransactions = async () => {
+    console.log("@@ her", {
+      transactions,
+      userAccount,
+      metadata,
+      chainNetwork,
+      method,
+      simulatorConfig,
+    });
     const original = await client.scanTransactionsSolana(
       transactions,
       userAccount,
       metadata,
       chainNetwork,
+      method,
       simulatorConfig
     );
 
@@ -39,6 +55,7 @@ export const useScanTransactionsWithSafeguard = (
           userAccount,
           metadata,
           chainNetwork,
+          method,
           { safeguard: { enabled: false }, decodeInstructions: true }
         );
 
@@ -64,7 +81,7 @@ export const useScanTransactionsWithSafeguard = (
     },
     Error
   >(
-    ["scanTransactionsSolana", transactions, userAccount, chainNetwork],
+    ["scanTransactionsSolana", transactions, userAccount, method, chainNetwork],
     fetchTransactions
   );
 };

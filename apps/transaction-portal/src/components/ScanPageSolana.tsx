@@ -37,7 +37,7 @@ export const ScanPageSolanaV2Inner: React.FC<{
 const SolanaFullfieldView: React.FC<{ data: SolanaSuccessParams }> = ({
   data,
 }) => {
-  const { request, userAccount, isImpersonating, messageId } = data;
+  const { request, userAccount, isImpersonating, method, messageId } = data;
 
   return (
     <SolanaResultsView
@@ -45,6 +45,7 @@ const SolanaFullfieldView: React.FC<{ data: SolanaSuccessParams }> = ({
       userAccount={userAccount}
       isImpersonating={isImpersonating}
       messageId={messageId}
+      method={method}
     />
   );
 };
@@ -53,8 +54,9 @@ const SolanaResultsView: React.FC<{
   request: ScanTransactionsSolanaRequest;
   userAccount: string;
   isImpersonating: boolean;
+  method?: string;
   messageId: string | undefined;
-}> = ({ request, userAccount, isImpersonating, messageId }) => {
+}> = ({ request, userAccount, isImpersonating, method, messageId }) => {
   const {
     data,
     error: scanError,
@@ -63,6 +65,7 @@ const SolanaResultsView: React.FC<{
     transactions: request.transactions,
     userAccount: userAccount,
     metadata: request.metadata,
+    method,
     chainNetwork: "mainnet",
     simulatorConfig: request.simulatorConfig
       ? request.simulatorConfig
