@@ -19,9 +19,13 @@ export const DefaultView: React.FC<{
   onCancel: (() => void) | undefined;
   onReport: () => Promise<void>;
 }> = ({ severity = "INFO", warnings, onContinue, onCancel, onReport }) => {
-  const hasSafeguardError = !!warnings?.some(
+  const hasSafeguardAssertError = !!warnings?.some(
     (x) => x.kind === "SAFEGUARD_ASSERTION_ERROR"
   );
+  const hasSafeguardVerifyError = !!warnings?.some(
+    (x) => x.kind === "SAFEGUARD_VERIFY_ERROR"
+  );
+  const hasSafeguardError = hasSafeguardVerifyError || hasSafeguardAssertError;
   const title = useMemo(() => {
     if (hasSafeguardError) {
       return (
@@ -52,13 +56,21 @@ export const DefaultView: React.FC<{
         </Text>
       );
     }
-  }, [severity, hasSafeguardError]);
+  }, [severity, hasSafeguardVerifyError, hasSafeguardAssertError]);
 
   const description = useMemo(() => {
     if (hasSafeguardError) {
+      const errorsText = [
+        hasSafeguardVerifyError ? "verification failed" : undefined,
+        hasSafeguardAssertError
+          ? "simulation failed with an assertion error"
+          : undefined,
+      ]
+        .filter(Boolean)
+        .join(" and ");
       return (
         <Text size="md" textAlign="center">
-          Safeguard transaction simulation failed with an assertion error.
+          Safeguard transaction {errorsText}.
         </Text>
       );
     } else if (severity === "CRITICAL") {

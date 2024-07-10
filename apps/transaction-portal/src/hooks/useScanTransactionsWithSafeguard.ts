@@ -31,14 +31,6 @@ export const useScanTransactionsWithSafeguard = (
   const client = useClient();
 
   const fetchTransactions = async () => {
-    console.log("@@ her", {
-      transactions,
-      userAccount,
-      metadata,
-      chainNetwork,
-      method,
-      simulatorConfig,
-    });
     const original = await client.scanTransactionsSolana(
       transactions,
       userAccount,

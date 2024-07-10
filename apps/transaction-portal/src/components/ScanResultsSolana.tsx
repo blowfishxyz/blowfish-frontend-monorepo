@@ -20,6 +20,7 @@ import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
 import { Divider } from "./cards/common";
+import { VERIFY_ERROR, verifyTransactions } from "@blowfishxyz/safeguard";
 
 interface ScanResultsSolanaProps {
   request: ScanTransactionsSolanaRequest;
@@ -37,9 +38,14 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   impersonatingAddress,
   messageId,
 }) => {
-  const [layoutConfig, setLayoutConfig] = useLayoutConfig();
+  const [, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
-  const safeguardAssertError = getSafeguardError(safeguardScanResults);
+  const safeguardAssertErrors = getSafeguardErrors(safeguardScanResults);
+  const safeguardVerifyError = getSafeguardVerifyError(
+    request.transactions,
+    scanResults.safeguard?.transactions
+  );
+
   const result = getResultsFromSolanaScanResponse(
     scanResults,
     request.userAccount
@@ -51,36 +57,57 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     // Take warnings return from API first hand
     const warnings = scanResults.aggregated.warnings || [];
 
-    function getInferedWarning(): UIWarning | undefined {
+    function getInferedWarnings(): UIWarning[] | undefined {
       const simulationResults = scanResults || undefined;
-      if (safeguardAssertError) {
-        return {
+      const allSafeguardErrors = [];
+      if (safeguardVerifyError) {
+        allSafeguardErrors.push({
           severity: "WARNING",
-          kind: "SAFEGUARD_ASSERTION_ERROR",
-          message: safeguardAssertError.humanReadableError,
-        };
+          kind: "SAFEGUARD_VERIFY_ERROR",
+          message: safeguardVerifyError,
+        } as UIWarning);
       }
+      if (safeguardAssertErrors) {
+        allSafeguardErrors.push(
+          ...safeguardAssertErrors.map(
+            (safeguardAssertError) =>
+              ({
+                severity: "WARNING",
+                kind: "SAFEGUARD_ASSERTION_ERROR",
+                message: safeguardAssertError.humanReadableError,
+              } as UIWarning)
+          )
+        );
+      }
+      if (allSafeguardErrors.length > 0) {
+        return allSafeguardErrors;
+      }
+
       if (error) {
-        return {
-          severity: "WARNING",
-          message: error.humanReadableError,
-        };
+        return [
+          {
+            severity: "WARNING",
+            message: error.humanReadableError,
+          },
+        ];
       }
       if (!simulationResults) {
-        return {
-          severity: "WARNING",
-          message: `We are unable to simulate this message. Proceed with caution`,
-        };
+        return [
+          {
+            severity: "WARNING",
+            message: `We are unable to simulate this message. Proceed with caution`,
+          },
+        ];
       }
     }
 
-    const inferredWarning = getInferedWarning();
-    if (inferredWarning) {
-      return [...warnings, inferredWarning];
+    const inferredWarnings = getInferedWarnings();
+    if (inferredWarnings) {
+      return [...warnings, ...inferredWarnings];
     }
 
     return warnings;
-  }, [scanResults, error]);
+  }, [scanResults, error, safeguardAssertErrors, safeguardVerifyError]);
 
   const severity = useMemo(() => {
     if (
@@ -91,7 +118,11 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
-    if (safeguardAssertError) {
+    if (safeguardAssertErrors) {
+      return "WARNING";
+    }
+
+    if (safeguardVerifyError) {
       return "WARNING";
     }
 
@@ -102,7 +133,8 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     scanResults?.aggregated.action,
     error,
     result?.expectedStateChanges,
-    safeguardAssertError,
+    safeguardAssertErrors,
+    safeguardVerifyError,
   ]);
 
   useEffect(() => {
@@ -187,9 +219,9 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   );
 };
 
-function getSafeguardError(
+function getSafeguardErrors(
   simulationResults: ScanTransactionsSolana200Response | undefined
-): BlowfishSimulationError | undefined {
+): BlowfishSimulationError[] | undefined {
   const lighthouseErrorTxs = simulationResults?.perTransaction.filter((tx) => {
     return (
       tx.error?.kind === "PROGRAM_ERROR" &&
@@ -231,9 +263,27 @@ function getSafeguardError(
         humanReadableError: `${instruction}: ${assertTxt}`,
       } as BlowfishSimulationError;
     })
-    .filter(Boolean);
-  console.log("errors", lighthouseErrorTxs);
-  return errors[0];
+    .filter(Boolean) as BlowfishSimulationError[];
+  return errors;
+}
+
+function getSafeguardVerifyError(
+  originalTxs: string[],
+  safeguardTxs: string[] | undefined
+): VERIFY_ERROR | undefined {
+  if (!safeguardTxs) {
+    return;
+  }
+  try {
+    verifyTransactions(originalTxs, safeguardTxs, {
+      // TODO: fetch from API
+      solUsdRate: 141.74,
+    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      return err.message as VERIFY_ERROR;
+    }
+  }
 }
 
 export default ScanResultsSolana;
