@@ -30,10 +30,10 @@ pnpm add @blowfishxyz/safeguard
 ## Usage
 
 ```javascript
-import { verifyTransaction } from '@blowfishxyz/safeguard';
+import { verifyTransactions } from '@blowfishxyz/safeguard';
 
-const originalTx = '...';  // Base58 or Base64 encoded original transaction
-const safeGuardTx = '...'; // Base58 or Base64 encoded safeguard transaction
+const originalTxs = ['...'];  // Base58 or Base64 encoded original transactions
+const safeGuardTx = ['...']; // Base58 or Base64 encoded safeguard transactions
 const solUsdRate = 137.5;   // Current SOL to USD rate
 
 const options = {
@@ -42,7 +42,7 @@ const options = {
 };
 
 try {
-  verifyTransaction(originalTx, safeGuardTx, options);
+  verifyTransactions(originalTxs, safeGuardTxs, options);
   console.log('Transaction verification succeeded.');
 } catch (error) {
   console.error('Transaction verification failed:', error.message);
@@ -55,7 +55,7 @@ The `VerifyConfig` type defines the configuration used to verify safeguard trans
 
 ```typescript
 export type VerifyConfig = {
-  lightHouseId: string; // ID of the Lighthouse program
+  lightHouseIds: string[]; // Lighthouse program ids
   blowfishServiceFeeAccount: string; // Blowfish service fee account
   blowfishFeeInUsd: number; // Expected Blowfish service fee in USD
   solUsdRate: number; // Current SOL/USD rate
@@ -72,7 +72,10 @@ const DEFAULT_CONFIG = {
   blowfishFeeInUsd: 0.01, // 1 cent
   blowfishServiceFeeAccount: "EPr6e66NYBKrP3u688U2VHmxdviUAV7FeRFWqfqZD9So",
   feeSlippage: 0.1, // 10%
-  lightHouseId: "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK",
+  lightHouseIds: [
+    "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK", 
+    "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95",
+  ],
 };
 ```
 
@@ -83,22 +86,21 @@ const DEFAULT_CONFIG = {
 Verifies that a transaction meets the criteria defined in the configuration.
 
 ```typescript
-function verifyTransaction(
-  originalTxB58orB64: string,
-  safeGuardTxB58orB64: string,
+function verifyTransactions(
+  originalTxsB58orB64: string[],
+  safeGuardTxsB58orB64: string[],
   options: VerifyTransactionOptions
-): void;
+): void
 ```
 
-- `originalTxB58orB64`: The original transaction in Base58 or Base64 encoding.
-- `safeGuardTxB58orB64`: The safeguard transaction in Base58 or Base64 encoding.
+- `originalTxsB58orB64`: Array of original transactions in Base58 or Base64 encoding.
+- `safeGuardTxsB58orB64`: Safeguarded transactions in Base58 or Base64 encoding.
 - `options`: Optional configuration overrides.
 
 ### Errors
 
 The function throws specific errors to indicate different types of verification failures:
 
-- `RECENT_BLOCKHASH_MISSMATCH`: Recent blockhash does not match the initial transaction.
 - `INSTRUCTION_MISSMATCH`: Instructions do not match the initial transaction.
 - `UNKNOWN_PROGRAM_INTERACTION`: Instruction is attempting to interact with an unknown program.
 - `MISSING_BLOWFISH_FEE`: Instructions are missing Blowfish service fee.
