@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { VerifyErrorFactory } from "./error";
+import { CreateVerifyError } from "./error";
 
 type Primitive = string | number | boolean | null | undefined;
 
@@ -16,10 +16,10 @@ export type SimpleTransactionInstruction = {
 export function assertEq(
   a: Primitive,
   b: Primitive,
-  errFactory: VerifyErrorFactory
+  createErr: CreateVerifyError
 ) {
   if (a !== b) {
-    throw errFactory();
+    throw createErr();
   }
 }
 
@@ -27,52 +27,52 @@ export function assertWithinSlippage(
   val: number,
   expectedVal: number,
   slippage: number,
-  errFactory: VerifyErrorFactory
+  createErr: CreateVerifyError
 ) {
   const upperBoundary = expectedVal * (1 + slippage);
 
   if (val > upperBoundary) {
-    throw errFactory();
+    throw createErr();
   }
 }
 
 export function assertTruthy<T>(
   val: T,
-  errFactory: VerifyErrorFactory
+  createErr: CreateVerifyError
 ): asserts val is NonNullable<T> {
   if (!val) {
-    throw errFactory();
+    throw createErr();
   }
 }
 
-export function assertFalsy<T>(val: T, errFactory: VerifyErrorFactory) {
+export function assertFalsy<T>(val: T, createErr: CreateVerifyError) {
   if (val) {
-    throw errFactory();
+    throw createErr();
   }
 }
 
 export function assertKeysEq(
   a: SimpleTransactionInstruction["keys"],
   b: SimpleTransactionInstruction["keys"],
-  errFactory: VerifyErrorFactory
+  createErr: CreateVerifyError
 ) {
   if (a.length !== b.length) {
-    throw errFactory();
+    throw createErr();
   }
 
   for (const [i, acc] of a.entries()) {
-    assertEq(acc.pubkey.toString(), b[i]!.pubkey.toString(), errFactory);
-    assertEq(acc.isSigner, b[i]!.isSigner, errFactory);
-    assertEq(acc.isWritable, b[i]!.isWritable, errFactory);
+    assertEq(acc.pubkey.toString(), b[i]!.pubkey.toString(), createErr);
+    assertEq(acc.isSigner, b[i]!.isSigner, createErr);
+    assertEq(acc.isWritable, b[i]!.isWritable, createErr);
   }
 }
 
 export function assertInstructionsEq(
   a: SimpleTransactionInstruction,
   b: SimpleTransactionInstruction,
-  errFactory: VerifyErrorFactory
+  createErr: CreateVerifyError
 ) {
-  assertEq(a.data.toString(), b.data.toString(), errFactory);
-  assertEq(a.programId.toString(), b.programId.toString(), errFactory);
-  assertKeysEq(a.keys, b.keys, errFactory);
+  assertEq(a.data.toString(), b.data.toString(), createErr);
+  assertEq(a.programId.toString(), b.programId.toString(), createErr);
+  assertKeysEq(a.keys, b.keys, createErr);
 }

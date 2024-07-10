@@ -16,7 +16,7 @@ export class VerifyError extends Error {
   }
 }
 
-export type VerifyErrorFactory = (...args: any[]) => VerifyError;
+export type CreateVerifyError = (...args: any[]) => VerifyError;
 
 export const VERIFY_ERROR = {
   INSTRUCTION_MISSMATCH: () =>
@@ -45,4 +45,4 @@ export const VERIFY_ERROR = {
       "FEE_MISMATCH",
       "Fee does not match the expected Blowfish service fee"
     ),
-} satisfies Record<string, VerifyErrorFactory>;
+} satisfies Record<string, CreateVerifyError>;
