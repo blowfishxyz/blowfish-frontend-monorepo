@@ -7,11 +7,13 @@ import { Icon, IconVariant } from "~/common/icon";
 
 export type UIWarning = {
   message: string;
-  kind?: WarningInnerKindEnum;
+  kind?: UIWarningKind;
   severity: "WARNING" | "CRITICAL" | "INFO";
 };
 
-const WARNING_TEXT: { [key in WarningInnerKindEnum]: string } = {
+export type UIWarningKind = WarningInnerKindEnum | "SAFEGUARD_ASSERTION_ERROR";
+
+const WARNING_TEXT: { [key in UIWarningKind]: string } = {
   [WarningInnerKindEnum.ApprovalToEoa]: "Approval to EOA",
   [WarningInnerKindEnum.BlurBulkOrderNotOnBlur]:
     "Blur bulk order on a non-Blur domain",
@@ -64,6 +66,7 @@ const WARNING_TEXT: { [key in WarningInnerKindEnum]: string } = {
   [WarningInnerKindEnum.TransferToMintAccount]: "Transfer to mint account",
   [WarningInnerKindEnum.ReliableSimulationNotPossible]:
     "Reliable simulation not possible",
+  SAFEGUARD_ASSERTION_ERROR: "Safeguard assertion error",
 };
 
 export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({

@@ -41,7 +41,7 @@ const DetailsRow = styled.div`
 `;
 
 const isFlatObject = (obj: object) =>
-  Object.values(obj).every((v) => !(typeof v === "object" && v !== null));
+  Object.values(obj || {}).every((v) => !(typeof v === "object" && v !== null));
 
 const FlatSectionContainer = styled.div`
   & + & {

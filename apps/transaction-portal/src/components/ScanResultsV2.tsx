@@ -258,6 +258,7 @@ const ScanResultsV2: React.FC<ScanResultsV2Props> = ({
             scanResults={
               layoutConfig.hasRequestParams ? scanResults : undefined
             }
+            safeguardScanResults={undefined}
             decodedLogs={result?.decodedLogs}
           />
         }

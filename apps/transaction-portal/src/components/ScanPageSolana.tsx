@@ -12,7 +12,7 @@ import {
   SolanaSuccessParams,
 } from "~hooks/useURLRequestParams";
 import { MessageError } from "~utils/utils";
-import { useScanTransactionsSolana } from "@blowfishxyz/ui";
+import { useScanTransactionsWithSafeguard } from "~hooks/useScanTransactionsWithSafeguard";
 
 export const ScanPageSolanaV2Inner: React.FC<{
   data: SolanaScanParams;
@@ -58,10 +58,10 @@ const SolanaResultsView: React.FC<{
   messageId: string | undefined;
 }> = ({ request, userAccount, isImpersonating, method, messageId }) => {
   const {
-    data: scanResults,
+    data,
     error: scanError,
     mutate,
-  } = useScanTransactionsSolana({
+  } = useScanTransactionsWithSafeguard({
     transactions: request.transactions,
     userAccount: userAccount,
     metadata: request.metadata,
@@ -70,6 +70,24 @@ const SolanaResultsView: React.FC<{
     simulatorConfig: request.simulatorConfig
       ? request.simulatorConfig
       : undefined,
+  });
+  const originalResults = data?.original;
+  const safeguardResults = data?.safeguard;
+  // Show safeguard results if they exist, otherwise show original results
+  // TODO: regenerate the API client to include this field
+  const recommended =
+    originalResults?.safeguard &&
+    "recommended" in originalResults.safeguard &&
+    originalResults.safeguard.recommended;
+  // const scanResults =
+  //   safeguardResults && recommended ? safeguardResults : originalResults;
+  // const scanResults = safeguardResults ? safeguardResults : originalResults;
+  const scanResults = originalResults;
+
+  console.log("scanResults", {
+    originalResults,
+    safeguardResults,
+    recommended,
   });
 
   if (scanError) {
@@ -91,6 +109,7 @@ const SolanaResultsView: React.FC<{
       request={request}
       messageId={messageId}
       scanResults={scanResults}
+      safeguardScanResults={safeguardResults}
       impersonatingAddress={isImpersonating ? userAccount : undefined}
       chainNetwork="mainnet"
     />

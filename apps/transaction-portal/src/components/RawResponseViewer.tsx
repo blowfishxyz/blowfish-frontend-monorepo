@@ -19,7 +19,8 @@ interface RawResponseViewerProps {
   request:
     | DappRequest
     | ScanTransactionEvmRequest
-    | ScanTransactionsSolanaRequest;
+    | ScanTransactionsSolanaRequest
+    | undefined;
   scanResults?:
     | ScanMessageEvm200Response
     | ScanTransactionsEvm200Response
