@@ -40,7 +40,13 @@ export const useScanTransactionsWithSafeguard = (
       simulatorConfig
     );
 
-    if (original.safeguard?.transactions.length) {
+    // TODO: regenerate the API client to include this field
+    const recommended =
+      original?.safeguard &&
+      "recommended" in original.safeguard &&
+      original.safeguard.recommended;
+
+    if (original.safeguard?.transactions.length && recommended) {
       try {
         const safeguard = await client.scanTransactionsSolana(
           original.safeguard.transactions,
@@ -51,6 +57,11 @@ export const useScanTransactionsWithSafeguard = (
           { safeguard: { enabled: false }, decodeInstructions: true }
         );
 
+        console.log("scanResults", {
+          originalScans: original,
+          safeguardScans: safeguard,
+        });
+
         return {
           original,
           safeguard,
@@ -59,6 +70,11 @@ export const useScanTransactionsWithSafeguard = (
         console.error("Failed to fetch safeguard transactions", error);
       }
     }
+
+    console.log("scanResults", {
+      originalScans: original,
+      recommended,
+    });
 
     return {
       original,
