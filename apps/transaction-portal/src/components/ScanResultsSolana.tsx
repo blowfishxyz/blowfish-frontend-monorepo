@@ -21,6 +21,7 @@ import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
 import { Divider } from "./cards/common";
 import { VERIFY_ERROR, verifyTransactions } from "@blowfishxyz/safeguard";
+import { useSolToUsdPrice } from "~hooks/useSolToUsdPrice";
 
 interface ScanResultsSolanaProps {
   request: ScanTransactionsSolanaRequest;
@@ -38,12 +39,18 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   impersonatingAddress,
   messageId,
 }) => {
+  const solToUsdPrice = useSolToUsdPrice();
   const [, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
   const safeguardAssertErrors = getSafeguardErrors(safeguardScanResults);
-  const safeguardVerifyError = getSafeguardVerifyError(
-    request.transactions,
-    scanResults.safeguard?.transactions
+  const safeguardVerifyError = useMemo(
+    () =>
+      getSafeguardVerifyError(
+        request.transactions,
+        scanResults.safeguard?.transactions,
+        solToUsdPrice
+      ),
+    [solToUsdPrice]
   );
 
   const result = getResultsFromSolanaScanResponse(
@@ -269,21 +276,25 @@ function getSafeguardErrors(
 
 function getSafeguardVerifyError(
   originalTxs: string[],
-  safeguardTxs: string[] | undefined
+  safeguardTxs: string[] | undefined,
+  solUsdRate?: number
 ): VERIFY_ERROR | undefined {
   if (!safeguardTxs) {
     return;
   }
+  if (!solUsdRate) {
+    return;
+  }
   try {
     verifyTransactions(originalTxs, safeguardTxs, {
-      // TODO: fetch from API
-      solUsdRate: 141.74,
+      solUsdRate,
     });
   } catch (err: unknown) {
     if (err instanceof Error) {
       return err.message as VERIFY_ERROR;
     }
   }
+  console.log("Successfully verified safeguard transactions");
 }
 
 export default ScanResultsSolana;

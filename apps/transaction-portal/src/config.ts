@@ -14,3 +14,5 @@ export const BLOWFISH_V2_ENABLED =
   process.env.NEXT_PUBLIC_BLOWFISH_V2_ENABLED === "true";
 export const BLOWFISH_PORTAL_API_BASE_URL = process.env
   .NEXT_PUBLIC_BLOWFISH_PORTAL_API_BASE_URL as string;
+export const ALCHEMY_API_KEY_SOLANA = process.env
+  .NEXT_PUBLIC_ALCHEMY_API_KEY_SOLANA as string;
