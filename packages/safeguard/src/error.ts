@@ -2,7 +2,7 @@ export class VerifyError extends Error {
   public kind: string;
   public meta?: object;
 
-  constructor(code: string, message: string, meta?: object) {
+  constructor(kind: string, message: string, meta?: object) {
     const messageParts = [message];
 
     if (meta) {
@@ -12,7 +12,7 @@ export class VerifyError extends Error {
     super(messageParts.join(":"));
 
     this.meta = meta;
-    this.kind = code;
+    this.kind = kind;
   }
 }
 
