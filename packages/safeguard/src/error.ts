@@ -1,8 +1,16 @@
+export enum VerifyErrorKind {
+  INSTRUCTION_MISSMATCH = "INSTRUCTION_MISSMATCH",
+  UNKNOWN_PROGRAM_INTERACTION = "UNKNOWN_PROGRAM_INTERACTION",
+  MISSING_BLOWFISH_FEE = "MISSING_BLOWFISH_FEE",
+  MISSING_LIGHTHOUSE_PROGRAM_CALL = "MISSING_LIGHTHOUSE_PROGRAM_CALL",
+  FEE_MISMATCH = "FEE_MISMATCH",
+}
+
 export class VerifyError extends Error {
-  public kind: string;
+  public kind: VerifyErrorKind;
   public meta?: object;
 
-  constructor(kind: string, message: string, meta?: object) {
+  constructor(kind: VerifyErrorKind, message: string, meta?: object) {
     const messageParts = [message];
 
     if (meta) {
@@ -21,28 +29,28 @@ export type CreateVerifyError = (...args: any[]) => VerifyError;
 export const VERIFY_ERROR = {
   INSTRUCTION_MISSMATCH: () =>
     new VerifyError(
-      "INSTRUCTION_MISSMATCH",
+      VerifyErrorKind.INSTRUCTION_MISSMATCH,
       "Instructions do not match the initial transaction"
     ),
   UNKNOWN_PROGRAM_INTERACTION: (unknownProgramId?: string) =>
     new VerifyError(
-      "UNKNOWN_PROGRAM_INTERACTION",
+      VerifyErrorKind.UNKNOWN_PROGRAM_INTERACTION,
       "Instruction is attempting to interact with an unknown program",
       { programId: unknownProgramId }
     ),
   MISSING_BLOWFISH_FEE: () =>
     new VerifyError(
-      "MISSING_BLOWFISH_FEE",
+      VerifyErrorKind.MISSING_BLOWFISH_FEE,
       "Instructions are missing Blowfish service fee"
     ),
   MISSING_LIGHTHOUSE_PROGRAM_CALL: () =>
     new VerifyError(
-      "MISSING_LIGHTHOUSE_PROGRAM_CALL",
+      VerifyErrorKind.MISSING_LIGHTHOUSE_PROGRAM_CALL,
       "Instructions are missing Lighthouse program call"
     ),
   FEE_MISMATCH: () =>
     new VerifyError(
-      "FEE_MISMATCH",
+      VerifyErrorKind.FEE_MISMATCH,
       "Fee does not match the expected Blowfish service fee"
     ),
-} satisfies Record<string, CreateVerifyError>;
+} satisfies Record<VerifyErrorKind, CreateVerifyError>;
