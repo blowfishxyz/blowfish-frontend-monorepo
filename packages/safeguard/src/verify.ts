@@ -75,25 +75,20 @@ export function verifyTransactions(
 
   const originalIxs = originalTxsB58orB64
     .map((tx) => VersionedTransaction.deserialize(decodeRawTransaction(tx)))
-    .flatMap((tx) => decompileTransactionInstructions(tx));
+    .flatMap((tx) => decompileTransactionInstructions(tx))
+    // skip set compute unit limit instructions as safeguard can alter/append them
+    .filter((ix) => !isSetComputeUnitLimitInstruction(ix));
 
   const safeGuardIxs = safeGuardTxsB58orB64
     .map((tx) => VersionedTransaction.deserialize(decodeRawTransaction(tx)))
-    .flatMap((tx) => decompileTransactionInstructions(tx));
+    .flatMap((tx) => decompileTransactionInstructions(tx))
+    // skip set compute unit limit instructions as safeguard can alter/append them
+    .filter((ix) => !isSetComputeUnitLimitInstruction(ix));
 
   for (const [i, originalInstruction] of originalIxs.entries()) {
     const safeGuardInstruction = safeGuardIxs[i];
 
     assertTruthy(safeGuardInstruction, VERIFY_ERROR.INSTRUCTION_MISSMATCH);
-
-    // skip set compute unit limit instructions as safeguard can alter/append them
-    if (
-      isSetComputeUnitLimitInstruction(originalInstruction) ||
-      isSetComputeUnitLimitInstruction(safeGuardInstruction)
-    ) {
-      continue;
-    }
-
     assertInstructionsEq(
       originalInstruction,
       safeGuardInstruction,
