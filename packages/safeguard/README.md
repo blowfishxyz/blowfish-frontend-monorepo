@@ -94,7 +94,7 @@ function verifyTransactions(
 ```
 
 - `originalTxsB58orB64`: Array of original transactions in Base58 or Base64 encoding.
-- `safeGuardTxsB58orB64`: Safeguarded transactions in Base58 or Base64 encoding.
+- `safeGuardTxsB58orB64`: Array of Safeguarded transactions in Base58 or Base64 encoding.
 - `options`: Optional configuration overrides.
 
 ### Errors
