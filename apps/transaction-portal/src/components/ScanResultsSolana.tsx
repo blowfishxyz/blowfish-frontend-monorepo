@@ -46,7 +46,10 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   const solToUsdPrice = useSolToUsdPrice();
   const [, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
-  const safeguardAssertErrors = getSafeguardErrors(safeguardScanResults);
+  const safeguardAssertErrors = getSafeguardErrors(
+    scanResults,
+    safeguardScanResults
+  );
   const safeguardEnabled = !!scanResults.safeguard?.recommended;
   const safeguardVerifyError = useMemo(
     () =>
@@ -237,49 +240,62 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
 };
 
 function getSafeguardErrors(
-  simulationResults: ScanTransactionsSolana200Response | undefined
+  originalSimulationResults: ScanTransactionsSolana200Response | undefined,
+  safeguardSimulationResults: ScanTransactionsSolana200Response | undefined
 ): BlowfishSimulationError[] | undefined {
-  const lighthouseErrorTxs = simulationResults?.perTransaction.filter((tx) => {
-    return (
-      tx.error?.kind === "PROGRAM_ERROR" &&
-      DEFAULT_CONFIG.lightHouseIds.includes(tx.error.solanaProgramAddress)
-    );
-  });
+  if (!originalSimulationResults?.safeguard?.recommended) {
+    return undefined;
+  }
+  const lighthouseErrorTxs = safeguardSimulationResults?.perTransaction.filter(
+    (tx) => {
+      return (
+        tx.error?.kind === "PROGRAM_ERROR" &&
+        DEFAULT_CONFIG.lightHouseIds.includes(tx.error.solanaProgramAddress)
+      );
+    }
+  );
   if (!lighthouseErrorTxs) {
     return;
   }
 
-  if (lighthouseErrorTxs.length === 0) {
-    return;
+  const errors: BlowfishSimulationError[] = [];
+  if (safeguardSimulationResults?.safeguard?.error) {
+    errors.push({
+      kind: "SIMULATION_FAILED",
+      humanReadableError: safeguardSimulationResults.safeguard.error,
+    });
   }
+  errors.push(
+    ...(lighthouseErrorTxs
+      .map((tx) => {
+        if (!tx.raw.logs) {
+          return;
+        }
 
-  const errors = lighthouseErrorTxs
-    .map((tx) => {
-      if (!tx.raw.logs) {
-        return;
-      }
+        const endLogIdx = tx.raw.logs.findIndex((log) => {
+          return log.startsWith(
+            "Program L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK failed"
+          );
+        });
 
-      const endLogIdx = tx.raw.logs.findIndex((log) => {
-        return log.startsWith(
-          "Program L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK failed"
-        );
-      });
+        if (endLogIdx === -1) {
+          return;
+        }
 
-      if (endLogIdx === -1) {
-        return;
-      }
+        const startLogIdx = endLogIdx - 3;
 
-      const startLogIdx = endLogIdx - 3;
+        const instruction =
+          tx.raw.logs[startLogIdx]?.split("Instruction:")?.[1];
+        const assertTxt = tx.raw.logs[startLogIdx + 1]?.split("Result:")?.[1];
 
-      const instruction = tx.raw.logs[startLogIdx]?.split("Instruction:")?.[1];
-      const assertTxt = tx.raw.logs[startLogIdx + 1]?.split("Result:")?.[1];
+        return {
+          kind: "SIMULATION_FAILED",
+          humanReadableError: `${instruction}: ${assertTxt}`,
+        } as BlowfishSimulationError;
+      })
+      .filter(Boolean) as BlowfishSimulationError[])
+  );
 
-      return {
-        kind: "SIMULATION_FAILED",
-        humanReadableError: `${instruction}: ${assertTxt}`,
-      } as BlowfishSimulationError;
-    })
-    .filter(Boolean) as BlowfishSimulationError[];
   return errors;
 }
 
