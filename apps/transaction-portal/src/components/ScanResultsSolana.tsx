@@ -43,14 +43,17 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   const [, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
   const safeguardAssertErrors = getSafeguardErrors(safeguardScanResults);
+  const safeguardEnabled = !!scanResults.safeguard?.recommended;
   const safeguardVerifyError = useMemo(
     () =>
-      getSafeguardVerifyError(
-        request.transactions,
-        scanResults.safeguard?.transactions,
-        solToUsdPrice
-      ),
-    [solToUsdPrice]
+      safeguardEnabled
+        ? getSafeguardVerifyError(
+            request.transactions,
+            scanResults.safeguard?.transactions,
+            solToUsdPrice
+          )
+        : undefined,
+    [solToUsdPrice, safeguardEnabled]
   );
 
   const result = getResultsFromSolanaScanResponse(
@@ -177,7 +180,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         dappUrl={dappUrl}
         protocol={null}
         decodedCalldata={undefined}
-        safeguard={!!scanResults.safeguard?.recommended}
+        safeguard={safeguardEnabled}
         advancedDetails={
           <>
             <AdvancedDetails
