@@ -20,7 +20,11 @@ import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
 import { Divider } from "./cards/common";
-import { VerifyError, verifyTransactions } from "@blowfishxyz/safeguard";
+import {
+  DEFAULT_CONFIG,
+  VerifyError,
+  verifyTransactions,
+} from "@blowfishxyz/safeguard";
 import { useSolToUsdPrice } from "~hooks/useSolToUsdPrice";
 
 interface ScanResultsSolanaProps {
@@ -238,8 +242,7 @@ function getSafeguardErrors(
   const lighthouseErrorTxs = simulationResults?.perTransaction.filter((tx) => {
     return (
       tx.error?.kind === "PROGRAM_ERROR" &&
-      tx.error.solanaProgramAddress ===
-        "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK"
+      DEFAULT_CONFIG.lightHouseIds.includes(tx.error.solanaProgramAddress)
     );
   });
   if (!lighthouseErrorTxs) {
