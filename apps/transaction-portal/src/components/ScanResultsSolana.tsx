@@ -20,7 +20,7 @@ import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
 import { Divider } from "./cards/common";
-import { VERIFY_ERROR, verifyTransactions } from "@blowfishxyz/safeguard";
+import { VerifyError, verifyTransactions } from "@blowfishxyz/safeguard";
 import { useSolToUsdPrice } from "~hooks/useSolToUsdPrice";
 
 interface ScanResultsSolanaProps {
@@ -71,7 +71,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         allSafeguardErrors.push({
           severity: "WARNING",
           kind: "SAFEGUARD_VERIFY_ERROR",
-          message: safeguardVerifyError,
+          message: safeguardVerifyError.message,
         } as UIWarning);
       }
       if (safeguardAssertErrors) {
@@ -281,7 +281,7 @@ function getSafeguardVerifyError(
   originalTxs: string[],
   safeguardTxs: string[] | undefined,
   solUsdRate?: number
-): VERIFY_ERROR | undefined {
+): VerifyError | undefined {
   if (!safeguardTxs) {
     return;
   }
@@ -293,8 +293,8 @@ function getSafeguardVerifyError(
       solUsdRate,
     });
   } catch (err: unknown) {
-    if (err instanceof Error) {
-      return err.message as VERIFY_ERROR;
+    if (err instanceof VerifyError) {
+      return err;
     }
   }
   console.log("Successfully verified safeguard transactions");
