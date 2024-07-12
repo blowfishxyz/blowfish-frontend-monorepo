@@ -71,7 +71,7 @@ const LockWrapper = styled(LockIcon)`
   left: -25px;
   width: 20px;
   height: 20px;
-  animation: ${shakeKeyframes} 8s infinite;
+  animation: ${shakeKeyframes} 8s infinite 2s;
 `;
 
 export const Chip = ({ $severity, $safeguard, ...rest }: ChipProps) => {

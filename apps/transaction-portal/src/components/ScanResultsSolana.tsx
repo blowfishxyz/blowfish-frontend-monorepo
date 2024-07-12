@@ -78,7 +78,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         allSafeguardErrors.push({
           severity: "WARNING",
           kind: "SAFEGUARD_VERIFY_ERROR",
-          message: safeguardVerifyError.message,
+          message: safeguardVerifyError,
         } as UIWarning);
       }
       if (safeguardAssertErrors) {
@@ -287,7 +287,7 @@ function getSafeguardVerifyError(
   originalTxs: string[],
   safeguardTxs: string[] | undefined,
   solUsdRate?: number
-): VerifyError | undefined {
+): string | undefined {
   if (!safeguardTxs) {
     return;
   }
@@ -300,8 +300,15 @@ function getSafeguardVerifyError(
     });
   } catch (err: unknown) {
     if (err instanceof VerifyError) {
+      return err.message;
+    }
+    if (err instanceof Error) {
+      return err.message;
+    }
+    if (typeof err === "string") {
       return err;
     }
+    throw err;
   }
   console.log("Successfully verified safeguard transactions");
 }
