@@ -1,4 +1,5 @@
 import {
+  ComputeBudgetProgram,
   LAMPORTS_PER_SOL,
   MessageCompiledInstruction,
   PublicKey,
@@ -10,19 +11,21 @@ import { Buffer } from "buffer";
 
 import {
   assertEq,
+  assertFalsy,
   assertInstructionsEq,
   assertTruthy,
   assertWithinSlippage,
   SimpleTransactionInstruction,
 } from "./assert";
 import { decodeRawTransaction } from "./decode";
+import { VERIFY_ERROR } from "./error";
 
 export type VerifyConfig = {
   /**
-   * The ID of the Lighthouse program, default to L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK
+   * IDs of verified Lighthouse programs, default to ["L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK", "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95"]
    * @see https://github.com/Jac0xb/lighthouse?tab=readme-ov-file#usage
    */
-  lightHouseId: string;
+  lightHouseIds: string[];
   /**
    * The Blowfish service fee account, default to EPr6e66NYBKrP3u688U2VHmxdviUAV7FeRFWqfqZD9So
    */
@@ -41,32 +44,26 @@ export type VerifyConfig = {
   feeSlippage: number;
 };
 
-export enum VERIFY_ERROR {
-  RECENT_BLOCKHASH_MISSMATCH = "Recent blockhash does not match the initial transaction",
-  INSTRUCTION_MISSMATCH = "Instructions do not match the initial transaction",
-  UNKNOWN_PROGRAM_INTERACTION = "Instruction is attempting to interact with an unknown program",
-  MISSING_BLOWFISH_FEE = "Instructions are missing Blowfish service fee",
-  MISSING_LIGHTHOUSE_PROGRAM_CALL = "Instructions are missing Lighthouse program call",
-  FEE_MISMATCH = "Fee does not match the expected Blowfish service fee",
-}
-
 export const DEFAULT_CONFIG: Omit<VerifyConfig, "solUsdRate"> = {
   blowfishFeeInUsd: 0.01, // 1 cent,
   blowfishServiceFeeAccount: "EPr6e66NYBKrP3u688U2VHmxdviUAV7FeRFWqfqZD9So",
   feeSlippage: 0.1, // 10%,
-  lightHouseId: "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK",
+  lightHouseIds: [
+    "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK",
+    "L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95",
+  ],
 };
 
 type VerifyTransactionOptions = Partial<VerifyConfig> &
   Omit<VerifyConfig, keyof typeof DEFAULT_CONFIG>;
 
-export function verifyTransaction(
-  originalTxB58orB64: string,
-  safeGuardTxB58orB64: string,
+export function verifyTransactions(
+  originalTxsB58orB64: string[],
+  safeGuardTxsB58orB64: string[],
   options: VerifyTransactionOptions
 ) {
   const {
-    lightHouseId,
+    lightHouseIds,
     blowfishServiceFeeAccount,
     blowfishFeeInUsd,
     feeSlippage,
@@ -76,22 +73,17 @@ export function verifyTransaction(
     ...options,
   };
 
-  const originalTx = VersionedTransaction.deserialize(
-    decodeRawTransaction(originalTxB58orB64)
-  );
+  const originalIxs = originalTxsB58orB64
+    .map((tx) => VersionedTransaction.deserialize(decodeRawTransaction(tx)))
+    .flatMap((tx) => decompileTransactionInstructions(tx))
+    // skip set compute unit limit instructions as safeguard can alter/append them
+    .filter((ix) => !isSetComputeUnitLimitInstruction(ix));
 
-  const safeGuardTx = VersionedTransaction.deserialize(
-    decodeRawTransaction(safeGuardTxB58orB64)
-  );
-
-  assertEq(
-    originalTx.message.recentBlockhash,
-    safeGuardTx.message.recentBlockhash,
-    VERIFY_ERROR.RECENT_BLOCKHASH_MISSMATCH
-  );
-
-  const originalIxs = decompileTransactionInstructions(originalTx);
-  const safeGuardIxs = decompileTransactionInstructions(safeGuardTx);
+  const safeGuardIxs = safeGuardTxsB58orB64
+    .map((tx) => VersionedTransaction.deserialize(decodeRawTransaction(tx)))
+    .flatMap((tx) => decompileTransactionInstructions(tx))
+    // skip set compute unit limit instructions as safeguard can alter/append them
+    .filter((ix) => !isSetComputeUnitLimitInstruction(ix));
 
   for (const [i, originalInstruction] of originalIxs.entries()) {
     const safeGuardInstruction = safeGuardIxs[i];
@@ -113,13 +105,16 @@ export function verifyTransaction(
     VERIFY_ERROR.MISSING_LIGHTHOUSE_PROGRAM_CALL
   );
 
-  const isCallingLighthouseOnly = restIxs.every(
-    (ix) => ix.programId === lightHouseId
+  const unknownProgramCall = restIxs.find(
+    (ix) => !lightHouseIds.includes(ix.programId)
   );
 
-  assertTruthy(
-    isCallingLighthouseOnly,
-    VERIFY_ERROR.UNKNOWN_PROGRAM_INTERACTION
+  assertFalsy(
+    unknownProgramCall,
+    VERIFY_ERROR.UNKNOWN_PROGRAM_INTERACTION.bind(
+      undefined,
+      unknownProgramCall?.programId
+    )
   );
 
   // We can safely assume that the last instruction is the fee instruction
@@ -193,4 +188,15 @@ function unwrapIx(
         isWritable: tx.message.isAccountWritable(i),
       })),
   };
+}
+
+const DISCRIMINATOR_SET_COMPUTE_UNIT_LIMIT = 2;
+
+function isSetComputeUnitLimitInstruction(
+  instruction: SimpleTransactionInstruction
+): boolean {
+  return (
+    instruction.programId === ComputeBudgetProgram.programId.toString() &&
+    instruction.data[0] === DISCRIMINATOR_SET_COMPUTE_UNIT_LIMIT
+  );
 }
