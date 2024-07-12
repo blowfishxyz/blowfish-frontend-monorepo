@@ -20,6 +20,12 @@ import { createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
 import { Divider } from "./cards/common";
+import {
+  DEFAULT_CONFIG,
+  VerifyError,
+  verifyTransactions,
+} from "@blowfishxyz/safeguard";
+import { useSolToUsdPrice } from "~hooks/useSolToUsdPrice";
 
 interface ScanResultsSolanaProps {
   request: ScanTransactionsSolanaRequest;
@@ -37,9 +43,26 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   impersonatingAddress,
   messageId,
 }) => {
-  const [layoutConfig, setLayoutConfig] = useLayoutConfig();
+  const solToUsdPrice = useSolToUsdPrice();
+  const [, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
-  const safeguardAssertError = getSafeguardError(safeguardScanResults);
+  const safeguardAssertErrors = getSafeguardErrors(
+    scanResults,
+    safeguardScanResults
+  );
+  const safeguardEnabled = !!scanResults.safeguard?.recommended;
+  const safeguardVerifyError = useMemo(
+    () =>
+      safeguardEnabled
+        ? getSafeguardVerifyError(
+            request.transactions,
+            scanResults.safeguard?.transactions,
+            solToUsdPrice
+          )
+        : undefined,
+    [solToUsdPrice, safeguardEnabled]
+  );
+
   const result = getResultsFromSolanaScanResponse(
     scanResults,
     request.userAccount
@@ -51,36 +74,57 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     // Take warnings return from API first hand
     const warnings = scanResults.aggregated.warnings || [];
 
-    function getInferedWarning(): UIWarning | undefined {
+    function getInferedWarnings(): UIWarning[] | undefined {
       const simulationResults = scanResults || undefined;
-      if (safeguardAssertError) {
-        return {
+      const allSafeguardErrors = [];
+      if (safeguardVerifyError) {
+        allSafeguardErrors.push({
           severity: "WARNING",
-          kind: "SAFEGUARD_ASSERTION_ERROR",
-          message: safeguardAssertError.humanReadableError,
-        };
+          kind: "SAFEGUARD_VERIFY_ERROR",
+          message: safeguardVerifyError,
+        } as UIWarning);
       }
+      if (safeguardAssertErrors) {
+        allSafeguardErrors.push(
+          ...safeguardAssertErrors.map(
+            (safeguardAssertError) =>
+              ({
+                severity: "WARNING",
+                kind: "SAFEGUARD_ASSERTION_ERROR",
+                message: safeguardAssertError.humanReadableError,
+              } as UIWarning)
+          )
+        );
+      }
+      if (allSafeguardErrors.length > 0) {
+        return allSafeguardErrors;
+      }
+
       if (error) {
-        return {
-          severity: "WARNING",
-          message: error.humanReadableError,
-        };
+        return [
+          {
+            severity: "WARNING",
+            message: error.humanReadableError,
+          },
+        ];
       }
       if (!simulationResults) {
-        return {
-          severity: "WARNING",
-          message: `We are unable to simulate this message. Proceed with caution`,
-        };
+        return [
+          {
+            severity: "WARNING",
+            message: `We are unable to simulate this message. Proceed with caution`,
+          },
+        ];
       }
     }
 
-    const inferredWarning = getInferedWarning();
-    if (inferredWarning) {
-      return [...warnings, inferredWarning];
+    const inferredWarnings = getInferedWarnings();
+    if (inferredWarnings) {
+      return [...warnings, ...inferredWarnings];
     }
 
     return warnings;
-  }, [scanResults, error]);
+  }, [scanResults, error, safeguardAssertErrors, safeguardVerifyError]);
 
   const severity = useMemo(() => {
     if (
@@ -91,7 +135,11 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
-    if (safeguardAssertError) {
+    if (safeguardAssertErrors) {
+      return "WARNING";
+    }
+
+    if (safeguardVerifyError) {
       return "WARNING";
     }
 
@@ -102,7 +150,8 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     scanResults?.aggregated.action,
     error,
     result?.expectedStateChanges,
-    safeguardAssertError,
+    safeguardAssertErrors,
+    safeguardVerifyError,
   ]);
 
   useEffect(() => {
@@ -138,6 +187,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         dappUrl={dappUrl}
         protocol={null}
         decodedCalldata={undefined}
+        safeguard={safeguardEnabled}
         advancedDetails={
           <>
             <AdvancedDetails
@@ -164,7 +214,9 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
           if (messageId) {
             await sendSafeguardResult(
               messageId,
-              scanResults.safeguard?.transactions
+              scanResults.safeguard?.recommended
+                ? scanResults.safeguard?.transactions
+                : request.transactions
             );
           }
           window.close();
@@ -187,53 +239,94 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   );
 };
 
-function getSafeguardError(
-  simulationResults: ScanTransactionsSolana200Response | undefined
-): BlowfishSimulationError | undefined {
-  const lighthouseErrorTxs = simulationResults?.perTransaction.filter((tx) => {
-    return (
-      tx.error?.kind === "PROGRAM_ERROR" &&
-      tx.error.solanaProgramAddress ===
-        "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK"
-    );
-  });
+function getSafeguardErrors(
+  originalSimulationResults: ScanTransactionsSolana200Response | undefined,
+  safeguardSimulationResults: ScanTransactionsSolana200Response | undefined
+): BlowfishSimulationError[] | undefined {
+  if (!originalSimulationResults?.safeguard?.recommended) {
+    return undefined;
+  }
+  const lighthouseErrorTxs = safeguardSimulationResults?.perTransaction.filter(
+    (tx) => {
+      return (
+        tx.error?.kind === "PROGRAM_ERROR" &&
+        DEFAULT_CONFIG.lightHouseIds.includes(tx.error.solanaProgramAddress)
+      );
+    }
+  );
   if (!lighthouseErrorTxs) {
     return;
   }
 
-  if (lighthouseErrorTxs.length === 0) {
+  const errors: BlowfishSimulationError[] = [];
+  if (safeguardSimulationResults?.safeguard?.error) {
+    errors.push({
+      kind: "SIMULATION_FAILED",
+      humanReadableError: safeguardSimulationResults.safeguard.error,
+    });
+  }
+  errors.push(
+    ...(lighthouseErrorTxs
+      .map((tx) => {
+        if (!tx.raw.logs) {
+          return;
+        }
+
+        const endLogIdx = tx.raw.logs.findIndex((log) => {
+          return log.startsWith(
+            "Program L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK failed"
+          );
+        });
+
+        if (endLogIdx === -1) {
+          return;
+        }
+
+        const startLogIdx = endLogIdx - 3;
+
+        const instruction =
+          tx.raw.logs[startLogIdx]?.split("Instruction:")?.[1];
+        const assertTxt = tx.raw.logs[startLogIdx + 1]?.split("Result:")?.[1];
+
+        return {
+          kind: "SIMULATION_FAILED",
+          humanReadableError: `${instruction}: ${assertTxt}`,
+        } as BlowfishSimulationError;
+      })
+      .filter(Boolean) as BlowfishSimulationError[])
+  );
+
+  return errors;
+}
+
+function getSafeguardVerifyError(
+  originalTxs: string[],
+  safeguardTxs: string[] | undefined,
+  solUsdRate?: number
+): string | undefined {
+  if (!safeguardTxs) {
     return;
   }
-
-  const errors = lighthouseErrorTxs
-    .map((tx) => {
-      if (!tx.raw.logs) {
-        return;
-      }
-
-      const endLogIdx = tx.raw.logs.findIndex((log) => {
-        return log.startsWith(
-          "Program L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK failed"
-        );
-      });
-
-      if (endLogIdx === -1) {
-        return;
-      }
-
-      const startLogIdx = endLogIdx - 3;
-
-      const instruction = tx.raw.logs[startLogIdx]?.split("Instruction:")?.[1];
-      const assertTxt = tx.raw.logs[startLogIdx + 1]?.split("Result:")?.[1];
-
-      return {
-        kind: "SIMULATION_FAILED",
-        humanReadableError: `${instruction}: ${assertTxt}`,
-      } as BlowfishSimulationError;
-    })
-    .filter(Boolean);
-  console.log("errors", lighthouseErrorTxs);
-  return errors[0];
+  if (!solUsdRate) {
+    return;
+  }
+  try {
+    verifyTransactions(originalTxs, safeguardTxs, {
+      solUsdRate,
+    });
+  } catch (err: unknown) {
+    if (err instanceof VerifyError) {
+      return err.message;
+    }
+    if (err instanceof Error) {
+      return err.message;
+    }
+    if (typeof err === "string") {
+      return err;
+    }
+    throw err;
+  }
+  console.log("Successfully verified safeguard transactions");
 }
 
 export default ScanResultsSolana;

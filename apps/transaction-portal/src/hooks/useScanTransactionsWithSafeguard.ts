@@ -31,14 +31,6 @@ export const useScanTransactionsWithSafeguard = (
   const client = useClient();
 
   const fetchTransactions = async () => {
-    console.log("@@ her", {
-      transactions,
-      userAccount,
-      metadata,
-      chainNetwork,
-      method,
-      simulatorConfig,
-    });
     const original = await client.scanTransactionsSolana(
       transactions,
       userAccount,
@@ -47,6 +39,8 @@ export const useScanTransactionsWithSafeguard = (
       method,
       simulatorConfig
     );
+
+    const recommended = !!original.safeguard?.recommended;
 
     if (original.safeguard?.transactions.length) {
       try {
@@ -59,6 +53,12 @@ export const useScanTransactionsWithSafeguard = (
           { safeguard: { enabled: false }, decodeInstructions: true }
         );
 
+        console.log("scanResults", {
+          originalScans: original,
+          safeguardScans: safeguard,
+          recommended,
+        });
+
         return {
           original,
           safeguard,
@@ -67,6 +67,11 @@ export const useScanTransactionsWithSafeguard = (
         console.error("Failed to fetch safeguard transactions", error);
       }
     }
+
+    console.log("scanResults", {
+      originalScans: original,
+      recommended,
+    });
 
     return {
       original,

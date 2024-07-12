@@ -71,6 +71,21 @@ describe("verify", () => {
       );
     });
 
+    it("should work for safeguard extra transaction", () => {
+      verifyTransactions(
+        [
+          "2fTx2LQXBgwpgfWb5QSRpkN5jtSvZqzgHkoQdYCckpvwLpzdqncXQ89SpuRQ4HHW5ZAc7TzH68W7c39K6SSVS1vCWr8UMyrTVNbKuiLsK25Xdv25XssdRiidhaiELfvWSAqLvyvLANkmPi4vZ4d7VpCSTiiadLZSCrWBW8rXFE3zPnWeHcYBSBBtddZk4qhVam8HuYK1hEtUBdpXd15PAc1tQsancBM1KNMvTW3atgLoReuaz6wD2FrujoB899Sjtsu5chUEVL8KenwbvsgTgSqGw84rXF88tMBS2qaN82NcHzXJ33xKygc6sfGQu6XGi8XULJk3CZrFignzEZP9HbGh2DG4nsLsr5nSAhsCUc4p81nikJ8Au2hcjFPuSe5vwMkeQDVqcbe4FdwKAi3gtm4Y9ugptqAHpPpiV8juhN3kADFRgrwLadystYFjWgTBLdydcfGYmvNr2YbDFJBsNXX2KQpnNemi7kBMhBqBNkFTocQJ9Y5ZtPf4kswcpops1FVyM9np818snkg7wq8JK2QtfkbnxtEVwXNqyFK8xqKYuos1GktgthJrnVfhibEkMFoeMXcvFqdaCgQ9UP2PgGghJMAk9KPDXhi6wxd7ZyS2HFGmt9vazNu44dcuYJwxoUzZ9QqygUMC1ubZJE7Q5QXizPzcwpg8uZGEgSZGYypcdwyXXor6wvHxa5ExNRDmHzYXpfYiKRMq68yMsjb1YLrHiq8xzXoP24n5VjJhdtnSxVMoAybythYxeA2XMpmTzJi1Ln1dN1vPRLntqAyrvRmt7ohCvwFSSaJLULSHdN7kFW8dUuEsXRWpzmxbPTPVemSWwjcTWZtCAxiYp3bCXMXPTAWS3jgP83WdHHKKzqdinB6ZcRg84bUEZirpD1hQQZdU4EBQ4Z3YzQqtMRCtHdkJRX4AgRDw9CbEtnvjAzzfDZrR2fTrJZyriCRUocSfBkgcRnXQAMViuYNh9ZqQWmYpHZHNkiPRtGbmKydoPu8YrjZ4s7V82hoMnVCNBTV9KEPyKVhzSdpAsw7KxWfQJyUNDeDTbM5Z2bdYgnStGJC4FZy8G4Z9YKewTJkemw814qUKuvj16P44S27otZ7XAmopXeicKYuvQnMXmsgyrymYxqfo8Hw2k9kZfVCepdf1zURisrSkttow6J6YS2BjEMReNTUFcwDNwDfczHSpB3wyRLjkZPEQv6SJeqmJu3udYzGoRHh6WeQRc5Qix5MDwYpBk8AvZ4CdwLwrePCarbdSRCPyFBKLuLhNR8SRK9oWr1ryCXF7NX8SjdSxvJgiTGaRfpj8FSdSmDv1TSqYXmQJo2UUExkNPRUeh4Evi7PAtqTPL1DXE2x8sKSBW5oDnEsTvzroxU9Nsjqo9k2KmyDkueu8DXrUhySmy9bnERSbLGhRrboPZ5YMMP8VzybhNc9ieDzHZ2EeKxRB3vyFkoYte8SHQMhy46kcSb7qSTau5C1qxgdZQtg7urQVMrWUBS3PFYiHrD4UP2uVTobuWGrfGLZUtDhhqJybtZw4QC9ogYjYM9nuC5hv8iiYfiporNsVygaAaGLMDuLHg6HUbWWj28D7bq1qKATVhGHsx5thPptS8uUJNGCpqTUsongKDDJtQNedTbUfb2DRwc9wpcuXWroqj6nUFkpPVdjAxziiqLbJcGj4nCiEZQn3TR",
+        ],
+        [
+          "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",
+        ],
+        {
+          solUsdRate: 141.71,
+        }
+      );
+    });
+
     it("should throw an error if fee is too high", () => {
       expect(() =>
         verifyTransactions(
@@ -139,6 +154,14 @@ describe("verify", () => {
           solUsdRate: 130,
         }
       );
+    });
+
+    it("should throw an error if there are more original transactions than safeguard transactions", () => {
+      expect(() =>
+        verifyTransactions([createMockTransfer().toString("base64")], [], {
+          solUsdRate: 130,
+        })
+      ).toThrowError(VERIFY_ERROR.TX_COUNT_MISMATCH());
     });
   });
 });

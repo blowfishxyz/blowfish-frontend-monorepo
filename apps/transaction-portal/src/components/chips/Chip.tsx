@@ -1,13 +1,20 @@
-import { Text, device } from "@blowfishxyz/ui";
+import {
+  Text,
+  device,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@blowfishxyz/ui";
+import { LockIcon } from "@blowfish/protect-ui/icons";
 import { Severity } from "@blowfish/utils/types";
 import React from "react";
-import styled, { css } from "styled-components";
+import styled, { css, keyframes } from "styled-components";
 
 export interface ChipProps {
   variant?: "primary";
   text?: React.ReactNode | string;
   $severity: Severity | undefined;
-  clickable?: boolean;
+  $safeguard: boolean;
 }
 
 const ChipContainer = styled.div<Omit<ChipProps, "text">>`
@@ -18,6 +25,7 @@ const ChipContainer = styled.div<Omit<ChipProps, "text">>`
   font-size: 13px;
   padding: 8px 10px;
   background-color: #6a6a6a1a;
+  position: relative;
 
   @media (${device.lg}) {
     font-size: 14px;
@@ -44,7 +52,29 @@ const SeverityText = styled(Text).attrs({ size: "md" })`
   color: ${({ theme }) => theme.colors.foregroundContrast};
 `;
 
-export const Chip = ({ $severity, ...rest }: ChipProps) => {
+const shakeKeyframes = keyframes`
+    0% { transform: rotate(0deg); }
+    ${Array.from({ length: 5 })
+      .map(
+        (_, i) => `
+        ${0.5 + 2 * i}% { transform: rotate(10deg); }
+        ${1 + 2 * i}% { transform: rotate(0deg); }
+        ${1.5 + 2 * i}% { transform: rotate(-10deg); }
+        ${2 + 2 * i}% { transform: rotate(0deg); }
+    `
+      )
+      .join("")}
+`;
+
+const LockWrapper = styled(LockIcon)`
+  position: absolute;
+  left: -25px;
+  width: 20px;
+  height: 20px;
+  animation: ${shakeKeyframes} 8s infinite 2s;
+`;
+
+export const Chip = ({ $severity, $safeguard, ...rest }: ChipProps) => {
   const getSeverityText = () => {
     switch ($severity) {
       case "WARNING":
@@ -69,7 +99,20 @@ export const Chip = ({ $severity, ...rest }: ChipProps) => {
   };
 
   return (
-    <ChipContainer $severity={$severity} {...rest}>
+    <ChipContainer $severity={$severity} $safeguard={$safeguard} {...rest}>
+      {$safeguard && (
+        <Tooltip placement="bottom">
+          <TooltipTrigger>
+            <LockWrapper />
+          </TooltipTrigger>
+          <TooltipContent>
+            <Text size="sm">
+              This transaction is protected by Blowfish Safeguard
+            </Text>
+          </TooltipContent>
+        </Tooltip>
+      )}
+
       {getSeverityText()}
     </ChipContainer>
   );

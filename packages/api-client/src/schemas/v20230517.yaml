@@ -948,17 +948,32 @@ paths:
                     required:
                       - error
                       - transactions
+                      - recommended
                       - shouldBundle
                     properties:
                       error:
                         type: string
                         nullable: true
-                        example: TOO_LARGE_FOR_JITO_BOUNDLE
+                        example: TOO_LARGE_FOR_JITO_BUNDLE
+                        enum:
+                          - TOO_LARGE_FOR_JITO_BUNDLE
+                          - INSUFFICIENT_FUNDS
+                          - INTERNAL_ERROR
+                          - NETWORK_NOT_SUPPORTED
+                          - PROGRAM_NOT_SUPPORTED
                       transactions:
                         type: array
                         items:
                           type: string
                           description: Base58 encoded user's transaction plus guard transactions
+                      recommended:
+                        type: boolean
+                        example: true
+                        description: Blowfish recommends to guard this request. Since this is a new
+                          feature impacting transaction success, we highly
+                          recommend deferring to this recommendation since it
+                          will allow us to roll out this feature in a very
+                          controlled manner with robust monitoring.
                       shouldBundle:
                         type: boolean
                         example: false
@@ -3760,7 +3775,7 @@ components:
 
     AssetId:
       type: string
-      example: "ethereum:mainnet:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      example: "ethereum:mainnet:0xa247c6d23c8c7d223420700d16d189cff9357f38"
       description: |
         EVM asset ids:
          - For tokens: chain:network:contract_address

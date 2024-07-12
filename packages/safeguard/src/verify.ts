@@ -73,6 +73,11 @@ export function verifyTransactions(
     ...options,
   };
 
+  assertTruthy(
+    safeGuardTxsB58orB64.length >= originalTxsB58orB64.length,
+    VERIFY_ERROR.TX_COUNT_MISMATCH
+  );
+
   const originalIxs = originalTxsB58orB64
     .map((tx) => VersionedTransaction.deserialize(decodeRawTransaction(tx)))
     .flatMap((tx) => decompileTransactionInstructions(tx))

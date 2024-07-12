@@ -11,7 +11,10 @@ export type UIWarning = {
   severity: "WARNING" | "CRITICAL" | "INFO";
 };
 
-export type UIWarningKind = WarningInnerKindEnum | "SAFEGUARD_ASSERTION_ERROR";
+export type UIWarningKind =
+  | WarningInnerKindEnum
+  | "SAFEGUARD_ASSERTION_ERROR"
+  | "SAFEGUARD_VERIFY_ERROR";
 
 const WARNING_TEXT: { [key in UIWarningKind]: string } = {
   [WarningInnerKindEnum.ApprovalToEoa]: "Approval to EOA",
@@ -67,6 +70,7 @@ const WARNING_TEXT: { [key in UIWarningKind]: string } = {
   [WarningInnerKindEnum.ReliableSimulationNotPossible]:
     "Reliable simulation not possible",
   SAFEGUARD_ASSERTION_ERROR: "Safeguard assertion error",
+  SAFEGUARD_VERIFY_ERROR: "Safeguard verify error",
 };
 
 export const SimulationWarning: React.FC<{ warning: UIWarning }> = ({

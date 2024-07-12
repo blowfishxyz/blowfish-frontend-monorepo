@@ -197,6 +197,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
         kind: "PROGRAM_ERROR",
         solanaProgramAddress: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
         humanReadableError: "Owner does not match",
+        idlErrorKind: "",
       },
       raw: {
         err: "InstructionError",

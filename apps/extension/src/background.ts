@@ -299,7 +299,6 @@ const processSolanaSignTransactionsRequest = async (
     },
   };
 
-  // TODO: Change to /scan after supporting solana there
   const pathname = `/simulate?request=${encodeURIComponent(
     global.btoa(JSON.stringify(dataToSend))
   )}&solanaNetwork=mainnet`;

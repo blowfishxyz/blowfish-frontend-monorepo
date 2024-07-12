@@ -3210,7 +3210,7 @@ components:
 
     AssetId:
       type: string
-      example: "ethereum:mainnet:0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+      example: "ethereum:mainnet:0xa247c6d23c8c7d223420700d16d189cff9357f38"
       description: |
         EVM asset ids:
          - For tokens: chain:network:contract_address

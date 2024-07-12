@@ -4,6 +4,7 @@ export enum VerifyErrorKind {
   MISSING_BLOWFISH_FEE = "MISSING_BLOWFISH_FEE",
   MISSING_LIGHTHOUSE_PROGRAM_CALL = "MISSING_LIGHTHOUSE_PROGRAM_CALL",
   FEE_MISMATCH = "FEE_MISMATCH",
+  TX_COUNT_MISMATCH = "TX_COUNT_MISMATCH",
 }
 
 export class VerifyError extends Error {
@@ -52,5 +53,10 @@ export const VERIFY_ERROR = {
     new VerifyError(
       VerifyErrorKind.FEE_MISMATCH,
       "Fee does not match the expected Blowfish service fee"
+    ),
+  TX_COUNT_MISMATCH: () =>
+    new VerifyError(
+      VerifyErrorKind.TX_COUNT_MISMATCH,
+      "There are more original transactions than Safeguard transactions"
     ),
 } satisfies Record<VerifyErrorKind, CreateVerifyError>;
