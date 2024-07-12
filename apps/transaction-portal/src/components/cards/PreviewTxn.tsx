@@ -97,6 +97,7 @@ interface PreviewCardProps {
   advancedDetails: ReactElement;
   protocol?: EvmProtocol | SolanaProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
+  safeguard: boolean;
 }
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -111,6 +112,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
   website,
   protocol,
   decodedCalldata,
+  safeguard,
 }) => {
   return (
     <PreviewWrapper gap="md" alignItems="flex-start" marginBottom={32}>
@@ -118,7 +120,7 @@ const PreviewCard: FC<PreviewCardProps> = ({
         <CardContent>
           <Row justifyContent="space-between" alignItems="center">
             <Text size="lg">{title}</Text>
-            <Chip $severity={severity} />
+            <Chip $severity={severity} $safeguard={safeguard} />
           </Row>
         </CardContent>
         <Divider $margin="16px 0" />
@@ -248,6 +250,7 @@ export interface PreviewTxnProps {
   protocol: EvmProtocol | SolanaProtocol | null;
   decodedCalldata?: EvmDecodedCalldata | null;
   dappUrl: URL | undefined;
+  safeguard: boolean;
 }
 
 export const PreviewTxn: FC<PreviewTxnProps> = ({
@@ -261,6 +264,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
   protocol,
   decodedCalldata,
   dappUrl,
+  safeguard,
 }) => {
   const { origin, host } = dappUrl || {};
 
@@ -277,6 +281,7 @@ export const PreviewTxn: FC<PreviewTxnProps> = ({
       advancedDetails={advancedDetails}
       protocol={protocol}
       decodedCalldata={decodedCalldata}
+      safeguard={safeguard}
     >
       {children}
     </PreviewCard>

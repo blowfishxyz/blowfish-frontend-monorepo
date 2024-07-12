@@ -3924,7 +3924,7 @@ export interface ScanTransactionsSolana200ResponseSafeguard {
    * @type {string}
    * @memberof ScanTransactionsSolana200ResponseSafeguard
    */
-  error: string | null;
+  error: ScanTransactionsSolana200ResponseSafeguardErrorEnum;
   /**
    *
    * @type {Array<string>}
@@ -3932,12 +3932,32 @@ export interface ScanTransactionsSolana200ResponseSafeguard {
    */
   transactions: Array<string>;
   /**
+   * Blowfish recommends to guard this request. Since this is a new feature impacting transaction success, we highly recommend deferring to this recommendation since it will allow us to roll out this feature in a very controlled manner with robust monitoring.
+   * @type {boolean}
+   * @memberof ScanTransactionsSolana200ResponseSafeguard
+   */
+  recommended: boolean;
+  /**
    * must use Jito to submit transactions
    * @type {boolean}
    * @memberof ScanTransactionsSolana200ResponseSafeguard
    */
   shouldBundle: boolean;
 }
+
+/**
+ * @export
+ */
+export const ScanTransactionsSolana200ResponseSafeguardErrorEnum = {
+  TooLargeForJitoBundle: "TOO_LARGE_FOR_JITO_BUNDLE",
+  InsufficientFunds: "INSUFFICIENT_FUNDS",
+  InternalError: "INTERNAL_ERROR",
+  NetworkNotSupported: "NETWORK_NOT_SUPPORTED",
+  ProgramNotSupported: "PROGRAM_NOT_SUPPORTED",
+} as const;
+export type ScanTransactionsSolana200ResponseSafeguardErrorEnum =
+  (typeof ScanTransactionsSolana200ResponseSafeguardErrorEnum)[keyof typeof ScanTransactionsSolana200ResponseSafeguardErrorEnum];
+
 /**
  *
  * @export
@@ -4185,7 +4205,7 @@ export interface SolanaSimulationProgramError {
    * @type {string}
    * @memberof SolanaSimulationProgramError
    */
-  idlErrorKind?: string;
+  idlErrorKind: string;
 }
 
 /**

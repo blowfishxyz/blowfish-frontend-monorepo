@@ -73,8 +73,6 @@ const SolanaResultsView: React.FC<{
   });
   const originalResults = data?.original;
   const safeguardResults = data?.safeguard;
-  // Show safeguard results if they exist, otherwise show original results
-  // TODO: regenerate the API client to include this field
   const scanResults = originalResults;
 
   if (scanError) {

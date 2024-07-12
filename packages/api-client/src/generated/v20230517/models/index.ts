@@ -3561,7 +3561,7 @@ export interface ScanTransactionsSolana200ResponseGuarantee {
    * @type {string}
    * @memberof ScanTransactionsSolana200ResponseGuarantee
    */
-  error: string | null;
+  error: ScanTransactionsSolana200ResponseGuaranteeErrorEnum;
   /**
    *
    * @type {Array<string>}
@@ -3569,12 +3569,32 @@ export interface ScanTransactionsSolana200ResponseGuarantee {
    */
   transactions: Array<string>;
   /**
+   * Blowfish recommends to guard this request. Since this is a new feature impacting transaction success, we highly recommend deferring to this recommendation since it will allow us to roll out this feature in a very controlled manner with robust monitoring.
+   * @type {boolean}
+   * @memberof ScanTransactionsSolana200ResponseGuarantee
+   */
+  recommended: boolean;
+  /**
    * must use Jito to submit transactions
    * @type {boolean}
    * @memberof ScanTransactionsSolana200ResponseGuarantee
    */
   shouldBundle: boolean;
 }
+
+/**
+ * @export
+ */
+export const ScanTransactionsSolana200ResponseGuaranteeErrorEnum = {
+  TooLargeForJitoBundle: "TOO_LARGE_FOR_JITO_BUNDLE",
+  InsufficientFunds: "INSUFFICIENT_FUNDS",
+  InternalError: "INTERNAL_ERROR",
+  NetworkNotSupported: "NETWORK_NOT_SUPPORTED",
+  ProgramNotSupported: "PROGRAM_NOT_SUPPORTED",
+} as const;
+export type ScanTransactionsSolana200ResponseGuaranteeErrorEnum =
+  (typeof ScanTransactionsSolana200ResponseGuaranteeErrorEnum)[keyof typeof ScanTransactionsSolana200ResponseGuaranteeErrorEnum];
+
 /**
  *
  * @export

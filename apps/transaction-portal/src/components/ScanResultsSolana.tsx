@@ -177,6 +177,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
         dappUrl={dappUrl}
         protocol={null}
         decodedCalldata={undefined}
+        safeguard={!!scanResults.safeguard?.recommended}
         advancedDetails={
           <>
             <AdvancedDetails
@@ -203,7 +204,9 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
           if (messageId) {
             await sendSafeguardResult(
               messageId,
-              scanResults.safeguard?.transactions
+              scanResults.safeguard?.recommended
+                ? scanResults.safeguard?.transactions
+                : request.transactions
             );
           }
           window.close();

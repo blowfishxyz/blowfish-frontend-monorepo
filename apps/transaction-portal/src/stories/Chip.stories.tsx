@@ -18,4 +18,5 @@ export const Primary = Template.bind({});
 Primary.args = {
   text: "Primary Chip",
   variant: "primary",
+  safeguard: false,
 };

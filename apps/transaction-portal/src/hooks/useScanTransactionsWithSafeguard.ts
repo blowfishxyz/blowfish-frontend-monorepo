@@ -40,13 +40,9 @@ export const useScanTransactionsWithSafeguard = (
       simulatorConfig
     );
 
-    // TODO: regenerate the API client to include this field
-    const recommended =
-      original?.safeguard &&
-      "recommended" in original.safeguard &&
-      original.safeguard.recommended;
+    const recommended = !!original.safeguard?.recommended;
 
-    if (original.safeguard?.transactions.length && recommended) {
+    if (original.safeguard?.transactions.length) {
       try {
         const safeguard = await client.scanTransactionsSolana(
           original.safeguard.transactions,
@@ -60,6 +56,7 @@ export const useScanTransactionsWithSafeguard = (
         console.log("scanResults", {
           originalScans: original,
           safeguardScans: safeguard,
+          recommended,
         });
 
         return {
