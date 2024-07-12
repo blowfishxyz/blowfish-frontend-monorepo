@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { ComputeBudgetProgram } from "@solana/web3.js";
+import { CreateVerifyError } from "./error";
 
 type Primitive = string | number | boolean | null | undefined;
 
@@ -13,9 +13,13 @@ export type SimpleTransactionInstruction = {
   data: Buffer;
 };
 
-export function assertEq(a: Primitive, b: Primitive, err: string) {
+export function assertEq(
+  a: Primitive,
+  b: Primitive,
+  createErr: CreateVerifyError
+) {
   if (a !== b) {
-    throw new Error(err);
+    throw createErr();
   }
 }
 
@@ -23,66 +27,52 @@ export function assertWithinSlippage(
   val: number,
   expectedVal: number,
   slippage: number,
-  err: string
+  createErr: CreateVerifyError
 ) {
   const upperBoundary = expectedVal * (1 + slippage);
 
   if (val > upperBoundary) {
-    throw new Error(err);
+    throw createErr();
   }
 }
 
 export function assertTruthy<T>(
   val: T,
-  err: string
+  createErr: CreateVerifyError
 ): asserts val is NonNullable<T> {
   if (!val) {
-    throw new Error(err);
+    throw createErr();
+  }
+}
+
+export function assertFalsy<T>(val: T, createErr: CreateVerifyError) {
+  if (val) {
+    throw createErr();
   }
 }
 
 export function assertKeysEq(
   a: SimpleTransactionInstruction["keys"],
   b: SimpleTransactionInstruction["keys"],
-  err: string
+  createErr: CreateVerifyError
 ) {
   if (a.length !== b.length) {
-    throw new Error(err);
+    throw createErr();
   }
 
   for (const [i, acc] of a.entries()) {
-    assertEq(acc.pubkey.toString(), b[i]!.pubkey.toString(), err);
-    assertEq(acc.isSigner, b[i]!.isSigner, err);
-    assertEq(acc.isWritable, b[i]!.isWritable, err);
+    assertEq(acc.pubkey.toString(), b[i]!.pubkey.toString(), createErr);
+    assertEq(acc.isSigner, b[i]!.isSigner, createErr);
+    assertEq(acc.isWritable, b[i]!.isWritable, createErr);
   }
 }
 
 export function assertInstructionsEq(
   a: SimpleTransactionInstruction,
   b: SimpleTransactionInstruction,
-  err: string
+  createErr: CreateVerifyError
 ) {
-  // If both instructions are setting the compute unit limit, we can skip the data comparison
-  // because SafeGuard might have an increased compute unit limit.
-  if (
-    isSetComputeUnitLimitInstruction(a) &&
-    isSetComputeUnitLimitInstruction(b)
-  ) {
-    return;
-  }
-
-  assertEq(a.data.toString(), b.data.toString(), err);
-  assertEq(a.programId.toString(), b.programId.toString(), err);
-  assertKeysEq(a.keys, b.keys, err);
-}
-
-const DISCRIMINATOR_SET_COMPUTE_UNIT_LIMIT = 2;
-
-function isSetComputeUnitLimitInstruction(
-  instruction: SimpleTransactionInstruction
-): boolean {
-  return (
-    instruction.programId === ComputeBudgetProgram.programId.toString() &&
-    instruction.data[0] === DISCRIMINATOR_SET_COMPUTE_UNIT_LIMIT
-  );
+  assertEq(a.data.toString(), b.data.toString(), createErr);
+  assertEq(a.programId.toString(), b.programId.toString(), createErr);
+  assertKeysEq(a.keys, b.keys, createErr);
 }

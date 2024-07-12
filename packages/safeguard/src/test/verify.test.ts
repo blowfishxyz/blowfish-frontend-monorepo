@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { VERIFY_ERROR, verifyTransactions } from "../verify";
+import { verifyTransactions } from "../verify";
 import {
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -7,6 +7,7 @@ import {
   Transaction,
 } from "@solana/web3.js";
 import bs58 from "bs58";
+import { VERIFY_ERROR } from "../error";
 
 const createMockTransfer = (lamports = LAMPORTS_PER_SOL / 1000) => {
   const fromPubkey = new PublicKey(
@@ -95,7 +96,7 @@ describe("verify", () => {
             blowfishFeeInUsd: 0.00001,
           }
         )
-      ).toThrowError(VERIFY_ERROR.FEE_MISMATCH);
+      ).toThrowError(VERIFY_ERROR.FEE_MISMATCH());
     });
 
     it("should throw an error if instructions do not match", () => {
@@ -107,7 +108,7 @@ describe("verify", () => {
             solUsdRate: 130,
           }
         )
-      ).toThrowError(VERIFY_ERROR.INSTRUCTION_MISSMATCH);
+      ).toThrowError(VERIFY_ERROR.INSTRUCTION_MISSMATCH());
     });
 
     it("should throw an error if instructions are missing Blowfish service fee", () => {
@@ -120,7 +121,7 @@ describe("verify", () => {
             blowfishServiceFeeAccount: "RandomAccountThatDoesNotExistOnSolana",
           }
         )
-      ).toThrowError(VERIFY_ERROR.MISSING_BLOWFISH_FEE);
+      ).toThrowError(VERIFY_ERROR.MISSING_BLOWFISH_FEE());
     });
 
     it("should throw an error if instructions are calling a different program than Lighthouse", () => {
@@ -130,10 +131,29 @@ describe("verify", () => {
           [expectedSafeGuard],
           {
             solUsdRate: 130,
-            lightHouseId: "RandomAccountThatDoesNotExistOnSolana",
+            lightHouseIds: ["RandomAccountThatDoesNotExistOnSolana"],
           }
         )
-      ).toThrowError(VERIFY_ERROR.UNKNOWN_PROGRAM_INTERACTION);
+      ).toThrowError(
+        VERIFY_ERROR.UNKNOWN_PROGRAM_INTERACTION(
+          "L1TEVtgA75k273wWz1s6XMmDhQY5i3MwcvKb4VbZzfK"
+        )
+      );
+    });
+
+    it("should work even if there are more txs than original in safeguard", () => {
+      verifyTransactions(
+        [
+          "EKuskiP2WvbuqBPd85h7GTLmFnfggMrCGYdf4gwSdXzw1sTnVPVehmECZz3SebMhPz6mYv39oyDFVcc2LdT4p5gtjFhtqkzdgDqHRvTEFYSGKz9Y9BMQDWVD94LJQNXMBR57QjHVxSoH7Kh6MMj5b6C8c4GPiMSuCso62m9K5Z4cNodcooaUksXViuy6jhSywhERdi5awN7rpE5pbvkhkE36Uc1nbKppGRbkBQ8PGkuqR4Mj7EPxtB96hxxgZa5zsTnTETfnVMz1VgpSbzZqUXNm3tsGpG6hRQNtbh8oKkc79S1dYwZrR76rhhsZHsYy32i6fQA1wppeqma2KEXZ27rHKMhdU1wzPqy8EoxJN9V5Z2HpfHsDtSnHwAF8vHBTZB4Tr6r3xPoynonLm4vEcLsRVVQA4Fb23RZNRy4hEhb9W7hbuaxD3XcfMdudz19YN9j2hHo6BZMcxH4vqyzBnsHLu7AquDKLnDecSwkeocgVgGkSqZiZNuUkz2fUHuVQA9veHNPYLnjsZB9EFc53kG6ruPNvsTfZip2Cu8vzn11Qycg5Q3Tv4uxsvC6cgSF3fNvGgW9YXkjcivdwakNrkzFpLy4HPrZR28Km5u5ueWVs2GSiWp61qge6jxvhQdGv41RtgsEXUFfpQaiKPrKnWJLgUWYhuvJptd3YnTNWnBC1dyxTeSMmn5PepDEtXS4HrKHa1YzsLjhppkebDbeqJF9TKA6XkEE6QaWLt5gxjcuxYQTQSSSYgnUW6KsjMchQHfEcd89LwWfY59v9d6WJdiEKupmd2YXYTimADzXhMu3iWcmspFbH4VDibdF3cdLTmJiJ57tJrV3wLs1fPfC3gBNTaBSqd82GXfjbxenUGP6kpxDoGXoLHr1dYjjyWRAL3NDFtttDtu3uTS3cEJaXiYW1o5qJxpRNQZMDb6VswQshKMRCUky3xSDhfnLjGJHQsEryid75XiGQf79Cjc2U1fR3YR9qoGoAdx34tEgjSRBmWwpuNe5rd84JraoYPqcZDMEdgPe4UiF2KzyBtcSnfuzrFKNRtKhCgrbLv5CkSwnr4ywDDkqLsrV4USy61RHYvGYFMsd59Hg9RMXeHf9HTZYPqwCG9o8BiN7MoXmhUrDapsS87sXbRtc5zyDTSfRfxTMwJNjSBWQLNUeD",
+        ],
+        [
+          "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",
+        ],
+        {
+          solUsdRate: 130,
+        }
+      );
     });
 
     it("should throw an error if there are more original transactions than safeguard transactions", () => {
@@ -141,7 +161,7 @@ describe("verify", () => {
         verifyTransactions([createMockTransfer().toString("base64")], [], {
           solUsdRate: 130,
         })
-      ).toThrowError(VERIFY_ERROR.TX_COUNT_MISMATCH);
+      ).toThrowError(VERIFY_ERROR.TX_COUNT_MISMATCH());
     });
   });
 });
