@@ -44,6 +44,7 @@ export type UrlParsedRequest = {
       transactions: string[];
       simulatorConfig?: RequestSimulatorConfig;
       messageId?: string;
+      forceSafeguard?: boolean;
     }
 );
 
@@ -53,6 +54,7 @@ export type SolanaSuccessParams = {
   isImpersonating: boolean;
   isSolana: boolean;
   method?: string;
+  forceSafeguard?: boolean;
   messageId?: string;
 };
 
@@ -187,6 +189,7 @@ export function useURLRequestParams(): ScanParams | SolanaScanParams {
       method: parsedRequest.method,
       userAccount: parsedRequest.userAccount as `0x${string}`,
       messageId: parsedRequest.messageId,
+      forceSafeguard: parsedRequest.forceSafeguard,
       isSolana: true,
     };
   }
