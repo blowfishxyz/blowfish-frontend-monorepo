@@ -34,6 +34,7 @@ interface ScanResultsSolanaProps {
   chainNetwork: ChainNetwork;
   impersonatingAddress: string | undefined;
   messageId?: string;
+  forceSafeguard?: boolean;
 }
 
 const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
@@ -42,6 +43,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   safeguardScanResults,
   impersonatingAddress,
   messageId,
+  forceSafeguard,
 }) => {
   const solToUsdPrice = useSolToUsdPrice();
   const [, setLayoutConfig] = useLayoutConfig();
@@ -50,7 +52,8 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
     scanResults,
     safeguardScanResults
   );
-  const safeguardEnabled = !!scanResults.safeguard?.recommended;
+  const safeguardEnabled =
+    forceSafeguard || !!scanResults.safeguard?.recommended;
   const safeguardVerifyError = useMemo(
     () =>
       safeguardEnabled
@@ -143,6 +146,14 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
+    const endSeverity = scanResults?.aggregated.action
+      ? actionToSeverity(scanResults?.aggregated.action)
+      : "INFO";
+
+    if (endSeverity !== "INFO") {
+      return endSeverity;
+    }
+
     if (safeguardAssertErrors) {
       return "WARNING";
     }
@@ -151,9 +162,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
-    return scanResults?.aggregated.action
-      ? actionToSeverity(scanResults?.aggregated.action)
-      : "INFO";
+    return "INFO";
   }, [
     scanResults?.aggregated.action,
     error,

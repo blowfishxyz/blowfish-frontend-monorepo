@@ -27,13 +27,6 @@ export const DefaultView: React.FC<{
   );
   const hasSafeguardError = hasSafeguardVerifyError || hasSafeguardAssertError;
   const title = useMemo(() => {
-    if (hasSafeguardError) {
-      return (
-        <Text size="xxl" weight="semi-bold" textAlign="center">
-          Safeguard Error
-        </Text>
-      );
-    }
     if (severity === "CRITICAL") {
       return (
         <Text size="xxl" weight="semi-bold" textAlign="center">
@@ -49,7 +42,14 @@ export const DefaultView: React.FC<{
           </Text>
         </Text>
       );
-    } else {
+    } else if (hasSafeguardError) {
+      return (
+        <Text size="xxl" weight="semi-bold" textAlign="center">
+          Safeguard Error
+        </Text>
+      );
+    }
+    {
       return (
         <Text size="xxl" weight="semi-bold" textAlign="center">
           This is low risk
@@ -59,21 +59,7 @@ export const DefaultView: React.FC<{
   }, [severity, hasSafeguardError]);
 
   const description = useMemo(() => {
-    if (hasSafeguardError) {
-      const errorsText = [
-        hasSafeguardVerifyError ? "verification failed" : undefined,
-        hasSafeguardAssertError
-          ? "simulation failed with an assertion error"
-          : undefined,
-      ]
-        .filter(Boolean)
-        .join(" and ");
-      return (
-        <Text size="md" textAlign="center">
-          Safeguard transaction {errorsText}.
-        </Text>
-      );
-    } else if (severity === "CRITICAL") {
+    if (severity === "CRITICAL") {
       return (
         <Text size="md" textAlign="center">
           We believe this transaction is malicious and unsafe to sign, and is
@@ -85,6 +71,20 @@ export const DefaultView: React.FC<{
         <Text size="md" textAlign="center">
           This transaction does not appear to be safe. We strongly recommend
           that you do not proceed.
+        </Text>
+      );
+    } else if (hasSafeguardError) {
+      const errorsText = [
+        hasSafeguardVerifyError ? "verification failed" : undefined,
+        hasSafeguardAssertError
+          ? "simulation failed with an assertion error"
+          : undefined,
+      ]
+        .filter(Boolean)
+        .join(" and ");
+      return (
+        <Text size="md" textAlign="center">
+          Safeguard transaction {errorsText}.
         </Text>
       );
     } else {
