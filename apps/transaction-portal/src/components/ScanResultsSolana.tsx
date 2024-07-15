@@ -16,7 +16,7 @@ import { actionToSeverity } from "@blowfish/utils/types";
 import { useLayoutConfig } from "~components/layout/Layout";
 import { useReportTransaction } from "~hooks/useReportTransaction";
 import { AdvancedDetails } from "./AdvancedDetails";
-import { createValidURL } from "~utils/utils";
+import { capitalize, createValidURL } from "~utils/utils";
 import { PreviewTxn } from "./cards/PreviewTxn";
 import { sendAbort, sendSafeguardResult } from "~utils/messages";
 import { Divider } from "./cards/common";
@@ -69,7 +69,6 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   );
 
   const reportTransaction = useReportTransaction();
-
   const warnings: UIWarning[] = useMemo(() => {
     // Take warnings return from API first hand
     const warnings = scanResults.aggregated.warnings || [];
@@ -95,6 +94,15 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
               } as UIWarning)
           )
         );
+      }
+      if (scanResults.safeguard?.error) {
+        allSafeguardErrors.push({
+          severity: "WARNING",
+          kind: "SAFEGUARD_VERIFY_ERROR",
+          message: capitalize(
+            scanResults.safeguard.error.toLowerCase().split("_").join(" ")
+          ),
+        } as UIWarning);
       }
       if (allSafeguardErrors.length > 0) {
         return allSafeguardErrors;
@@ -259,12 +267,6 @@ function getSafeguardErrors(
   }
 
   const errors: BlowfishSimulationError[] = [];
-  if (safeguardSimulationResults?.safeguard?.error) {
-    errors.push({
-      kind: "SIMULATION_FAILED",
-      humanReadableError: safeguardSimulationResults.safeguard.error,
-    });
-  }
   errors.push(
     ...(lighthouseErrorTxs
       .map((tx) => {
