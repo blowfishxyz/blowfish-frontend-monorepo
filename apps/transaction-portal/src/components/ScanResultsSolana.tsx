@@ -146,6 +146,14 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
+    const endSeverity = scanResults?.aggregated.action
+      ? actionToSeverity(scanResults?.aggregated.action)
+      : "INFO";
+
+    if (endSeverity !== "INFO") {
+      return endSeverity;
+    }
+
     if (safeguardAssertErrors) {
       return "WARNING";
     }
@@ -154,9 +162,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
       return "WARNING";
     }
 
-    return scanResults?.aggregated.action
-      ? actionToSeverity(scanResults?.aggregated.action)
-      : "INFO";
+    return "INFO";
   }, [
     scanResults?.aggregated.action,
     error,
