@@ -56,7 +56,7 @@ export const DefaultView: React.FC<{
         </Text>
       );
     }
-  }, [severity, hasSafeguardVerifyError, hasSafeguardAssertError]);
+  }, [severity, hasSafeguardError]);
 
   const description = useMemo(() => {
     if (hasSafeguardError) {
@@ -95,7 +95,12 @@ export const DefaultView: React.FC<{
         </Text>
       );
     }
-  }, [severity, hasSafeguardError]);
+  }, [
+    severity,
+    hasSafeguardAssertError,
+    hasSafeguardVerifyError,
+    hasSafeguardError,
+  ]);
 
   const buttons = useMemo(() => {
     if (severity === "WARNING" || severity === "CRITICAL") {
