@@ -10,10 +10,12 @@ export const useLayoutConfig = createGlobalState<{
   impersonatingAddress?: string | undefined;
   hasRequestParams: boolean | undefined;
   canConfirmTxn: boolean;
+  forceSafeguard: boolean;
 }>({
   severity: "INFO",
   hasRequestParams: false,
   canConfirmTxn: true,
+  forceSafeguard: false,
 });
 
 export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {

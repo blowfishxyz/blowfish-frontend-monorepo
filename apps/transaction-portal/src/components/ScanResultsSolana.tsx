@@ -34,7 +34,6 @@ interface ScanResultsSolanaProps {
   chainNetwork: ChainNetwork;
   impersonatingAddress: string | undefined;
   messageId?: string;
-  forceSafeguard?: boolean;
 }
 
 const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
@@ -43,17 +42,17 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
   safeguardScanResults,
   impersonatingAddress,
   messageId,
-  forceSafeguard,
 }) => {
   const solToUsdPrice = useSolToUsdPrice();
-  const [, setLayoutConfig] = useLayoutConfig();
+  const [{ forceSafeguard }, setLayoutConfig] = useLayoutConfig();
   const error = getErrorFromSolanaScanResponse(scanResults);
   const safeguardAssertErrors = getSafeguardErrors(
     scanResults,
     safeguardScanResults
   );
   const safeguardEnabled =
-    forceSafeguard || !!scanResults.safeguard?.recommended;
+    (forceSafeguard && !!scanResults.safeguard?.transactions) ||
+    !!scanResults.safeguard?.recommended;
   const safeguardVerifyError = useMemo(
     () =>
       safeguardEnabled
@@ -231,7 +230,7 @@ const ScanResultsSolana: React.FC<ScanResultsSolanaProps> = ({
           if (messageId) {
             await sendSafeguardResult(
               messageId,
-              scanResults.safeguard?.recommended
+              safeguardEnabled
                 ? scanResults.safeguard?.transactions
                 : request.transactions
             );

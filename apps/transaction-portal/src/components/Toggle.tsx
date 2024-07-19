@@ -1,6 +1,19 @@
-import { StyledBaseText } from "@blowfishxyz/ui";
+import { StyledBaseText, Text } from "@blowfishxyz/ui";
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
+
+const StyledContainer = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${({ theme }) => theme.colors.backgroundPrimary};
+  border-radius: 58px;
+  padding: 6px 9px;
+  gap: 8px;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  cursor: pointer;
+  height: 45px;
+`;
 
 const Wrapper = styled.button<{ $isActive?: boolean }>`
   align-items: center;
@@ -8,7 +21,7 @@ const Wrapper = styled.button<{ $isActive?: boolean }>`
   background: ${({ $isActive, theme }) =>
     $isActive ? theme.colors.successLight : "transparent"};
   border: ${({ $isActive, theme }) =>
-    $isActive ? "none" : `1px solid ${theme.colors.border}`};
+    $isActive ? `1px solid transparent` : `1px solid ${theme.colors.border}`};
   cursor: pointer;
   display: flex;
   outline: none;
@@ -65,6 +78,7 @@ interface ToggleProps {
   isActive: boolean;
   toggle: () => void;
   initialState: boolean;
+  style?: React.CSSProperties;
 }
 
 export default function Toggle({
@@ -72,6 +86,7 @@ export default function Toggle({
   isActive,
   toggle,
   initialState = false,
+  style,
 }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(initialState);
 
@@ -83,11 +98,23 @@ export default function Toggle({
   };
 
   return (
-    <Wrapper id={id} $isActive={isActive} onClick={switchToggle}>
+    <Wrapper id={id} $isActive={isActive} onClick={switchToggle} style={style}>
       <ToggleElement
         $isActive={isActive}
         $isInitialToggleLoad={isInitialToggleLoad}
       />
     </Wrapper>
+  );
+}
+
+export function ToggleWithLabel({
+  label,
+  ...props
+}: ToggleProps & { label: string }) {
+  return (
+    <StyledContainer>
+      <Text>{label}</Text>
+      <Toggle {...props} />
+    </StyledContainer>
   );
 }
