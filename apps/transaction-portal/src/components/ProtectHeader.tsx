@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { ImpersonatorWallet } from "./UserWallet";
 import SolanaIcon from "./icons/SolanaIcon";
 import { ChainIcon } from "connectkit";
+import { ToggleWithLabel } from "./Toggle";
 
 const ProtectScreenContent = styled(Row)`
   width: 100%;
@@ -31,10 +32,12 @@ const RightContentWrapper = styled(Row)`
 export const ProtectHeader: React.FC<{
   impersonatingAddress?: string | undefined;
 }> = ({ impersonatingAddress }) => {
-  const [{ severity, hasRequestParams }] = useLayoutConfig();
+  const [{ severity, forceSafeguard, hasRequestParams }, setLayoutConfig] =
+    useLayoutConfig();
   const { pathname, query } = useRouter();
+  const isSolana = query.solanaNetwork;
 
-  const chainIcon = query.solanaNetwork ? (
+  const chainIcon = isSolana ? (
     <SolanaIcon />
   ) : (
     <ChainIcon
@@ -47,6 +50,20 @@ export const ProtectHeader: React.FC<{
     <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull $contrast={severity === "CRITICAL"} />
       <RightContentWrapper gap="md">
+        {isSolana && (
+          <ToggleWithLabel
+            label="Force Safeguard"
+            style={{ height: "30px", alignSelf: "center" }}
+            initialState={forceSafeguard}
+            isActive={forceSafeguard}
+            toggle={() =>
+              setLayoutConfig((prev) => ({
+                ...prev,
+                forceSafeguard: !prev.forceSafeguard,
+              }))
+            }
+          />
+        )}
         {impersonatingAddress && (
           <ImpersonatorWallet
             address={impersonatingAddress}

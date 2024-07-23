@@ -25,12 +25,16 @@ const ScanPageWrapper: React.FC = () => {
   const canConfirmTxn = Boolean(
     data && "isSolana" in data && data.isSolana && data.messageId
   );
+  const forceSafeguard = Boolean(
+    data && "forceSafeguard" in data && data.forceSafeguard
+  );
 
   useLayoutEffect(() => {
     setLayoutConfig((prev) => ({
       ...prev,
       hasRequestParams: true,
       canConfirmTxn,
+      forceSafeguard,
     }));
 
     // NOTE (Lolu): Added client-side mounting logic to address the hydration error.

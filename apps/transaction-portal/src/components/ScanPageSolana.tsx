@@ -37,14 +37,7 @@ export const ScanPageSolanaV2Inner: React.FC<{
 const SolanaFullfieldView: React.FC<{ data: SolanaSuccessParams }> = ({
   data,
 }) => {
-  const {
-    request,
-    userAccount,
-    isImpersonating,
-    method,
-    forceSafeguard,
-    messageId,
-  } = data;
+  const { request, userAccount, isImpersonating, method, messageId } = data;
 
   return (
     <SolanaResultsView
@@ -53,7 +46,6 @@ const SolanaFullfieldView: React.FC<{ data: SolanaSuccessParams }> = ({
       isImpersonating={isImpersonating}
       messageId={messageId}
       method={method}
-      forceSafeguard={forceSafeguard}
     />
   );
 };
@@ -63,16 +55,8 @@ const SolanaResultsView: React.FC<{
   userAccount: string;
   isImpersonating: boolean;
   method?: string;
-  forceSafeguard?: boolean;
   messageId: string | undefined;
-}> = ({
-  request,
-  userAccount,
-  isImpersonating,
-  method,
-  forceSafeguard,
-  messageId,
-}) => {
+}> = ({ request, userAccount, isImpersonating, method, messageId }) => {
   const {
     data,
     error: scanError,
@@ -109,7 +93,6 @@ const SolanaResultsView: React.FC<{
     <ScanResultsSolana
       request={request}
       messageId={messageId}
-      forceSafeguard={forceSafeguard}
       scanResults={scanResults}
       safeguardScanResults={safeguardResults}
       impersonatingAddress={isImpersonating ? userAccount : undefined}
