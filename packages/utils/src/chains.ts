@@ -42,6 +42,10 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
     chainFamily: "base",
     chainNetwork: "mainnet",
   },
+  13371: {
+    chainFamily: "immutable_zkevm",
+    chainNetwork: "mainnet",
+  },
 };
 
 /**

@@ -284,6 +284,7 @@ export const ScanTransactionsEvmOperationChainFamilyEnum = {
   Gnosis: "gnosis",
   Linea: "linea",
   Blast: "blast",
+  ImmutableZkevm: "immutable_zkevm",
 } as const;
 export type ScanTransactionsEvmOperationChainFamilyEnum =
   (typeof ScanTransactionsEvmOperationChainFamilyEnum)[keyof typeof ScanTransactionsEvmOperationChainFamilyEnum];

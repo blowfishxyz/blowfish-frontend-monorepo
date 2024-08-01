@@ -213,6 +213,7 @@ function createEvmChainFamily() {
         - gnosis
         - linea
         - blast
+        - immutable_zkevm
     required: true
   `) as YAMLMap;
 
