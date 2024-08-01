@@ -52,6 +52,36 @@ const base = {
   testnet: false,
 };
 
+const immutableZkevm = {
+  id: 13371,
+  network: "immutable_zkevm",
+  name: "Immutable",
+  nativeCurrency: {
+    name: "IMX",
+    symbol: "IMX",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.immutable.com"],
+    },
+    public: {
+      http: ["https://rpc.immutable.com"],
+    },
+  },
+  blockExplorers: {
+    etherscan: {
+      name: "Immutable explorer",
+      url: "https://explorer.immutable.com",
+    },
+    default: {
+      name: "Immutable explorer",
+      url: "https://explorer.immutable.com",
+    },
+  },
+  testnet: false,
+};
+
 export const useConnectedChainId = () => {
   const network = useNetwork();
   return network.chain?.id;
@@ -131,7 +161,17 @@ const getRpcUrl = (chainId: number, protocol: "https" | "wss") => {
 
 export const createWagmiClient = () => {
   const { chains, provider } = configureChains(
-    [mainnet, polygon, goerli, arbitrum, bsc, optimismGoerli, optimism, base],
+    [
+      mainnet,
+      polygon,
+      goerli,
+      arbitrum,
+      bsc,
+      optimismGoerli,
+      optimism,
+      base,
+      immutableZkevm,
+    ],
     [
       jsonRpcProvider({
         priority: 0,
