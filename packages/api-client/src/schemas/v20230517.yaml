@@ -110,6 +110,7 @@ paths:
               - gnosis
               - linea
               - blast
+              - immutable_zkevm
           required: true
         - name: chain-network
           in: path
@@ -347,6 +348,7 @@ paths:
               - gnosis
               - linea
               - blast
+              - immutable_zkevm
           required: true
         - name: chain-network
           in: path
@@ -541,6 +543,7 @@ paths:
               - gnosis
               - linea
               - blast
+              - immutable_zkevm
           required: true
         - name: chain-network
           in: path

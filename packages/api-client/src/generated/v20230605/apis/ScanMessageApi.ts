@@ -160,6 +160,7 @@ export const ScanMessageEvmOperationChainFamilyEnum = {
   Gnosis: "gnosis",
   Linea: "linea",
   Blast: "blast",
+  ImmutableZkevm: "immutable_zkevm",
 } as const;
 export type ScanMessageEvmOperationChainFamilyEnum =
   (typeof ScanMessageEvmOperationChainFamilyEnum)[keyof typeof ScanMessageEvmOperationChainFamilyEnum];
