@@ -27,7 +27,7 @@ tags:
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning
       results from other endpoints
-  - name: Scan Assets
+  - name: Scan assets
     description: Endpoints related to scanning assets
 
 paths:
@@ -49,7 +49,6 @@ paths:
         | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transactions |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transactions |
         | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
         | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transactions |
@@ -265,206 +264,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
-  "/{chain-family}/v0/{chain-network}/scan/transaction":
-    post:
-      tags:
-        - Scan transaction
-      summary: EVM
-      operationId: scan-transaction-evm
-      description: |
-        [DEPRECATED] Use Scan transactions endpoint instead.
-        https://docs.blowfish.xyz/reference/scan-transactions-evm
-        [Sunset] 31.12.2023
-        Scan an EVM transaction in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
-        | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
-        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transaction |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
-        | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transaction |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
-        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
-        | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
-        | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transaction |
-        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
-        | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
-        | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transaction |
-        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transaction |
-        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transaction |
-        | Degen Mainnet| https://api.blowfish.xyz/degen/v0/mainnet/scan/transaction |
-        | Blast Mainnet | https://api.blowfish.xyz/blast/v0/mainnet/scan/transaction |
-        | Blast Sepolia | https://api.blowfish.xyz/blast/v0/sepolia/scan/transaction |
-        | Gnosis Mainnet | https://api.blowfish.xyz/gnosis/v0/mainnet/scan/transaction |
-        | Linea Mainnet | https://api.blowfish.xyz/linea/v0/mainnet/scan/transaction |
-        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transaction |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats. 
-        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
-      deprecated: true
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and
-            simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: method
-          in: query
-          description: The RPC method used by dApp to propose the transaction
-          schema:
-            $ref: "#/components/schemas/Method"
-          example: "eth_sendTransaction"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-        - name: chain-family
-          in: path
-          description: The chain family to use
-          schema:
-            type: string
-            enum:
-              - ethereum
-              - polygon
-              - bnb
-              - arbitrum
-              - optimism
-              - base
-              - zora
-              - avalanche
-              - degen
-              - gnosis
-              - linea
-              - blast
-              - immutable_zkevm
-          required: true
-        - name: chain-network
-          in: path
-          description: The chain network to use
-          schema:
-            type: string
-            enum:
-              - mainnet
-              - one
-              - goerli
-              - sepolia
-              - fuji
-          required: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txObject:
-                  $ref: "#/components/schemas/EvmTxData"
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-                simulatorConfig:
-                  $ref: "#/components/schemas/EvmSimulatorConfig"
-              required:
-                - txObject
-                - userAccount
-                - metadata
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - requestId
-                  - action
-                  - warnings
-                  - simulationResults
-                properties:
-                  requestId:
-                    $ref: "#/components/schemas/RequestId"
-                  action:
-                    $ref: "#/components/schemas/ActionEnum"
-                  warnings:
-                    $ref: "#/components/schemas/Warning"
-                  simulationResults:
-                    type: object
-                    required:
-                      - expectedStateChanges
-                      - error
-                      - gas
-                      - protocol
-                    properties:
-                      expectedStateChanges:
-                        $ref: "#/components/schemas/EvmExpectedStateChanges"
-                      error:
-                        description: A error object which includes the parsed simulation error
-                          encountered (if any). Can be `null`.
-                        oneOf:
-                          - $ref: "#/components/schemas/EvmTransactionRevertedError"
-                          - $ref: "#/components/schemas/EvmTransactionError"
-                          - $ref: "#/components/schemas/EvmSimulationFailedError"
-                          - $ref: "#/components/schemas/EvmUnknownError"
-                        discriminator:
-                          propertyName: kind
-                          mapping:
-                            TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
-                            TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-                            SIMULATION_FAILED: "#/components/schemas/EvmSimulationFailedError"
-                            UNKNOWN_ERROR: "#/components/schemas/EvmUnknownError"
-                        nullable: true
-                      gas:
-                        type: object
-                        description: An object that contains nullable fields with information about the
-                          estimated gas consumption of the simulated transaction
-                        required:
-                          - gasLimit
-                        properties:
-                          gasLimit:
-                            type: string
-                            example: "46220"
-                            description: A field that if the simulation was successful contains the
-                              estimated gas used while simulating the
-                              transaction. **NOTE:** Despite the name, this
-                              should be viewed as a realistic usage estimate,
-                              not an upper bound for how much gas the
-                              transaction could consume in the worst case. In
-                              future versions this field may be renamed to
-                              `gasUsageEstimate`. Can be null.
-                            nullable: true
-                      protocol:
-                        $ref: "#/components/schemas/EvmProtocol"
 
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
   "/{chain-family}/v0/{chain-network}/scan/message":
     post:
       tags:
@@ -483,7 +283,6 @@ paths:
         | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
         | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/message |
@@ -633,21 +432,25 @@ paths:
                             rawInfo:
                               description: A machine-parsable state change object describing the state change.
                               oneOf:
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Permit"
-                                - $ref: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                - $ref: "#/components/schemas/EvmStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeNativeAssetTransfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangePolymarketOrder"
                               discriminator:
                                 propertyName: kind
                                 mapping:
-                                  ERC20_PERMIT: "#/components/schemas/EvmStateChangeErc20Permit"
-                                  ERC20_TRANSFER: "#/components/schemas/EvmStateChangeErc20Transfer"
-                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmStateChangeNativeAssetTransfer"
-                                  ERC721_TRANSFER: "#/components/schemas/EvmStateChangeErc721Transfer"
-                                  ERC1155_TRANSFER: "#/components/schemas/EvmStateChangeErc1155Transfer"
-                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmStateChangeAnyNftFro\
-                                    mCollectionTransfer"
+                                  ERC20_PERMIT: "#/components/schemas/EvmMessageStateChangeErc20Permit"
+                                  ERC20_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc20Transfer"
+                                  NATIVE_ASSET_TRANSFER: "#/components/schemas/EvmMessageStateChangeNativeAssetTr\
+                                    ansfer"
+                                  ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
+                                  ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
+                                  ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAn\
+                                    yNftFromCollectionTransfer"
+                                  POLYMARKET_ORDER: "#/components/schemas/EvmMessageStateChangePolymarketOrder"
                       error:
                         description: A nullable error object which includes the parsed simulation error
                           encountered (if any)
@@ -1063,6 +866,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/domains/blocklist:
     post:
       tags:
@@ -1071,6 +875,8 @@ paths:
       operationId: download-blocklist
       description: |
         Generate a downloadable snapshot with all blocked domains in order to check domains a user visits against a local blocklist, preserving their browsing privacy.
+
+        **NOTE:** The Blocklist provides strictly worse protection against scam dApps than the [Blowfish Domains endpoint](https://docs.blowfish.xyz/reference/scan-domain). The Blocklist was created for a small minority of wallets where domain privacy is strictly more important than the best security. If you are newly integrating or testing Blowfish, we **highly recommend** using the [Domains endpoint](https://docs.blowfish.xyz/reference/scan-domain) to provide the best possible dApp security for your users.
 
         ### Integration
         This API enables to verify domain safety while maintaining the end user's privacy. To integrate this API into your app, you should follow the steps below:
@@ -1281,6 +1087,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/domains:
     post:
       tags:
@@ -1422,6 +1229,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/report:
     post:
       tags:
@@ -2274,7 +2082,6 @@ components:
             oneOf:
               - $ref: "#/components/schemas/GnosisSafePreset"
               - $ref: "#/components/schemas/Eip4337WalletPreset"
-
     GnosisSafePreset:
       type: object
       description: "Override a Gnosis Safe multi-signature wallet during simulation to
@@ -2296,7 +2103,6 @@ components:
           example: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
           default: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
           description: "The address of the Gnosis safe to override"
-
     Eip4337WalletPreset:
       type: object
       description: "Override a EIP-4337 wallet contract to bypass signature validation
@@ -2322,7 +2128,6 @@ components:
           description: "The address of the contract that will validate the user signature
             as part of the EIP-4337 transaction. In most cases this is the
             user's own wallet contract."
-
     EvmAddressInfo:
       type: object
       required:
@@ -2348,7 +2153,6 @@ components:
       type: object
       required:
         - rawImageUrl
-        - previews
       properties:
         rawImageUrl:
           type: string
@@ -2489,6 +2293,10 @@ components:
             asset is an NFT. Can be `null`.
           $ref: "#/components/schemas/AssetPrice"
           nullable: true
+    EvmContractAddress:
+      type: string
+      example: "0xdac17f958d2ee523a2206206994597c13d831ec7"
+      description: The contract address of the asset
     EvmSignTypedData:
       type: object
       properties:
@@ -2638,60 +2446,14 @@ components:
           example: Unable to simulate transaction
           description: Human readable explanation of the error
     EvmTransferCounterparty:
-      nullable: true
       description: Contains counterparty address if known. To whom the transfer was
         made for Send or from whom was it made for Receive
-      $ref: "#/components/schemas/EvmAddressInfo"
-    EvmStateChangeErc20Permit:
-      type: object
-      description: ERC20 token permit message
-      required:
-        - kind
-        - data
-      properties:
-        kind:
-          type: string
-          description: What kind of state change this object is
-          enum: [ ERC20_PERMIT ]
-          example: ERC20_PERMIT
-        data:
-          type: object
-          required:
-            - contract
-            - owner
-            - spender
-            - amount
-            - nonce
-            - deadline
-            - asset
-          properties:
-            contract:
-              $ref: "#/components/schemas/EvmAddressInfo"
-            owner:
-              description: The owner of the ERC20 tokens
-              $ref: "#/components/schemas/EvmAddressInfo"
-            spender:
-              description: The entity that will be allowed to spend them if the permit is
-                granted
-              $ref: "#/components/schemas/EvmAddressInfo"
-            amount:
-              type: string
-              description: Stringified base unit amount of the token
-              example: "115792089237316195423570985008687907853269984665640564039457584007913\
-                129639935"
-            nonce:
-              type: string
-              description: Stringified nonce number
-              example: "0"
-            deadline:
-              type: number
-              description: "Unix timestamp when this permit will expire. Can be `null`:
-                indicates no deadline."
-              example: 1667556263
-              nullable: true
-            asset:
-              $ref: "#/components/schemas/EvmAsset"
-          description: Data associated with the state change
+      anyOf:
+        - $ref: "#/components/schemas/EvmAddressInfo"
+        - type: object
+          nullable: true
+
+    # EVM transactions state changes
     EvmStateChangeErc20Transfer:
       type: object
       description: ERC20 token transfers
@@ -3163,6 +2925,293 @@ components:
               $ref: "#/components/schemas/EvmAddressInfo"
               description: Farcaster IDRegistry contract address
           description: Data associated with the state change
+    # EVM message state changes
+    EvmMessageStateChangeErc20Permit:
+      type: object
+      description: ERC20 token permit message
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC20_PERMIT ]
+          example: ERC20_PERMIT
+        data:
+          type: object
+          required:
+            - contract
+            - owner
+            - spender
+            - amount
+            - nonce
+            - deadline
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            owner:
+              description: The owner of the ERC20 tokens
+              $ref: "#/components/schemas/EvmAddressInfo"
+            spender:
+              description: The entity that will be allowed to spend them if the permit is
+                granted
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              type: string
+              description: Stringified base unit amount of the token
+              example: "115792089237316195423570985008687907853269984665640564039457584007913\
+                129639935"
+            nonce:
+              type: string
+              description: Stringified nonce number
+              example: "0"
+            deadline:
+              type: number
+              description: "Unix timestamp when this permit will expire. Can be `null`:
+                indicates no deadline."
+              example: 1667556263
+              nullable: true
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc20Transfer:
+      type: object
+      description: ERC20 token transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC20_TRANSFER ]
+          example: ERC20_TRANSFER
+        data:
+          type: object
+          required:
+            - contract
+            - amount
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              $ref: "#/components/schemas/EvmAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeNativeAssetTransfer:
+      type: object
+      description: ETH transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ NATIVE_ASSET_TRANSFER ]
+          example: NATIVE_ASSET_TRANSFER
+        data:
+          type: object
+          required:
+            - contract
+            - amount
+            - asset
+          properties:
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              $ref: "#/components/schemas/EvmNativeAsset"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc721Transfer:
+      type: object
+      description: ERC721 NFT transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC721_TRANSFER ]
+          example: ERC721_TRANSFER
+        data:
+          type: object
+          required:
+            - amount
+            - contract
+            - metadata
+            - name
+            - symbol
+            - tokenId
+            - assetPrice
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            counterparty:
+              $ref: "#/components/schemas/EvmTransferCounterparty"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            name:
+              $ref: "#/components/schemas/EvmName"
+            symbol:
+              $ref: "#/components/schemas/EvmSymbol"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc721TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmMessageStateChangeErc1155Transfer:
+      type: object
+      description: ERC1155 transfers
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ERC1155_TRANSFER ]
+          example: ERC1155_TRANSFER
+        data:
+          type: object
+          required:
+            - name
+            - amount
+            - contract
+            - metadata
+            - tokenId
+            - assetPrice
+          properties:
+            name:
+              $ref: "#/components/schemas/EvmName"
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            contract:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            metadata:
+              $ref: "#/components/schemas/EvmNftMetadata"
+            tokenId:
+              $ref: "#/components/schemas/EvmErc1155TokenId"
+            assetPrice:
+              description: The NFT collection's $-value floor price
+              $ref: "#/components/schemas/AssetPrice"
+          description: Data associated with the state change
+    EvmMessageStateChangeAnyNftFromCollectionTransfer:
+      type: object
+      description: A "wildcard" NFT transfer representing the transfer of any NFT from
+        a given collection (eg. Opensea collection offers)
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ ANY_NFT_FROM_COLLECTION_TRANSFER ]
+          example: ANY_NFT_FROM_COLLECTION_TRANSFER
+        data:
+          type: object
+          required:
+            - amount
+            - asset
+          properties:
+            amount:
+              $ref: "#/components/schemas/EvmAmount"
+            asset:
+              description: Represents NFT collection as a whole, including collection-level
+                image, etc.
+              type: object
+              required:
+                - address
+                - symbol
+                - name
+                - type
+              properties:
+                address:
+                  $ref: "#/components/schemas/EvmContractAddress"
+                symbol:
+                  description: Some NFTs don't have a symbol/name as it's not required in a
+                    standard
+                  $ref: "#/components/schemas/EvmSymbol"
+                  nullable: true
+                name:
+                  description: Some NFTs don't have a symbol/name as it's not required in a
+                    standard
+                  $ref: "#/components/schemas/EvmName"
+                  nullable: true
+                price:
+                  description: A $-value price of the asset. Floor price of the collection if
+                    asset is an NFT. Can be `null`.
+                  $ref: "#/components/schemas/AssetPrice"
+                  nullable: true
+                imageUrl:
+                  type: string
+                  description: The URL of the collection's cover image
+                  nullable: true
+                  example: "https://lh3.googleusercontent.com/C_fjl1iM5iRwuk74N9DBrOmU-1-_lc_8x66\
+                    BsWU8votTb3iwXiVJwmqJ2qd8BUI1DSDo_9KxcNcNJrdpnnxebLwpeJB7ei\
+                    YSeI8"
+                type:
+                  enum: [ ERC721, ERC1155 ]
+                  type: string
+                  description: The type of specified NFT
+                  example: ERC721
+          description: Data associated with the state change
+    EvmMessageStateChangePolymarketOrder:
+      type: object
+      description: A Polymarket Order
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ POLYMARKET_ORDER ]
+          example: POLYMARKET_ORDER
+        data:
+          type: object
+          description: Data associated with the state change
+          required:
+            - maker
+            - taker
+            - tokenId
+            - question
+            - outcome
+            - outcomePrice
+            - makerAmount
+            - takerAmount
+            - side
+          properties:
+            maker:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            taker:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            tokenId:
+              type: string
+            question:
+              type: string
+            outcome:
+              type: string
+            outcomePrice:
+              type: string
+            makerAmount:
+              type: string
+            takerAmount:
+              type: string
+            side:
+              type: string
+              enum: [ BUY, SELL ]
+    # Solana state changes
     SolanaStateChangeSolTransfer:
       type: object
       description: Solana native token transfer
@@ -3242,7 +3291,6 @@ components:
             - mint
             - decimals
             - diff
-            - counterparty
             - supply
             - metaplexTokenStandard
             - assetPrice
@@ -3645,7 +3693,7 @@ components:
               $ref: "#/components/schemas/Diff"
             counterparty:
               $ref: "#/components/schemas/SolanaTransferCounterparty"
-
+    # Assets endpoint
     AssetId:
       type: string
       example: "ethereum:mainnet:0xa247c6d23c8c7d223420700d16d189cff9357f38"
@@ -3655,9 +3703,8 @@ components:
          - For NFTs: chain:network:collection_address:id
         Solana asset ids:
          - Both tokens and NFTs: solana:mainnet:address
-
-    # NOTE: same schema as EvmAsset but used for /scan/assets endpoint which supports both EVM and Solana assets.
     Asset:
+      # NOTE: same schema as EvmAsset but used for /scan/assets endpoint which supports both EVM and Solana assets.
       type: object
       required:
         - address
@@ -3717,7 +3764,6 @@ components:
             asset is an NFT. Can be `null`.
           $ref: "#/components/schemas/AssetPrice"
           nullable: true
-
     RiskSignals:
       type: array
       description: An array of risk signals generated from scanning the assets.
@@ -3769,7 +3815,6 @@ components:
             type: string
             description: human-readable message to present to the end-user
             example: "This token levies a very high tax during trading"
-
     ScanAssetResult:
       type: object
       description: Result of scanning an asset

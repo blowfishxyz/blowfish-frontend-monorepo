@@ -26,11 +26,10 @@ tags:
     description: Endpoints related to scanning multiple blockchain transactions
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
-  - name: Scan Assets
+  - name: Scan assets
     description: Endpoints related to scanning assets
 security:
   - ApiKeyAuth: []
-
 paths:
   /ethereum/v0/mainnet/scan/transactions:
     post:
@@ -50,7 +49,6 @@ paths:
         | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transactions |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transactions |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transactions |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transactions |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transactions |
         | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transactions |
         | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transactions |
@@ -911,252 +909,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
-  /solana/v0/mainnet/scan/transactions:
-    post:
-      tags:
-        - Scan transactions
-      summary: Solana
-      operationId: scan-transactions-solana
-      description: |
-        Scan Solana transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do. The API will return a list of warnings and a list of human-readable simulation results.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Mainnet | https://api.blowfish.xyz/solana/v0/mainnet/scan/transactions |
-        | Testnet | https://api.blowfish.xyz/solana/v0/testnet/scan/transactions |
-        | Devnet | https://api.blowfish.xyz/solana/v0/devnet/scan/transactions |
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: method
-          in: query
-          description: The RPC method used by dApp to propose the transaction
-          schema:
-            $ref: "#/components/schemas/Method"
-          example: "signAndSendTransaction"
-        - name: simulationTimeoutMs
-          in: query
-          description: The desired timeout for the transaction simulation (defaults to 30 seconds)
-          schema:
-            type: number
-            example: 30000
-        - name: simulateExpired
-          in: query
-          description: Simulate the transactions even if they are already expired. Do not use in production. This can be helpful in understanding historical transactions.
-          schema:
-            type: string
-            example: "true"
-            enum:
-              - "true"
-              - "false"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                transactions:
-                  type: array
-                  items:
-                    type: string
-                    example: "5PpG8s71i21PiBqHqT4FWoay6v8PkJwPgGRokSHom7ZKzygead3AtzN1YWCQEZCBLf2Sz9YYBh8Vr7HKLwCpshR8tYrya1wkogWYsrb2JAEhUt63VTuySpWuFPqC5bwqcgRjps5vJLEM6GPaKNi52iUXcLiaER7k8f9LVdXcFx5vRnHSAdnHunZgTTTfm92BMDvw93wbHm5HZCFPFmcyZ7iQh2ZVMyorz8BMkChM9L7u6aNg1VVN286fQxV1R5TBbSy1C55QvGBwnMV4MB3RmpvjgmCBxP4YBwX6PfkQmNrfqgTsLKg2YJSwQsoXLfpw8bwBtUXs1HxBVLpbxtXyWm3B196AEaCbLfXzLsecoSMvu7c97kSvZ9iCceNT9gQdQTSWJLrBPPozsCUqFcQi5G7FQYHX7dHrWZVkk1ZEnfdugohrDLbrfMjpazdkXYK4jaLm3sXaVNY71JkcgZsoLMuFYCRZ2L58PKaibgy6uRzLQvx5EdZHEPdEvRWzX7VHJU8pKCvdoCU49Z1nzbD5CHMuyXMBBZyN2qn8DGVR8dsUjtrb1LMWhsgy1p4HDdphQLrBbYQamPvPa6GaCLk9cU4DUDeabstP8PZ777aZAr1CM1fgyXrG8DWj8bGMx1qFNtjgGenYEhgTmcBV44rhDVoX4RcsVvevgFGjXC4aX1WEDxrtQw6ricHsxaWFkniRbmYBLFBGtt5BHG5qJwNdJekQbMiFnQrVwQMC8mQUvFvwmhHb4VA5NGdtkuSMiA3YFLnDS8Gp7CGU7GcQMbXeER5H9R4YE2FLUvS9R3XM3tAykYGUrWXKYjeBpVgvi5WUq7mTiMyPmUht4kN4MWYsrjxVadsN3NzCVkobyA6QDmDe6zwGNcggzu2fb2xCh3LJF8nTK1hVBKpXCFUasdB2RfZw47dt553uLEkRPKvz8Q46TJxCbMgjo4tKgsUe22fDyNUstqvrFHw7tL44Ms5wYCCtJZeC4cnrG86SLfNBr295oHGXGLgxH9JbxNkCPfqec7dBnhT6Hh2AZ7Bq9oVTvm74AuGMb3Aru9C6Bc9NcDU8EEbd6vdsmeqJPffhSXuMDPEazr5msTV9XutnQToA294dALPNKsqYZrPAVz68YuVZFT6r95kMggEaXnjLoqh52nWZodSkyjYkwe7UjftBDZJZQxvWmC368rULyt2EddPp8V2KBkF7YDwZiYxcdUkpo8v5DoJFp1XeLqgy1JpCLMa6g3JKoghiGYXY2idkQ3o4DNvZa891izpn8VUs9u21FSHBmsqE1F6qtWXqPEmQC7ohDC5TFqVcAQyJCEKsoJ5fNHbsFoL8Xeqe5ekYfdMAfSxALPKydaU6XZexoQDgdWGojyu4tHvVjmfpVWLJPaTucwrzHwhQ4ia56o6FwhFWaWxBd9Qs8omfpAfKXK6pqt6yBcQtswZuTwtMXdsMDekmc4DFjBes77RQrt9Pz2L5rk4Z18jjiwJRcb1PLLZYBRSekCmczpmGzS1sDfzDE9QmJ9uAkY8ibjYuD2TjzYPieFdSGL9V"
-                  description: Base58 or Base64 encoded Solana transactions to scan
-                userAccount:
-                  type: string
-                  example: "6dsoHqoCv6LcT9vX7rc8FTD6hxVhzd2v98E4r8VX7WBR"
-                  description: Base58-encoded account of signer of transactions
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                simulatorConfig:
-                  $ref: "#/components/schemas/RequestSimulatorConfig"
-              required:
-                - transactions
-                - metadata
-              default:
-                transactions:
-                  - 5PpG8s71i21PiBqHqT4FWoay6v8PkJwPgGRokSHom7ZKzygead3AtzN1YWCQEZCBLf2Sz9YYBh8Vr7HKLwCpshR8tYrya1wkogWYsrb2JAEhUt63VTuySpWuFPqC5bwqcgRjps5vJLEM6GPaKNi52iUXcLiaER7k8f9LVdXcFx5vRnHSAdnHunZgTTTfm92BMDvw93wbHm5HZCFPFmcyZ7iQh2ZVMyorz8BMkChM9L7u6aNg1VVN286fQxV1R5TBbSy1C55QvGBwnMV4MB3RmpvjgmCBxP4YBwX6PfkQmNrfqgTsLKg2YJSwQsoXLfpw8bwBtUXs1HxBVLpbxtXyWm3B196AEaCbLfXzLsecoSMvu7c97kSvZ9iCceNT9gQdQTSWJLrBPPozsCUqFcQi5G7FQYHX7dHrWZVkk1ZEnfdugohrDLbrfMjpazdkXYK4jaLm3sXaVNY71JkcgZsoLMuFYCRZ2L58PKaibgy6uRzLQvx5EdZHEPdEvRWzX7VHJU8pKCvdoCU49Z1nzbD5CHMuyXMBBZyN2qn8DGVR8dsUjtrb1LMWhsgy1p4HDdphQLrBbYQamPvPa6GaCLk9cU4DUDeabstP8PZ777aZAr1CM1fgyXrG8DWj8bGMx1qFNtjgGenYEhgTmcBV44rhDVoX4RcsVvevgFGjXC4aX1WEDxrtQw6ricHsxaWFkniRbmYBLFBGtt5BHG5qJwNdJekQbMiFnQrVwQMC8mQUvFvwmhHb4VA5NGdtkuSMiA3YFLnDS8Gp7CGU7GcQMbXeER5H9R4YE2FLUvS9R3XM3tAykYGUrWXKYjeBpVgvi5WUq7mTiMyPmUht4kN4MWYsrjxVadsN3NzCVkobyA6QDmDe6zwGNcggzu2fb2xCh3LJF8nTK1hVBKpXCFUasdB2RfZw47dt553uLEkRPKvz8Q46TJxCbMgjo4tKgsUe22fDyNUstqvrFHw7tL44Ms5wYCCtJZeC4cnrG86SLfNBr295oHGXGLgxH9JbxNkCPfqec7dBnhT6Hh2AZ7Bq9oVTvm74AuGMb3Aru9C6Bc9NcDU8EEbd6vdsmeqJPffhSXuMDPEazr5msTV9XutnQToA294dALPNKsqYZrPAVz68YuVZFT6r95kMggEaXnjLoqh52nWZodSkyjYkwe7UjftBDZJZQxvWmC368rULyt2EddPp8V2KBkF7YDwZiYxcdUkpo8v5DoJFp1XeLqgy1JpCLMa6g3JKoghiGYXY2idkQ3o4DNvZa891izpn8VUs9u21FSHBmsqE1F6qtWXqPEmQC7ohDC5TFqVcAQyJCEKsoJ5fNHbsFoL8Xeqe5ekYfdMAfSxALPKydaU6XZexoQDgdWGojyu4tHvVjmfpVWLJPaTucwrzHwhQ4ia56o6FwhFWaWxBd9Qs8omfpAfKXK6pqt6yBcQtswZuTwtMXdsMDekmc4DFjBes77RQrt9Pz2L5rk4Z18jjiwJRcb1PLLZYBRSekCmczpmGzS1sDfzDE9QmJ9uAkY8ibjYuD2TjzYPieFdSGL9V
-                userAccount: 6dsoHqoCv6LcT9vX7rc8FTD6hxVhzd2v98E4r8VX7WBR
-                metadata:
-                  origin: https://magiceden.io/
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - requestId
-                  - aggregated
-                  - perTransaction
-                  - safeguard
-                properties:
-                  requestId:
-                    $ref: "#/components/schemas/RequestId"
-                  aggregated:
-                    type: object
-                    required:
-                      - action
-                      - warnings
-                      - error
-                      - expectedStateChanges
-                      - simulatedSlotHeight
-                    properties:
-                      action:
-                        $ref: "#/components/schemas/ActionEnum"
-                      warnings:
-                        $ref: "#/components/schemas/Warning"
-                      error:
-                        $ref: "#/components/schemas/BlowfishSimulationError"
-                      expectedStateChanges:
-                        type: object
-                        description: A mapping of account to the state changes to expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the account's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
-                        additionalProperties:
-                          type: array
-                          items:
-                            type: object
-                            required:
-                              - humanReadableDiff
-                              - suggestedColor
-                              - rawInfo
-                            properties:
-                              humanReadableDiff:
-                                type: string
-                                description: Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI since the list of state change kinds has not yet stabilized.
-                                example: Receive 0.05657 SOL
-                              suggestedColor:
-                                type: string
-                                description: Suggested text color when presenting the diff to end-users
-                                enum:
-                                  - CREDIT
-                                  - DEBIT
-                                  - INFO
-                                example: CREDIT
-                              rawInfo:
-                                description: A machine-parsable state change object describing the state change.
-                                oneOf:
-                                  - $ref: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSplTransfer"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
-                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
-                                  - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
-                                  - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
-                                  - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
-                                discriminator:
-                                  propertyName: kind
-                                  mapping:
-                                    SOL_TRANSFER: "#/components/schemas/SolanaStateChangeSolTransfer"
-                                    SPL_TRANSFER: "#/components/schemas/SolanaStateChangeSplTransfer"
-                                    SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
-                                    SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
-                                    SOL_STAKE_ACCOUNT_DEPOSIT: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
-                                    SOL_STAKE_ACCOUNT_WITHDRAWAL: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
-                                    BFP_LOADER_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
-                                    USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
-                                    COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
-                      simulatedSlotHeight:
-                        type: number
-                        nullable: true
-                        description: Slot height at which the simulation took place
-                        example: 256805354
-                  perTransaction:
-                    type: array
-                    items:
-                      type: object
-                      required:
-                        - isNonceValid
-                        - error
-                        - raw
-                        - protocols
-                        - instructions
-                      properties:
-                        isNonceValid:
-                          type: boolean
-                          nullable: true
-                          example: false
-                          description: Whether the tx nonce is valid
-                        error:
-                          $ref: "#/components/schemas/SolanaSimulationError"
-                        raw:
-                          $ref: "#/components/schemas/SolanaRawSimulationResults"
-                        protocols:
-                          type: array
-                          items:
-                            $ref: "#/components/schemas/SolanaProtocol"
-                        instructions:
-                          type: array
-                          items:
-                            $ref: "#/components/schemas/TopLevelInstruction"
-                  safeguard:
-                    type: object
-                    nullable: true
-                    required:
-                      - error
-                      - transactions
-                      - recommended
-                      - shouldBundle
-                    properties:
-                      error:
-                        type: string
-                        nullable: true
-                        example: TOO_LARGE_FOR_JITO_BUNDLE
-                        enum:
-                          - TOO_LARGE_FOR_JITO_BUNDLE
-                          - INSUFFICIENT_FUNDS
-                          - INTERNAL_ERROR
-                          - NETWORK_NOT_SUPPORTED
-                          - PROGRAM_NOT_SUPPORTED
-                      transactions:
-                        type: array
-                        items:
-                          type: string
-                          description: Base58 encoded user's transaction plus guard transactions
-                      recommended:
-                        type: boolean
-                        example: true
-                        description: Blowfish recommends to guard this request. Since this is a new feature impacting transaction success, we highly recommend deferring to this recommendation since it will allow us to roll out this feature in a very controlled manner with robust monitoring.
-                      shouldBundle:
-                        type: boolean
-                        example: false
-                        description: must use Jito to submit transactions
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
 
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
   /ethereum/v0/mainnet/scan/message:
     post:
       tags:
@@ -1177,7 +930,6 @@ paths:
         | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
         | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/message |
@@ -1852,7 +1604,6 @@ paths:
                   userAccount: "0x655aF72e1500EB8A8d1c90856Ae3B8f148A78471"
                   metadata:
                     origin: "https://app.safe.global"
-
               permit_2:
                 summary: Uniswap Permit2 Approval
                 value:
@@ -1899,6 +1650,69 @@ paths:
                   userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
                   metadata:
                     origin: "https://app.uniswap.org"
+              polymarket_order:
+                summary: Polymarket Order
+                value:
+                  message:
+                    kind: SIGN_TYPED_DATA
+                    data:
+                      types:
+                        EIP712Domain:
+                          - name: name
+                            type: string
+                          - name: version
+                            type: string
+                          - name: chainId
+                            type: uint256
+                          - name: verifyingContract
+                            type: address
+                        Order:
+                          - name: salt
+                            type: uint256
+                          - name: maker
+                            type: address
+                          - name: signer
+                            type: address
+                          - name: taker
+                            type: address
+                          - name: tokenId
+                            type: uint256
+                          - name: makerAmount
+                            type: unit256
+                          - name: takerAmount
+                            type: unit256
+                          - name: expiration
+                            type: uin256
+                          - name: nonce
+                            type: uint256
+                          - name: feeRateBps
+                            type: uint256
+                          - name: side
+                            type: uint8
+                          - name: signatureType
+                            type: uint8
+                      domain:
+                        name: Polymarket CFT Exchange
+                        version: "1"
+                        chainId: "137"
+                        verifyingContract: "0x4bfb41d5b3570defd03c39a9a4d8de6bd8b8982e"
+                      primaryType: Order
+                      message:
+                        salt: "1147798091687"
+                        maker: "0x656af625e2c17d4ecadd17b54da7a39b52cde5dc"
+                        signer: "0x38c0d860e0f7775054c7a8006058675fbd5fec6d"
+                        taker: "0x0000000000000000000000000000000000000000"
+                        tokenId: "100180144441344516029196380796541367659775855719836481414910537902981560041958"
+                        makerAmount: "1000000"
+                        takerAmount: "2325500"
+                        expiration: "0"
+                        nonce: "0"
+                        feeRateBps: "0"
+                        side: "0"
+                        signatureType: "2"
+                  userAccount: "0xD854343f41B2138B686F2D3bA38402A9F7Fb4337"
+                  metadata:
+                    origin: "https://polymarket.com/"
       responses:
         "200":
           description: Successful response
@@ -1950,6 +1764,7 @@ paths:
                                 - $ref: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
                                 - $ref: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
                                 - $ref: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
+                                - $ref: "#/components/schemas/EvmMessageStateChangePolymarketOrder"
                               discriminator:
                                 propertyName: kind
                                 mapping:
@@ -1959,6 +1774,7 @@ paths:
                                   ERC721_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc721Transfer"
                                   ERC1155_TRANSFER: "#/components/schemas/EvmMessageStateChangeErc1155Transfer"
                                   ANY_NFT_FROM_COLLECTION_TRANSFER: "#/components/schemas/EvmMessageStateChangeAnyNftFromCollectionTransfer"
+                                  POLYMARKET_ORDER: "#/components/schemas/EvmMessageStateChangePolymarketOrder"
                       error:
                         description: A nullable error object which includes the parsed simulation error encountered (if any)
                         nullable: true
@@ -2259,21 +2075,20 @@ paths:
                           rawInfo:
                             kind: ANY_NFT_FROM_COLLECTION_TRANSFER
                             data:
-                              symbol: PROMETHEANS
-                              name: Prometheans
                               amount:
                                 before: "0"
                                 after: "1"
-                              contract:
-                                kind: ACCOUNT
+                              asset:
+                                symbol: PROMETHEANS
+                                name: Prometheans
                                 address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb"
-                              imageUrl: >-
-                                https://lh3.googleusercontent.com/U9TK_6D-iXvcUB-FgDa8AYhwd0nOeBK_Fsr0GaQpPJX1_iQGVWJr2pnhGYkUsZH4syW1gXIiZpQOUqRdvfikoIeshF1VJOZvlK8
-                              assetPrice:
-                                source: Simplehash
-                                updatedAt: 1690495107
-                                dollarValuePerToken: 35.20011125067005
-                              type: ERC721
+                                imageUrl: >-
+                                  https://lh3.googleusercontent.com/U9TK_6D-iXvcUB-FgDa8AYhwd0nOeBK_Fsr0GaQpPJX1_iQGVWJr2pnhGYkUsZH4syW1gXIiZpQOUqRdvfikoIeshF1VJOZvlK8
+                                assetPrice:
+                                  source: Simplehash
+                                  updatedAt: 1690495107
+                                  dollarValuePerToken: 35.20011125067005
+                                type: ERC721
                         - humanReadableDiff: Send 0.01 WETH
                           rawInfo:
                             kind: ERC20_TRANSFER
@@ -2582,6 +2397,55 @@ paths:
                       - kind: PERMIT_UNLIMITED_ALLOWANCE
                         message: You are allowing this dApp to withdraw funds from your account in the future.
                         severity: WARNING
+                polymarket_order:
+                  summary: Polymarket order message
+                  value:
+                    action: NONE
+                    warnings: []
+                    simulationResults:
+                      expectedStateChanges:
+                        - humanReadableDiff: "Buy 1.5384 share(s) of Will Biden finish his term?: Yes"
+                          rawInfo:
+                            kind: POLYMARKET_ORDER
+                            data:
+                              maker:
+                                kind: ACCOUNT
+                                address: "0x656af625e2c17d4ecadd17b54da7a39b52cde5dc"
+                              taker:
+                                kind: ACCOUNT
+                                address: "0x0000000000000000000000000000000000000000"
+                              tokenId: "76018684495672907293972579038657312280524447899213220717960084627380959769440"
+                              question: Will Biden finish his term?
+                              outcome: "Yes"
+                              outcomePrice: "0.725"
+                              makerAmount: "1000000"
+                              takerAmount: "1538400"
+                              side: "BUY"
+                        - humanReadableDiff: Send 1 USDC
+                          rawInfo:
+                            kind: ERC20_TRANSFER
+                            data:
+                              amount:
+                                before: "4014402"
+                                after: "3014402"
+                              contract:
+                                kind: ACCOUNT
+                                address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+                              asset:
+                                address: "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
+                                symbol: USDC
+                                name: USD Coin (PoS)
+                                decimals: 6
+                                verified: true
+                                lists:
+                                  - COINGECKO
+                                  - UNISWAP
+                                  - KLEROS_TOKENS
+                                imageUrl: https://d1ts37qlq4uz4s.cloudfront.net/evm__evm%3A%3Apolygon__evm%3A%3Apolygon%3A%3Amainnet__0x3c499c542cef5e3811e1192ce70d8cc03d5c3359.png
+                                price:
+                      error: null
+                      protocol: null
+                    requestId: 5a62aab8df2a9249baf361edf50731b1
         "400":
           description: Bad request
           content:
@@ -2600,6 +2464,262 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
+  /solana/v0/mainnet/scan/transactions:
+    post:
+      tags:
+        - Scan transactions
+      summary: Solana
+      operationId: scan-transactions-solana
+      description: |
+        Scan Solana transactions in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do. The API will return a list of warnings and a list of human-readable simulation results.
+        ### Supported networks
+        | Network | Base URL |
+        | --- | --- |
+        | Mainnet | https://api.blowfish.xyz/solana/v0/mainnet/scan/transactions |
+        | Testnet | https://api.blowfish.xyz/solana/v0/testnet/scan/transactions |
+        | Devnet | https://api.blowfish.xyz/solana/v0/devnet/scan/transactions |
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: language
+          in: query
+          description: The language to use in the returned human-readable warnings and simulation results
+          schema:
+            $ref: "#/components/schemas/Languages"
+        - name: method
+          in: query
+          description: The RPC method used by dApp to propose the transaction
+          schema:
+            $ref: "#/components/schemas/Method"
+          example: "signAndSendTransaction"
+        - name: simulationTimeoutMs
+          in: query
+          description: The desired timeout for the transaction simulation (defaults to 30 seconds)
+          schema:
+            type: number
+            example: 30000
+        - name: simulateExpired
+          in: query
+          description: Simulate the transactions even if they are already expired. Do not use in production. This can be helpful in understanding historical transactions.
+          schema:
+            type: string
+            example: "true"
+            enum:
+              - "true"
+              - "false"
+        - name: X-Api-Version
+          in: header
+          description: Which version of the API to use
+          required: true
+          schema:
+            $ref: "#/components/schemas/ApiVersionHeader"
+        - name: Content-Type
+          in: header
+          description: The expected return content type
+          schema:
+            $ref: "#/components/schemas/ContentType"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transactions:
+                  type: array
+                  items:
+                    type: string
+                    example: "5PpG8s71i21PiBqHqT4FWoay6v8PkJwPgGRokSHom7ZKzygead3AtzN1YWCQEZCBLf2Sz9YYBh8Vr7HKLwCpshR8tYrya1wkogWYsrb2JAEhUt63VTuySpWuFPqC5bwqcgRjps5vJLEM6GPaKNi52iUXcLiaER7k8f9LVdXcFx5vRnHSAdnHunZgTTTfm92BMDvw93wbHm5HZCFPFmcyZ7iQh2ZVMyorz8BMkChM9L7u6aNg1VVN286fQxV1R5TBbSy1C55QvGBwnMV4MB3RmpvjgmCBxP4YBwX6PfkQmNrfqgTsLKg2YJSwQsoXLfpw8bwBtUXs1HxBVLpbxtXyWm3B196AEaCbLfXzLsecoSMvu7c97kSvZ9iCceNT9gQdQTSWJLrBPPozsCUqFcQi5G7FQYHX7dHrWZVkk1ZEnfdugohrDLbrfMjpazdkXYK4jaLm3sXaVNY71JkcgZsoLMuFYCRZ2L58PKaibgy6uRzLQvx5EdZHEPdEvRWzX7VHJU8pKCvdoCU49Z1nzbD5CHMuyXMBBZyN2qn8DGVR8dsUjtrb1LMWhsgy1p4HDdphQLrBbYQamPvPa6GaCLk9cU4DUDeabstP8PZ777aZAr1CM1fgyXrG8DWj8bGMx1qFNtjgGenYEhgTmcBV44rhDVoX4RcsVvevgFGjXC4aX1WEDxrtQw6ricHsxaWFkniRbmYBLFBGtt5BHG5qJwNdJekQbMiFnQrVwQMC8mQUvFvwmhHb4VA5NGdtkuSMiA3YFLnDS8Gp7CGU7GcQMbXeER5H9R4YE2FLUvS9R3XM3tAykYGUrWXKYjeBpVgvi5WUq7mTiMyPmUht4kN4MWYsrjxVadsN3NzCVkobyA6QDmDe6zwGNcggzu2fb2xCh3LJF8nTK1hVBKpXCFUasdB2RfZw47dt553uLEkRPKvz8Q46TJxCbMgjo4tKgsUe22fDyNUstqvrFHw7tL44Ms5wYCCtJZeC4cnrG86SLfNBr295oHGXGLgxH9JbxNkCPfqec7dBnhT6Hh2AZ7Bq9oVTvm74AuGMb3Aru9C6Bc9NcDU8EEbd6vdsmeqJPffhSXuMDPEazr5msTV9XutnQToA294dALPNKsqYZrPAVz68YuVZFT6r95kMggEaXnjLoqh52nWZodSkyjYkwe7UjftBDZJZQxvWmC368rULyt2EddPp8V2KBkF7YDwZiYxcdUkpo8v5DoJFp1XeLqgy1JpCLMa6g3JKoghiGYXY2idkQ3o4DNvZa891izpn8VUs9u21FSHBmsqE1F6qtWXqPEmQC7ohDC5TFqVcAQyJCEKsoJ5fNHbsFoL8Xeqe5ekYfdMAfSxALPKydaU6XZexoQDgdWGojyu4tHvVjmfpVWLJPaTucwrzHwhQ4ia56o6FwhFWaWxBd9Qs8omfpAfKXK6pqt6yBcQtswZuTwtMXdsMDekmc4DFjBes77RQrt9Pz2L5rk4Z18jjiwJRcb1PLLZYBRSekCmczpmGzS1sDfzDE9QmJ9uAkY8ibjYuD2TjzYPieFdSGL9V"
+                  description: Base58 or Base64 encoded Solana transactions to scan
+                userAccount:
+                  type: string
+                  example: "6dsoHqoCv6LcT9vX7rc8FTD6hxVhzd2v98E4r8VX7WBR"
+                  description: Base58-encoded account of signer of transactions
+                metadata:
+                  $ref: "#/components/schemas/RequestMetadata"
+                simulatorConfig:
+                  $ref: "#/components/schemas/RequestSimulatorConfig"
+              required:
+                - transactions
+                - metadata
+              default:
+                transactions:
+                  - 5PpG8s71i21PiBqHqT4FWoay6v8PkJwPgGRokSHom7ZKzygead3AtzN1YWCQEZCBLf2Sz9YYBh8Vr7HKLwCpshR8tYrya1wkogWYsrb2JAEhUt63VTuySpWuFPqC5bwqcgRjps5vJLEM6GPaKNi52iUXcLiaER7k8f9LVdXcFx5vRnHSAdnHunZgTTTfm92BMDvw93wbHm5HZCFPFmcyZ7iQh2ZVMyorz8BMkChM9L7u6aNg1VVN286fQxV1R5TBbSy1C55QvGBwnMV4MB3RmpvjgmCBxP4YBwX6PfkQmNrfqgTsLKg2YJSwQsoXLfpw8bwBtUXs1HxBVLpbxtXyWm3B196AEaCbLfXzLsecoSMvu7c97kSvZ9iCceNT9gQdQTSWJLrBPPozsCUqFcQi5G7FQYHX7dHrWZVkk1ZEnfdugohrDLbrfMjpazdkXYK4jaLm3sXaVNY71JkcgZsoLMuFYCRZ2L58PKaibgy6uRzLQvx5EdZHEPdEvRWzX7VHJU8pKCvdoCU49Z1nzbD5CHMuyXMBBZyN2qn8DGVR8dsUjtrb1LMWhsgy1p4HDdphQLrBbYQamPvPa6GaCLk9cU4DUDeabstP8PZ777aZAr1CM1fgyXrG8DWj8bGMx1qFNtjgGenYEhgTmcBV44rhDVoX4RcsVvevgFGjXC4aX1WEDxrtQw6ricHsxaWFkniRbmYBLFBGtt5BHG5qJwNdJekQbMiFnQrVwQMC8mQUvFvwmhHb4VA5NGdtkuSMiA3YFLnDS8Gp7CGU7GcQMbXeER5H9R4YE2FLUvS9R3XM3tAykYGUrWXKYjeBpVgvi5WUq7mTiMyPmUht4kN4MWYsrjxVadsN3NzCVkobyA6QDmDe6zwGNcggzu2fb2xCh3LJF8nTK1hVBKpXCFUasdB2RfZw47dt553uLEkRPKvz8Q46TJxCbMgjo4tKgsUe22fDyNUstqvrFHw7tL44Ms5wYCCtJZeC4cnrG86SLfNBr295oHGXGLgxH9JbxNkCPfqec7dBnhT6Hh2AZ7Bq9oVTvm74AuGMb3Aru9C6Bc9NcDU8EEbd6vdsmeqJPffhSXuMDPEazr5msTV9XutnQToA294dALPNKsqYZrPAVz68YuVZFT6r95kMggEaXnjLoqh52nWZodSkyjYkwe7UjftBDZJZQxvWmC368rULyt2EddPp8V2KBkF7YDwZiYxcdUkpo8v5DoJFp1XeLqgy1JpCLMa6g3JKoghiGYXY2idkQ3o4DNvZa891izpn8VUs9u21FSHBmsqE1F6qtWXqPEmQC7ohDC5TFqVcAQyJCEKsoJ5fNHbsFoL8Xeqe5ekYfdMAfSxALPKydaU6XZexoQDgdWGojyu4tHvVjmfpVWLJPaTucwrzHwhQ4ia56o6FwhFWaWxBd9Qs8omfpAfKXK6pqt6yBcQtswZuTwtMXdsMDekmc4DFjBes77RQrt9Pz2L5rk4Z18jjiwJRcb1PLLZYBRSekCmczpmGzS1sDfzDE9QmJ9uAkY8ibjYuD2TjzYPieFdSGL9V
+                userAccount: 6dsoHqoCv6LcT9vX7rc8FTD6hxVhzd2v98E4r8VX7WBR
+                metadata:
+                  origin: https://magiceden.io/
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - requestId
+                  - aggregated
+                  - perTransaction
+                  - safeguard
+                properties:
+                  requestId:
+                    $ref: "#/components/schemas/RequestId"
+                  aggregated:
+                    type: object
+                    required:
+                      - action
+                      - warnings
+                      - error
+                      - expectedStateChanges
+                      - simulatedSlotHeight
+                    properties:
+                      action:
+                        $ref: "#/components/schemas/ActionEnum"
+                      warnings:
+                        $ref: "#/components/schemas/Warning"
+                      error:
+                        $ref: "#/components/schemas/BlowfishSimulationError"
+                      expectedStateChanges:
+                        type: object
+                        description: A mapping of account to the state changes to expect if these transactions were submitted on-chain. Each state change represents a meaningful change to the account's assets or permissions on-chain. We reserve the right to add new state change types, so any handling logic custom to state change types should fallback gracefully to showing the end-user the `humanReadableDiff` of any unrecognized state change types.
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - humanReadableDiff
+                              - suggestedColor
+                              - rawInfo
+                            properties:
+                              humanReadableDiff:
+                                type: string
+                                description: Computed explanation of the state change that can be directly presented to the end-user. While the API is still in development, we suggest integrators expose this in their signing UI since the list of state change kinds has not yet stabilized.
+                                example: Receive 0.05657 SOL
+                              suggestedColor:
+                                type: string
+                                description: Suggested text color when presenting the diff to end-users
+                                enum:
+                                  - CREDIT
+                                  - DEBIT
+                                  - INFO
+                                example: CREDIT
+                              rawInfo:
+                                description: A machine-parsable state change object describing the state change.
+                                oneOf:
+                                  - $ref: "#/components/schemas/SolanaStateChangeSolTransfer"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSplTransfer"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSplApproval"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
+                                  - $ref: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
+                                  - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
+                                  - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
+                                  - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
+                                discriminator:
+                                  propertyName: kind
+                                  mapping:
+                                    SOL_TRANSFER: "#/components/schemas/SolanaStateChangeSolTransfer"
+                                    SPL_TRANSFER: "#/components/schemas/SolanaStateChangeSplTransfer"
+                                    SPL_APPROVAL: "#/components/schemas/SolanaStateChangeSplApproval"
+                                    SOL_STAKE_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeSolStakeAuthorityChange"
+                                    SOL_STAKE_ACCOUNT_DEPOSIT: "#/components/schemas/SolanaStateChangeSolStakeAccountDeposit"
+                                    SOL_STAKE_ACCOUNT_WITHDRAWAL: "#/components/schemas/SolanaStateChangeSolStakeAccountWithdrawal"
+                                    BFP_LOADER_AUTHORITY_CHANGE: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
+                                    USER_ACCOUNT_OWNER_CHANGE: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
+                                    COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
+                      simulatedSlotHeight:
+                        type: number
+                        nullable: true
+                        description: Slot height at which the simulation took place
+                        example: 256805354
+                  perTransaction:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - isNonceValid
+                        - error
+                        - raw
+                        - protocols
+                        - instructions
+                      properties:
+                        isNonceValid:
+                          type: boolean
+                          nullable: true
+                          example: false
+                          description: Whether the tx nonce is valid
+                        error:
+                          $ref: "#/components/schemas/SolanaSimulationError"
+                        raw:
+                          $ref: "#/components/schemas/SolanaRawSimulationResults"
+                        protocols:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/SolanaProtocol"
+                        instructions:
+                          type: array
+                          items:
+                            $ref: "#/components/schemas/TopLevelInstruction"
+                  safeguard:
+                    type: object
+                    nullable: true
+                    required:
+                      - error
+                      - transactions
+                      - recommended
+                      - shouldBundle
+                      - feesInLamports
+                    properties:
+                      error:
+                        type: string
+                        nullable: true
+                        example: TOO_LARGE_FOR_JITO_BUNDLE
+                        enum:
+                          - TOO_LARGE_FOR_JITO_BUNDLE
+                          - INSUFFICIENT_FUNDS
+                          - INTERNAL_ERROR
+                          - NETWORK_NOT_SUPPORTED
+                          - PROGRAM_NOT_SUPPORTED
+                          - INCLUDES_PARTIALLY_SIGNED_TX
+                          - INCLUDES_TX_MISSING_MULTIPLE_SIGNATURES
+                          - INSUFFICIENT_COMPUTE_UNITS_AVAILABLE
+                      transactions:
+                        type: array
+                        items:
+                          type: string
+                          description: Base58 encoded user's transaction plus guard transactions
+                      recommended:
+                        type: boolean
+                        example: true
+                        description: Blowfish recommends to guard this request. Since this is a new feature impacting transaction success, we highly recommend deferring to this recommendation since it will allow us to roll out this feature in a very controlled manner with robust monitoring.
+                      shouldBundle:
+                        type: boolean
+                        example: false
+                        description: must use Jito to submit transactions
+                      feesInLamports:
+                        type: number
+                        example: 64000
+                        description: Safeguard transaction fee payed by user account in lamports
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequest"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Unauthorized"
+
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerError"
+
   /v0/domains:
     post:
       tags:
@@ -2770,6 +2890,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/domains/blocklist:
     post:
       tags:
@@ -2778,6 +2899,8 @@ paths:
       operationId: download-blocklist
       description: |
         Generate a downloadable snapshot with all blocked domains in order to check domains a user visits against a local blocklist, preserving their browsing privacy.
+
+        **NOTE:** The Blocklist provides strictly worse protection against scam dApps than the [Blowfish Domains endpoint](https://docs.blowfish.xyz/reference/scan-domain). The Blocklist was created for a small minority of wallets where domain privacy is strictly more important than the best security. If you are newly integrating or testing Blowfish, we **highly recommend** using the [Domains endpoint](https://docs.blowfish.xyz/reference/scan-domain) to provide the best possible dApp security for your users.
 
         ### Integration
         This API enables to verify domain safety while maintaining the end user's privacy. To integrate this API into your app, you should follow the steps below:
@@ -2985,6 +3108,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/report:
     post:
       tags:
@@ -3047,150 +3171,6 @@ paths:
                     type: string
                     description: The Request ID of the successfully reported transaction/message scan.
                     example: "eafdae18039f531b5a586310cfbd654e"
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BadRequest"
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Unauthorized"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/InternalServerError"
-  /ethereum/v0/mainnet/scan/transaction:
-    post:
-      tags:
-        - Scan transaction
-      summary: EVM
-      operationId: scan-transaction-evm
-      description: |
-        [DEPRECATED] Use Scan transactions endpoint instead.
-        https://docs.blowfish.xyz/reference/scan-transactions-evm
-        [Sunset] 31.12.2023
-        Scan an EVM transaction in order to receive recommended actions, tailored warnings and human-readable simulation results explaining what the transaction will do.
-        ### Supported networks
-        | Network | Base URL |
-        | --- | --- |
-        | Ethereum Mainnet | https://api.blowfish.xyz/ethereum/v0/mainnet/scan/transaction |
-        | Goerli Testnet (deprecated) | https://api.blowfish.xyz/ethereum/v0/goerli/scan/transaction |
-        | Sepolia Testnet | https://api.blowfish.xyz/ethereum/v0/sepolia/scan/transaction |
-        | Polygon Mainnet | https://api.blowfish.xyz/polygon/v0/mainnet/scan/transaction |
-        | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transaction |
-        | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
-        | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
-        | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
-        | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
-        | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transaction |
-        | Base Mainnet | https://api.blowfish.xyz/base/v0/mainnet/scan/transaction |
-        | Base Goerli Testnet (deprecated) | https://api.blowfish.xyz/base/v0/goerli/scan/transaction |
-        | Base Sepolia Testnet | https://api.blowfish.xyz/base/v0/sepolia/scan/transaction |
-        | Avalanche Mainnet | https://api.blowfish.xyz/avalanche/v0/mainnet/scan/transaction |
-        | Avalanche Fuji Testnet | https://api.blowfish.xyz/avalanche/v0/fuji/scan/transaction |
-        | Degen Mainnet| https://api.blowfish.xyz/degen/v0/mainnet/scan/transaction |
-        | Blast Mainnet | https://api.blowfish.xyz/blast/v0/mainnet/scan/transaction |
-        | Blast Sepolia | https://api.blowfish.xyz/blast/v0/sepolia/scan/transaction |
-        | Gnosis Mainnet | https://api.blowfish.xyz/gnosis/v0/mainnet/scan/transaction |
-        | Linea Mainnet | https://api.blowfish.xyz/linea/v0/mainnet/scan/transaction |
-        | Zora Mainnet | https://api.blowfish.xyz/zora/v0/mainnet/scan/transaction |
-        Note:  All EVM scan endpoints are equivalent when it comes to functionality as well as request and response formats.
-        One exception is Zora Mainnet, where ERC20 token prices are currently not supported. `price` for token-related state changes on Zora will always be `null`. NFT prices should work as usual.
-      deprecated: true
-      security:
-        - ApiKeyAuth: []
-      parameters:
-        - name: language
-          in: query
-          description: The language to use in the returned human-readable warnings and simulation results
-          schema:
-            $ref: "#/components/schemas/Languages"
-        - name: X-Api-Version
-          in: header
-          description: Which version of the API to use
-          required: true
-          schema:
-            $ref: "#/components/schemas/ApiVersionHeader"
-        - name: Content-Type
-          in: header
-          description: The expected return content type
-          schema:
-            $ref: "#/components/schemas/ContentType"
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                txObject:
-                  $ref: "#/components/schemas/EvmTxData"
-                metadata:
-                  $ref: "#/components/schemas/RequestMetadata"
-                userAccount:
-                  $ref: "#/components/schemas/EvmUserAccount"
-                simulatorConfig:
-                  $ref: "#/components/schemas/EvmSimulatorConfig"
-              default:
-                userAccount: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
-                metadata:
-                  origin: https://uniswap.org
-                txObject:
-                  from: "0xd8da6bf26964af9d7eed9e03e53415d37aa96045"
-                  to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                  value: "0x10000000000000"
-              required:
-                - txObject
-                - userAccount
-                - metadata
-            examples:
-              native_transfer:
-                summary: Native Transfer
-                value:
-                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-                  metadata:
-                    origin: https://uniswap.org
-                  txObject:
-                    from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-                    to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                    value: "0x10000000000000"
-              erc20_approval:
-                summary: ERC20 Approval
-                value:
-                  userAccount: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-                  metadata:
-                    origin: https://uniswap.org
-                  txObject:
-                    from: "0xa725f1a12b69eb32a7aea885c826deffaad6e3f3"
-                    to: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
-                    data: "0x095ea7b30000000000000000000000001d5071048370df50839c8879cdf5144ace4b3b3bffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
-      responses:
-        "200":
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                required:
-                  - requestId
-                  - action
-                  - warnings
-                  - simulationResults
-                properties:
-                  requestId:
-                    $ref: "#/components/schemas/RequestId"
-                  action:
-                    $ref: "#/components/schemas/ActionEnum"
-                  warnings:
-                    $ref: "#/components/schemas/Warning"
-                  simulationResults:
-                    $ref: "#/components/schemas/EvmSimulationResult"
         "400":
           description: Bad request
           content:
@@ -3354,7 +3334,6 @@ components:
       items:
         type: object
         required:
-          - data
           - severity
           - kind
           - message
@@ -3558,7 +3537,7 @@ components:
           properties:
             enabled:
               type: boolean
-              description: Enable guard transaction(s) generation
+              description: Enable guarded transaction(s) generation
               example: true
             slippage:
               type: number
@@ -3907,22 +3886,6 @@ components:
         mapping:
           TRANSACTION_REVERTED: "#/components/schemas/EvmTransactionRevertedError"
           TRANSACTION_ERROR: "#/components/schemas/EvmTransactionError"
-    EvmSimulationResult:
-      type: object
-      required:
-        - expectedStateChanges
-        - error
-        - gas
-        - protocol
-      properties:
-        expectedStateChanges:
-          $ref: "#/components/schemas/EvmExpectedStateChanges"
-        error:
-          $ref: "#/components/schemas/EvmPerTransactionError"
-        gas:
-          $ref: "#/components/schemas/EvmGas"
-        protocol:
-          $ref: "#/components/schemas/EvmProtocol"
     EvmProtocol:
       type: object
       description: Human-readable protocol information. Note that a single protocol can consist of multiple contracts.
@@ -4052,8 +4015,6 @@ components:
       type: string
       enum: [metaplex_bubblegum]
       example: metaplex_bubblegum
-    EvmTxHash:
-      type: string
     EvmTxData:
       type: object
       properties:
@@ -4214,7 +4175,6 @@ components:
             oneOf:
               - $ref: "#/components/schemas/GnosisSafePreset"
               - $ref: "#/components/schemas/Eip4337WalletPreset"
-
     GnosisSafePreset:
       type: object
       description: "Override a Gnosis Safe multi-signature wallet during simulation to change the signature threshold 1 of N. Allowing simulation of unsigned transactions. NOTE: The transaction sender needs to be one of the signers of the Safe."
@@ -4233,7 +4193,6 @@ components:
           example: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
           default: "0x9efec85d7b74fa8b83e6022fecf966e0bd1dadcf"
           description: "The address of the Gnosis safe to override"
-
     Eip4337WalletPreset:
       type: object
       description: "Override a EIP-4337 wallet contract to bypass signature validation during simulation. This allows you to pass bytes(0) instead of the user signature when encoding the EIP4337 entrypoint transaction for scanning & simulation. NOTE: This is an advanced feature that may require additional configuration on Blowfish's end to support your architecture. Please reach out to us if you have any issues"
@@ -4252,7 +4211,6 @@ components:
           example: "0x6aBD8abe4c7C03413610F9CC5EACF64A8BD7F69E"
           default: "0x6aBD8abe4c7C03413610F9CC5EACF64A8BD7F69E"
           description: "The address of the contract that will validate the user signature as part of the EIP-4337 transaction. In most cases this is the user's own wallet contract."
-
     EvmAddressInfo:
       type: object
       required:
@@ -4281,7 +4239,6 @@ components:
       type: object
       required:
         - rawImageUrl
-        - previews
       properties:
         rawImageUrl:
           type: string
@@ -4674,9 +4631,12 @@ components:
           example: Unable to simulate transaction
           description: Human readable explanation of the error
     EvmTransferCounterparty:
-      nullable: true
       description: Contains counterparty address if known. To whom the transfer was made for Send or from whom was it made for Receive
-      $ref: "#/components/schemas/EvmAddressInfo"
+      anyOf:
+        - $ref: "#/components/schemas/EvmAddressInfo"
+        - type: object
+          nullable: true
+    # EVM transactions state changes
     EvmStateChangeErc20Transfer:
       type: object
       description: ERC20 token transfers
@@ -4755,7 +4715,6 @@ components:
             amount:
               $ref: "#/components/schemas/EvmAmount"
             counterparty:
-              nullable: true
               $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmNativeAsset"
@@ -4784,7 +4743,6 @@ components:
             amount:
               $ref: "#/components/schemas/EvmAmount"
             counterparty:
-              nullable: true
               $ref: "#/components/schemas/EvmTransferCounterparty"
             metadata:
               $ref: "#/components/schemas/EvmNftMetadata"
@@ -4950,7 +4908,6 @@ components:
             tokenId:
               $ref: "#/components/schemas/EvmErc1155TokenId"
             counterparty:
-              nullable: true
               $ref: "#/components/schemas/EvmTransferCounterparty"
             asset:
               $ref: "#/components/schemas/EvmErc1155Asset"
@@ -5273,7 +5230,52 @@ components:
                   description: The type of specified NFT
                   example: ERC721
           description: Data associated with the state change
-    # ---- End of /message endpoint specific types
+    EvmMessageStateChangePolymarketOrder:
+      type: object
+      description: A Polymarket Order
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [POLYMARKET_ORDER]
+          example: POLYMARKET_ORDER
+        data:
+          type: object
+          description: Data associated with the state change
+          required:
+            - maker
+            - taker
+            - tokenId
+            - question
+            - outcome
+            - outcomePrice
+            - makerAmount
+            - takerAmount
+            - side
+          properties:
+            maker:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            taker:
+              $ref: "#/components/schemas/EvmAddressInfo"
+            tokenId:
+              type: string
+            question:
+              type: string
+            outcome:
+              type: string
+            outcomePrice:
+              type: string
+            makerAmount:
+              type: string
+            takerAmount:
+              type: string
+            side:
+              type: string
+              enum: [BUY, SELL]
+    # Solana state changes
     SolanaStateChangeSolTransfer:
       type: object
       description: Solana native token transfer
@@ -5825,7 +5827,7 @@ components:
                   "AQAAANVgbnOWDT3H5I2/oye32/palPUEeT1S5fbKj2WqgpTuAQAAAAAAAAAAAQEAAADVYG5zlg09x+SNv6Mnt9v6WpT1BHk9UuX2yo9lqoKU7g==",
                   "base64",
                 ]
-
+    # Assets endpoint
     AssetId:
       type: string
       example: "ethereum:mainnet:0xa247c6d23c8c7d223420700d16d189cff9357f38"
@@ -5835,9 +5837,8 @@ components:
          - For NFTs: chain:network:collection_address:id
         Solana asset ids:
          - Both tokens and NFTs: solana:mainnet:address
-
-    # NOTE: same schema as EvmAsset but used for /scan/assets endpoint which supports both EVM and Solana assets.
     Asset:
+      # NOTE: same schema as EvmAsset but used for /scan/assets endpoint which supports both EVM and Solana assets.
       type: object
       required:
         - address
@@ -5894,7 +5895,6 @@ components:
           description: A $-value price of the asset. Floor price of the collection if asset is an NFT. Can be `null`.
           $ref: "#/components/schemas/AssetPrice"
           nullable: true
-
     RiskSignals:
       type: array
       description: An array of risk signals generated from scanning the assets.
@@ -5946,7 +5946,6 @@ components:
             type: string
             description: human-readable message to present to the end-user
             example: "This token levies a very high tax during trading"
-
     ScanAssetResult:
       type: object
       description: Result of scanning an asset

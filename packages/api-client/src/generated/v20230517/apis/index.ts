@@ -5,5 +5,4 @@ export * from "./ReportRequestApi";
 export * from "./ScanAssetsApi";
 export * from "./ScanDomainApi";
 export * from "./ScanMessageApi";
-export * from "./ScanTransactionApi";
 export * from "./ScanTransactionsApi";

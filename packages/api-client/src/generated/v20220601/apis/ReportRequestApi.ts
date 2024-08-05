@@ -2,7 +2,7 @@
 /* eslint-disable */
 /**
  * API reference
- * The Blowfish API reference specification
+ * The Blowfish API reference specification (Deprecated)
  *
  * The version of the OpenAPI document: 2022-06-01
  * Contact: contact@blowfish.xyz

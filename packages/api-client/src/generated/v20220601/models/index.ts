@@ -3796,7 +3796,7 @@ export interface SolanaStateChangeSplApprovalData {
    * @type {NftPreviews}
    * @memberof SolanaStateChangeSplApprovalData
    */
-  previews: NftPreviews;
+  previews?: NftPreviews;
 }
 /**
  * SPL token transfer
@@ -3862,7 +3862,7 @@ export interface SolanaStateChangeSplTransferData {
    * @type {string}
    * @memberof SolanaStateChangeSplTransferData
    */
-  counterparty: string | null;
+  counterparty?: string | null;
   /**
    *
    * @type {Diff}
@@ -3898,7 +3898,7 @@ export interface SolanaStateChangeSplTransferData {
    * @type {NftPreviews}
    * @memberof SolanaStateChangeSplTransferData
    */
-  previews: NftPreviews;
+  previews?: NftPreviews;
 }
 /**
  * Transferring control over a user's Solana account to a different program (defaults to Solana system program)
