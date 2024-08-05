@@ -2,7 +2,7 @@ openapi: 3.1.0
 info:
   title: API reference
   version: "2022-06-01"
-  description: "The Blowfish API reference specification"
+  description: "The Blowfish API reference specification (Deprecated)"
   contact:
     name: Blowfish API Support
     email: contact@blowfish.xyz
@@ -24,7 +24,7 @@ tags:
     description: Endpoints related to scanning blockchain transactions
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
-  - name: Scan Assets
+  - name: Scan assets
     description: Endpoints related to scanning assets
 
 paths:
@@ -49,7 +49,6 @@ paths:
         | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/transaction |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/transaction |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/transaction |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/transaction |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/transaction |
         | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/transaction |
         | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/transaction |
@@ -602,6 +601,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /ethereum/v0/mainnet/scan/message:
     post:
       tags:
@@ -620,7 +620,6 @@ paths:
         | Polygon Amoy Testnet  | https://api.blowfish.xyz/polygon/v0/amoy/scan/message |
         | BNB Chain Mainnet | https://api.blowfish.xyz/bnb/v0/mainnet/scan/message |
         | Arbitrum One | https://api.blowfish.xyz/arbitrum/v0/one/scan/message |
-        | Arbitrum Sepolia Testnet | https://api.blowfish.xyz/arbitrum/v0/sepolia/scan/message |
         | Optimism Mainnet | https://api.blowfish.xyz/optimism/v0/mainnet/scan/message |
         | Optimism Goerli Testnet (deprecated) | https://api.blowfish.xyz/optimism/v0/goerli/scan/message |
         | Optimism Sepolia Testnet | https://api.blowfish.xyz/optimism/v0/sepolia/scan/message |
@@ -1604,6 +1603,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/domains/blocklist:
     post:
       tags:
@@ -1612,6 +1612,8 @@ paths:
       operationId: download-blocklist
       description: |
         Generate a downloadable snapshot with all blocked domains in order to check domains a user visits against a local blocklist, preserving their browsing privacy.
+
+        **NOTE:** The Blocklist provides strictly worse protection against scam dApps than the [Blowfish Domains endpoint](https://docs.blowfish.xyz/reference/scan-domain). The Blocklist was created for a small minority of wallets where domain privacy is strictly more important than the best security. If you are newly integrating or testing Blowfish, we **highly recommend** using the [Domains endpoint](https://docs.blowfish.xyz/reference/scan-domain) to provide the best possible dApp security for your users.
 
         ### Integration
         This API enables to verify domain safety while maintaining the end user's privacy. To integrate this API into your app, you should follow the steps below:
@@ -1811,6 +1813,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/InternalServerError"
+
   /v0/domains:
     post:
       tags:
@@ -3502,13 +3505,11 @@ components:
             - name
             - mint
             - decimals
-            - counterparty
             - diff
             - supply
             - metaplexTokenStandard
             - assetPrice
             - imageUrl
-            - previews
           properties:
             symbol:
               type: string
@@ -3571,7 +3572,6 @@ components:
             - metaplexTokenStandard
             - assetPrice
             - imageUrl
-            - previews
           properties:
             delegate:
               type: string

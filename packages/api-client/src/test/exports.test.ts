@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import * as v20230605 from "../clients/v20230605";
 import * as v20230517 from "../clients/v20230517";
 import * as v20230308 from "../clients/v20230308";
-import * as v20220601 from "../clients/v20220601";
 
 describe("All API Clients", () => {
   it("should export custom errors", async () => {
@@ -25,12 +24,6 @@ describe("All API Clients", () => {
         v20230308.BlowfishRateLimitError,
         v20230308.BlowfishUnknownError,
       ],
-      v20220601: [
-        v20220601.BlowfishBadRequestError,
-        v20220601.BlowfishInternalServerError,
-        v20220601.BlowfishRateLimitError,
-        v20220601.BlowfishUnknownError,
-      ],
     };
 
     expect(errors.v20230605.length).toEqual(
@@ -41,9 +34,6 @@ describe("All API Clients", () => {
     );
     expect(errors.v20230308.length).toEqual(
       v20230308.BlowfishErrorTypes.length
-    );
-    expect(errors.v20220601.length).toEqual(
-      v20220601.BlowfishErrorTypes.length
     );
   });
 
@@ -63,11 +53,6 @@ describe("All API Clients", () => {
 
     const client3 = new v20230308.BlowfishMultiChainApiClient("/test-path");
     expect(client3.getHeaders()["X-Api-Client-Version"]).toEqual(
-      packageJson.version
-    );
-
-    const client4 = new v20220601.BlowfishMultiChainApiClient("/test-path");
-    expect(client4.getHeaders()["X-Api-Client-Version"]).toEqual(
       packageJson.version
     );
   });
@@ -154,30 +139,6 @@ describe("All API Clients", () => {
     }
     for (const method of solanaClientMethods) {
       expect(solanaClient3).toHaveProperty(method);
-    }
-
-    const client4 = new v20220601.BlowfishMultiChainApiClient("/test-path");
-    const evmClient4 = new v20220601.BlowfishEvmApiClient(
-      "/test-path",
-      "ethereum",
-      "mainnet"
-    );
-    const solanaClient4 = new v20220601.BlowfishSolanaApiClient(
-      "/test-path",
-      "mainnet"
-    );
-    for (const method of multiClientMethods.filter(
-      (x) => x !== "scanTransactionsEvm"
-    )) {
-      expect(client4).toHaveProperty(method);
-    }
-    for (const method of evmClientMethods.filter(
-      (x) => x !== "scanTransactions"
-    )) {
-      expect(evmClient4).toHaveProperty(method);
-    }
-    for (const method of solanaClientMethods) {
-      expect(solanaClient4).toHaveProperty(method);
     }
   });
 });

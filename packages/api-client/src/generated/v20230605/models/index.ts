@@ -1376,10 +1376,10 @@ export interface EvmMessageStateChangeErc721TransferData {
   amount: EvmAmount;
   /**
    *
-   * @type {EvmAddressInfo}
+   * @type {EvmTransferCounterparty}
    * @memberof EvmMessageStateChangeErc721TransferData
    */
-  counterparty?: EvmAddressInfo;
+  counterparty?: EvmTransferCounterparty;
   /**
    *
    * @type {EvmAddressInfo}
@@ -1472,6 +1472,107 @@ export interface EvmMessageStateChangeNativeAssetTransferData {
   asset: EvmNativeAsset;
 }
 /**
+ * A Polymarket Order
+ * @export
+ * @interface EvmMessageStateChangePolymarketOrder
+ */
+export interface EvmMessageStateChangePolymarketOrder {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrder
+   */
+  kind: EvmMessageStateChangePolymarketOrderKindEnum;
+  /**
+   *
+   * @type {EvmMessageStateChangePolymarketOrderData}
+   * @memberof EvmMessageStateChangePolymarketOrder
+   */
+  data: EvmMessageStateChangePolymarketOrderData;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangePolymarketOrderKindEnum = {
+  PolymarketOrder: "POLYMARKET_ORDER",
+} as const;
+export type EvmMessageStateChangePolymarketOrderKindEnum =
+  (typeof EvmMessageStateChangePolymarketOrderKindEnum)[keyof typeof EvmMessageStateChangePolymarketOrderKindEnum];
+
+/**
+ * Data associated with the state change
+ * @export
+ * @interface EvmMessageStateChangePolymarketOrderData
+ */
+export interface EvmMessageStateChangePolymarketOrderData {
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  maker: EvmAddressInfo;
+  /**
+   *
+   * @type {EvmAddressInfo}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  taker: EvmAddressInfo;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  tokenId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  question: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  outcome: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  outcomePrice: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  makerAmount: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  takerAmount: string;
+  /**
+   *
+   * @type {string}
+   * @memberof EvmMessageStateChangePolymarketOrderData
+   */
+  side: EvmMessageStateChangePolymarketOrderDataSideEnum;
+}
+
+/**
+ * @export
+ */
+export const EvmMessageStateChangePolymarketOrderDataSideEnum = {
+  Buy: "BUY",
+  Sell: "SELL",
+} as const;
+export type EvmMessageStateChangePolymarketOrderDataSideEnum =
+  (typeof EvmMessageStateChangePolymarketOrderDataSideEnum)[keyof typeof EvmMessageStateChangePolymarketOrderDataSideEnum];
+
+/**
  *
  * @export
  * @interface EvmNativeAsset
@@ -1537,7 +1638,7 @@ export interface EvmNftMetadata {
    * @type {NftPreviews}
    * @memberof EvmNftMetadata
    */
-  previews: NftPreviews;
+  previews?: NftPreviews;
 }
 /**
  * @type EvmPerTransactionError
@@ -1859,37 +1960,6 @@ export type EvmSimulationFailedErrorKindEnum =
 /**
  *
  * @export
- * @interface EvmSimulationResult
- */
-export interface EvmSimulationResult {
-  /**
-   *
-   * @type {Array<EvmExpectedStateChange>}
-   * @memberof EvmSimulationResult
-   */
-  expectedStateChanges: Array<EvmExpectedStateChange>;
-  /**
-   *
-   * @type {EvmPerTransactionError}
-   * @memberof EvmSimulationResult
-   */
-  error: EvmPerTransactionError | null;
-  /**
-   *
-   * @type {EvmGas}
-   * @memberof EvmSimulationResult
-   */
-  gas: EvmGas;
-  /**
-   *
-   * @type {EvmProtocol}
-   * @memberof EvmSimulationResult
-   */
-  protocol: EvmProtocol | null;
-}
-/**
- *
- * @export
  * @interface EvmSimulationResults
  */
 export interface EvmSimulationResults {
@@ -2146,10 +2216,10 @@ export interface EvmStateChangeErc1155TransferData {
   tokenId: string | null;
   /**
    *
-   * @type {EvmAddressInfo}
+   * @type {EvmTransferCounterparty}
    * @memberof EvmStateChangeErc1155TransferData
    */
-  counterparty?: EvmAddressInfo;
+  counterparty?: EvmTransferCounterparty;
   /**
    *
    * @type {EvmErc1155Asset}
@@ -2260,10 +2330,10 @@ export interface EvmStateChangeErc20TransferData {
   amount: EvmAmount;
   /**
    *
-   * @type {EvmAddressInfo}
+   * @type {EvmTransferCounterparty}
    * @memberof EvmStateChangeErc20TransferData
    */
-  counterparty?: EvmAddressInfo;
+  counterparty?: EvmTransferCounterparty;
   /**
    *
    * @type {EvmErc20Asset}
@@ -2570,10 +2640,10 @@ export interface EvmStateChangeErc721TransferData {
   amount: EvmAmount;
   /**
    *
-   * @type {EvmAddressInfo}
+   * @type {EvmTransferCounterparty}
    * @memberof EvmStateChangeErc721TransferData
    */
-  counterparty: EvmAddressInfo;
+  counterparty: EvmTransferCounterparty;
   /**
    *
    * @type {EvmNftMetadata}
@@ -2744,10 +2814,10 @@ export interface EvmStateChangeNativeAssetTransferData {
   amount: EvmAmount;
   /**
    *
-   * @type {EvmAddressInfo}
+   * @type {EvmTransferCounterparty}
    * @memberof EvmStateChangeNativeAssetTransferData
    */
-  counterparty: EvmAddressInfo;
+  counterparty: EvmTransferCounterparty;
   /**
    *
    * @type {EvmNativeAsset}
@@ -2824,6 +2894,35 @@ export const EvmTransactionRevertedErrorKindEnum = {
 } as const;
 export type EvmTransactionRevertedErrorKindEnum =
   (typeof EvmTransactionRevertedErrorKindEnum)[keyof typeof EvmTransactionRevertedErrorKindEnum];
+
+/**
+ * Contains counterparty address if known. To whom the transfer was made for Send or from whom was it made for Receive
+ * @export
+ * @interface EvmTransferCounterparty
+ */
+export interface EvmTransferCounterparty {
+  /**
+   * The blockchain address
+   * @type {string}
+   * @memberof EvmTransferCounterparty
+   */
+  address: string;
+  /**
+   * The type of address
+   * @type {string}
+   * @memberof EvmTransferCounterparty
+   */
+  kind: EvmTransferCounterpartyKindEnum;
+}
+
+/**
+ * @export
+ */
+export const EvmTransferCounterpartyKindEnum = {
+  Account: "ACCOUNT",
+} as const;
+export type EvmTransferCounterpartyKindEnum =
+  (typeof EvmTransferCounterpartyKindEnum)[keyof typeof EvmTransferCounterpartyKindEnum];
 
 /**
  *
@@ -3193,7 +3292,7 @@ export interface RequestSimulatorConfig {
  */
 export interface RequestSimulatorConfigSafeguard {
   /**
-   * Enable guard transaction(s) generation
+   * Enable guarded transaction(s) generation
    * @type {boolean}
    * @memberof RequestSimulatorConfigSafeguard
    */
@@ -3579,7 +3678,8 @@ export type ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInnerR
     | ({ kind: "ERC721_TRANSFER" } & EvmMessageStateChangeErc721Transfer)
     | ({
         kind: "NATIVE_ASSET_TRANSFER";
-      } & EvmMessageStateChangeNativeAssetTransfer);
+      } & EvmMessageStateChangeNativeAssetTransfer)
+    | ({ kind: "POLYMARKET_ORDER" } & EvmMessageStateChangePolymarketOrder);
 /**
  *
  * @export
@@ -3614,68 +3714,6 @@ export type ScanMessageEvmRequestMessage =
   | ({ kind: "PERSONAL_SIGN" } & EvmPersonalSign)
   | ({ kind: "SIGN_MESSAGE" } & EvmSignMessage)
   | ({ kind: "SIGN_TYPED_DATA" } & EvmSignTypedData);
-/**
- *
- * @export
- * @interface ScanTransactionEvm200Response
- */
-export interface ScanTransactionEvm200Response {
-  /**
-   * Request ID uniquely identifies the HTTP request sent to our service
-   * @type {string}
-   * @memberof ScanTransactionEvm200Response
-   */
-  requestId: string;
-  /**
-   *
-   * @type {ActionEnum}
-   * @memberof ScanTransactionEvm200Response
-   */
-  action: ActionEnum;
-  /**
-   * An array of warnings generated from scanning the transactions. All these warnings won't be returned in a single response (some are mutually exclusive) but it is advisable that your UI can display multiple warnings. Warnings are returned sorted by severity, so if you can only show a user one warning, show them the one at the 0th index.
-   * @type {Array<WarningInner>}
-   * @memberof ScanTransactionEvm200Response
-   */
-  warnings: Array<WarningInner>;
-  /**
-   *
-   * @type {EvmSimulationResult}
-   * @memberof ScanTransactionEvm200Response
-   */
-  simulationResults: EvmSimulationResult;
-}
-/**
- *
- * @export
- * @interface ScanTransactionEvmRequest
- */
-export interface ScanTransactionEvmRequest {
-  /**
-   *
-   * @type {EvmTxData}
-   * @memberof ScanTransactionEvmRequest
-   */
-  txObject: EvmTxData;
-  /**
-   *
-   * @type {RequestMetadata}
-   * @memberof ScanTransactionEvmRequest
-   */
-  metadata: RequestMetadata;
-  /**
-   * A hex-representation of the user account who is being asked to sign the supplied transaction. In most cases this will be the same as the from property in the txObject
-   * @type {string}
-   * @memberof ScanTransactionEvmRequest
-   */
-  userAccount: string;
-  /**
-   *
-   * @type {EvmSimulatorConfig}
-   * @memberof ScanTransactionEvmRequest
-   */
-  simulatorConfig?: EvmSimulatorConfig;
-}
 /**
  *
  * @export
@@ -3943,6 +3981,12 @@ export interface ScanTransactionsSolana200ResponseSafeguard {
    * @memberof ScanTransactionsSolana200ResponseSafeguard
    */
   shouldBundle: boolean;
+  /**
+   * Safeguard transaction fee payed by user account in lamports
+   * @type {number}
+   * @memberof ScanTransactionsSolana200ResponseSafeguard
+   */
+  feesInLamports: number;
 }
 
 /**
@@ -3954,6 +3998,10 @@ export const ScanTransactionsSolana200ResponseSafeguardErrorEnum = {
   InternalError: "INTERNAL_ERROR",
   NetworkNotSupported: "NETWORK_NOT_SUPPORTED",
   ProgramNotSupported: "PROGRAM_NOT_SUPPORTED",
+  IncludesPartiallySignedTx: "INCLUDES_PARTIALLY_SIGNED_TX",
+  IncludesTxMissingMultipleSignatures:
+    "INCLUDES_TX_MISSING_MULTIPLE_SIGNATURES",
+  InsufficientComputeUnitsAvailable: "INSUFFICIENT_COMPUTE_UNITS_AVAILABLE",
 } as const;
 export type ScanTransactionsSolana200ResponseSafeguardErrorEnum =
   (typeof ScanTransactionsSolana200ResponseSafeguardErrorEnum)[keyof typeof ScanTransactionsSolana200ResponseSafeguardErrorEnum];
@@ -4922,7 +4970,7 @@ export interface WarningInner {
    * @type {string}
    * @memberof WarningInner
    */
-  data: string | null;
+  data?: string | null;
   /**
    * warning severity level. We suggest a yellow message if "WARNING", and a red message if "CRITICAL".
    * @type {string}

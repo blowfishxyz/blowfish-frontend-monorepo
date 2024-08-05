@@ -8,7 +8,7 @@ import { DappRequest } from "@blowfish/utils/types";
 import {
   EvmDecodedLog,
   ScanMessageEvm200Response,
-  ScanTransactionEvmRequest,
+  ScanTransactionsEvmRequest,
   ScanTransactionsEvm200Response,
   ScanTransactionsSolana200Response,
   ScanTransactionsSolanaRequest,
@@ -18,7 +18,7 @@ import RawResponseViewer from "./RawResponseViewer";
 export const AdvancedDetails = memo<{
   request:
     | DappRequest
-    | ScanTransactionEvmRequest
+    | ScanTransactionsEvmRequest
     | ScanTransactionsSolanaRequest;
   scanResults:
     | ScanMessageEvm200Response

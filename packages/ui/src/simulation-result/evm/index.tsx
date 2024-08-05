@@ -194,7 +194,7 @@ const TokenTooltipContent: React.FC<{
   }
   if (isNftStateChangeWithMetadata(rawInfo)) {
     const { metadata } = rawInfo.data;
-    const imageUrl = metadata.previews.large || metadata.rawImageUrl;
+    const imageUrl = metadata.previews?.large || metadata.rawImageUrl;
 
     if (rawInfo.kind === "ERC1155_TRANSFER") {
       return (

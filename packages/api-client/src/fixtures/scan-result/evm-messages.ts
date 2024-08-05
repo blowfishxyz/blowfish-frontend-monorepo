@@ -331,24 +331,23 @@ export const anyNftForWethOfferScanResult: EvmMessageScanResult =
           rawInfo: {
             kind: "ANY_NFT_FROM_COLLECTION_TRANSFER",
             data: {
-              symbol: "PROMETHEANS",
-              name: "Prometheans",
               amount: {
                 before: "0",
                 after: "1",
               },
-              contract: {
-                kind: "ACCOUNT" as const,
+              asset: {
+                symbol: "PROMETHEANS",
+                name: "Prometheans",
                 address: "0xc4a5025c4563ad0acc09d92c2506e6744dad58eb",
+                imageUrl:
+                  "https://lh3.googleusercontent.com/U9TK_6D-iXvcUB-FgDa8AYhwd0nOeBK_Fsr0GaQpPJX1_iQGVWJr2pnhGYkUsZH4syW1gXIiZpQOUqRdvfikoIeshF1VJOZvlK8",
+                type: "ERC721",
+                price: {
+                  source: "Simplehash" as const,
+                  updatedAt: 1690495107,
+                  dollarValuePerToken: 35.20011125067005,
+                },
               },
-              imageUrl:
-                "https://lh3.googleusercontent.com/U9TK_6D-iXvcUB-FgDa8AYhwd0nOeBK_Fsr0GaQpPJX1_iQGVWJr2pnhGYkUsZH4syW1gXIiZpQOUqRdvfikoIeshF1VJOZvlK8",
-              assetPrice: {
-                source: "Simplehash" as const,
-                updatedAt: 1690495107,
-                dollarValuePerToken: 35.20011125067005,
-              },
-              type: "ERC721",
             },
           },
         },
