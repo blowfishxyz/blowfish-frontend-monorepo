@@ -4,7 +4,7 @@ import { Spinner } from "@blowfishxyz/ui";
 import { DappRequest } from "@blowfish/utils/types";
 import {
   ScanMessageEvm200Response,
-  ScanTransactionEvmRequest,
+  ScanTransactionsEvmRequest,
   ScanTransactionsEvm200Response,
   ScanTransactionsSolana200Response,
   ScanTransactionsSolanaRequest,
@@ -18,7 +18,7 @@ const DynamicJsonViewer = dynamic(
 interface RawResponseViewerProps {
   request:
     | DappRequest
-    | ScanTransactionEvmRequest
+    | ScanTransactionsEvmRequest
     | ScanTransactionsSolanaRequest
     | undefined;
   scanResults?:

@@ -6,7 +6,6 @@ import {
 import type {
   ScanMessageEvm200Response,
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
-  ScanTransactionEvm200Response,
   ScanTransactionsEvm200Response,
   EvmExpectedStateChangesInner,
   EvmStateChangeErc1155ApprovalForAll,
@@ -16,7 +15,6 @@ import type {
   EvmStateChangeErc721Transfer,
   EvmStateChangeNativeAssetTransfer,
   EvmStateChangeErc20Approval,
-  EvmStateChangeErc20Permit,
   EvmStateChangeErc20Transfer,
   ScanTransactionsSolana200ResponseSimulationResultsExpectedStateChangesInner,
   ScanTransactionsSolana200Response,
@@ -44,14 +42,13 @@ export type EvmNftStateChange =
 export type EvmCurrencyStateChange =
   | EvmStateChangeNativeAssetTransfer
   | EvmStateChangeErc20Transfer
-  | EvmStateChangeErc20Permit
   | EvmStateChangeErc20Approval;
 
 export type EvmExpectedStateChange =
   | EvmMessageExpectedStateChange
   | EvmTransactionExpectedStateChange;
 
-export type EvmTransactionScanResult = ScanTransactionEvm200Response;
+export type EvmTransactionScanResult = ScanTransactionsEvm200Response;
 export type EvmTransactionsScanResult = ScanTransactionsEvm200Response;
 export type EvmMessageScanResult = ScanMessageEvm200Response;
 

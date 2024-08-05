@@ -30,15 +30,6 @@
           "nullSafeAdditionalProps": true,
           "withoutRuntimeChecks": true
         }
-      },
-      "v20220601": {
-        "generatorName": "typescript-fetch",
-        "output": "./src/generated/v20220601",
-        "glob": "./src/schemas/v20220601.yaml",
-        "additionalProperties": {
-          "nullSafeAdditionalProps": true,
-          "withoutRuntimeChecks": true
-        }
       }
     }
   }

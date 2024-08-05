@@ -66,11 +66,6 @@
       "types": "./build/v20230308.d.ts",
       "import": "./build/v20230308.mjs",
       "require": "./build/v20230308.js"
-    },
-    "./v20220601": {
-      "types": "./build/v20220601.d.ts",
-      "import": "./build/v20220601.mjs",
-      "require": "./build/v20220601.js"
     }
   },
   "typesVersions": {
@@ -89,9 +84,6 @@
       ],
       "v20230308": [
         "build/v20230308.d.ts"
-      ],
-      "v20220601": [
-        "build/v20220601.d.ts"
       ]
     }
   }

@@ -43,26 +43,6 @@ export function mapMessageResponse(
         },
       };
     }
-    if (stateChange.rawInfo.kind === "ANY_NFT_FROM_COLLECTION_TRANSFER") {
-      const data: EvmMessageStateChangeAnyNftFromCollectionTransferData = {
-        amount: stateChange.rawInfo.data.amount,
-        asset: {
-          address: stateChange.rawInfo.data.contract.address,
-          symbol: stateChange.rawInfo.data.symbol,
-          name: stateChange.rawInfo.data.name,
-          price: stateChange.rawInfo.data.assetPrice,
-          imageUrl: stateChange.rawInfo.data.imageUrl,
-          type: stateChange.rawInfo.data.type,
-        },
-      };
-      return {
-        ...stateChange,
-        rawInfo: {
-          ...stateChange.rawInfo,
-          data,
-        },
-      };
-    }
     if (stateChange.rawInfo.kind === "ERC1155_TRANSFER") {
       const data: EvmStateChangeErc1155TransferData = {
         metadata: stateChange.rawInfo.data.metadata,

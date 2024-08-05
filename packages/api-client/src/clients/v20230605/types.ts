@@ -6,7 +6,6 @@ import {
 import type {
   ScanMessageEvm200Response,
   ScanMessageEvm200ResponseSimulationResultsExpectedStateChangesInner,
-  ScanTransactionEvm200Response,
   ScanTransactionsEvm200Response,
   EvmExpectedStateChange as EvmExpectedStateChangesInner,
   EvmStateChangeErc1155ApprovalForAll,
@@ -51,7 +50,7 @@ export type EvmExpectedStateChange =
   | EvmMessageExpectedStateChange
   | EvmTransactionExpectedStateChange;
 
-export type EvmTransactionScanResult = ScanTransactionEvm200Response;
+export type EvmTransactionScanResult = ScanTransactionsEvm200Response;
 export type EvmTransactionsScanResult = ScanTransactionsEvm200Response;
 export type EvmMessageScanResult = ScanMessageEvm200Response;
 

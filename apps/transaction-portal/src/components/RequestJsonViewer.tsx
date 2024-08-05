@@ -13,7 +13,7 @@ import Decimal from "decimal.js";
 import dynamic from "next/dynamic";
 import React, { useMemo } from "react";
 import {
-  ScanTransactionEvmRequest,
+  ScanTransactionsEvmRequest,
   ScanTransactionsSolanaRequest,
 } from "@blowfishxyz/api-client";
 
@@ -28,7 +28,7 @@ const DynamicJsonViewer = dynamic(
 interface RequestJsonViewerProps {
   request:
     | DappRequest
-    | ScanTransactionEvmRequest
+    | ScanTransactionsEvmRequest
     | ScanTransactionsSolanaRequest;
 }
 
