@@ -33,19 +33,19 @@ export interface Asset {
    * @type {string}
    * @memberof Asset
    */
-  symbol: string;
+  symbol: string | null;
   /**
    * The name of the asset
    * @type {string}
    * @memberof Asset
    */
-  name: string;
+  name: string | null;
   /**
    * The number of decimal places used by the asset
    * @type {number}
    * @memberof Asset
    */
-  decimals: number;
+  decimals: number | null;
   /**
    * Whether the asset is verified as safe
    * @type {boolean}
@@ -3053,6 +3053,12 @@ export interface RequestSimulatorConfig {
    * @memberof RequestSimulatorConfig
    */
   safeguard?: RequestSimulatorConfigSafeguard;
+  /**
+   * If true, state changes that are potentially non-deterministic due to simulation spoofing attacks are still returned. Note that `RELIABLE_SIMULATION_NOT_POSSIBLE` warning is still going to be issued with `CRITICAL` severity.
+   * @type {boolean}
+   * @memberof RequestSimulatorConfig
+   */
+  unreliableSimulationResults?: boolean;
 }
 /**
  *

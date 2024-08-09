@@ -14,20 +14,18 @@ servers:
   - url: https://api.blowfish.xyz
     description: API server for all clients (e.g., Free self-service users & Enterprise)
 tags:
-  - name: Download blocklist
-    description: Endpoints related to downloading blocklists
   - name: Scan domain
     description: Endpoints related to scanning dApp domains
-  - name: Scan message
-    description: Endpoints related to scanning blockchain messages
-  - name: Scan transaction
-    description: Endpoints related to scanning a blockchain transaction
   - name: Scan transactions
     description: Endpoints related to scanning multiple blockchain transactions
-  - name: Report request
-    description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
+  - name: Scan message
+    description: Endpoints related to scanning blockchain messages
   - name: Scan assets
     description: Endpoints related to scanning assets
+  - name: Download blocklist
+    description: Endpoints related to downloading blocklists
+  - name: Report request
+    description: Endpoints related to reporting user actions after viewing scanning results from other endpoints
 paths:
   /ethereum/v0/mainnet/scan/transactions:
     post:
@@ -2885,6 +2883,11 @@ components:
               example: 0.1
           required:
             - enabled
+        unreliableSimulationResults:
+          type: boolean
+          description: If true, state changes that are potentially non-deterministic due to simulation spoofing attacks are still returned. Note that `RELIABLE_SIMULATION_NOT_POSSIBLE` warning is still going to be issued with `CRITICAL` severity.
+          example: false
+          default: false
     AssetPrice:
       type: object
       required:
@@ -5095,14 +5098,17 @@ components:
           type: string
           example: USDT
           description: The symbol of the asset
+          nullable: true
         name:
           type: string
           example: Tether USD
           description: The name of the asset
+          nullable: true
         decimals:
           type: integer
           example: 6
           description: The number of decimal places used by the asset
+          nullable: true
         verified:
           type: boolean
           example: true
