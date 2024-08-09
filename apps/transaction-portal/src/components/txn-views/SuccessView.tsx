@@ -19,7 +19,7 @@ export const SuccessView: React.FC<{
 }> = ({ className, txHash, onReport }) => {
   const chain = useChainMetadata();
   const url = useBlockExplorerUrl(txHash);
-  const [seconds, setSeconds] = useState(10);
+  const [seconds, setSeconds] = useState(3);
 
   const handleEtherscanClick = () => {
     window.open(url, "_blank", "noopener noreferrer");
@@ -55,7 +55,11 @@ export const SuccessView: React.FC<{
 
   useEffect(() => {
     if (seconds <= 0) {
-      window.close();
+      if (url) {
+        window.location.replace(url);
+      } else {
+        window.close();
+      }
     }
   }, [seconds]);
 
