@@ -14,19 +14,19 @@ servers:
   - url: https://api.blowfish.xyz
     description: API server for all clients (e.g., Free self-service users & Enterprise)
 tags:
-  - name: Download blocklist
-    description: Endpoints related to downloading blocklists
   - name: Scan domain
     description: Endpoints related to scanning dApp domains
-  - name: Scan message
-    description: Endpoints related to scanning blockchain messages
   - name: Scan transaction
     description: Endpoints related to scanning blockchain transactions
+  - name: Scan message
+    description: Endpoints related to scanning blockchain messages
+  - name: Scan assets
+    description: Endpoints related to scanning assets
+  - name: Download blocklist
+    description: Endpoints related to downloading blocklists
   - name: Report request
     description: Endpoints related to reporting user actions after viewing scanning
       results from other endpoints
-  - name: Scan assets
-    description: Endpoints related to scanning assets
 
 paths:
   "/{chain-family}/v0/{chain-network}/scan/transaction":
@@ -124,6 +124,7 @@ paths:
               - goerli
               - sepolia
               - fuji
+              - testnet
           required: true
       requestBody:
         content:
@@ -394,6 +395,7 @@ paths:
               - goerli
               - sepolia
               - fuji
+              - testnet
           required: true
       requestBody:
         content:

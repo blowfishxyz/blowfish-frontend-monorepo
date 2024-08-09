@@ -297,6 +297,7 @@ export const ScanTransactionsEvmOperationChainNetworkEnum = {
   Goerli: "goerli",
   Sepolia: "sepolia",
   Fuji: "fuji",
+  Testnet: "testnet",
 } as const;
 export type ScanTransactionsEvmOperationChainNetworkEnum =
   (typeof ScanTransactionsEvmOperationChainNetworkEnum)[keyof typeof ScanTransactionsEvmOperationChainNetworkEnum];

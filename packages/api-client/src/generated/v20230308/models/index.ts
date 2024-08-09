@@ -33,19 +33,19 @@ export interface Asset {
    * @type {string}
    * @memberof Asset
    */
-  symbol: string;
+  symbol: string | null;
   /**
    * The name of the asset
    * @type {string}
    * @memberof Asset
    */
-  name: string;
+  name: string | null;
   /**
    * The number of decimal places used by the asset
    * @type {number}
    * @memberof Asset
    */
-  decimals: number;
+  decimals: number | null;
   /**
    * Whether the asset is verified as safe
    * @type {boolean}
