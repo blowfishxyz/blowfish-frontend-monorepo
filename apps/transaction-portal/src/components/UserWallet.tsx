@@ -85,7 +85,7 @@ export const UserWallet = ({
   isConnected,
   chain,
 }: UserWalletProps) => {
-  const isImx = chain?.id === 1371 || chain?.id === 13473;
+  const isImx = chain?.id === 13371 || chain?.id === 13473;
   return (
     <StyledContainer onClick={show}>
       {!isConnected && isConnecting && <Text>Connecting...</Text>}
