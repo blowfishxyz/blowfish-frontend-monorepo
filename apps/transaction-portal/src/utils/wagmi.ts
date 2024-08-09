@@ -109,7 +109,7 @@ const immutableZkevmTestnet = {
       url: "https://explorer.testnet.immutable.com",
     },
   },
-  testnet: true,
+  testnet: false,
 };
 
 export const useConnectedChainId = () => {

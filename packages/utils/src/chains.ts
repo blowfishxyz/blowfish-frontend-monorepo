@@ -142,6 +142,10 @@ export const chainToBlockExplorerTxUrl = ({
       return `https://arbiscan.io/tx/${hash}`;
     case "bnb":
       return `https://bscscan.com/tx/${hash}`;
+    case "immutable_zkevm":
+      return chainNetwork === "testnet"
+        ? `https://explorer.testnet.immutable.com/tx/${hash}`
+        : `https://explorer.immutable.com/tx/${hash}`;
     case "ethereum":
     default:
       return `https://${prefix}etherscan.io/tx/${hash}`;
@@ -159,5 +163,7 @@ export const chainToBlockExplorerTitle = (chainFamily: ChainFamily) => {
       return "Bscscan";
     case "arbitrum":
       return "Arbiscan";
+    case "immutable_zkevm":
+      return "Immutable zkEVM";
   }
 };
