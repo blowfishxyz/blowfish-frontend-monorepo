@@ -124,6 +124,7 @@ paths:
               - goerli
               - sepolia
               - fuji
+              - testnet
           required: true
       requestBody:
         content:
@@ -394,6 +395,7 @@ paths:
               - goerli
               - sepolia
               - fuji
+              - testnet
           required: true
       requestBody:
         content:

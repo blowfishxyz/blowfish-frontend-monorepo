@@ -233,6 +233,7 @@ function createEvmChainNetwork() {
         - goerli
         - sepolia
         - fuji
+        - testnet
     required: true
   `) as YAMLMap;
 

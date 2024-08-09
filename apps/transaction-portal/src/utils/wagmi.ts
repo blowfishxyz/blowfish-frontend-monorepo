@@ -82,6 +82,36 @@ const immutableZkevm = {
   testnet: false,
 };
 
+const immutableZkevmTestnet = {
+  id: 13473,
+  network: "immutable_zkevm",
+  name: "Immutable testnet",
+  nativeCurrency: {
+    name: "test-IMX",
+    symbol: "test-IMX",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://rpc.testnet.immutable.com"],
+    },
+    public: {
+      http: ["https://rpc.testnet.immutable.com"],
+    },
+  },
+  blockExplorers: {
+    etherscan: {
+      name: "Immutable explorer",
+      url: "https://explorer.testnet.immutable.com",
+    },
+    default: {
+      name: "Immutable explorer",
+      url: "https://explorer.testnet.immutable.com",
+    },
+  },
+  testnet: true,
+};
+
 export const useConnectedChainId = () => {
   const network = useNetwork();
   return network.chain?.id;
@@ -171,6 +201,7 @@ export const createWagmiClient = () => {
       optimism,
       base,
       immutableZkevm,
+      immutableZkevmTestnet,
     ],
     [
       jsonRpcProvider({

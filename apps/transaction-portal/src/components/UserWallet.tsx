@@ -7,6 +7,7 @@ import { ChainIcon } from "connectkit";
 import { shortenHex } from "~utils/hex";
 import { MaskIcon } from "./icons/MaskIcon";
 import { useState } from "react";
+import { ImmutableIcon } from "@blowfish/protect-ui/icons";
 
 const StyledContainer = styled.button`
   display: flex;
@@ -84,6 +85,7 @@ export const UserWallet = ({
   isConnected,
   chain,
 }: UserWalletProps) => {
+  const isImx = chain?.id === 1371 || chain?.id === 13473;
   return (
     <StyledContainer onClick={show}>
       {!isConnected && isConnecting && <Text>Connecting...</Text>}
@@ -91,11 +93,15 @@ export const UserWallet = ({
       {isConnected && (
         <>
           <ChainContainer>
-            <ChainIcon
-              id={chain?.id}
-              unsupported={chain?.unsupported}
-              size={30}
-            />
+            {isImx ? (
+              <ImmutableIcon />
+            ) : (
+              <ChainIcon
+                id={chain?.id}
+                unsupported={chain?.unsupported}
+                size={30}
+              />
+            )}
             {!chain?.unsupported && <Connected />}
           </ChainContainer>
           <AddressColumn>

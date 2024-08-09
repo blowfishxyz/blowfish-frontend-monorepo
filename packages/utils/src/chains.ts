@@ -46,6 +46,10 @@ export const chainIdToSupportedChainMapping: { [key: string]: ChainInfo } = {
     chainFamily: "immutable_zkevm",
     chainNetwork: "mainnet",
   },
+  13473: {
+    chainFamily: "immutable_zkevm",
+    chainNetwork: "testnet",
+  },
 };
 
 /**
@@ -104,6 +108,10 @@ export const chainToBlockExplorerUrl = ({
       return `https://arbiscan.io/address/${address}`;
     case "bnb":
       return `https://bscscan.com/address/${address}`;
+    case "immutable_zkevm":
+      return chainNetwork === "testnet"
+        ? `https://explorer.testnet.immutable.com/address/${address}`
+        : `https://explorer.immutable.com/address/${address}`;
     case "ethereum":
     default:
       // NOTE(kimpers): Etherscan has a more sophisticated NFT view which we can link to
