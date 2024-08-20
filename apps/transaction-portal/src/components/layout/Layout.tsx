@@ -11,11 +11,13 @@ export const useLayoutConfig = createGlobalState<{
   hasRequestParams: boolean | undefined;
   canConfirmTxn: boolean;
   forceSafeguard: boolean;
+  forceSimulation: boolean;
 }>({
   severity: "INFO",
   hasRequestParams: false,
   canConfirmTxn: true,
   forceSafeguard: false,
+  forceSimulation: true,
 });
 
 export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
