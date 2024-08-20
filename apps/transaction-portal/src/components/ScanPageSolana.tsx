@@ -3,7 +3,7 @@ import {
   TransactionNotFoundModal,
   UnknownErrorModal,
 } from "./modals";
-import { Layout } from "~components/layout/Layout";
+import { Layout, useLayoutConfig } from "~components/layout/Layout";
 import { ProtectLoadingScreen } from "~components/ProtectLoadingScreen";
 import { ScanTransactionsSolanaRequest } from "@blowfishxyz/api-client";
 import ScanResultsSolana from "./ScanResultsSolana";
@@ -57,6 +57,7 @@ const SolanaResultsView: React.FC<{
   method?: string;
   messageId: string | undefined;
 }> = ({ request, userAccount, isImpersonating, method, messageId }) => {
+  const [layoutConfig] = useLayoutConfig();
   const {
     data,
     error: scanError,
@@ -68,7 +69,10 @@ const SolanaResultsView: React.FC<{
     method,
     chainNetwork: "mainnet",
     simulatorConfig: request.simulatorConfig
-      ? request.simulatorConfig
+      ? {
+          ...request.simulatorConfig,
+          unreliableSimulationResults: layoutConfig.forceSimulation,
+        }
       : undefined,
   });
   const originalResults = data?.original;

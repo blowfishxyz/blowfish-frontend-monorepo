@@ -86,7 +86,14 @@ export const useScanTransactionsWithSafeguard = (
     },
     Error
   >(
-    ["scanTransactionsSolana", transactions, userAccount, method, chainNetwork],
+    [
+      "scanTransactionsSolana",
+      transactions,
+      userAccount,
+      method,
+      chainNetwork,
+      `unreliableSimulationResults-${simulatorConfig?.unreliableSimulationResults}`,
+    ],
     fetchTransactions
   );
 };

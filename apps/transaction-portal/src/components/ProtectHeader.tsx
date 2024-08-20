@@ -32,8 +32,10 @@ const RightContentWrapper = styled(Row)`
 export const ProtectHeader: React.FC<{
   impersonatingAddress?: string | undefined;
 }> = ({ impersonatingAddress }) => {
-  const [{ severity, forceSafeguard, hasRequestParams }, setLayoutConfig] =
-    useLayoutConfig();
+  const [
+    { severity, forceSafeguard, forceSimulation, hasRequestParams },
+    setLayoutConfig,
+  ] = useLayoutConfig();
   const { pathname, query } = useRouter();
   const isSolana = query.solanaNetwork;
   const chainIdIcon = hasRequestParams ? Number(query.chainId) : undefined;
@@ -50,6 +52,20 @@ export const ProtectHeader: React.FC<{
     <ProtectScreenContent justifyContent="space-between">
       <StyledBlowfishIconFull $contrast={severity === "CRITICAL"} />
       <RightContentWrapper gap="md">
+        {isSolana && (
+          <ToggleWithLabel
+            label="Force Simulation"
+            style={{ height: "30px", alignSelf: "center" }}
+            initialState={forceSimulation}
+            isActive={forceSimulation}
+            toggle={() =>
+              setLayoutConfig((prev) => ({
+                ...prev,
+                forceSimulation: !prev.forceSimulation,
+              }))
+            }
+          />
+        )}
         {isSolana && (
           <ToggleWithLabel
             label="Force Safeguard"
