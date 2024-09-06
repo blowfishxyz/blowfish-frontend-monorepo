@@ -51,17 +51,10 @@ export const isCurrencyStateChange = (
 };
 
 const getSimulationDiff = (rawInfo: SolanaExpectedStateChange["rawInfo"]) => {
-  if (
-    rawInfo.kind === "SOL_STAKE_AUTHORITY_CHANGE" ||
-    rawInfo.kind === "USER_ACCOUNT_OWNER_CHANGE" ||
-    rawInfo.kind === "BFP_LOADER_AUTHORITY_CHANGE" ||
-    rawInfo.kind === "SOL_STAKE_ACCOUNT_DEPOSIT"
-  ) {
+  if (!("diff" in rawInfo.data)) {
     return new Decimal(0);
   }
-
   const { diff } = rawInfo.data;
-
   if (diff.sign === "MINUS") {
     return new Decimal(-diff.digits);
   }

@@ -642,6 +642,7 @@ paths:
                       - error
                       - expectedStateChanges
                       - simulatedSlotHeight
+                      - entities
                     properties:
                       action:
                         $ref: "#/components/schemas/ActionEnum"
@@ -697,6 +698,7 @@ paths:
                                   - $ref: "#/components/schemas/SolanaStateChangeBfpLoaderAuthorityChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeUserAccountOwnerChange"
                                   - $ref: "#/components/schemas/SolanaStateChangeCompressedNftTransfer"
+                                  - $ref: "#/components/schemas/SolanaStateChangeIdlAccountStateChange"
                                 discriminator:
                                   propertyName: kind
                                   mapping:
@@ -715,6 +717,17 @@ paths:
                                       nerChange"
                                     COMPRESSED_NFT_TRANSFER: "#/components/schemas/SolanaStateChangeCompressedNftTr\
                                       ansfer"
+                                    IDL_ACCOUNT_STATE_CHANGE: "#/components/schemas/SolanaStateChangeIdlAccountStat\
+                                      eChange"
+                      entities:
+                        type: object
+                        description: The entities that are involved in the transaction
+                        required:
+                          - storageAccounts
+                        properties:
+                          storageAccounts:
+                            additionalProperties:
+                              $ref: "#/components/schemas/SolanaStorageAccount"
                       simulatedSlotHeight:
                         type: number
                         nullable: true
@@ -1402,6 +1415,7 @@ components:
       items:
         type: object
         required:
+          - data
           - severity
           - kind
           - message
@@ -1607,6 +1621,12 @@ components:
           description: Payload includes decoded instructions for each transaction in the
             request if enabled
           example: true
+        decodeAccounts:
+          type: boolean
+          description: Decode and return storage accounts that have a published Anchor IDL
+            schema. Enabling this flag is required for IDL_ACCOUNT_STATE_CHANGE
+            state changes.
+          example: true
         safeguard:
           type: object
           properties:
@@ -1629,6 +1649,14 @@ components:
             `RELIABLE_SIMULATION_NOT_POSSIBLE` warning is still going to be
             issued with `CRITICAL` severity.
           example: false
+          default: false
+        sigVerify:
+          type: boolean
+          description: If true, simulation will return an error if the signature
+            verification fails. Make sure to only enable this flag if submitting
+            signed transactions since a missing signature will also result in an
+            error.
+          example: true
           default: false
     AssetPrice:
       type: object
@@ -3707,6 +3735,250 @@ components:
               $ref: "#/components/schemas/Diff"
             counterparty:
               $ref: "#/components/schemas/SolanaTransferCounterparty"
+    SolanaStateChangeIdlAccountStateChange:
+      type: object
+      description: IDL account state change
+      required:
+        - kind
+        - data
+      properties:
+        kind:
+          type: string
+          description: What kind of state change this object is
+          enum: [ IDL_ACCOUNT_STATE_CHANGE ]
+          example: IDL_ACCOUNT_STATE_CHANGE
+        data:
+          allOf:
+            - $ref: "#/components/schemas/SolanaStateChangeComponent"
+    SolanaStateChangeComponent:
+      type: object
+      description: Enables rich component rendering for solana state changes
+      required:
+        - template
+        - metadata
+      properties:
+        template:
+          type: string
+          description: The template of the state change
+          example: "{account} created with price set to {price}"
+        metadata:
+          type: object
+          description: The metadata of the state change
+          required: []
+          additionalProperties:
+            $ref: "#/components/schemas/SolanaPropInfo"
+    SolanaPropInfo:
+      description: Solana property information
+      oneOf:
+        - $ref: "#/components/schemas/PropInfoString"
+        - $ref: "#/components/schemas/PropInfoBigInt"
+        - $ref: "#/components/schemas/PropInfoBool"
+        - $ref: "#/components/schemas/PropInfoLamports"
+        - $ref: "#/components/schemas/PropInfoSplAsset"
+        - $ref: "#/components/schemas/PropInfoPercentage"
+        - $ref: "#/components/schemas/PropInfoTimestamp"
+        - $ref: "#/components/schemas/PropInfoPubkey"
+        - $ref: "#/components/schemas/PropInfoUnknown"
+        - $ref: "#/components/schemas/PropInfoStorageAccount"
+        - $ref: "#/components/schemas/PropInfoBulkChange"
+    PropInfoString:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ STRING ]
+        humanizedValue:
+          type: string
+          description: The value of the property
+          example: "Value"
+    PropInfoBigInt:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ BIG_INT ]
+        humanizedValue:
+          type: string
+          description: The value of the property
+          example: "10000000000"
+    PropInfoBool:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ BOOL ]
+        humanizedValue:
+          type: string
+          description: The value of the property
+          example: "true"
+    PropInfoLamports:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ LAMPORTS ]
+        humanizedValue:
+          type: string
+          description: The value of the property in lamports
+          example: "5000000"
+    PropInfoSplAsset:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+        - symbol
+        - decimals
+        - mint
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ SPL_ASSET ]
+        humanizedValue:
+          type: string
+          description: The SPL asset value
+          example: "148.52 USDC"
+        symbol:
+          type: string
+          description: The SPL token symbol
+          example: USDC
+        decimals:
+          type: integer
+          description: The SPL token decimals
+          example: 6
+        mint:
+          type: string
+          description: The SPL token mint program address
+          example: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v
+    PropInfoPercentage:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ PERCENTAGE ]
+        humanizedValue:
+          type: string
+          description: The percentage value
+          example: "12.5%"
+    PropInfoTimestamp:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ TIMESTAMP ]
+        humanizedValue:
+          type: string
+          description: The timestamp value
+          example: "2025 Jan 01 12:23:00"
+    PropInfoPubkey:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+        - pubkey
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ PUBKEY ]
+        humanizedValue:
+          type: string
+          description: Humanized value of the pubkey
+          example: "7ryWA6..Qutotj"
+        pubkey:
+          type: string
+          description: The public key
+          example: "7ryWA6NYfsWzYPCJb49Th7RuHScHyjEByLssNXQutotj"
+    PropInfoUnknown:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ UNKNOWN ]
+        humanizedValue:
+          type: string
+          description: An unknown value kind
+          example: "[array with 32 elements]"
+    PropInfoStorageAccount:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+        - accountType
+        - program
+        - isCreated
+        - pubkey
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ STORAGE_ACCOUNT ]
+        humanizedValue:
+          type: string
+          description: The storage account value
+          example: "List"
+        accountType:
+          type: string
+          description: The kind of the storage account
+          example: "ListState"
+        program:
+          type: string
+          description: The program that created the storage account
+          example: "TCMPhJdwDryooaGtiocG1u3xcYbRpiJzb283XfCZsDp"
+        isCreated:
+          type: boolean
+          description: Whether the storage account is created during the transaction or not
+          example: true
+        pubkey:
+          type: string
+          description: The public key of the storage account
+          example: "CCKhvoji15Xj7LL4XyRxMszC7HXYiHeGMbJutXPbx7tm"
+    PropInfoBulkChange:
+      type: object
+      required:
+        - kind
+        - humanizedValue
+        - changes
+      properties:
+        kind:
+          type: string
+          description: The kind of the property
+          enum: [ BULK_CHANGE ]
+        humanizedValue:
+          type: string
+          description: The bulk change value
+          example: "Batch update"
+        changes:
+          type: object
+          description: The key value pairs of the changes
     SolanaSimulationError:
       description: A error object which includes the parsed simulation error
         encountered (if any). Can be `null`.
@@ -3753,6 +4025,33 @@ components:
           description: Human-readable version of the error. Values match the string
             version of the `TransactionError` enum values in the Solana repo
           example: Blockhash not found
+    SolanaStorageAccount:
+      type: object
+      description: The storage account that is involved in the transaction
+      required:
+        - accountType
+        - program
+        - before
+        - after
+      properties:
+        accountType:
+          type: string
+          description: The type of the storage account
+          example: "ListState"
+        program:
+          type: string
+          description: The program owner of the storage account
+          example: "TCMPhJdwDryooaGtiocG1u3xcYbRpiJzb283XfCZsDp"
+        before:
+          type: object
+          description: The state of the storage account before the transaction
+          additionalProperties: true
+          nullable: true
+        after:
+          type: object
+          description: The state of the storage account after the transaction
+          additionalProperties: true
+          nullable: true
     BlowfishSimulationError:
       type: object
       required:
@@ -3769,13 +4068,16 @@ components:
             `TOO_MANY_TRANSACTIONS` is returned if a request includes too many
             transactions (current max: 100 txns). `SIMULATION_FAILED` is
             returned if simulation failed because of a dependent RPC failure or
-            internal server error during simulation execution."
+            internal server error during simulation execution.
+            `INVALID_SIGNATURE` is returned if the signature verification failed
+            when `sigVerify` is enabled."
           example: BAD_REQUEST
           enum:
             - SIMULATION_FAILED
             - SIMULATION_TIMED_OUT
             - TOO_MANY_TRANSACTIONS
             - BAD_REQUEST
+            - INVALID_SIGNATURE
         humanReadableError:
           type: string
           example: User account supplied in request not found

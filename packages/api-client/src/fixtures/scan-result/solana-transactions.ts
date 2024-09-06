@@ -8,6 +8,7 @@ export const solanaSetOwnerAuthority: SolanaTransactionsResult = {
   safeguard: null,
   aggregated: {
     action: "BLOCK",
+    entities: { storageAccounts: {} },
     simulatedSlotHeight: null,
     warnings: [
       {
@@ -91,6 +92,7 @@ export const solanaNftTransfer: SolanaTransactionsResult = {
   safeguard: null,
   aggregated: {
     action: "NONE",
+    entities: { storageAccounts: {} },
     warnings: [],
     error: null,
     simulatedSlotHeight: null,

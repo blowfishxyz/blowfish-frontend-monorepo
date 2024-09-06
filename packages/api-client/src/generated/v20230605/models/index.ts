@@ -152,7 +152,7 @@ export interface BadRequest {
  */
 export interface BlowfishSimulationError {
   /**
-   * The error that caused us to be unable to run transaction simulation for this request. `SIMULATION_TIMED_OUT` is returned if the simulation took too long and timed out. `BAD_REQUEST` is returned if the transaction(s) or `user_account` submitted were invalid (this is similar to a 400 bad request). `TOO_MANY_TRANSACTIONS` is returned if a request includes too many transactions (current max: 100 txns). `SIMULATION_FAILED` is returned if simulation failed because of a dependent RPC failure or internal server error during simulation execution.
+   * The error that caused us to be unable to run transaction simulation for this request. `SIMULATION_TIMED_OUT` is returned if the simulation took too long and timed out. `BAD_REQUEST` is returned if the transaction(s) or `user_account` submitted were invalid (this is similar to a 400 bad request). `TOO_MANY_TRANSACTIONS` is returned if a request includes too many transactions (current max: 100 txns). `SIMULATION_FAILED` is returned if simulation failed because of a dependent RPC failure or internal server error during simulation execution. `INVALID_SIGNATURE` is returned if the signature verification failed when `sigVerify` is enabled.
    * @type {string}
    * @memberof BlowfishSimulationError
    */
@@ -173,6 +173,7 @@ export const BlowfishSimulationErrorKindEnum = {
   SimulationTimedOut: "SIMULATION_TIMED_OUT",
   TooManyTransactions: "TOO_MANY_TRANSACTIONS",
   BadRequest: "BAD_REQUEST",
+  InvalidSignature: "INVALID_SIGNATURE",
 } as const;
 export type BlowfishSimulationErrorKindEnum =
   (typeof BlowfishSimulationErrorKindEnum)[keyof typeof BlowfishSimulationErrorKindEnum];
@@ -3209,6 +3210,373 @@ export interface ObjectWithDomainsPropertyOfTypeArray {
 /**
  *
  * @export
+ * @interface PropInfoBigInt
+ */
+export interface PropInfoBigInt {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoBigInt
+   */
+  kind: PropInfoBigIntKindEnum;
+  /**
+   * The value of the property
+   * @type {string}
+   * @memberof PropInfoBigInt
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoBigIntKindEnum = {
+  BigInt: "BIG_INT",
+} as const;
+export type PropInfoBigIntKindEnum =
+  (typeof PropInfoBigIntKindEnum)[keyof typeof PropInfoBigIntKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoBool
+ */
+export interface PropInfoBool {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoBool
+   */
+  kind: PropInfoBoolKindEnum;
+  /**
+   * The value of the property
+   * @type {string}
+   * @memberof PropInfoBool
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoBoolKindEnum = {
+  Bool: "BOOL",
+} as const;
+export type PropInfoBoolKindEnum =
+  (typeof PropInfoBoolKindEnum)[keyof typeof PropInfoBoolKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoBulkChange
+ */
+export interface PropInfoBulkChange {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoBulkChange
+   */
+  kind: PropInfoBulkChangeKindEnum;
+  /**
+   * The bulk change value
+   * @type {string}
+   * @memberof PropInfoBulkChange
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoBulkChangeKindEnum = {
+  BulkChange: "BULK_CHANGE",
+} as const;
+export type PropInfoBulkChangeKindEnum =
+  (typeof PropInfoBulkChangeKindEnum)[keyof typeof PropInfoBulkChangeKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoLamports
+ */
+export interface PropInfoLamports {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoLamports
+   */
+  kind: PropInfoLamportsKindEnum;
+  /**
+   * The value of the property in lamports
+   * @type {string}
+   * @memberof PropInfoLamports
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoLamportsKindEnum = {
+  Lamports: "LAMPORTS",
+} as const;
+export type PropInfoLamportsKindEnum =
+  (typeof PropInfoLamportsKindEnum)[keyof typeof PropInfoLamportsKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoPercentage
+ */
+export interface PropInfoPercentage {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoPercentage
+   */
+  kind: PropInfoPercentageKindEnum;
+  /**
+   * The percentage value
+   * @type {string}
+   * @memberof PropInfoPercentage
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoPercentageKindEnum = {
+  Percentage: "PERCENTAGE",
+} as const;
+export type PropInfoPercentageKindEnum =
+  (typeof PropInfoPercentageKindEnum)[keyof typeof PropInfoPercentageKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoPubkey
+ */
+export interface PropInfoPubkey {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoPubkey
+   */
+  kind: PropInfoPubkeyKindEnum;
+  /**
+   * Humanized value of the pubkey
+   * @type {string}
+   * @memberof PropInfoPubkey
+   */
+  humanizedValue: string;
+  /**
+   * The public key
+   * @type {string}
+   * @memberof PropInfoPubkey
+   */
+  pubkey: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoPubkeyKindEnum = {
+  Pubkey: "PUBKEY",
+} as const;
+export type PropInfoPubkeyKindEnum =
+  (typeof PropInfoPubkeyKindEnum)[keyof typeof PropInfoPubkeyKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoSplAsset
+ */
+export interface PropInfoSplAsset {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoSplAsset
+   */
+  kind: PropInfoSplAssetKindEnum;
+  /**
+   * The SPL asset value
+   * @type {string}
+   * @memberof PropInfoSplAsset
+   */
+  humanizedValue: string;
+  /**
+   * The SPL token symbol
+   * @type {string}
+   * @memberof PropInfoSplAsset
+   */
+  symbol: string;
+  /**
+   * The SPL token decimals
+   * @type {number}
+   * @memberof PropInfoSplAsset
+   */
+  decimals: number;
+  /**
+   * The SPL token mint program address
+   * @type {string}
+   * @memberof PropInfoSplAsset
+   */
+  mint: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoSplAssetKindEnum = {
+  SplAsset: "SPL_ASSET",
+} as const;
+export type PropInfoSplAssetKindEnum =
+  (typeof PropInfoSplAssetKindEnum)[keyof typeof PropInfoSplAssetKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoStorageAccount
+ */
+export interface PropInfoStorageAccount {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoStorageAccount
+   */
+  kind: PropInfoStorageAccountKindEnum;
+  /**
+   * The storage account value
+   * @type {string}
+   * @memberof PropInfoStorageAccount
+   */
+  humanizedValue: string;
+  /**
+   * The kind of the storage account
+   * @type {string}
+   * @memberof PropInfoStorageAccount
+   */
+  accountType: string;
+  /**
+   * The program that created the storage account
+   * @type {string}
+   * @memberof PropInfoStorageAccount
+   */
+  program: string;
+  /**
+   * Whether the storage account is created during the transaction or not
+   * @type {boolean}
+   * @memberof PropInfoStorageAccount
+   */
+  isCreated: boolean;
+  /**
+   * The public key of the storage account
+   * @type {string}
+   * @memberof PropInfoStorageAccount
+   */
+  pubkey: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoStorageAccountKindEnum = {
+  StorageAccount: "STORAGE_ACCOUNT",
+} as const;
+export type PropInfoStorageAccountKindEnum =
+  (typeof PropInfoStorageAccountKindEnum)[keyof typeof PropInfoStorageAccountKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoString
+ */
+export interface PropInfoString {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoString
+   */
+  kind: PropInfoStringKindEnum;
+  /**
+   * The value of the property
+   * @type {string}
+   * @memberof PropInfoString
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoStringKindEnum = {
+  String: "STRING",
+} as const;
+export type PropInfoStringKindEnum =
+  (typeof PropInfoStringKindEnum)[keyof typeof PropInfoStringKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoTimestamp
+ */
+export interface PropInfoTimestamp {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoTimestamp
+   */
+  kind: PropInfoTimestampKindEnum;
+  /**
+   * The timestamp value
+   * @type {string}
+   * @memberof PropInfoTimestamp
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoTimestampKindEnum = {
+  Timestamp: "TIMESTAMP",
+} as const;
+export type PropInfoTimestampKindEnum =
+  (typeof PropInfoTimestampKindEnum)[keyof typeof PropInfoTimestampKindEnum];
+
+/**
+ *
+ * @export
+ * @interface PropInfoUnknown
+ */
+export interface PropInfoUnknown {
+  /**
+   * The kind of the property
+   * @type {string}
+   * @memberof PropInfoUnknown
+   */
+  kind: PropInfoUnknownKindEnum;
+  /**
+   * An unknown value kind
+   * @type {string}
+   * @memberof PropInfoUnknown
+   */
+  humanizedValue: string;
+}
+
+/**
+ * @export
+ */
+export const PropInfoUnknownKindEnum = {
+  Unknown: "UNKNOWN",
+} as const;
+export type PropInfoUnknownKindEnum =
+  (typeof PropInfoUnknownKindEnum)[keyof typeof PropInfoUnknownKindEnum];
+
+/**
+ *
+ * @export
  * @interface Report200Response
  */
 export interface Report200Response {
@@ -3279,6 +3647,12 @@ export interface RequestSimulatorConfig {
    */
   decodeInstructions?: boolean;
   /**
+   * Decode and return storage accounts that have a published Anchor IDL schema. Enabling this flag is required for IDL_ACCOUNT_STATE_CHANGE state changes.
+   * @type {boolean}
+   * @memberof RequestSimulatorConfig
+   */
+  decodeAccounts?: boolean;
+  /**
    *
    * @type {RequestSimulatorConfigSafeguard}
    * @memberof RequestSimulatorConfig
@@ -3290,6 +3664,12 @@ export interface RequestSimulatorConfig {
    * @memberof RequestSimulatorConfig
    */
   unreliableSimulationResults?: boolean;
+  /**
+   * If true, simulation will return an error if the signature verification fails. Make sure to only enable this flag if submitting signed transactions since a missing signature will also result in an error.
+   * @type {boolean}
+   * @memberof RequestSimulatorConfig
+   */
+  sigVerify?: boolean;
 }
 /**
  *
@@ -3848,11 +4228,30 @@ export interface ScanTransactionsSolana200ResponseAggregated {
       | undefined;
   };
   /**
+   *
+   * @type {ScanTransactionsSolana200ResponseAggregatedEntities}
+   * @memberof ScanTransactionsSolana200ResponseAggregated
+   */
+  entities: ScanTransactionsSolana200ResponseAggregatedEntities;
+  /**
    * Slot height at which the simulation took place
    * @type {number}
    * @memberof ScanTransactionsSolana200ResponseAggregated
    */
   simulatedSlotHeight: number | null;
+}
+/**
+ * The entities that are involved in the transaction
+ * @export
+ * @interface ScanTransactionsSolana200ResponseAggregatedEntities
+ */
+export interface ScanTransactionsSolana200ResponseAggregatedEntities {
+  /**
+   *
+   * @type {{ [key: string]: SolanaStorageAccount | undefined; }}
+   * @memberof ScanTransactionsSolana200ResponseAggregatedEntities
+   */
+  storageAccounts: { [key: string]: SolanaStorageAccount | undefined };
 }
 /**
  *
@@ -3905,6 +4304,9 @@ export type ScanTransactionsSolana200ResponseAggregatedExpectedStateChangesValue
     | ({
         kind: "COMPRESSED_NFT_TRANSFER";
       } & SolanaStateChangeCompressedNftTransfer)
+    | ({
+        kind: "IDL_ACCOUNT_STATE_CHANGE";
+      } & SolanaStateChangeIdlAccountStateChange)
     | ({
         kind: "SOL_STAKE_ACCOUNT_DEPOSIT";
       } & SolanaStateChangeSolStakeAccountDeposit)
@@ -4123,6 +4525,23 @@ export interface SolanaInstruction {
    */
   encodedData: string;
 }
+/**
+ * @type SolanaPropInfo
+ * Solana property information
+ * @export
+ */
+export type SolanaPropInfo =
+  | PropInfoBigInt
+  | PropInfoBool
+  | PropInfoBulkChange
+  | PropInfoLamports
+  | PropInfoPercentage
+  | PropInfoPubkey
+  | PropInfoSplAsset
+  | PropInfoStorageAccount
+  | PropInfoString
+  | PropInfoTimestamp
+  | PropInfoUnknown;
 /**
  * Human-readable protocol information. Note that a single protocol can consist of multiple programs.
  * @export
@@ -4355,6 +4774,25 @@ export interface SolanaStateChangeBfpLoaderAuthorityChangeData {
   futureAuthority: string | null;
 }
 /**
+ * Enables rich component rendering for solana state changes
+ * @export
+ * @interface SolanaStateChangeComponent
+ */
+export interface SolanaStateChangeComponent {
+  /**
+   * The template of the state change
+   * @type {string}
+   * @memberof SolanaStateChangeComponent
+   */
+  template: string;
+  /**
+   * The metadata of the state change
+   * @type {{ [key: string]: SolanaPropInfo | undefined; }}
+   * @memberof SolanaStateChangeComponent
+   */
+  metadata: { [key: string]: SolanaPropInfo | undefined };
+}
+/**
  * cNFT transfer
  * @export
  * @interface SolanaStateChangeCompressedNftTransfer
@@ -4407,6 +4845,54 @@ export interface SolanaStateChangeCompressedNftTransferData {
    * @memberof SolanaStateChangeCompressedNftTransferData
    */
   counterparty: string | null;
+}
+/**
+ * IDL account state change
+ * @export
+ * @interface SolanaStateChangeIdlAccountStateChange
+ */
+export interface SolanaStateChangeIdlAccountStateChange {
+  /**
+   * What kind of state change this object is
+   * @type {string}
+   * @memberof SolanaStateChangeIdlAccountStateChange
+   */
+  kind: SolanaStateChangeIdlAccountStateChangeKindEnum;
+  /**
+   *
+   * @type {SolanaStateChangeIdlAccountStateChangeData}
+   * @memberof SolanaStateChangeIdlAccountStateChange
+   */
+  data: SolanaStateChangeIdlAccountStateChangeData;
+}
+
+/**
+ * @export
+ */
+export const SolanaStateChangeIdlAccountStateChangeKindEnum = {
+  IdlAccountStateChange: "IDL_ACCOUNT_STATE_CHANGE",
+} as const;
+export type SolanaStateChangeIdlAccountStateChangeKindEnum =
+  (typeof SolanaStateChangeIdlAccountStateChangeKindEnum)[keyof typeof SolanaStateChangeIdlAccountStateChangeKindEnum];
+
+/**
+ *
+ * @export
+ * @interface SolanaStateChangeIdlAccountStateChangeData
+ */
+export interface SolanaStateChangeIdlAccountStateChangeData {
+  /**
+   * The template of the state change
+   * @type {string}
+   * @memberof SolanaStateChangeIdlAccountStateChangeData
+   */
+  template: string;
+  /**
+   * The metadata of the state change
+   * @type {{ [key: string]: SolanaPropInfo | undefined; }}
+   * @memberof SolanaStateChangeIdlAccountStateChangeData
+   */
+  metadata: { [key: string]: SolanaPropInfo | undefined };
 }
 /**
  * Creation of a SOL staking account
@@ -4837,6 +5323,37 @@ export interface SolanaStateChangeUserAccountOwnerChangeData {
   futureOwner: string;
 }
 /**
+ * The storage account that is involved in the transaction
+ * @export
+ * @interface SolanaStorageAccount
+ */
+export interface SolanaStorageAccount {
+  /**
+   * The type of the storage account
+   * @type {string}
+   * @memberof SolanaStorageAccount
+   */
+  accountType: string;
+  /**
+   * The program owner of the storage account
+   * @type {string}
+   * @memberof SolanaStorageAccount
+   */
+  program: string;
+  /**
+   * The state of the storage account before the transaction
+   * @type {{ [key: string]: any | undefined; }}
+   * @memberof SolanaStorageAccount
+   */
+  before: { [key: string]: any | undefined } | null;
+  /**
+   * The state of the storage account after the transaction
+   * @type {{ [key: string]: any | undefined; }}
+   * @memberof SolanaStorageAccount
+   */
+  after: { [key: string]: any | undefined } | null;
+}
+/**
  *
  * @export
  * @interface SplAsset
@@ -4976,7 +5493,7 @@ export interface WarningInner {
    * @type {string}
    * @memberof WarningInner
    */
-  data?: string | null;
+  data: string | null;
   /**
    * warning severity level. We suggest a yellow message if "WARNING", and a red message if "CRITICAL".
    * @type {string}
