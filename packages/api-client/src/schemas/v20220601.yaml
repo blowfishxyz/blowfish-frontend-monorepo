@@ -2828,6 +2828,7 @@ components:
             - metaplexTokenStandard
             - assetPrice
             - imageUrl
+            - previews
           properties:
             symbol:
               type: string
@@ -2890,6 +2891,7 @@ components:
             - metaplexTokenStandard
             - assetPrice
             - imageUrl
+            - previews
           properties:
             delegate:
               type: string
