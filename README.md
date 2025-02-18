@@ -5,11 +5,13 @@
 **This repository is no longer actively maintained.** Blowfish Protect is no longer a product maintained by the Blowfish team.
 We are open sourcing this codebase in case it is useful to anyone in the community. Feel free to use and fork it but we will not be accepting any PRs.
 
-# 🥷🏿 Blowfish Protect
+# 🐡 Blowfish Protect
 
 This repo serves as a base for our frontend and frontend related Typescript code.
 
 This is very much a work in progress ⚠ but the long term goal is that this will be a PNPM workspace monorepo that allows easy sharing of components and modules between all the frontend projects at Blowfish.
+
+**NOTE:** Blowfish Protect depends on a licensed font: [GT-Planar](https://www.grillitype.com/typeface/gt-planar). If you want to use it you need to purchase an appropriate license.
 
 ## 𝌞 Table of Contents
 
